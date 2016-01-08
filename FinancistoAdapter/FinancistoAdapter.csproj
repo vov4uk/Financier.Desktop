@@ -41,6 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackupReader.cs" />
+    <Compile Include="Entities\Account.cs" />
+    <Compile Include="Entities\Currency.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="EntityAttribute.cs" />
+    <Compile Include="EntityPropertyAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
