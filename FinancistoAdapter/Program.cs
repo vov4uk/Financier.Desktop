@@ -15,11 +15,34 @@ namespace FinancistoAdapter
 	{
 		public EntityInfo()
 		{
-			Properties = new Dictionary<string, PropertyInfo>();
+			Properties = new Dictionary<string, EntityPropertyInfo>();
 		}
 
 		public Type EntityType { get; set; }
-		public IDictionary<string, PropertyInfo> Properties { get; private set; }
+		public IDictionary<string, EntityPropertyInfo> Properties { get; private set; }
+	}
+
+	public class EntityPropertyInfo
+	{
+		private delegate void SetValueDelegate(object entity, object value);
+
+		private SetValueDelegate _delegate;
+
+		public EntityPropertyInfo(PropertyInfo info)
+		{
+			PropertyType = info.PropertyType;
+			_delegate = info.SetValue;
+		}
+
+		public Type PropertyType { get; set; }
+
+		public void SetValue(Entity entity, string value)
+		{
+			object v = Converter.Convert(value);
+			_delegate(entity, v);
+		}
+
+		public IPropertyConverter Converter { get; set; }
 	}
 
 	class Program
@@ -43,7 +66,10 @@ namespace FinancistoAdapter
 						EntityPropertyAttribute pattr = (EntityPropertyAttribute) p.GetCustomAttribute(typeof (EntityPropertyAttribute));
 						if (pattr != null)
 						{
-							info.Properties[pattr.Key] = p;
+							EntityPropertyInfo pInfo = new EntityPropertyInfo(p);
+							pInfo.Converter = (IPropertyConverter) Activator.CreateInstance(pattr.Converter);
+							pInfo.Converter.PropertyType = p.PropertyType;
+							info.Properties[pattr.Key] = pInfo;
 						}
 					}
 				}
@@ -74,12 +100,10 @@ namespace FinancistoAdapter
 					}
 					else if (entity != null && line.Value != null)
 					{
-						PropertyInfo property;
+						EntityPropertyInfo property;
 						if (entityInfo.Properties.TryGetValue(line.Key, out property))
 						{
-							object value = Convert.ChangeType(line.Value,
-								Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType);
-							property.SetValue(entity, value);
+							property.SetValue(entity, line.Value);
 						}
 					}
 				}

@@ -11,7 +11,7 @@ namespace FinancistoAdapter.Entities
 	{
 		[EntityProperty("title")]
 		public string Title { get; set; }
-		//[EntityProperty("creation_date")]
+		[EntityProperty("creation_date", Converter = typeof(DateTimeConverter))]
 		public DateTime? CreationDate { get; set; }
 		[EntityProperty("currency_id")]
 		public int? CurrencyId { get; set; }
