@@ -9,6 +9,7 @@ namespace FinancistoAdapter.Entities
 	[Entity("category")]
 	public class Category : Entity
 	{
+		[EntityProperty("title")]
 		public string Title { get; set; }
 	}
 }
