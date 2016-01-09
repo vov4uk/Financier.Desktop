@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace FinancistoAdapter
 {
-	public interface IPropertyConverter
+	public class NoConversion : IPropertyConverter
 	{
-		Type PropertyType { get; set; }
-		object Convert(object value);
+		public Type PropertyType { get; set; }
+
+		public object Convert(object value)
+		{
+			return value;
+		}
 	}
 }

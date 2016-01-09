@@ -4,6 +4,7 @@ using System.Data.Odbc;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FinancistoAdapter.Entities;
 
 namespace FinancistoAdapter
 {
@@ -11,8 +12,24 @@ namespace FinancistoAdapter
 	public class EntityPropertyAttribute : Attribute
 	{
 		private Type _converter = typeof (DefaultConverter);
+		private Type _foreignKey;
 
 		public string Key { get; private set; }
+
+		public Type ForeignKey
+		{
+			get { return _foreignKey; }
+			set
+			{
+				if (value != null && !typeof(Entity).IsAssignableFrom(value))
+					throw new ArgumentException("Foreign key type must inherit from Entity.", "value");
+				_foreignKey = value;
+				if (value != null)
+				{
+					_converter = typeof (NoConversion);
+				}
+			}
+		}
 
 		public Type Converter
 		{
