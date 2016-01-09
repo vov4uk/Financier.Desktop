@@ -33,7 +33,6 @@ namespace FinancistoAdapter
 							EntityPropertyInfo pInfo = new EntityPropertyInfo(p);
 							pInfo.Converter = (IPropertyConverter) Activator.CreateInstance(pattr.Converter);
 							pInfo.Converter.PropertyType = p.PropertyType;
-							pInfo.ForeignKey = pattr.ForeignKey;
 							info.Properties[pattr.Key] = pInfo;
 						}
 					}
@@ -77,7 +76,7 @@ namespace FinancistoAdapter
 						EntityPropertyInfo property;
 						if (entityInfo.Properties.TryGetValue(line.Key, out property))
 						{
-							if (property.ForeignKey != null)
+							if (typeof(Entity).IsAssignableFrom(property.PropertyType))
 							{
 								Entity cEntity = entity;
 								foreignKeys.Add(Tuple.Create(property, new Action<object>(v => property.SetValue(cEntity, v)), int.Parse(line.Value)));
@@ -92,7 +91,7 @@ namespace FinancistoAdapter
 				{
 					Dictionary<int, Entity> mapById;
 					Entity linkedEntity;
-					if (map.TryGetValue(link.Item1.ForeignKey, out mapById) && mapById.TryGetValue(link.Item3, out linkedEntity))
+					if (map.TryGetValue(link.Item1.PropertyType, out mapById) && mapById.TryGetValue(link.Item3, out linkedEntity))
 						link.Item2(linkedEntity);
 				}
 

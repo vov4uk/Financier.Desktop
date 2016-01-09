@@ -1,12 +1,14 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace FinancistoAdapter.Entities
 {
+	[DebuggerDisplay("{Title}")]
 	[Entity("account")]
 	public class Account : Entity
 	{
@@ -14,7 +16,7 @@ namespace FinancistoAdapter.Entities
 		public string Title { get; set; }
 		[EntityProperty("creation_date", Converter = typeof (DateTimeConverter))]
 		public DateTime? CreationDate { get; set; }
-		[EntityProperty("currency_id", ForeignKey = typeof (Currency))]
+		[EntityProperty("currency_id")]
 		public Currency Currency { get; set; }
 		[EntityProperty("total_amount", Converter = typeof (AmountConverter))]
 		public double? TotalAmount { get; set; }

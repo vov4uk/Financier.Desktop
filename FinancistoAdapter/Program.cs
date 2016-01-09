@@ -19,21 +19,26 @@ namespace FinancistoAdapter
 	{
 		static void Main(string[] args)
 		{
-			var entites = EntityReader.GetEntities("test.backup").ToArray();
+			var entities = EntityReader.GetEntities("test.backup").ToArray();
 			var transactions =
-				entites
+				entities
 				.OfType<Transaction>()
-				.Where(t => t.DateTime >= new DateTime(2016, 1, 1))
+				.Where(t => t.DateTime >= new DateTime(2015, 12, 1))
 				.Where(t => t.To == null)
+				.OrderBy(t => t.DateTime)
 				.ToArray();
 			var payees =
-				entites
+				entities
 				.OfType<Payee>()
 				.ToArray();
 			var categories =
-				entites
+				entities
 				.OfType<Category>()
 				.ToArray();
+
+			var aushan =
+				entities.OfType<Transaction>()
+					.Where(t => t.DateTime >= new DateTime(2015, 12, 25) && t.Payee.With(_ => _.Title) == "Ашан");
 
 			using (FileStream file = File.Create("test.csv"))
 			{
@@ -54,7 +59,7 @@ namespace FinancistoAdapter
 					{
 						csv.WriteField(tran.DateTime);
 						csv.WriteField(tran.From.With(_ => _.Title));
-						csv.WriteField(Math.Abs((double) tran.FromAmount));
+						csv.WriteField(Math.Abs((double) tran.FromAmount).ToString("0.00"));
 						csv.WriteField(tran.Category.With(_ => _.Title));
 						csv.WriteField(tran.Payee.With(_ => _.Title));
 						csv.WriteField(tran.Note);

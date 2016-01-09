@@ -21,8 +21,6 @@ namespace FinancistoAdapter
 
 		public Type PropertyType { get; private set; }
 
-		public Type ForeignKey { get; set; }
-
 		public void SetValue(Entity entity, string value)
 		{
 			object v = Converter.Convert(value);

@@ -9,11 +9,11 @@ namespace FinancistoAdapter.Entities
 	[Entity("transactions")]
 	public class Transaction : Entity
 	{
-		[EntityProperty("from_account_id", ForeignKey = typeof(Account))]
+		[EntityProperty("from_account_id")]
 		public Account From { get; set; }
-		[EntityProperty("to_account_id", ForeignKey = typeof(Account))]
+		[EntityProperty("to_account_id")]
 		public Account To { get; set; }
-		[EntityProperty("category_id", ForeignKey = typeof(Category))]
+		[EntityProperty("category_id")]
 		public Category Category { get; set; }
 		[EntityProperty("note")]
 		public string Note { get; set; }
@@ -23,7 +23,7 @@ namespace FinancistoAdapter.Entities
 		public double? FromAmount { get; set; }
 		[EntityProperty("to_amount", Converter = typeof(AmountConverter))]
 		public double? ToAmount { get; set; }
-		[EntityProperty("payee", ForeignKey = typeof(Payee))]
+		[EntityProperty("payee_id")]
 		public Payee Payee { get; set; }
 	}
 }
