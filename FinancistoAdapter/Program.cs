@@ -12,50 +12,6 @@ using FinancistoAdapter.Entities;
 
 namespace FinancistoAdapter
 {
-	public class EntityInfo
-	{
-		public EntityInfo()
-		{
-			Properties = new Dictionary<string, EntityPropertyInfo>();
-		}
-
-		public Type EntityType { get; set; }
-		public IDictionary<string, EntityPropertyInfo> Properties { get; private set; }
-	}
-
-	public class EntityPropertyInfo
-	{
-		private delegate void SetValueDelegate(object entity, object value);
-
-		private SetValueDelegate _delegate;
-
-		public EntityPropertyInfo(PropertyInfo info)
-		{
-			PropertyName = info.Name;
-			PropertyType = info.PropertyType;
-			_delegate = info.SetValue;
-		}
-
-		public string PropertyName { get; private set; }
-
-		public Type PropertyType { get; private set; }
-
-		public Type ForeignKey { get; set; }
-
-		public void SetValue(Entity entity, string value)
-		{
-			object v = Converter.Convert(value);
-			_delegate(entity, v);
-		}
-
-		public void SetValue(Entity entity, object pureValue)
-		{
-			_delegate(entity, pureValue);
-		}
-
-		public IPropertyConverter Converter { get; set; }
-	}
-
 	class Program
 	{
 		public static IReadOnlyDictionary<string, EntityInfo> GetEntityTypes()
@@ -96,7 +52,6 @@ namespace FinancistoAdapter
 			{
 				List<Entity> entities = new List<Entity>();
 				var map = new Dictionary<Type, Dictionary<int, Entity>>();
-				//var keysMap = new Dictionary<Tuple<Type, string, int>, Tuple<EntityPropertyInfo, int>>();
 				var foreignKeys = new List<Tuple<EntityPropertyInfo, Action<object>, int>>();
 
 				var entityTypes = GetEntityTypes();
@@ -126,7 +81,6 @@ namespace FinancistoAdapter
 						if (entityInfo.Properties.TryGetValue(line.Key, out property))
 						{
 							if (property.ForeignKey != null)
-								//keysMap[Tuple.Create(entityInfo.EntityType, property.PropertyName, entity.Id)] = Tuple.Create(property, int.Parse(line.Value));
 							{
 								Entity cEntity = entity;
 								foreignKeys.Add(Tuple.Create(property, new Action<object>(v => property.SetValue(cEntity, v)), int.Parse(line.Value)));
@@ -137,7 +91,6 @@ namespace FinancistoAdapter
 					}
 				}
 
-				//foreach (var link in keysMap)
 				foreach (Tuple<EntityPropertyInfo, Action<object>, int> link in foreignKeys)
 				{
 					Dictionary<int, Entity> mapById;

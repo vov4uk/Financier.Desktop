@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace FinancistoAdapter
 {
-	public class DateTimeConverter : CustomConverter
+	public class AmountConverter : CustomConverter
 	{
 		protected override object PerformConvertion(string value)
 		{
-			double timestamp = double.Parse(value);
-			return new DateTime(1970, 1, 1, 0, 0, 0, 0).AddMilliseconds(timestamp);
+			double d = double.Parse(value);
+			return d / 100;
 		}
 	}
 }

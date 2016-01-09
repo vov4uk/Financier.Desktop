@@ -19,5 +19,11 @@ namespace FinancistoAdapter.Entities
 		public string Note { get; set; }
 		[EntityProperty("datetime")]
 		public DateTime? DateTime { get; set; }
+		[EntityProperty("from_amount", Converter = typeof (AmountConverter))]
+		public double? FromAmount { get; set; }
+		[EntityProperty("to_amount", Converter = typeof(AmountConverter))]
+		public double? ToAmount { get; set; }
+		[EntityProperty("payee")]
+		public Payee Payee { get; set; }
 	}
 }
