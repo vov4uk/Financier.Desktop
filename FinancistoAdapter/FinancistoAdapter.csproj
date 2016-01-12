@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="AmountConverter.cs" />
     <Compile Include="BackupReader.cs" />
+    <Compile Include="CategoryConverter.cs" />
     <Compile Include="CustomConverter.cs" />
     <Compile Include="DateTimeConverter.cs" />
     <Compile Include="DefaultConverter.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Entities\Payee.cs" />
     <Compile Include="Entities\Transaction.cs" />
     <Compile Include="EntityAttribute.cs" />
+    <Compile Include="EntityConverter.cs" />
     <Compile Include="EntityInfo.cs" />
     <Compile Include="EntityPropertyAttribute.cs" />
     <Compile Include="EntityPropertyInfo.cs" />

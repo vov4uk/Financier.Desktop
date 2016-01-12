@@ -93,6 +93,8 @@ namespace FinancistoAdapter
 					Entity linkedEntity;
 					if (map.TryGetValue(link.Item1.PropertyType, out mapById) && mapById.TryGetValue(link.Item3, out linkedEntity))
 						link.Item2(linkedEntity);
+					else
+						link.Item2(link.Item3); // pass original ID to the converter
 				}
 
 				return entities;
