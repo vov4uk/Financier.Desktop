@@ -93,6 +93,16 @@ namespace FinancistoAdapter
 					Entity linkedEntity;
 					if (map.TryGetValue(link.Item1.PropertyType, out mapById) && mapById.TryGetValue(link.Item3, out linkedEntity))
 						link.Item2(linkedEntity);
+					else if (link.Item1.Converter.GetType() != EntityPropertyAttribute.DefaultConverter)
+					{
+						try
+						{
+							link.Item2(link.Item3); // try to pass original ID to the converter
+						}
+						catch (InvalidCastException)
+						{
+						}
+					}
 				}
 
 				return entities;

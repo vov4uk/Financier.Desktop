@@ -21,15 +21,10 @@ namespace FinancistoAdapter
 
 		public Type PropertyType { get; private set; }
 
-		public void SetValue(Entity entity, string value)
+		public void SetValue(Entity entity, object value)
 		{
 			object v = Converter.Convert(value);
 			_delegate(entity, v);
-		}
-
-		public void SetValue(Entity entity, object pureValue)
-		{
-			_delegate(entity, pureValue);
 		}
 
 		public IPropertyConverter Converter { get; set; }

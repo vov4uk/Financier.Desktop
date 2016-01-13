@@ -13,7 +13,7 @@ namespace FinancistoAdapter.Entities
 		public Account From { get; set; }
 		[EntityProperty("to_account_id")]
 		public Account To { get; set; }
-		[EntityProperty("category_id")]
+		[EntityProperty("category_id", Converter = typeof(CategoryConverter))]
 		public Category Category { get; set; }
 		[EntityProperty("note")]
 		public string Note { get; set; }
@@ -25,5 +25,7 @@ namespace FinancistoAdapter.Entities
 		public double? ToAmount { get; set; }
 		[EntityProperty("payee_id")]
 		public Payee Payee { get; set; }
+		[EntityProperty("parent_id")]
+		public Transaction Parent { get; set; }
 	}
 }
