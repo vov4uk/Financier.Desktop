@@ -11,9 +11,14 @@ namespace FinancistoAdapter
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
 	public class EntityPropertyAttribute : Attribute
 	{
-		private Type _converter = typeof (DefaultConverter);
+		private Type _converter = DefaultConverter;
 
 		public string Key { get; private set; }
+
+		public static Type DefaultConverter
+		{
+			get { return typeof (DefaultConverter); }
+		}
 
 		public Type Converter
 		{

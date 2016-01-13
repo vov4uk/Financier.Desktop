@@ -25,6 +25,7 @@ namespace FinancistoAdapter
 				.OfType<Transaction>()
 				.Where(t => t.DateTime >= new DateTime(2015, 12, 1))
 				.Where(t => t.To == null)
+				.Where(t => t.Category != Category.Split)
 				.OrderBy(t => t.DateTime)
 				.ToArray();
 			var payees =
