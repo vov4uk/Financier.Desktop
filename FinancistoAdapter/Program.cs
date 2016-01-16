@@ -19,7 +19,31 @@ namespace FinancistoAdapter
 	{
 		static void Main(string[] args)
 		{
-			var entities = EntityReader.GetEntities("test.backup").ToArray();
+			string fileName = null;
+			string outputFileName = null;
+			if (args.Length > 0 && args[0] != null)
+			{
+				if (File.GetAttributes(args[0]).HasFlag(FileAttributes.Directory))
+				{
+					fileName = Directory.EnumerateFiles(args[0], "*.backup")
+							.OrderByDescending(Path.GetFileNameWithoutExtension)
+							.FirstOrDefault();
+				}
+				else
+				{
+					fileName = args[0];
+				}
+				
+			}
+
+			if (String.IsNullOrEmpty(fileName) || !File.Exists(fileName))
+				Environment.Exit(-1);
+			if (args.Length > 1 && args[1] != null)
+				outputFileName = args[1];
+			else
+				outputFileName = Path.ChangeExtension(fileName, "csv");
+
+			var entities = EntityReader.GetEntities(fileName).ToArray();
 			var transactions =
 				entities
 				.OfType<Transaction>()
@@ -37,17 +61,13 @@ namespace FinancistoAdapter
 				.OfType<Category>()
 				.ToArray();
 
-			var aushan =
-				entities.OfType<Transaction>()
-					.Where(t => t.DateTime >= new DateTime(2015, 12, 25) && t.Payee.With(_ => _.Title) == "Ашан");
-
-			using (FileStream file = File.Create("test.csv"))
+			using (FileStream file = File.Create(outputFileName))
 			{
 				using (StreamWriter writer = new StreamWriter(file, Encoding.UTF8))
 				{
 					var csv = new CsvWriter(writer);
 
-					csv.WriteExcelSeparator();
+					//csv.WriteExcelSeparator();
 					csv.WriteField("Date&Time");
 					csv.WriteField("Account");
 					csv.WriteField("Amount");
@@ -60,7 +80,7 @@ namespace FinancistoAdapter
 					{
 						csv.WriteField(tran.DateTime);
 						csv.WriteField(tran.From.With(_ => _.Title));
-						csv.WriteField(Math.Abs((double) tran.FromAmount).ToString("0.00"));
+						csv.WriteField(tran.FromAmount.Value.ToString("0.00"));
 						csv.WriteField(tran.Category.With(_ => _.Title));
 						csv.WriteField(tran.Payee.With(_ => _.Title));
 						csv.WriteField(tran.Note);
@@ -68,6 +88,8 @@ namespace FinancistoAdapter
 					}
 				}
 			}
+
+			Console.WriteLine("Done!");
 		}
 	}
 }
