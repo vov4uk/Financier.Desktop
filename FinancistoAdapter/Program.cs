@@ -45,34 +45,35 @@ namespace FinancistoAdapter
 				outputFileName = Path.ChangeExtension(fileName, "csv");
 
 			var entities = EntityReader.GetEntities(fileName).ToArray();
+
 			var transactions =
 				entities
-				.OfType<Transaction>()
-				.Where(t => t.DateTime >= new DateTime(2015, 12, 1))
-				.Where(t => t.To == null)
-				.Where(t => t.Category != Category.Split)
-				.OrderBy(t => t.DateTime)
-				.ToArray();
+					.OfType<Transaction>()
+					.Where(t => t.DateTime >= new DateTime(2015, 12, 1))
+					.Where(t => t.To == null)
+					.Where(t => t.Category != Category.Split)
+					.OrderBy(t => t.DateTime)
+					.ToArray();
 			var payees =
 				entities
-				.OfType<Payee>()
-				.ToArray();
+					.OfType<Payee>()
+					.ToArray();
 			var categories =
 				entities
-				.OfType<Category>()
-				.ToArray();
-			var projects = 
+					.OfType<Category>()
+					.ToArray();
+			var projects =
 				entities
-				.OfType<Project>()
-				.ToArray();
-			var attributes = 
+					.OfType<Project>()
+					.ToArray();
+			var attributes =
 				entities
-				.OfType<AttributeDefinition>()
-				.ToArray();
+					.OfType<AttributeDefinition>()
+					.ToArray();
 			var attributeValues =
 				entities
-				.OfType<TransactionAttribute>()
-				.ToArray();
+					.OfType<TransactionAttribute>()
+					.ToArray();
 
 			using (FileStream file = File.Create(outputFileName))
 			{
@@ -88,16 +89,18 @@ namespace FinancistoAdapter
 						csv.WriteField("Amount");
 						csv.WriteField("Category");
 						csv.WriteField("Payee");
+						csv.WriteField("Project");
 						csv.WriteField("Note");
 						csv.NextRecord();
 
 						foreach (Transaction tran in transactions)
 						{
 							csv.WriteField(tran.DateTime);
-							csv.WriteField(tran.From.With(_ => _.Title));
-							csv.WriteField(tran.FromAmount.Value.ToString("0.00"));
-							csv.WriteField(tran.Category.With(_ => _.Title));
-							csv.WriteField(tran.Payee.With(_ => _.Title));
+							csv.WriteField(tran.From?.Title);
+							csv.WriteField(tran.FromAmount?.ToString("0.00"));
+							csv.WriteField(tran.Category?.Title);
+							csv.WriteField(tran.Payee?.Title);
+							csv.WriteField(tran.Project?.Title);
 							csv.WriteField(tran.Note);
 							csv.NextRecord();
 						}
