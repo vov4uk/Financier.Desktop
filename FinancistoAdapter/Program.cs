@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -21,19 +22,19 @@ namespace FinancistoAdapter
 		{
 			string fileName = null;
 			string outputFileName = null;
-			if (args.Length > 0 && args[0] != null)
+			string arg = args.Length > 0 && args[0] != null ? args[0] : Environment.CurrentDirectory;
+			if (arg != null)
 			{
-				if (File.GetAttributes(args[0]).HasFlag(FileAttributes.Directory))
+				if (File.GetAttributes(arg).HasFlag(FileAttributes.Directory))
 				{
-					fileName = Directory.EnumerateFiles(args[0], "*.backup")
+					fileName = Directory.EnumerateFiles(arg, "*.backup")
 							.OrderByDescending(Path.GetFileNameWithoutExtension)
 							.FirstOrDefault();
 				}
 				else
 				{
-					fileName = args[0];
+					fileName = arg;
 				}
-				
 			}
 
 			if (String.IsNullOrEmpty(fileName) || !File.Exists(fileName))
@@ -65,26 +66,29 @@ namespace FinancistoAdapter
 			{
 				using (StreamWriter writer = new StreamWriter(file, Encoding.UTF8))
 				{
-					var csv = new CsvWriter(writer);
-
-					//csv.WriteExcelSeparator();
-					csv.WriteField("Date&Time");
-					csv.WriteField("Account");
-					csv.WriteField("Amount");
-					csv.WriteField("Category");
-					csv.WriteField("Payee");
-					csv.WriteField("Note");
-					csv.NextRecord();
-
-					foreach (Transaction tran in transactions)
+					using (var csv = new CsvWriter(writer))
 					{
-						csv.WriteField(tran.DateTime);
-						csv.WriteField(tran.From.With(_ => _.Title));
-						csv.WriteField(tran.FromAmount.Value.ToString("0.00"));
-						csv.WriteField(tran.Category.With(_ => _.Title));
-						csv.WriteField(tran.Payee.With(_ => _.Title));
-						csv.WriteField(tran.Note);
+						csv.Configuration.CultureInfo = CultureInfo.InvariantCulture;
+
+						//csv.WriteExcelSeparator();
+						csv.WriteField("Date&Time");
+						csv.WriteField("Account");
+						csv.WriteField("Amount");
+						csv.WriteField("Category");
+						csv.WriteField("Payee");
+						csv.WriteField("Note");
 						csv.NextRecord();
+
+						foreach (Transaction tran in transactions)
+						{
+							csv.WriteField(tran.DateTime);
+							csv.WriteField(tran.From.With(_ => _.Title));
+							csv.WriteField(tran.FromAmount.Value.ToString("0.00"));
+							csv.WriteField(tran.Category.With(_ => _.Title));
+							csv.WriteField(tran.Payee.With(_ => _.Title));
+							csv.WriteField(tran.Note);
+							csv.NextRecord();
+						}
 					}
 				}
 			}
