@@ -75,6 +75,23 @@ namespace FinancistoAdapter
 					.OfType<TransactionAttribute>()
 					.ToArray();
 
+			// "За всех" attribute
+			var sharedExpenseAttrs = attributeValues.Where(a => String.Equals(a.Attribute.Title, "За всех", StringComparison.OrdinalIgnoreCase))
+				.Select(a => new {a.Transaction, Value = bool.Parse(a.Value ?? "false")})
+				.GroupBy(a => a.Transaction, a => a.Value);
+			var sharedExpenseMap = new Dictionary<Transaction, bool>();
+
+			foreach (var item in sharedExpenseAttrs)
+			{
+				bool value = false;
+				foreach (var v in item)
+				{
+					value |= v;
+				}
+
+				sharedExpenseMap[item.Key] = value;
+			}
+
 			using (FileStream file = File.Create(outputFileName))
 			{
 				using (StreamWriter writer = new StreamWriter(file, Encoding.UTF8))
@@ -91,6 +108,7 @@ namespace FinancistoAdapter
 						csv.WriteField("Payee");
 						csv.WriteField("Project");
 						csv.WriteField("Note");
+						csv.WriteField("Shared Expense");
 						csv.NextRecord();
 
 						foreach (Transaction tran in transactions)
@@ -102,6 +120,7 @@ namespace FinancistoAdapter
 							csv.WriteField(tran.Payee?.Title);
 							csv.WriteField(tran.Project?.Title);
 							csv.WriteField(tran.Note);
+							csv.WriteField(sharedExpenseMap.TryGetValue(tran, out bool value) ? value : false);
 							csv.NextRecord();
 						}
 					}

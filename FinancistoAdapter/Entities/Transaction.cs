@@ -26,7 +26,7 @@ namespace FinancistoAdapter.Entities
 		[EntityProperty("payee_id")]
 		public Payee Payee { get; set; }
 		[EntityProperty("project_id")]
-		public Payee Project { get; set; }
+		public Project Project { get; set; }
 		[EntityProperty("parent_id")]
 		public Transaction Parent { get; set; }
 	}
