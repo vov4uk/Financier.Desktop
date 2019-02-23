@@ -61,6 +61,18 @@ namespace FinancistoAdapter
 				entities
 				.OfType<Category>()
 				.ToArray();
+			var projects = 
+				entities
+				.OfType<Project>()
+				.ToArray();
+			var attributes = 
+				entities
+				.OfType<AttributeDefinition>()
+				.ToArray();
+			var attributeValues =
+				entities
+				.OfType<TransactionAttribute>()
+				.ToArray();
 
 			using (FileStream file = File.Create(outputFileName))
 			{

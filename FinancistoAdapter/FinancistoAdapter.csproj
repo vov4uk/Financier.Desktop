@@ -55,9 +55,12 @@
     <Compile Include="DateTimeConverter.cs" />
     <Compile Include="DefaultConverter.cs" />
     <Compile Include="Entities\Account.cs" />
+    <Compile Include="Entities\TransactionAttribute.cs" />
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Currency.cs" />
     <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\AttributeDefinition.cs" />
+    <Compile Include="Entities\Project.cs" />
     <Compile Include="Entities\Payee.cs" />
     <Compile Include="Entities\Transaction.cs" />
     <Compile Include="EntityAttribute.cs" />
