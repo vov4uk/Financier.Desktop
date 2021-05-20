@@ -13,7 +13,7 @@ namespace FinancistoAdapter
 {
     class Program
     {
-        static void Main(string[] args)
+    static void Main(string[] args)
         {
             string fileName = null;
             string csv_fileName = null;
@@ -45,15 +45,9 @@ namespace FinancistoAdapter
 
             Entity[] entities = EntityReader.GetEntities(fileName).ToArray();
 
-            //var writer = new BackupWriter(EntityReader.Package, EntityReader.VersionCode, EntityReader.Version, EntityReader.DatabaseVersion);
-            //writer.GenerateBackup( entities);
-
             var transactions =
                 entities
                     .OfType<Transaction>()
-                   // .Where(t => t.DateTime >= new DateTime(2015, 12, 1))
-                   //.Where(t => t.To == null)
-                   // .Where(t => t.Category != Category.Split.Id && t.Id <= 14826)
                     .OrderBy(t => t.DateTime)
                     .ToArray();
             var payees = entities.OfType<Payee>().Select(x => x.ToBackupLines()).ToArray();
@@ -85,24 +79,6 @@ namespace FinancistoAdapter
 
                 Console.WriteLine($"{acc.Title} : {amount} --- {acc.TotalAmount / 100.00}");
             }
-
-
-            //// "За всех" attribute
-            //var sharedExpenseAttrs = attributeValues.Where(a => string.Equals(a.Attribute.Title, "За всех", StringComparison.OrdinalIgnoreCase))
-            //    .Select(a => new {a.Transaction, Value = bool.Parse(a.Value ?? "false")})
-            //    .GroupBy(a => a.Transaction, a => a.Value);
-            //var sharedExpenseMap = new Dictionary<Transaction, bool>();
-
-            //foreach (var item in sharedExpenseAttrs)
-            //{
-            //    bool value = false;
-            //    foreach (var v in item)
-            //    {
-            //        value |= v;
-            //    }
-
-            //    sharedExpenseMap[item.Key] = value;
-            //}
 
             using (FileStream file = File.OpenRead(csv_fileName))
             {
