@@ -1,133 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Monads;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using CsvHelper;
-using CsvHelper.Configuration;
 using FinancistoAdapter.Entities;
+using FinancistoAdapter.Monobank;
 
 namespace FinancistoAdapter
 {
-	class Program
-	{
-		static void Main(string[] args)
-		{
-			string fileName = null;
-			string outputFileName = null;
-			string arg = args.Length > 0 && args[0] != null ? args[0] : Environment.CurrentDirectory;
-			if (arg != null)
-			{
-				if (File.GetAttributes(arg).HasFlag(FileAttributes.Directory))
-				{
-					fileName = Directory.EnumerateFiles(arg, "*.backup")
-							.OrderByDescending(Path.GetFileNameWithoutExtension)
-							.FirstOrDefault();
-				}
-				else
-				{
-					fileName = arg;
-				}
-			}
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string fileName = null;
+            string csv_fileName = null;
+            string outputFileName = null;
+            string arg = args.Length > 0 && args[0] != null ? args[0] : Environment.CurrentDirectory;
+            if (arg != null)
+            {
+                if (File.GetAttributes(arg).HasFlag(FileAttributes.Directory))
+                {
+                    fileName = Directory.EnumerateFiles(arg, "*.backup")
+                            .OrderByDescending(Path.GetFileNameWithoutExtension)
+                            .FirstOrDefault();
+                    csv_fileName = Directory.EnumerateFiles(arg, "*.csv")
+                    .OrderByDescending(Path.GetFileNameWithoutExtension)
+                    .FirstOrDefault();
+               }
+                else
+                {
+                    fileName = arg;
+                }
+            }
 
-			if (String.IsNullOrEmpty(fileName) || !File.Exists(fileName))
-				Environment.Exit(-1);
-			if (args.Length > 1 && args[1] != null)
-				outputFileName = args[1];
-			else
-				outputFileName = Path.ChangeExtension(fileName, "csv");
+            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
+                Environment.Exit(-1);
+            if (args.Length > 1 && args[1] != null)
+                outputFileName = args[1];
+            else
+                outputFileName = Path.ChangeExtension(fileName, "csv");
 
-			var entities = EntityReader.GetEntities(fileName).ToArray();
+            Entity[] entities = EntityReader.GetEntities(fileName).ToArray();
 
-			var transactions =
-				entities
-					.OfType<Transaction>()
-					.Where(t => t.DateTime >= new DateTime(2015, 12, 1))
-					.Where(t => t.To == null)
-					.Where(t => t.Category != Category.Split)
-					.OrderBy(t => t.DateTime)
-					.ToArray();
-			var payees =
-				entities
-					.OfType<Payee>()
-					.ToArray();
-			var categories =
-				entities
-					.OfType<Category>()
-					.ToArray();
-			var projects =
-				entities
-					.OfType<Project>()
-					.ToArray();
-			var attributes =
-				entities
-					.OfType<AttributeDefinition>()
-					.ToArray();
-			var attributeValues =
-				entities
-					.OfType<TransactionAttribute>()
-					.ToArray();
+            //var writer = new BackupWriter(EntityReader.Package, EntityReader.VersionCode, EntityReader.Version, EntityReader.DatabaseVersion);
+            //writer.GenerateBackup( entities);
 
-			// "За всех" attribute
-			var sharedExpenseAttrs = attributeValues.Where(a => String.Equals(a.Attribute.Title, "За всех", StringComparison.OrdinalIgnoreCase))
-				.Select(a => new {a.Transaction, Value = bool.Parse(a.Value ?? "false")})
-				.GroupBy(a => a.Transaction, a => a.Value);
-			var sharedExpenseMap = new Dictionary<Transaction, bool>();
+            var transactions =
+                entities
+                    .OfType<Transaction>()
+                   // .Where(t => t.DateTime >= new DateTime(2015, 12, 1))
+                   //.Where(t => t.To == null)
+                   // .Where(t => t.Category != Category.Split.Id && t.Id <= 14826)
+                    .OrderBy(t => t.DateTime)
+                    .ToArray();
+            var payees = entities.OfType<Payee>().Select(x => x.ToBackupLines()).ToArray();
+            var categories = entities.OfType<Category>().Select(x => x.ToBackupLines()).ToArray();
+            var projects = entities.OfType<Project>().Select(x => x.ToBackupLines()).ToArray();
+            var attributes = entities.OfType<AttributeDefinition>().Select(x => x.ToBackupLines()).ToArray();
+            var locations = entities.OfType<Location>().Select(x => x.ToBackupLines()).ToArray();
+            var budgets = entities.OfType<Budget>().Select(x => x.ToBackupLines()).ToArray();
+            var accounts = entities.OfType<Account>().OrderBy(x => x.Title).ToArray();
+            var attributeValues = entities.OfType<TransactionAttribute>().Select(x => x.ToBackupLines()).ToArray();
+            var exchange = entities.OfType<ExchangeRate>().Select(x => x.ToBackupLines()).ToArray();
 
-			foreach (var item in sharedExpenseAttrs)
-			{
-				bool value = false;
-				foreach (var v in item)
-				{
-					value |= v;
-				}
+            foreach (var acc in accounts)
+            {
+                var balance = new List<RunningBalance>();
+                double amount = 0.0;
+                foreach (var item in transactions.Where(x => x.Category != -1 && x.From == acc.Id || x.To == acc.Id).OrderBy(x => x.DateTime))
+                {
+                    if (item.From == acc.Id)
+                    {
+                        amount += item.FromAmount;
+                    }
+                    if(item.To == acc.Id)
+                    {
+                        amount += item.ToAmount;
+                    }
+                    balance.Add(new RunningBalance { Transaction = item, Account = acc, Date = item.DateTime.Value, Balance = amount });
+                }
 
-				sharedExpenseMap[item.Key] = value;
-			}
+                Console.WriteLine($"{acc.Title} : {amount} --- {acc.TotalAmount / 100.00}");
+            }
 
-			using (FileStream file = File.Create(outputFileName))
-			{
-				using (StreamWriter writer = new StreamWriter(file, Encoding.UTF8))
-				{
-					using (var csv = new CsvWriter(writer))
-					{
-						csv.Configuration.CultureInfo = CultureInfo.InvariantCulture;
 
-						//csv.WriteExcelSeparator();
-						csv.WriteField("Date&Time");
-						csv.WriteField("Account");
-						csv.WriteField("Amount");
-						csv.WriteField("Category");
-						csv.WriteField("Payee");
-						csv.WriteField("Project");
-						csv.WriteField("Note");
-						csv.WriteField("Shared Expense");
-						csv.NextRecord();
+            //// "За всех" attribute
+            //var sharedExpenseAttrs = attributeValues.Where(a => string.Equals(a.Attribute.Title, "За всех", StringComparison.OrdinalIgnoreCase))
+            //    .Select(a => new {a.Transaction, Value = bool.Parse(a.Value ?? "false")})
+            //    .GroupBy(a => a.Transaction, a => a.Value);
+            //var sharedExpenseMap = new Dictionary<Transaction, bool>();
 
-						foreach (Transaction tran in transactions)
-						{
-							csv.WriteField(tran.DateTime);
-							csv.WriteField(tran.From?.Title);
-							csv.WriteField(tran.FromAmount?.ToString("0.00"));
-							csv.WriteField(tran.Category?.Title);
-							csv.WriteField(tran.Payee?.Title);
-							csv.WriteField(tran.Project?.Title);
-							csv.WriteField(tran.Note);
-							csv.WriteField(sharedExpenseMap.TryGetValue(tran, out bool value) ? value : false);
-							csv.NextRecord();
-						}
-					}
-				}
-			}
+            //foreach (var item in sharedExpenseAttrs)
+            //{
+            //    bool value = false;
+            //    foreach (var v in item)
+            //    {
+            //        value |= v;
+            //    }
 
-			Console.WriteLine("Done!");
-		}
-	}
+            //    sharedExpenseMap[item.Key] = value;
+            //}
+
+            using (FileStream file = File.OpenRead(csv_fileName))
+            {
+                using (StreamReader streamReader = new StreamReader(file, Encoding.UTF8))
+                {
+                    using (var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                    {
+                        var records = csv.GetRecords<MonoTransaction>().ToArray();
+                    }
+                }
+            }
+
+            Console.WriteLine("Done!");
+        }
+    }
 }

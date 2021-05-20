@@ -1,17 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace FinancistoAdapter.Entities
 {
-	[DebuggerDisplay("{Title}")]
-	[Entity("project")]
-	public class Project : Entity
-	{
-		[EntityProperty("title")]
-		public string Title { get; set; }
-	}
+    [DebuggerDisplay("{Title}")]
+    [Entity(Backup.PROJECT_TABLE)]
+    public class Project : Entity, IIdentity
+    {
+        [EntityProperty(IdColumn)]
+        public int Id { get; set; } = -1;
+
+        [EntityProperty(IsActiveColumn )]
+        public bool IsActive { get; set; } = true;
+
+        [EntityProperty(TitleColumn)]
+        public string Title { get; set; }
+
+        [EntityProperty(UpdatedOnColumn)]
+        public long UpdatedOn { get; set; }
+    }
 }

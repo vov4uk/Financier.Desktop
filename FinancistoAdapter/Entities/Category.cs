@@ -1,38 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace FinancistoAdapter.Entities
 {
-	[DebuggerDisplay("{Title}")]
-	[Entity("category")]
-	public class Category : Entity
-	{
-		private class SplitCategory : Category
-		{
-			public override int Id
-			{
-				get { return -1; } 
-				set { }
-			}
+    [DebuggerDisplay("{Title}")]
+    [Entity(Backup.CATEGORY_TABLE)]
+    public class Category : Entity, IIdentity
+    {
+        [EntityProperty(IdColumn)]
+        public int Id { get; set; } = -1;
 
-			public override string Title 
-			{ 
-				get { return "Split"; }
-				set { } 
-			}
-		}
+        [EntityProperty(TitleColumn)]
+        public string Title { get; set; }
 
-		private static readonly Category _split = new SplitCategory();
-		public static Category Split
-		{
-			get { return _split; }
-		}
+        [EntityProperty(IsActiveColumn )]
+        public bool IsActive { get; set; } = true;
 
-		[EntityProperty("title")]
-		public virtual string Title { get; set; }
-	}
+        [EntityProperty("left")]
+        public int Left { get; set; } = 1;
+
+        [EntityProperty("right")]
+        public int Right { get; set; } = 2;
+
+        [EntityProperty("type")]
+        public string Type { get; set; }
+
+        [EntityProperty("last_location_id")]
+        public int LastLocationId { get; set; }
+
+        [EntityProperty("last_project_id")]
+        public int LastProjectId { get; set; }
+        
+        [EntityProperty(UpdatedOnColumn)]
+        public long UpdatedOn { get; set; }
+
+
+        private class SplitCategory : Category
+        {
+            public new int Id
+            {
+                get { return -1; }
+                set { }
+            }
+
+            public new string Title
+            {
+                get { return "Split"; }
+                set { }
+            }
+        }
+
+        private static readonly Category _split = new SplitCategory();
+        public static Category Split
+        {
+            get { return _split; }
+        }
+    }
 }
