@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Monads;
 using System.Text;
 using CsvHelper;
+using Financier.DataAccess;
 using FinancistoAdapter.Entities;
 using FinancistoAdapter.Monobank;
 
@@ -13,8 +13,10 @@ namespace FinancistoAdapter
 {
     class Program
     {
-    static void Main(string[] args)
+        static void Main(string[] args)
         {
+            var finDb = new FinancierDatabase();
+
             string fileName = null;
             string csv_fileName = null;
             string outputFileName = null;
@@ -29,7 +31,7 @@ namespace FinancistoAdapter
                     csv_fileName = Directory.EnumerateFiles(arg, "*.csv")
                     .OrderByDescending(Path.GetFileNameWithoutExtension)
                     .FirstOrDefault();
-               }
+                }
                 else
                 {
                     fileName = arg;
@@ -64,13 +66,13 @@ namespace FinancistoAdapter
             {
                 var balance = new List<RunningBalance>();
                 double amount = 0.0;
-                foreach (var item in transactions.Where(x => x.Category != -1 && x.From == acc.Id || x.To == acc.Id).OrderBy(x => x.DateTime))
+                foreach (var item in transactions.Where(x => x.Category != -1 && !x.IsTemplate && (x.From == acc.Id || x.To == acc.Id)).OrderBy(x => x.DateTime))
                 {
                     if (item.From == acc.Id)
                     {
                         amount += item.FromAmount;
                     }
-                    if(item.To == acc.Id)
+                    if (item.To == acc.Id)
                     {
                         amount += item.ToAmount;
                     }

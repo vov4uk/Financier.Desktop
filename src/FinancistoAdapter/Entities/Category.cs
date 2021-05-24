@@ -2,7 +2,7 @@
 
 namespace FinancistoAdapter.Entities
 {
-    [DebuggerDisplay("{Title}")]
+    [DebuggerDisplay("{Id}-{Title} -- Left:{Left} - Right:{Right}")]
     [Entity(Backup.CATEGORY_TABLE)]
     public class Category : Entity, IIdentity
     {

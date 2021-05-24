@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\actionbar_db_backup.png" />
+    <None Remove="Images\actionbar_db_restore.png" />
+    <None Remove="Images\actionbar_export.png" />
+    <None Remove="Images\actionbar_filter_cancel.png" />
+    <None Remove="Images\backup_file.png" />
+    <None Remove="Images\ic_action_category.png" />
+    <None Remove="Images\ic_action_gear.png" />
+    <None Remove="Images\ic_action_info.png" />
+    <None Remove="Images\ic_launcher.png" />
+    <None Remove="Images\ic_menu_back.png" />
+    <None Remove="Images\ic_tab_accounts_selected.png" />
+    <None Remove="Images\ic_tab_accounts_unselected.png" />
+    <None Remove="Images\ic_tab_blotter_selected.png" />
+    <None Remove="Images\ic_tab_reports_line_unselected.png" />
+    <None Remove="Images\ic_tab_reports_selected.png" />
+    <None Remove="Images\menu_entities.png" />
+    <None Remove="Images\menu_entities_categories.png" />
+    <None Remove="Images\menu_entities_currencies.png" />
+    <None Remove="Images\menu_entities_exchange_rates.png" />
+    <None Remove="Images\menu_entities_locations.png" />
+    <None Remove="Images\menu_entities_payees.png" />
+    <None Remove="Images\menu_entities_projects.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\actionbar_db_backup.png" />
+    <Resource Include="Images\actionbar_db_restore.png" />
+    <Resource Include="Images\actionbar_export.png" />
+    <Resource Include="Images\actionbar_filter_cancel.png" />
+    <Resource Include="Images\backup_file.png" />
+    <Resource Include="Images\ic_action_category.png" />
+    <Resource Include="Images\ic_action_gear.png" />
+    <Resource Include="Images\ic_action_info.png" />
+    <Resource Include="Images\ic_launcher.png" />
+    <Resource Include="Images\ic_menu_back.png" />
+    <Resource Include="Images\ic_tab_accounts_selected.png" />
+    <Resource Include="Images\ic_tab_accounts_unselected.png" />
+    <Resource Include="Images\ic_tab_blotter_selected.png" />
+    <Resource Include="Images\ic_tab_reports_line_unselected.png" />
+    <Resource Include="Images\ic_tab_reports_selected.png" />
+    <Resource Include="Images\menu_entities.png" />
+    <Resource Include="Images\menu_entities_categories.png" />
+    <Resource Include="Images\menu_entities_currencies.png" />
+    <Resource Include="Images\menu_entities_exchange_rates.png" />
+    <Resource Include="Images\menu_entities_locations.png" />
+    <Resource Include="Images\menu_entities_payees.png" />
+    <Resource Include="Images\menu_entities_projects.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Emoji.Wpf" Version="0.3.0" />
+    <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FinancistoAdapter\FinancistoAdapter.csproj" />
+  </ItemGroup>
+
+</Project>

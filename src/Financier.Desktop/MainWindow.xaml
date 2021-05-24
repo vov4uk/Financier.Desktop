@@ -1,0 +1,60 @@
+﻿<RibbonWindow  x:Class="FinancierDesktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Icon="pack://application:,,,/Images/ic_launcher.png"
+        Title="Financier Desktop" >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Ribbon x:Name="FinancierDesktop" SelectedIndex="0">
+
+            <Ribbon.HelpPaneContent>
+                <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_action_info.png" />-->
+                <Label Content="{Binding Path=BackupPath}"></Label>
+            </Ribbon.HelpPaneContent>
+
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu>
+                    <RibbonApplicationMenuItem Header="Open" Click="RestoreBackup_OnClick" ImageSource="pack://application:,,,/Images/actionbar_db_restore.png" />
+                    <RibbonApplicationMenuItem Header="Save" ImageSource="pack://application:,,,/Images/actionbar_db_backup.png" />
+                    <RibbonApplicationMenuItem Header="Options" ImageSource="pack://application:,,,/Images/ic_action_gear.png" />
+                    <RibbonApplicationMenuItem Header="Exit" ImageSource="pack://application:,,,/Images/ic_menu_back.png" />
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+
+            <RibbonTab Header="Main">
+                
+                <RibbonGroup x:Name="Entities" Header="Entities">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_accounts_unselected.png" Label="Accounts" Click="Accounts_Click" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_categories.png" Label="Categories" Click="Categories_Click"/>
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_projects.png" Label="Projects" Click="Projects_Click" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_payees.png" Label="Payees" Click="Payees_Click" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_locations.png" Label="Locations" Click="Locations_Click"/>
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_currencies.png" Label="Currencies" Click="Currencies_Click" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_exchange_rates.png" Label="Exchange rates" Click="ExchangeRates_Click" />
+                </RibbonGroup>
+
+                <RibbonGroup x:Name="Blotter" Header="Blotter">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_blotter_selected.png" Label="Transactions" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/actionbar_filter_cancel.png" Label="Clear filter" />
+                </RibbonGroup>
+
+                <RibbonGroup x:Name="Reports" Header="Reports" IsEnabled="False">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_reports_selected.png" Label="By category" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png" Label="Project costs" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png" Label="Export to excel" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/backup_file.png" Label="Export to csv" />
+                </RibbonGroup>
+
+            </RibbonTab>
+        </Ribbon>
+        <DockPanel Name="UIPanel" Grid.Row="1">
+        </DockPanel>
+    </Grid>
+
+</RibbonWindow >
