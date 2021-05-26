@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
+using Financier.DataAccess.Data;
 using FinancistoAdapter.Converters;
-using FinancistoAdapter.Entities;
 
 namespace FinancistoAdapter
 {
@@ -30,20 +31,20 @@ namespace FinancistoAdapter
                 .Where(entityType.IsAssignableFrom);
             foreach (Type t in types)
             {
-                EntityAttribute attr = t.GetCustomAttributes(typeof(EntityAttribute), true).Cast<EntityAttribute>().FirstOrDefault();
+                TableAttribute attr = t.GetCustomAttributes(typeof(TableAttribute), true).Cast<TableAttribute>().FirstOrDefault();
                 if (attr != null)
                 {
                     EntityInfo info = new EntityInfo() { EntityType = t };
-                    entities[attr.EntityName] = info;
+                    entities[attr.Name] = info;
                     foreach (PropertyInfo p in t.GetProperties())
                     {
-                        EntityPropertyAttribute pattr = (EntityPropertyAttribute) p.GetCustomAttribute(typeof (EntityPropertyAttribute));
+                        ColumnAttribute pattr = (ColumnAttribute) p.GetCustomAttribute(typeof (ColumnAttribute));
                         if (pattr != null)
                         {
                             EntityPropertyInfo pInfo = new EntityPropertyInfo(p);
-                            pInfo.Converter = (IPropertyConverter) Activator.CreateInstance(pattr.Converter);
+                            pInfo.Converter = (IPropertyConverter) Activator.CreateInstance(typeof(DefaultConverter));
                             pInfo.Converter.PropertyType = p.PropertyType;
-                            info.Properties[pattr.Key] = pInfo;
+                            info.Properties[pattr.Name] = pInfo;
                         }
                     }
                 }

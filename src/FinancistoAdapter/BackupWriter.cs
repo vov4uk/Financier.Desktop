@@ -2,7 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using FinancistoAdapter.Entities;
+using Financier.DataAccess.Data;
 
 namespace FinancistoAdapter
 {
@@ -22,7 +22,7 @@ namespace FinancistoAdapter
             _versionCode = versionCode;
             _version = version;
             _dbVersion = dbVersion;
-            _fileName = "c:\\" + generateFilename();
+            _fileName = "c:\\" + generateFileName();
             _writer = new StreamWriter(_fileName);
         }
 
@@ -82,7 +82,7 @@ namespace FinancistoAdapter
             ExportTable(bw, entities.OfType<Payee>().ToArray());
             ExportTable(bw, entities.OfType<CCardClosingDate>().ToArray());
             ExportTable(bw, entities.OfType<SmsTemplate>().ToArray());
-            ExportTable(bw, entities.OfType<ExchangeRate>().ToArray());
+            ExportTable(bw, entities.OfType<CurrencyExchangeRate>().ToArray());
 
         }
 
@@ -103,7 +103,7 @@ namespace FinancistoAdapter
             }
         }
 
-        public String generateFilename()
+        public string generateFileName()
         {
             return DateTime.Now.ToString("yyyyMMdd'_'HHmmss'_'fff");
         }

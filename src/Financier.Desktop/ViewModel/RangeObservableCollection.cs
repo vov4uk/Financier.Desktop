@@ -8,6 +8,7 @@
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Linq;
 
     /// <summary>
     /// Implementation of a dynamic data collection based on generic Collection&lt;T&gt;,
@@ -22,9 +23,9 @@
         //
         //------------------------------------------------------
 
-        #region Private Fields
+        #region Private Fields    
         [NonSerialized]
-        private DeferredEventsCollection _deferredEvents;
+        private DeferredEventsCollection? _deferredEvents;
         #endregion Private Fields
 
 
@@ -69,6 +70,30 @@
 
         //------------------------------------------------------
         //
+        //  Public Properties
+        //
+        //------------------------------------------------------
+
+        #region Public Properties
+        EqualityComparer<T>? _Comparer;
+        public EqualityComparer<T> Comparer
+        {
+            get => _Comparer ??= EqualityComparer<T>.Default;
+            private set => _Comparer = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this collection acts as a <see cref="HashSet{T}"/>,
+        /// disallowing duplicate items, based on <see cref="Comparer"/>.
+        /// This might indeed consume background performance, but in the other hand,
+        /// it will pay off in UI performance as less required UI updates are required.
+        /// </summary>
+        public bool AllowDuplicates { get; set; } = true;
+
+        #endregion Public Properties
+
+        //------------------------------------------------------
+        //
         //  Public Methods
         //
         //------------------------------------------------------
@@ -93,7 +118,7 @@
         /// </summary>
         /// <param name="index">The zero-based index at which the new elements should be inserted.</param>
         /// <param name="collection">The collection whose elements should be inserted into the List<T>.
-        /// The collection itself cannot be null, but it can contain elements that are null, if type T is a reference type.</param>
+        /// The collection itself cannot be null, but it can contain elements that are null, if type T is a reference type.</param>                
         /// <exception cref="ArgumentNullException"><paramref name="collection"/> is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is not in the collection range.</exception>
         public void InsertRange(int index, IEnumerable<T> collection)
@@ -105,17 +130,20 @@
             if (index > Count)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
+            if (!AllowDuplicates)
+                collection =
+                  collection
+                  .Distinct(Comparer)
+                  .Where(item => !Items.Contains(item, Comparer))
+                  .ToList();
+
             if (collection is ICollection<T> countable)
             {
                 if (countable.Count == 0)
-                {
                     return;
-                }
             }
-            else if (!ContainsAny(collection))
-            {
+            else if (!collection.Any())
                 return;
-            }
 
             CheckReentrancy();
 
@@ -143,9 +171,7 @@
                 throw new ArgumentNullException(nameof(collection));
 
             if (Count == 0)
-            {
                 return;
-            }
             else if (collection is ICollection<T> countable)
             {
                 if (countable.Count == 0)
@@ -158,34 +184,26 @@
                         return;
                     }
             }
-            else if (!(ContainsAny(collection)))
-            {
+            else if (!collection.Any())
                 return;
-            }
 
             CheckReentrancy();
 
             var clusters = new Dictionary<int, List<T>>();
             var lastIndex = -1;
-            List<T> lastCluster = null;
+            List<T>? lastCluster = null;
             foreach (T item in collection)
             {
                 var index = IndexOf(item);
                 if (index < 0)
-                {
                     continue;
-                }
 
                 Items.RemoveAt(index);
 
                 if (lastIndex == index && lastCluster != null)
-                {
                     lastCluster.Add(item);
-                }
                 else
-                {
                     clusters[lastIndex = index] = lastCluster = new List<T> { item };
-                }
             }
 
             OnEssentialPropertiesChanged();
@@ -235,7 +253,7 @@
             if (Count == 0)
                 return 0;
 
-            List<T> cluster = null;
+            List<T>? cluster = null;
             var clusterIndex = -1;
             var removedCount = 0;
 
@@ -253,7 +271,7 @@
                         if (clusterIndex == index)
                         {
                             Debug.Assert(cluster != null);
-                            cluster.Add(item);
+                            cluster!.Add(item);
                         }
                         else
                         {
@@ -323,43 +341,13 @@
 
         /// <summary> 
         /// Clears the current collection and replaces it with the specified collection,
-        /// using the default <see cref="EqualityComparer{T}"/>.
+        /// using <see cref="Comparer"/>.
         /// </summary>             
         /// <param name="collection">The items to fill the collection with, after clearing it.</param>
         /// <exception cref="ArgumentNullException"><paramref name="collection"/> is null.</exception>
         public void ReplaceRange(IEnumerable<T> collection)
         {
-            ReplaceRange(0, Count, collection, EqualityComparer<T>.Default);
-        }
-
-        /// <summary>
-        /// Clears the current collection and replaces it with the specified collection,
-        /// using the specified comparer to skip equal items.
-        /// </summary>
-        /// <param name="collection">The items to fill the collection with, after clearing it.</param>
-        /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> to be used
-        /// to check whether an item in the same location already existed before,
-        /// which in case it would not be added to the collection, and no event will be raised for it.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="collection"/> is null.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="comparer"/> is null.</exception>
-        public void ReplaceRange(IEnumerable<T> collection, IEqualityComparer<T> comparer)
-        {
-            ReplaceRange(0, Count, collection, comparer);
-        }
-
-        /// <summary>
-        /// Removes the specified range and inserts the specified collection,
-        /// ignoring equal items (using <see cref="EqualityComparer{T}.Default"/>).
-        /// </summary>
-        /// <param name="index">The index of where to start the replacement.</param>
-        /// <param name="count">The number of items to be replaced.</param>
-        /// <param name="collection">The collection to insert in that location.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is out of range.</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is out of range.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="collection"/> is null.</exception>
-        public void ReplaceRange(int index, int count, IEnumerable<T> collection)
-        {
-            ReplaceRange(index, count, collection, EqualityComparer<T>.Default);
+            ReplaceRange(0, Count, collection);
         }
 
         /// <summary>
@@ -368,12 +356,11 @@
         /// <param name="index">The index of where to start the replacement.</param>
         /// <param name="count">The number of items to be replaced.</param>
         /// <param name="collection">The collection to insert in that location.</param>
-        /// <param name="comparer">The comparer to use when checking for equal items.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is out of range.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is out of range.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="collection"/> is null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="comparer"/> is null.</exception>
-        public void ReplaceRange(int index, int count, IEnumerable<T> collection, IEqualityComparer<T> comparer)
+        public void ReplaceRange(int index, int count, IEnumerable<T> collection)
         {
             if (index < 0)
                 throw new ArgumentOutOfRangeException(nameof(index));
@@ -384,8 +371,12 @@
 
             if (collection == null)
                 throw new ArgumentNullException(nameof(collection));
-            if (comparer == null)
-                throw new ArgumentNullException(nameof(comparer));
+
+            if (!AllowDuplicates)
+                collection =
+                  collection
+                  .Distinct(Comparer)
+                  .ToList();
 
             if (collection is ICollection<T> countable)
             {
@@ -395,7 +386,7 @@
                     return;
                 }
             }
-            else if (!ContainsAny(collection))
+            else if (!collection.Any())
             {
                 RemoveRange(index, count);
                 return;
@@ -417,9 +408,9 @@
                 var addedCount = list.Count;
 
                 var changesMade = false;
-                List<T>
-                    newCluster = null,
-                    oldCluster = null;
+                List<T>?
+                  newCluster = null,
+                  oldCluster = null;
 
 
                 int i = index;
@@ -427,9 +418,9 @@
                 {
                     //parallel position
                     T old = this[i], @new = list[i - index];
-                    if (comparer.Equals(old, @new))
+                    if (Comparer.Equals(old, @new))
                     {
-                        OnRangeReplaced(i, newCluster, oldCluster);
+                        OnRangeReplaced(i, newCluster!, oldCluster!);
                         continue;
                     }
                     else
@@ -445,14 +436,14 @@
                         else
                         {
                             newCluster.Add(@new);
-                            oldCluster.Add(old);
+                            oldCluster!.Add(old);
                         }
 
                         changesMade = true;
                     }
                 }
 
-                OnRangeReplaced(i, newCluster, oldCluster);
+                OnRangeReplaced(i, newCluster!, oldCluster!);
 
                 //exceeding position
                 if (count != addedCount)
@@ -514,21 +505,33 @@
             OnCollectionReset();
         }
 
-        /// <summary>
-        /// Called by base class Collection&lt;T&gt; when an item is set in list;
-        /// raises a CollectionChanged event to any listeners.
-        /// </summary>
+        /// <inheritdoc/>
+        protected override void InsertItem(int index, T item)
+        {
+            if (!AllowDuplicates && Items.Contains(item))
+                return;
+
+            base.InsertItem(index, item);
+        }
+
+        /// <inheritdoc/>
         protected override void SetItem(int index, T item)
         {
-            if (Equals(this[index], item))
+            if (AllowDuplicates)
+            {
+                if (Comparer.Equals(this[index], item))
+                    return;
+            }
+            else
+              if (Items.Contains(item, Comparer))
                 return;
 
             CheckReentrancy();
-            T originalItem = this[index];
+            T oldItem = this[index];
             base.SetItem(index, item);
 
             OnIndexerPropertyChanged();
-            OnCollectionChanged(NotifyCollectionChangedAction.Replace, originalItem, item, index);
+            OnCollectionChanged(NotifyCollectionChangedAction.Replace, oldItem!, item!, index);
         }
 
         /// <summary>
@@ -564,20 +567,9 @@
         #region Private Methods
 
         /// <summary>
-        /// Helper function to determine if a collection contains any elements.
-        /// </summary>
-        /// <param name="collection">The collection to evaluate.</param>
-        /// <returns></returns>
-        private static bool ContainsAny(IEnumerable<T> collection)
-        {
-            using (IEnumerator<T> enumerator = collection.GetEnumerator())
-                return enumerator.MoveNext();
-        }
-
-        /// <summary>
         /// Helper to raise Count property and the Indexer property.
         /// </summary>
-        private void OnEssentialPropertiesChanged()
+        void OnEssentialPropertiesChanged()
         {
             OnPropertyChanged(EventArgsCache.CountPropertyChanged);
             OnIndexerPropertyChanged();
@@ -586,20 +578,20 @@
         /// <summary>
         /// /// Helper to raise a PropertyChanged event for the Indexer property
         /// /// </summary>
-        private void OnIndexerPropertyChanged() =>
-          OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
+        void OnIndexerPropertyChanged() =>
+         OnPropertyChanged(EventArgsCache.IndexerPropertyChanged);
 
         /// <summary>
         /// Helper to raise CollectionChanged event to any listeners
         /// </summary>
-        private void OnCollectionChanged(NotifyCollectionChangedAction action, object oldItem, object newItem, int index) =>
-          OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, newItem, oldItem, index));
+        void OnCollectionChanged(NotifyCollectionChangedAction action, object oldItem, object newItem, int index) =>
+         OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, newItem, oldItem, index));
 
         /// <summary>
         /// Helper to raise CollectionChanged event with action == Reset to any listeners
         /// </summary>
-        private void OnCollectionReset() =>
-          OnCollectionChanged(EventArgsCache.ResetCollectionChanged);
+        void OnCollectionReset() =>
+         OnCollectionChanged(EventArgsCache.ResetCollectionChanged);
 
         /// <summary>
         /// Helper to raise event for clustered action and clear cluster.
@@ -609,7 +601,7 @@
         /// <param name="oldCluster"></param>
         //TODO should have really been a local method inside ReplaceRange(int index, int count, IEnumerable<T> collection, IEqualityComparer<T> comparer),
         //move when supported language version updated.
-        private void OnRangeReplaced(int followingItemIndex, ICollection<T> newCluster, ICollection<T> oldCluster)
+        void OnRangeReplaced(int followingItemIndex, ICollection<T> newCluster, ICollection<T> oldCluster)
         {
             if (oldCluster == null || oldCluster.Count == 0)
             {
@@ -618,11 +610,11 @@
             }
 
             OnCollectionChanged(
-                new NotifyCollectionChangedEventArgs(
-                    NotifyCollectionChangedAction.Replace,
-                    new List<T>(newCluster),
-                    new List<T>(oldCluster),
-                    followingItemIndex - oldCluster.Count));
+              new NotifyCollectionChangedEventArgs(
+                NotifyCollectionChangedAction.Replace,
+                new List<T>(newCluster),
+                new List<T>(oldCluster),
+                followingItemIndex - oldCluster.Count));
 
             oldCluster.Clear();
             newCluster.Clear();
@@ -637,9 +629,9 @@
         //------------------------------------------------------
 
         #region Private Types
-        private sealed class DeferredEventsCollection : List<NotifyCollectionChangedEventArgs>, IDisposable
+        sealed class DeferredEventsCollection : List<NotifyCollectionChangedEventArgs>, IDisposable
         {
-            private readonly RangeObservableCollection<T> _collection;
+            readonly RangeObservableCollection<T> _collection;
             public DeferredEventsCollection(RangeObservableCollection<T> collection)
             {
                 Debug.Assert(collection != null);

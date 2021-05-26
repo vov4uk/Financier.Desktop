@@ -1,16 +1,16 @@
-﻿using FinancistoAdapter.Entities;
+﻿using Financier.DataAccess.Data;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 
-namespace FinancierDesktop.Entities
+namespace Financier.Desktop.Entities
 {
     /// <summary>
     /// Interaction logic for Currencies.xaml
     /// </summary>
     public partial class Currencies : UserControl
     {
-        public ReadOnlyObservableCollection<Currency> CurrenciesList { get; }
-        public Currencies(ReadOnlyObservableCollection<Currency> currencies)
+        public RangeObservableCollection<Currency> CurrenciesList { get; }
+        public Currencies(RangeObservableCollection<Currency> currencies)
         {
             CurrenciesList = currencies;
             DataContext = this;

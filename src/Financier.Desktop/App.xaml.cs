@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace FinancierDesktop
+namespace Financier.Desktop
 {
     /// <summary>
     /// Interaction logic for App.xaml

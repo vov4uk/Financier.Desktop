@@ -1,10 +1,10 @@
-﻿using FinancierDesktop.Entities;
-using FinancierDesktop.ViewModel;
+﻿using Financier.Desktop.Entities;
+using Financier.Desktop.ViewModel;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 
-namespace FinancierDesktop
+namespace Financier.Desktop
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -19,7 +19,7 @@ namespace FinancierDesktop
             DataContext = VM;
         }
 
-        private void RestoreBackup_OnClick(object sender, RoutedEventArgs e)
+        private async void RestoreBackup_OnClick(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new OpenFileDialog
             {
@@ -28,9 +28,9 @@ namespace FinancierDesktop
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                VM.GetEntities(openFileDialog.FileName);
+                await VM.GetEntities(openFileDialog.FileName);
             }
-            UIPanel.Children.Add(new Accounts(VM.Accounts));
+            Accounts_Click(null, null);
         }
 
         private void Accounts_Click(object sender, RoutedEventArgs e)
@@ -73,6 +73,27 @@ namespace FinancierDesktop
         {
             UIPanel.Children.Clear();
             UIPanel.Children.Add(new Locations(VM.Locations));
+        }
+        
+        private void Budget_Click(object sender, RoutedEventArgs e)
+        {
+            UIPanel.Children.Clear();
+            UIPanel.Children.Add(new Budgets(VM.Budgets));
+        }
+
+        private void Blotter_Click(object sender, RoutedEventArgs e)
+        {
+            UIPanel.Children.Clear();
+            UIPanel.Children.Add(new Blotter(VM.Transactions));
+        }
+
+        private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+#if DEBUG
+            UIPanel.Children.Clear();
+            await VM.GetEntities(@"C:\Users\vkhmelovskyi\Desktop\Financisto\20210428_185525_708.backup");
+            UIPanel.Children.Add(new Blotter(VM.Transactions));
+#endif
         }
     }
 }

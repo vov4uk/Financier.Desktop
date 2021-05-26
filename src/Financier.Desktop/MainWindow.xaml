@@ -1,8 +1,9 @@
-﻿<RibbonWindow  x:Class="FinancierDesktop.MainWindow"
+﻿<RibbonWindow  x:Class="Financier.Desktop.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Icon="pack://application:,,,/Images/ic_launcher.png"
-        Title="Financier Desktop" >
+        Title="Financier Desktop"
+        Loaded="RibbonWindow_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -33,12 +34,13 @@
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_projects.png" Label="Projects" Click="Projects_Click" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_payees.png" Label="Payees" Click="Payees_Click" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_locations.png" Label="Locations" Click="Locations_Click"/>
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_currencies.png" Label="Currencies" Click="Currencies_Click" />
+                    <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_currencies.png" Label="Currencies" Click="Currencies_Click" />-->
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_exchange_rates.png" Label="Exchange rates" Click="ExchangeRates_Click" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_budgets_unselected.png" Label="Budget" Click="Budget_Click" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Blotter" Header="Blotter">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_blotter_selected.png" Label="Transactions" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_blotter_selected.png" Label="Blotter" Click="Blotter_Click" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/actionbar_filter_cancel.png" Label="Clear filter" />
                 </RibbonGroup>
 

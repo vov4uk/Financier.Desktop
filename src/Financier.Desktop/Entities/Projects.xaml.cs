@@ -1,16 +1,16 @@
-﻿using FinancistoAdapter.Entities;
+﻿using Financier.DataAccess.Data;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 
-namespace FinancierDesktop.Entities
+namespace Financier.Desktop.Entities
 {
     /// <summary>
     /// Interaction logic for Projects.xaml
     /// </summary>
     public partial class Projects : UserControl
     {
-        public ReadOnlyObservableCollection<Project> ProjectsList { get; }
-        public Projects(ReadOnlyObservableCollection<Project> projects)
+        public RangeObservableCollection<Project> ProjectsList { get; }
+        public Projects(RangeObservableCollection<Project> projects)
         {
             ProjectsList = projects;
             DataContext = this;

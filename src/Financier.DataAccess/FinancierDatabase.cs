@@ -10,10 +10,12 @@ using System.Data.Common;
 using System.Globalization;
 using System.Resources;
 using System.Threading.Tasks;
+using Financier.DataAccess.Data;
+using Financier.DataAccess.Abstractions;
 
 namespace Financier.DataAccess
 {
-    public class FinancierDatabase
+    public class FinancierDatabase: IUnitOfWorkFactory
     {
 
         private readonly DbConnection _connection;
@@ -29,7 +31,7 @@ namespace Financier.DataAccess
 
         private static DbConnection CreateInMemoryDatabase()
         {
-            var connection = new SqliteConnection("Filename=:memory:");
+            var connection = new SqliteConnection($"Filename=:memory:");
 
             connection.Open();
 
@@ -42,7 +44,7 @@ namespace Financier.DataAccess
         {
             ContextOptions = contextOptions;
 
-            Seed();
+            //Seed();
         }
 
         protected DbContextOptions<FinancierDataContext> ContextOptions { get; }
@@ -51,8 +53,8 @@ namespace Financier.DataAccess
         {
             using (var context = new FinancierDataContext(ContextOptions))
             {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+                //context.Database.EnsureDeleted();
+                // context.Database.EnsureCreated();
 
                 List<Task> createTasks = new List<Task>();
 
@@ -67,10 +69,10 @@ namespace Financier.DataAccess
 
 
                 var alter = SQL_alter_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)
-                .Cast<DictionaryEntry>()
-                .Select(entry => new KeyValuePair<string, string>(Convert.ToString(entry.Key), Convert.ToString(entry.Value)))
-                .OrderBy(x => x.Key)
-                .ToList();
+                           .Cast<DictionaryEntry>()
+                           .Select(entry => new KeyValuePair<string, string>(Convert.ToString(entry.Key), Convert.ToString(entry.Value)))
+                           .OrderBy(x => x.Key)
+                           .ToList();
                 foreach (var entry in alter)
                 {
                     context.Database.ExecuteSqlRaw(entry.Value);
@@ -88,6 +90,74 @@ namespace Financier.DataAccess
 
                 context.SaveChanges();
             }
+        }
+
+        public async Task Import(List<Entity> entities)
+        {
+            Seed();
+
+            using (var context = new FinancierDataContext(ContextOptions))
+            {
+                await context.AddRangeAsync(entities.OfType<IIdentity>());
+
+                foreach (var item in Backup.RESTORE_SCRIPTS)
+                {
+                    var sql = SQL_alter_files.ResourceManager.GetString(item);
+                    await context.Database.ExecuteSqlRawAsync(sql);
+                }
+
+                await context.SaveChangesAsync();
+            }
+
+            var accounts = entities.OfType<Account>().ToList();
+            foreach (var item in accounts)
+            {
+                await rebuildRunningBalanceForAccount(item);
+            }
+        }
+
+        private async Task rebuildRunningBalanceForAccount(Account account)
+        {
+
+            using (var context = new FinancierDataContext(ContextOptions))
+            {
+                var accountId = account.Id;
+                await context.Database.ExecuteSqlRawAsync($"delete from running_balance where account_id={accountId}");
+                await context.SaveChangesAsync();
+
+                var trans = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.from_account_id == accountId).OrderBy(x => x.datetime).ThenBy(x => x._id).ToListAsync();
+                long balance = 0;
+
+                foreach (var item in trans)
+                {
+                    var parentId = item.parent_id;
+                    var isTransfer = item.is_transfer;
+                    if (parentId > 0)
+                    {
+                        if (isTransfer >= 0)
+                        {
+                            // we only interested in the second part of the transfer-split
+                            // which is marked with is_transfer=-1 (see v_blotter_for_account_with_splits)
+                            continue;
+                        }
+                    }
+                    var fromAccountId = item.from_account_id;
+                    var toAccountId = item.to_account_id;
+                    if (toAccountId > 0 && toAccountId == fromAccountId)
+                    {
+                        // weird bug when a transfer is done from an account to the same account
+                        continue;
+                    }
+                    balance += item.from_amount;
+                    await context.RunningBalance.AddAsync(new RunningBalance { Balance = (int)balance, AccountId = accountId, TransactionId = item._id });
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+        public IUnitOfWork CreateUnitOfWork()
+        {
+            return new UnitOfWork<FinancierDataContext>(new FinancierDataContext(ContextOptions));
         }
     }
 }

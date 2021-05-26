@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
+using Financier.DataAccess.Data;
 using FinancistoAdapter.Converters;
-using FinancistoAdapter.Entities;
 
 namespace FinancistoAdapter
 {

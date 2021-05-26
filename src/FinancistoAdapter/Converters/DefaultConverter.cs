@@ -1,4 +1,4 @@
-﻿using FinancistoAdapter.Entities;
+﻿using Financier.DataAccess.Data;
 using System;
 
 namespace FinancistoAdapter.Converters

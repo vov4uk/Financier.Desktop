@@ -1,17 +1,17 @@
-﻿using FinancistoAdapter.Entities;
+﻿using Financier.DataAccess.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 
-namespace FinancierDesktop.Entities
+namespace Financier.Desktop.Entities
 {
     /// <summary>
     /// Interaction logic for Categories.xaml
     /// </summary>
     public partial class Categories : UserControl
     {
-        public Categories(ReadOnlyObservableCollection<Category> categories)
+        public Categories(RangeObservableCollection<Category> categories)
         {
             var nodes = new ObservableCollection<Node>();
             var orderedCategories = categories.ToList();
