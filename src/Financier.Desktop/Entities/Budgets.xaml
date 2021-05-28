@@ -11,7 +11,7 @@
         <convert:DateTimeConverter x:Key="datetime_converter"></convert:DateTimeConverter>
     </UserControl.Resources>
     <Grid>
-        <DataGrid Margin="5" ItemsSource="{Binding Path=BudgetsList}" AutoGenerateColumns="False">
+        <DataGrid Margin="5" ItemsSource="{Binding Path=BudgetsList}" AutoGenerateColumns="False" CanUserAddRows="false">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="IsCurrent">
                     <DataGridTemplateColumn.CellTemplate>

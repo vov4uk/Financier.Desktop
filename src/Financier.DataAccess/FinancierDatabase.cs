@@ -98,7 +98,7 @@ namespace Financier.DataAccess
 
             using (var context = new FinancierDataContext(ContextOptions))
             {
-                await context.AddRangeAsync(entities.OfType<IIdentity>());
+                await context.AddRangeAsync(entities.OfType<IIdentity>().Where(x => x.Id > 0));
 
                 foreach (var item in Backup.RESTORE_SCRIPTS)
                 {
@@ -112,26 +112,24 @@ namespace Financier.DataAccess
             var accounts = entities.OfType<Account>().ToList();
             foreach (var item in accounts)
             {
-                await rebuildRunningBalanceForAccount(item);
+                await RebuildRunningBalanceForAccount(item.Id);
             }
         }
 
-        private async Task rebuildRunningBalanceForAccount(Account account)
+        public async Task RebuildRunningBalanceForAccount(int accountId)
         {
-
             using (var context = new FinancierDataContext(ContextOptions))
             {
-                var accountId = account.Id;
                 await context.Database.ExecuteSqlRawAsync($"delete from running_balance where account_id={accountId}");
                 await context.SaveChangesAsync();
 
-                var trans = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.from_account_id == accountId).OrderBy(x => x.datetime).ThenBy(x => x._id).ToListAsync();
+                var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.from_account_id == accountId).OrderBy(x => x.datetime).ThenBy(x => x._id).ToListAsync();
                 long balance = 0;
 
-                foreach (var item in trans)
+                foreach (var transaction in transactions)
                 {
-                    var parentId = item.parent_id;
-                    var isTransfer = item.is_transfer;
+                    var parentId = transaction.parent_id;
+                    var isTransfer = transaction.is_transfer;
                     if (parentId > 0)
                     {
                         if (isTransfer >= 0)
@@ -141,15 +139,15 @@ namespace Financier.DataAccess
                             continue;
                         }
                     }
-                    var fromAccountId = item.from_account_id;
-                    var toAccountId = item.to_account_id;
+                    var fromAccountId = transaction.from_account_id;
+                    var toAccountId = transaction.to_account_id;
                     if (toAccountId > 0 && toAccountId == fromAccountId)
                     {
                         // weird bug when a transfer is done from an account to the same account
                         continue;
                     }
-                    balance += item.from_amount;
-                    await context.RunningBalance.AddAsync(new RunningBalance { Balance = (int)balance, AccountId = accountId, TransactionId = item._id });
+                    balance += transaction.from_amount;
+                    await context.RunningBalance.AddAsync(new RunningBalance { Balance = (int)balance, AccountId = accountId, TransactionId = transaction._id });
                 }
 
                 await context.SaveChangesAsync();

@@ -95,7 +95,7 @@ namespace Financier.DataAccess.View
         {
             get
             {
-                return TransactionTitleUtils.GenerateTransactionTitle(payee, note, location_id > 0 ? location : string.Empty, category_id, category_title);
+                return TransactionTitleUtils.GenerateTransactionTitle(payee, note, location_id > 0 ? location : string.Empty, category_id, category_title, to_account_id);
             }
         }
 

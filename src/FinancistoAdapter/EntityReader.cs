@@ -12,15 +12,7 @@ namespace FinancistoAdapter
     public static class EntityReader
     {
         public static Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
-        private static string _package;
-        private static int _versionCode;
-        private static Version _version;
-        private static int _dbVersion;
-
-        public static string Package { get { return _package; } }
-        public static int VersionCode { get { return _versionCode; } }
-        public static Version Version { get { return _version; } }
-        public static int DatabaseVersion { get { return _dbVersion; } }
+        public static BackupVersion BackupVersion { get; private set; } = new BackupVersion();
 
         private static IReadOnlyDictionary<string, EntityInfo> GetEntityTypes()
         {
@@ -53,7 +45,7 @@ namespace FinancistoAdapter
             return new ReadOnlyDictionary<string, EntityInfo>(entities);
         }
 
-        public static IEnumerable<Entity> GetEntities(string fileName)
+        public static IEnumerable<Entity> ParseBackupFile(string fileName)
         {
             using (var reader = new BackupReader(fileName))
             {
@@ -98,10 +90,8 @@ namespace FinancistoAdapter
                         }
                         prevField = line.Key;
                     }
-                    _package = reader.Package;
-                    _version = reader.Version;
-                    _versionCode = reader.VersionCode;
-                    _dbVersion = reader.DatabaseVersion;
+
+                    BackupVersion = reader.BackupVersion;
                 }
 
                 return entities;

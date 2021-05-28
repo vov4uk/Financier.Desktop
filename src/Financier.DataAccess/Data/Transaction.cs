@@ -78,16 +78,16 @@ namespace Financier.DataAccess.Data
         public bool IsTemplate { get; set; }
 
         [Column("status")]
-        public string Status { get; set; }
+        public string Status { get; set; } = "UR";
 
         [Column("latitude")]
-        public string Latitude { get; set; }
+        public double Latitude { get; set; }
 
         [Column("longitude")]
-        public string Longitude { get; set; }
+        public double Longitude { get; set; }
 
         [Column("accuracy")]
-        public string Accuracy { get; set; }
+        public float Accuracy { get; set; }
 
         [Column("provider")]
         public string Provider { get; set; }

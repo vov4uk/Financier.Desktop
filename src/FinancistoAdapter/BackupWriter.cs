@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -6,68 +7,41 @@ using Financier.DataAccess.Data;
 
 namespace FinancistoAdapter
 {
-    public class BackupWriter : IDisposable, IBackup
+    public class BackupWriter : IDisposable
     {
         private TextWriter _writer;
         private string _fileName;
 
-        private string _package;
-        private int _versionCode;
-        private Version _version;
-        private int _dbVersion;
+        public BackupVersion BackupVersion { get; }
 
-        public BackupWriter(string package, int versionCode, Version version, int dbVersion)
+        public BackupWriter(string fileName, BackupVersion backupVersion)
         {
-            _package = package;
-            _versionCode = versionCode;
-            _version = version;
-            _dbVersion = dbVersion;
-            _fileName = "c:\\" + generateFileName();
-            _writer = new StreamWriter(_fileName);
+            BackupVersion = backupVersion;
+            _fileName = fileName;
+            _writer = new StreamWriter(Path.GetFileNameWithoutExtension(_fileName));
         }
 
-        public string Package
-        {
-            get { return _package; }
-        }
-
-        public int VersionCode
-        {
-            get { return _versionCode; }
-        }
-
-        public Version Version
-        {
-            get { return _version; }
-        }
-
-        public int DatabaseVersion
-        {
-            get { return _dbVersion; }
-        }
-
-
-        public void GenerateBackup(Entity[] entities)
+        public void GenerateBackup(List<Entity> entities)
         {
             WriteHeader(_writer);
             WriteBody(_writer, entities);
             WriteFooter(_writer);
             _writer.Flush();
             _writer.Close();
-            Compress(_fileName, _fileName + ".backup");
-            File.Delete(_fileName);
+            Compress(Path.GetFileNameWithoutExtension(_fileName), _fileName);
+            //File.Delete(Path.GetFileNameWithoutExtension(_fileName));
         }
 
         private void WriteHeader(TextWriter bw)
         {
-            bw.WriteLine($"{Backup.PACKAGE}:{Package}");
-            bw.WriteLine($"{Backup.VERSION_CODE}:{VersionCode}");
-            bw.WriteLine($"{Backup.VERSION_NAME}:{Version}");
-            bw.WriteLine($"{Backup.DATABASE_VERSION}:{DatabaseVersion}");
+            bw.WriteLine($"{Backup.PACKAGE}:{BackupVersion.Package}");
+            bw.WriteLine($"{Backup.VERSION_CODE}:{BackupVersion.VersionCode}");
+            bw.WriteLine($"{Backup.VERSION_NAME}:{BackupVersion.Version}");
+            bw.WriteLine($"{Backup.DATABASE_VERSION}:{BackupVersion.DatabaseVersion}");
             bw.WriteLine(Backup.START);
         }
 
-        private void WriteBody(TextWriter bw, Entity[] entities)
+        private void WriteBody(TextWriter bw, List<Entity> entities)
         {
             ExportTable(bw, entities.OfType<Account>().ToArray());
             ExportTable(bw, entities.OfType<AttributeDefinition>().ToArray());
@@ -83,7 +57,6 @@ namespace FinancistoAdapter
             ExportTable(bw, entities.OfType<CCardClosingDate>().ToArray());
             ExportTable(bw, entities.OfType<SmsTemplate>().ToArray());
             ExportTable(bw, entities.OfType<CurrencyExchangeRate>().ToArray());
-
         }
 
         private void WriteFooter(TextWriter bw)
@@ -103,9 +76,9 @@ namespace FinancistoAdapter
             }
         }
 
-        public string generateFileName()
+        public static string generateFileName()
         {
-            return DateTime.Now.ToString("yyyyMMdd'_'HHmmss'_'fff");
+            return DateTime.Now.ToString("yyyyMMdd'_'HHmmss'_'fff") + ".backup";
         }
 
 
@@ -123,6 +96,8 @@ namespace FinancistoAdapter
                     using (GZipStream compressionStream = new GZipStream(targetStream, CompressionMode.Compress))
                     {
                         sourceStream.CopyTo(compressionStream);
+                        compressionStream.Flush();
+                        compressionStream.Close();
                     }
                 }
             }

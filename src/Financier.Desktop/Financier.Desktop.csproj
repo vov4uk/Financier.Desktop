@@ -4,6 +4,8 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>ic_launcher.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +21,7 @@
     <None Remove="Images\ic_action_gear.png" />
     <None Remove="Images\ic_action_info.png" />
     <None Remove="Images\ic_action_share.png" />
+    <None Remove="Images\ic_launcher.ico" />
     <None Remove="Images\ic_launcher.png" />
     <None Remove="Images\ic_menu_back.png" />
     <None Remove="Images\ic_tab_accounts_selected.png" />
@@ -34,6 +37,7 @@
     <None Remove="Images\menu_entities_locations.png" />
     <None Remove="Images\menu_entities_payees.png" />
     <None Remove="Images\menu_entities_projects.png" />
+    <None Remove="Images\monobank.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +53,7 @@
     <Resource Include="Images\ic_action_gear.png" />
     <Resource Include="Images\ic_action_info.png" />
     <Resource Include="Images\ic_action_share.png" />
+    <Resource Include="Images\ic_launcher.ico" />
     <Resource Include="Images\ic_launcher.png" />
     <Resource Include="Images\ic_menu_back.png" />
     <Resource Include="Images\ic_tab_accounts_selected.png" />
@@ -64,11 +69,13 @@
     <Resource Include="Images\menu_entities_locations.png" />
     <Resource Include="Images\menu_entities_payees.png" />
     <Resource Include="Images\menu_entities_projects.png" />
+    <Resource Include="Images\monobank.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Emoji.Wpf" Version="0.3.0" />
-    <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

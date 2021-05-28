@@ -14,8 +14,7 @@ namespace Financier.Desktop.Entities
         public Categories(RangeObservableCollection<Category> categories)
         {
             var nodes = new ObservableCollection<Node>();
-            var orderedCategories = categories.ToList();
-            InitializeNodes(nodes, orderedCategories);
+            InitializeNodes(nodes, categories.Where(x => x.Id > 0).ToList());
 
             InitializeComponent();
             treeView1.ItemsSource = nodes;
@@ -49,11 +48,8 @@ namespace Financier.Desktop.Entities
         public class Node
         {
             public int Id;
-
             public int Left { get; set; }
-
             public int Right { get; set; }
-
             public string Title { get; set; }
             public ObservableCollection<Node> SubCategoties { get; set; }
         }

@@ -1,8 +1,12 @@
 ﻿using Financier.Desktop.Entities;
 using Financier.Desktop.ViewModel;
-using Microsoft.Win32;
+using FinancistoAdapter;
+using MonoWizard;
+using MonoWizard.ViewModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Forms;
 
 namespace Financier.Desktop
 {
@@ -21,14 +25,16 @@ namespace Financier.Desktop
 
         private async void RestoreBackup_OnClick(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog
+            using (var openFileDialog = new OpenFileDialog
             {
                 Multiselect = false,
                 Filter = "Backup files (*.backup)|*.backup"
-            };
-            if (openFileDialog.ShowDialog() == true)
+            })
             {
-                await VM.GetEntities(openFileDialog.FileName);
+                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    await VM.OpenBackup(openFileDialog.FileName);
+                }
             }
             Accounts_Click(null, null);
         }
@@ -91,9 +97,50 @@ namespace Financier.Desktop
         {
 #if DEBUG
             UIPanel.Children.Clear();
-            await VM.GetEntities(@"C:\Users\vkhmelovskyi\Desktop\Financisto\20210428_185525_708.backup");
+            await VM.OpenBackup(@"C:\Users\vkhmelovskyi\Desktop\Financisto\20210527_005841_365.backup");
             UIPanel.Children.Add(new Blotter(VM.Transactions));
 #endif
+        }
+
+        private async void Mono_Click(object sender, RoutedEventArgs e)
+        {
+            using (var openFileDialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Filter = "CSV files (*.csv)|*.csv"
+            })
+            {
+                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var fileName = openFileDialog.FileName;
+                    var dialog = new MonoWizardWindow();
+                    var viewModel = new MonoWizardViewModel(VM.Accounts, fileName);
+                    await viewModel.LoadTransactions();
+                    viewModel.RequestClose += (sender, args) =>
+                    {
+                        dialog.Close();
+                    };
+                    dialog.DataContext = viewModel;
+                    dialog.ShowDialog();
+                    var monoToImport = viewModel.TransactionsToImport;
+                    await VM.ImportMonoTransactions(viewModel.MonoBankAccount.Id, monoToImport);
+                }
+            }
+        }
+
+        private async void SaveBackup_Click(object sender, RoutedEventArgs e)
+        {
+            using (SaveFileDialog dialog = new SaveFileDialog())
+            {
+                dialog.Filter = "Backup files (*.backup)|*.backup";
+                dialog.FileName = Path.Combine(Path.GetDirectoryName(VM.OpenBackupPath), BackupWriter.generateFileName());
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    await VM.SaveBackup(dialog.FileName);
+
+                    System.Windows.Forms.MessageBox.Show("Backup done.");
+                }
+            }
         }
     }
 }

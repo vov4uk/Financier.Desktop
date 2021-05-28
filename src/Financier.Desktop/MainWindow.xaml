@@ -14,13 +14,13 @@
 
             <Ribbon.HelpPaneContent>
                 <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_action_info.png" />-->
-                <Label Content="{Binding Path=BackupPath}"></Label>
+                <Label Content="{Binding Path=OpenBackupPath}"></Label>
             </Ribbon.HelpPaneContent>
 
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>
                     <RibbonApplicationMenuItem Header="Open" Click="RestoreBackup_OnClick" ImageSource="pack://application:,,,/Images/actionbar_db_restore.png" />
-                    <RibbonApplicationMenuItem Header="Save" ImageSource="pack://application:,,,/Images/actionbar_db_backup.png" />
+                    <RibbonApplicationMenuItem Header="Save" Click="SaveBackup_Click" ImageSource="pack://application:,,,/Images/actionbar_db_backup.png" />
                     <RibbonApplicationMenuItem Header="Options" ImageSource="pack://application:,,,/Images/ic_action_gear.png" />
                     <RibbonApplicationMenuItem Header="Exit" ImageSource="pack://application:,,,/Images/ic_menu_back.png" />
                 </RibbonApplicationMenu>
@@ -51,6 +51,9 @@
                 <RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png" Label="Export to excel" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/backup_file.png" Label="Export to csv" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="Mono" Header="Monobank" IsEnabled="True">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png" Label="Import from CSV" Click="Mono_Click" />
                 </RibbonGroup>
 
             </RibbonTab>

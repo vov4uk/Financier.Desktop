@@ -3,7 +3,7 @@ using System.Diagnostics;
 using CsvHelper.Configuration.Attributes;
 using CsvHelper.TypeConversion;
 
-namespace FinancistoAdapter.Monobank
+namespace Financier.Desktop.MonoWizard.Model
 {
     [DebuggerDisplay("{Description} : {CardCurrencyAmount} : {Balance}")]
     public class MonoTransaction

@@ -3,7 +3,7 @@ using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using System;
 
-namespace FinancistoAdapter.Monobank
+namespace Financier.Desktop.MonoWizard.Model
 {
     public class DoubleConvert : DoubleConverter
     {

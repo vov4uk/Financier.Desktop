@@ -17,8 +17,13 @@ namespace Financier.Desktop.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var dateStr = System.Convert.ToString(value);
-            DateTime.TryParseExact(dateStr, format, null, DateTimeStyles.None, out var date);
-            return (date - StartDate).TotalMilliseconds.ToString();
+            if (!DateTime.TryParseExact(dateStr, format, null, DateTimeStyles.None, out var date))
+            {
+                date = (DateTime)value;
+            }
+
+            DateTimeOffset dto = new DateTimeOffset(date);
+            return dto.ToUnixTimeMilliseconds();
         }
     }
 }

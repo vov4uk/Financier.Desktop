@@ -5,7 +5,7 @@ namespace Financier.DataAccess.Data
 {
     [DebuggerDisplay("{Title}")]
     [Table(Backup.ATTRIBUTES_TABLE)]
-    public class AttributeDefinition : Entity
+    public class AttributeDefinition : Entity, IIdentity
     {
 
         public const int TYPE_TEXT = 1;

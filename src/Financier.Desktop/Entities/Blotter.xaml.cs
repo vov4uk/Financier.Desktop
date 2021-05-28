@@ -1,4 +1,5 @@
 ﻿using Financier.DataAccess.View;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 
@@ -10,11 +11,11 @@ namespace Financier.Desktop.Entities
     public partial class Blotter : UserControl
     {
         public ObservableCollection<TransactionsView> Transactions { get; }
-        public Blotter(ObservableCollection<TransactionsView> transactions)
+        public Blotter(List<TransactionsView> transactions)
         {
-            Transactions = transactions;
-            DataContext = this;
             InitializeComponent();
+            Transactions = new ObservableCollection<TransactionsView>(transactions);
+            DataContext = this;
         }
     }
 }

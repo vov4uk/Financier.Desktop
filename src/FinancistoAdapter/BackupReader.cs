@@ -6,21 +6,13 @@ using System.IO.Compression;
 
 namespace FinancistoAdapter
 {
-    public class BackupReader : IDisposable, IBackup
+    public class BackupReader : IDisposable
     {
         private readonly FileStream _file;
         private readonly GZipStream _zipStream;
         private TextReader _reader;
 
-        private string _package;
-        private int _versionCode;
-        private Version _version;
-        private int _dbVersion;
-
-        public string Package { get { return _package; } }
-        public int VersionCode { get { return _versionCode; } }
-        public Version Version { get { return _version; } }
-        public int DatabaseVersion { get { return _dbVersion; } }
+        public BackupVersion BackupVersion { get; } = new BackupVersion();
 
         public BackupReader(string fileName)
         {
@@ -38,16 +30,16 @@ namespace FinancistoAdapter
                 switch (line.Key)
                 {
                     case Backup.PACKAGE:
-                        _package = line.Value; 
+                        BackupVersion.Package = line.Value; 
                         break;
                     case Backup.VERSION_CODE:
-                        _versionCode = int.Parse(line.Value);
+                        BackupVersion.VersionCode = int.Parse(line.Value);
                         break;
                     case Backup.VERSION_NAME:
-                        _version = Version.Parse(line.Value);
+                        BackupVersion.Version = Version.Parse(line.Value);
                         break;
                     case Backup.DATABASE_VERSION:
-                        _dbVersion = int.Parse(line.Value);
+                        BackupVersion.DatabaseVersion = int.Parse(line.Value);
                         break;
                 }
             }

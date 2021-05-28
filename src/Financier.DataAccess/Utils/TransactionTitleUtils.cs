@@ -4,23 +4,23 @@ namespace Financier.DataAccess
 {
     public static class TransactionTitleUtils
     {
-        public static string GenerateTransactionTitle(string payee, string note, string location, int? categoryId, string category)
+        public static string GenerateTransactionTitle(string payee, string note, string location, int? categoryId, string category, int? toAccount)
         {
             if (categoryId == -1) {
                 return generateTransactionTitleForSplit(payee, note, location);
             } else 
             {
-                return generateTransactionTitleForRegular(categoryId, payee, note, location, category);
+                return generateTransactionTitleForRegular(categoryId, payee, note, location, category, toAccount);
             }
         }
 
-        private static string generateTransactionTitleForRegular(int? categoryId, string payee, string note, string location, string category)
+        private static string generateTransactionTitleForRegular(int? categoryId, string payee, string note, string location, string category, int? toAccount)
         {
             StringBuilder sb = new StringBuilder();
             var secondPart = joinAdditionalFields(sb, payee, note, location);
             if (!string.IsNullOrEmpty(category))
             {
-                var cat = categoryId > 0 ? category : categoryId == 0 ? "Transfer" : "[...]";
+                var cat = categoryId > 0 ? category : toAccount > 0 ? "Transfer" : "<NO CATEGORY>" ;
                 sb.Append(cat);
                 if (!string.IsNullOrEmpty(secondPart))
                 {
