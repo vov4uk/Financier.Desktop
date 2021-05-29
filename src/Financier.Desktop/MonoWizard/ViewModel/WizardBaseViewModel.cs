@@ -1,8 +1,8 @@
-﻿using MonoWizard.Helpers;
+﻿using Prism.Mvvm;
 
-namespace MonoWizard.ViewModel
+namespace Financier.Desktop.MonoWizard.ViewModel
 {
-    public abstract class WizardBaseViewModel : NotifyModelBase
+    public abstract class WizardBaseViewModel : BindableBase
     {
         public abstract string Title { get; }
 
@@ -18,7 +18,7 @@ namespace MonoWizard.ViewModel
                     return;
 
                 _isCurrentPage = value;
-                OnPropertyChanged("IsCurrentPage");
+                RaisePropertyChanged(nameof(IsCurrentPage));
             }
         }
     }

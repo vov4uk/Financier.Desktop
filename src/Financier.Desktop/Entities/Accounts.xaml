@@ -2,15 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:convert="clr-namespace:Financier.Desktop.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:convert="clr-namespace:Financier.Desktop.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <convert:AmountConverter x:Key="amount_converter"></convert:AmountConverter>
+        <convert:AmountTextConverter x:Key="amount_converter"></convert:AmountTextConverter>
     </UserControl.Resources>
     <Grid>
-        <DataGrid Margin="5" ItemsSource="{Binding Path=AccountsList}" AutoGenerateColumns="False" CanUserAddRows="false">
+        <DataGrid Margin="5" ItemsSource="{Binding Path=Entities}" AutoGenerateColumns="False" CanUserAddRows="false">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Active">
                     <DataGridTemplateColumn.CellTemplate>
@@ -26,8 +25,19 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Total Amount" Binding="{Binding Path=TotalAmount, Converter= {StaticResource amount_converter}}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Total Amount" >
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding Converter="{StaticResource amount_converter}">
+                            <Binding Path="TotalAmount" />
+                            <Binding Path="Currency" />
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -1,13 +1,13 @@
 ﻿using Financier.DataAccess;
 using Financier.DataAccess.Data;
+using Financier.DataAccess.Monobank;
 using Financier.DataAccess.View;
-using Financier.Desktop.Converters;
-using Financier.Desktop.MonoWizard.Model;
 using FinancistoAdapter;
+using Prism.Commands;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,6 +16,18 @@ namespace Financier.Desktop.ViewModel
     public class FinancierVM : BindableBase
     {
         FinancierDatabase db;
+        private List<Entity> keyLessEntities = new List<Entity>();
+
+        private BindableBase currentPage;
+        public BindableBase CurrentPage
+        {
+            get { return currentPage; }
+            set
+            {
+                SetProperty(ref currentPage, value);
+                RaisePropertyChanged(nameof(CurrentPage));
+            }
+        }
 
         private string openBackupPath;
         public string OpenBackupPath
@@ -31,47 +43,67 @@ namespace Financier.Desktop.ViewModel
             set { SetProperty(ref saveBackupPath, value); }
         }
 
-        public List<Account> Accounts => _accounts;
-        public RangeObservableCollection<Category> Categories => _categories;
-        public RangeObservableCollection<Project> Projects => _projects;
-        public RangeObservableCollection<Payee> Payees => _payees;
-        public RangeObservableCollection<Location> Locations => _locations;
-        public RangeObservableCollection<Currency> Currencies => _currencies;
-        public RangeObservableCollection<CurrencyExchangeRate> Rates => _rates;
-        public RangeObservableCollection<Budget> Budgets => _budget;
-        public List<TransactionsView> Transactions => _transactions;
-        public RangeObservableCollection<TransactionAttribute> TransactionAttributes => _transactionAtr;
+        /// <summary>
+        /// Returns the command which, when executed, cancels the order 
+        /// and causes the Wizard to be removed from the user interface.
+        /// </summary>
+        private DelegateCommand<Type> _menuNavigateCommand;
+        public DelegateCommand<Type> MenuNavigateCommand
+        {
+            get
+            {
+                if (_menuNavigateCommand == null)
+                    _menuNavigateCommand = new DelegateCommand<Type>(CancelOrder);
 
+                return _menuNavigateCommand;
+            }
+        }
 
-        private List<Account> _accounts;
-        private RangeObservableCollection<Category> _categories;
-        private RangeObservableCollection<Project> _projects;
-        private RangeObservableCollection<Payee> _payees;
-        private RangeObservableCollection<Location> _locations;
-        private RangeObservableCollection<Currency> _currencies;
-        private RangeObservableCollection<CurrencyExchangeRate> _rates;
-        private List<TransactionsView> _transactions;
-        private RangeObservableCollection<TransactionAttribute> _transactionAtr;
-        private RangeObservableCollection<Budget> _budget;
+        void CancelOrder(Type type)
+        {
+            CurrentPage = Pages.FirstOrDefault(x => x.GetType().BaseType.GetGenericArguments().Single() == type);
+        }
+
+        private ReadOnlyCollection<BindableBase> _pages;
+        public ReadOnlyCollection<BindableBase> Pages
+        {
+            get
+            {
+                return _pages;
+            }
+        }
+
+        void CreatePages()
+        {
+            _pages = new List<BindableBase>
+                {
+                    new AccountsVM(),
+                    new BlotterVM(),
+                    new BudgetsVM(),
+                    new CategoriesVM(),
+                    new CurrenciesVM(),
+                    new ExchangeRatesVM(),
+                    new LocationsVM(),
+                    new PayeesVM(),
+                    new ProjectsVM()
+                }.AsReadOnly();
+        }
 
         public FinancierVM()
         {
-            _accounts = new List<Account>();
-            _categories = new RangeObservableCollection<Category>();
-            _projects = new RangeObservableCollection<Project>();
-            _payees = new RangeObservableCollection<Payee>();
-            _locations = new RangeObservableCollection<Location>();
-            _currencies = new RangeObservableCollection<Currency>();
-            _rates = new RangeObservableCollection<CurrencyExchangeRate>();
-            _budget = new RangeObservableCollection<Budget>();
-            _transactions = new List<TransactionsView>();
-            _transactionAtr = new RangeObservableCollection<TransactionAttribute>();
+            CreatePages();
         }
 
         public async Task OpenBackup(string backupPath)
         {
+            CreatePages();
+
             OpenBackupPath = backupPath;
             var entities = EntityReader.ParseBackupFile(backupPath).ToList();
+            keyLessEntities.Clear();
+            keyLessEntities.AddRange(entities.OfType<CCardClosingDate>());
+            keyLessEntities.AddRange(entities.OfType<CategoryAttribute>());
+            keyLessEntities.AddRange(entities.OfType<TransactionAttribute>());
 
             db = new FinancierDatabase();
             await db.Import(entities);
@@ -81,42 +113,41 @@ namespace Financier.Desktop.ViewModel
                 var allAccounts = await uow.GetRepository<Account>().GetAllAsync(x => x.Currency);
                 var allTransactions = await uow.GetRepository<BlotterTransactions>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
                 var allCategories = await uow.GetRepository<Category>().GetAllAsync();
-
-                _accounts = allAccounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList();
-                _transactions = new List<TransactionsView>(allTransactions.OrderByDescending(x => x.datetime).ToList());
-                _categories = new RangeObservableCollection<Category>(allCategories);
+                var allRates = await uow.GetRepository<CurrencyExchangeRate>().GetAllAsync(x => x.FromCurrency, x => x.ToCurrency);
+                _pages.OfType<AccountsVM>().First().Entities.AddRange(allAccounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList());
+                _pages.OfType<BlotterVM>().First().Entities = new RangeObservableCollection<BlotterTransactions>(allTransactions.OrderByDescending(x => x.datetime).ToList());
+                _pages.OfType<CategoriesVM>().First().Entities.AddRange(allCategories.ToList());
+                _pages.OfType<ExchangeRatesVM>().First().Entities.AddRange(allRates.ToList());
             }
 
-            _projects.Clear();
-            _projects.AddRange(entities.OfType<Project>().ToList());
-            _payees.Clear();
-            _payees.AddRange(entities.OfType<Payee>().ToList());
-            _locations.Clear();
-            _locations.AddRange(entities.OfType<Location>().ToList());
-            _currencies.Clear();
-            _currencies.AddRange(entities.OfType<Currency>().ToList());
-            _rates.Clear();
-            _rates.AddRange(entities.OfType<CurrencyExchangeRate>().ToList());
-            _transactionAtr.Clear();
-            _transactionAtr.AddRange(entities.OfType<TransactionAttribute>().ToList());
-            _budget.Clear();
-            _budget.AddRange(entities.OfType<Budget>().ToList());
+            _pages.OfType<ProjectsVM>().First().Entities.AddRange(entities.OfType<Project>().ToList());
+            _pages.OfType<PayeesVM>().First().Entities.AddRange(entities.OfType<Payee>().ToList());
+            _pages.OfType<LocationsVM>().First().Entities.AddRange(entities.OfType<Location>().ToList());
+            _pages.OfType<CurrenciesVM>().First().Entities.AddRange(entities.OfType<Currency>().ToList()); 
+            _pages.OfType<BudgetsVM>().First().Entities.AddRange(entities.OfType<Budget>().ToList());
         }
 
         public async Task SaveBackup(string backupPath)
         {
             SaveBackupPath = backupPath;
-            List<Entity> itemsToBackup = new List<Entity>();
+            List<Entity> itemsToBackup = new();
+            itemsToBackup.AddRange(keyLessEntities);
             using (var uow = db.CreateUnitOfWork())
             {
-                itemsToBackup.AddRange(_projects);
-                itemsToBackup.AddRange(_payees);
-                itemsToBackup.AddRange(_locations.Where(x => x.Id > 0));
-                itemsToBackup.AddRange(_currencies);
-                itemsToBackup.AddRange(_rates);
-                itemsToBackup.AddRange(_transactionAtr);
-                itemsToBackup.AddRange(_budget);
-
+                var Budget = await uow.GetRepository<Budget>().GetAllAsync();
+                itemsToBackup.AddRange(Budget);
+                var TransactionAttribute = await uow.GetRepository<TransactionAttribute>().GetAllAsync();
+                itemsToBackup.AddRange(TransactionAttribute);
+                var CurrencyExchangeRate = await uow.GetRepository<CurrencyExchangeRate>().GetAllAsync();
+                itemsToBackup.AddRange(CurrencyExchangeRate);
+                var Currency = await uow.GetRepository<Currency>().GetAllAsync();
+                itemsToBackup.AddRange(Currency);
+                var Location = await uow.GetRepository<Location>().GetAllAsync();
+                itemsToBackup.AddRange(Location.Where(x => x.Id > 0));
+                var Payee = await uow.GetRepository<Payee>().GetAllAsync();
+                itemsToBackup.AddRange(Payee);
+                var Project = await uow.GetRepository<Project>().GetAllAsync();
+                itemsToBackup.AddRange(Project);
                 var transactions = await uow.GetRepository<Transaction>().GetAllAsync();
                 itemsToBackup.AddRange(transactions);
                 var accounts = await uow.GetRepository<Account>().GetAllAsync();
@@ -133,40 +164,21 @@ namespace Financier.Desktop.ViewModel
                 itemsToBackup.AddRange(Category.Where(x => x.Id > 0));
             }
 
-            using (var bw = new BackupWriter(backupPath, EntityReader.BackupVersion))
-            {
-                bw.GenerateBackup(itemsToBackup);
-            }
+            using var bw = new BackupWriter(backupPath, EntityReader.BackupVersion);
+            bw.GenerateBackup(itemsToBackup);
         }
 
         public async Task ImportMonoTransactions(int accountId, List<MonoTransaction> transactions)
         {
-            var converter = new DateTimeConverter();
-            using (var uow = db.CreateUnitOfWork())
-            {
-                var transactionsRepo = uow.GetRepository<Transaction>();
-                var transToAdd = transactions.Select(x => new Transaction
-                {   Id = 0,
-                    FromAccountId = accountId,
-                    FromAmount = (long)(x.CardCurrencyAmount * 100),
-                    OriginalFromAmmount = x.ExchangeRate == null ? 0 : (long)(x.OperationAmount * 100),
-                    OriginalCurrencyId = x.ExchangeRate == null ? 0 : _currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
-                    CategoryId = 0,
-                    LocationId = _locations.FirstOrDefault(l => l.Name.Contains(x.Description, System.StringComparison.OrdinalIgnoreCase))?.Id ?? 0,
-                    Note = x.Description,
-                    DateTime = (long)converter.ConvertBack(x.Date, typeof(long), null, CultureInfo.InvariantCulture)
-                }).ToList();
-
-                await transactionsRepo.AddRangeAsync(transToAdd);
-                await uow.SaveChangesAsync();
-            }
+            await db.ImportMonoTransactions(accountId, transactions);
 
             await db.RebuildRunningBalanceForAccount(accountId);
 
             using (var uow = db.CreateUnitOfWork())
             {
                 var allTransactions = await uow.GetRepository<BlotterTransactions>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
-                _transactions = new List<TransactionsView>(allTransactions.OrderByDescending(x => x.datetime).ToList());
+                _pages.OfType<BlotterVM>().First().Entities.Clear();
+                _pages.OfType<BlotterVM>().First().Entities.AddRange(allTransactions.OrderByDescending(x => x.datetime).ToList());
             }
         }
     }

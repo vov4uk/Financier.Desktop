@@ -53,7 +53,6 @@
     <Resource Include="Images\ic_action_gear.png" />
     <Resource Include="Images\ic_action_info.png" />
     <Resource Include="Images\ic_action_share.png" />
-    <Resource Include="Images\ic_launcher.ico" />
     <Resource Include="Images\ic_launcher.png" />
     <Resource Include="Images\ic_menu_back.png" />
     <Resource Include="Images\ic_tab_accounts_selected.png" />
@@ -80,6 +79,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FinancistoAdapter\FinancistoAdapter.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Assets\Resource.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
   </ItemGroup>
 
 </Project>

@@ -17,10 +17,10 @@ namespace Financier.DataAccess.Data
         public long Date { get; set; }
 
         [Column("rate")]
-        public string Rate { get; set; }
+        public float Rate { get; set; }
 
         [Column(UpdatedOnColumn)]
-        public string UpdatedOn { get; set; }
+        public long UpdatedOn { get; set; }
         
         [Column("remote_key")]
         public long RemoteKey { get; set; }
@@ -30,6 +30,6 @@ namespace Financier.DataAccess.Data
         public Currency ToCurrency { get; set; }
 
         [NotMapped]
-        public int Id { get; set; }
+        public int Id { get; set; } = 1; // Need for backup, on backup export only items with id > 0
     }
 }

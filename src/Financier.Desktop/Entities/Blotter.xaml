@@ -12,7 +12,7 @@
         <convert:AmountConverter x:Key="amount_converter"></convert:AmountConverter>
     </UserControl.Resources>
     <Grid>
-        <DataGrid Margin="5" ItemsSource="{Binding Path=Transactions}" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="false">
+        <DataGrid Margin="5" ItemsSource="{Binding Path=Entities}" AutoGenerateColumns="False" ScrollViewer.CanContentScroll="True" CanUserAddRows="false">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="">
                     <DataGridTemplateColumn.CellTemplate>
@@ -41,8 +41,20 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Amount" Binding="{Binding Path=AmountTitle}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Balance" Binding="{Binding Path=BalanceTitle}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Amount" Binding="{Binding Path=AmountTitle}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Balance" Binding="{Binding Path=BalanceTitle}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=_id}"></DataGridTextColumn>-->
             </DataGrid.Columns>
         </DataGrid>

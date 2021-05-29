@@ -7,9 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancistoAdapter", "src\Fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.Desktop", "src\Financier.Desktop\Financier.Desktop.csproj", "{4F9A7FD1-3F9E-453C-9B24-2914DB9436C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Financier.DataAccess", "src\Financier.DataAccess\Financier.DataAccess.csproj", "{0CF52D8D-1CAA-4372-BA77-8EBFD58CB724}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.DataAccess", "src\Financier.DataAccess\Financier.DataAccess.csproj", "{0CF52D8D-1CAA-4372-BA77-8EBFD58CB724}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqPad", "src\LinqPad\LinqPad.csproj", "{D5BC885D-3B46-4B7E-BE95-480D43F73B4E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{58EE9249-84A5-4976-9A30-AA9FA9CDFB97}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +32,6 @@ Global
 		{0CF52D8D-1CAA-4372-BA77-8EBFD58CB724}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CF52D8D-1CAA-4372-BA77-8EBFD58CB724}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CF52D8D-1CAA-4372-BA77-8EBFD58CB724}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D5BC885D-3B46-4B7E-BE95-480D43F73B4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5BC885D-3B46-4B7E-BE95-480D43F73B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5BC885D-3B46-4B7E-BE95-480D43F73B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5BC885D-3B46-4B7E-BE95-480D43F73B4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -23,7 +23,7 @@
         //
         //------------------------------------------------------
 
-        #region Private Fields    
+        #region Private Fields
         [NonSerialized]
         private DeferredEventsCollection? _deferredEvents;
         #endregion Private Fields
@@ -153,7 +153,7 @@
 
             OnEssentialPropertiesChanged();
 
-            if (!(collection is IList list))
+            if (collection is not IList list)
                 list = new List<T>(collection);
 
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, list, index));

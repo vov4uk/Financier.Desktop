@@ -1,10 +1,10 @@
 ﻿using Financier.DataAccess.Data;
-using Financier.Desktop.MonoWizard.Model;
+using Financier.DataAccess.Monobank;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace MonoWizard.ViewModel
+namespace Financier.Desktop.MonoWizard.ViewModel
 {
     public class Page2ViewModel : WizardBaseViewModel
     {
@@ -22,7 +22,7 @@ namespace MonoWizard.ViewModel
             set
             {
                 _transactions = value;
-                OnPropertyChanged("Transactions");
+                RaisePropertyChanged(nameof(Transactions));
             }
         }
 
@@ -33,7 +33,7 @@ namespace MonoWizard.ViewModel
             set
             {
                 _startTransaction = value;
-                OnPropertyChanged("StartTransaction");
+                RaisePropertyChanged(nameof(StartTransaction));
                 if (_startTransaction != null)
                 {
                     TransactionsToImport = _transactions.OrderByDescending(x => x.Date).Where(x => x.Date > _startTransaction.Date).ToList();
@@ -48,13 +48,13 @@ namespace MonoWizard.ViewModel
             set
             {
                 _monoAccount = value;
-                OnPropertyChanged("MonoAccount");
+                RaisePropertyChanged(nameof(MonoAccount));
                 double balance = _monoAccount.TotalAmount / 100.0;
                 StartTransaction = _transactions?.FirstOrDefault(x => x.Balance == balance);
             }
         }
 
-        public List<MonoTransaction> TransactionsToImport{ get; set; }
+        public List<MonoTransaction> TransactionsToImport { get; set; }
 
         public override string Title
         {

@@ -1,0 +1,34 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel" 
+                    xmlns:View="clr-namespace:Financier.Desktop.Entities">
+
+    <DataTemplate DataType="{x:Type ViewModel:AccountsVM}">
+        <View:Accounts/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModel:BlotterVM}">
+        <View:Blotter/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModel:BudgetsVM}">
+        <View:Budgets/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModel:CategoriesVM}">
+        <View:Categories/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModel:CurrenciesVM}">
+        <View:Currencies/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModel:ExchangeRatesVM}">
+        <View:ExchangeRates/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModel:LocationsVM}">
+        <View:Locations/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModel:PayeesVM}">
+        <View:Payees/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModel:ProjectsVM}">
+        <View:Projects/>
+    </DataTemplate>
+
+</ResourceDictionary>

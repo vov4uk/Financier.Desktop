@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:ViewModel="clr-namespace:MonoWizard.ViewModel" 
-                    xmlns:View="clr-namespace:MonoWizard.View">
+                    xmlns:ViewModel="clr-namespace:Financier.Desktop.MonoWizard.ViewModel" 
+                    xmlns:View="clr-namespace:Financier.Desktop.MonoWizard.View">
     <DataTemplate DataType="{x:Type ViewModel:Page1ViewModel}">
         <View:Page1/>
     </DataTemplate>

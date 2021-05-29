@@ -1,6 +1,4 @@
-﻿using Financier.DataAccess.Data;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace Financier.Desktop.Entities
 {
@@ -9,11 +7,8 @@ namespace Financier.Desktop.Entities
     /// </summary>
     public partial class Budgets : UserControl
     {
-        public RangeObservableCollection<Budget> BudgetsList { get; }
-        public Budgets(RangeObservableCollection<Budget> currencies)
+        public Budgets()
         {
-            BudgetsList = currencies;
-            DataContext = this;
             InitializeComponent();
         }
     }

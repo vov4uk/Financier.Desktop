@@ -15,17 +15,15 @@ namespace FinancistoAdapter.Converters
             {
                 if (type == typeof(bool) && value is string)
                 {
-                    bool result;
-                    if (bool.TryParse((string)value, out result))
+                    if (bool.TryParse((string)value, out bool result))
                         return result;
-                    int i;
-                    if (int.TryParse((string)value, out i))
+                    if (int.TryParse((string)value, out int i))
                         return System.Convert.ToBoolean(i);
                 }
                 if (type == typeof(double) && value is string)
                 {
 
-                    bool isNum = double.TryParse((string)value, System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out var retNum);
+                    bool isNum = double.TryParse((string)value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var retNum);
                     if (!isNum)
                     {
                         return default(double?);
@@ -35,7 +33,7 @@ namespace FinancistoAdapter.Converters
                 if (type == typeof(float) && value is string)
                 {
 
-                    bool isNum = float.TryParse((string)value, System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out var retNum);
+                    bool isNum = float.TryParse((string)value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var retNum);
                     if (!isNum)
                     {
                         return default(float?);

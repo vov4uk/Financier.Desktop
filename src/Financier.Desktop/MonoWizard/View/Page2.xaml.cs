@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace MonoWizard.View
+namespace Financier.Desktop.MonoWizard.View
 {
     /// <summary>
     /// Interaction logic for Page2.xaml

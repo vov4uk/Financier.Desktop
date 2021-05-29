@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using MonoWizard.Helpers;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
-using Financier.Desktop.MonoWizard.Model;
 using Financier.DataAccess.Data;
+using Prism.Commands;
+using Prism.Mvvm;
+using Financier.DataAccess.Monobank;
 
-namespace MonoWizard.ViewModel
+namespace Financier.Desktop.MonoWizard.ViewModel
 {
-    public class MonoWizardViewModel : NotifyModelBase
+    public class MonoWizardViewModel : BindableBase
     {
         private readonly string csvFilePath;
         private readonly List<MonoTransaction> monoTransactions = new List<MonoTransaction>();
@@ -35,7 +36,7 @@ namespace MonoWizard.ViewModel
             get
             {
                 if (_cancelCommand == null)
-                    _cancelCommand = new DelegateCommand(arg => CancelOrder());
+                    _cancelCommand = new DelegateCommand(CancelOrder);
 
                 return _cancelCommand;
             }
@@ -51,9 +52,7 @@ namespace MonoWizard.ViewModel
         {
             get
             {
-                return _moveNextCommand ?? (_moveNextCommand = new DelegateCommand(
-                                                                   arg => MoveToNextPage(),
-                                                                   arg => CanMoveToNextPage));
+                return _moveNextCommand ?? (_moveNextCommand = new DelegateCommand(MoveToNextPage, () => CanMoveToNextPage));
             }
         }
 
@@ -84,9 +83,7 @@ namespace MonoWizard.ViewModel
         {
             get
             {
-                return _movePreviousCommand ?? (_movePreviousCommand = new DelegateCommand(
-                                                                           args => MoveToPreviousPage(),
-                                                                           args => CanMoveToPreviousPage));
+                return _movePreviousCommand ?? (_movePreviousCommand = new DelegateCommand(MoveToPreviousPage, () => CanMoveToPreviousPage));
             }
         }
 
@@ -133,9 +130,9 @@ namespace MonoWizard.ViewModel
 
                 MovePreviousCommand.RaiseCanExecuteChanged();
                 MoveNextCommand.RaiseCanExecuteChanged();
-                OnPropertyChanged("Title");
-                OnPropertyChanged("CurrentPage");
-                OnPropertyChanged("IsOnLastPage");
+                RaisePropertyChanged(nameof(Title));
+                RaisePropertyChanged(nameof(CurrentPage));
+                RaisePropertyChanged(nameof(IsOnLastPage));
             }
         }
 
@@ -206,7 +203,7 @@ namespace MonoWizard.ViewModel
         void OnRequestClose()
         {
             TransactionsToImport = _pages.OfType<Page2ViewModel>().Single().TransactionsToImport;
-                EventHandler handler = RequestClose;
+            EventHandler handler = RequestClose;
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }

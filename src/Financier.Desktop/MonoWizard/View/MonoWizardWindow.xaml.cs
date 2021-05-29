@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace MonoWizard
+namespace Financier.Desktop.MonoWizard.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

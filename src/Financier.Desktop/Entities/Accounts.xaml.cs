@@ -1,7 +1,4 @@
-﻿using Financier.DataAccess.Data;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace Financier.Desktop.Entities
 {
@@ -10,11 +7,8 @@ namespace Financier.Desktop.Entities
     /// </summary>
     public partial class Accounts : UserControl
     {
-        public RangeObservableCollection<Account> AccountsList { get; }
-        public Accounts(List<Account> accounts)
+        public Accounts()
         {
-            AccountsList = new RangeObservableCollection<Account>(accounts);
-            DataContext = this;
             InitializeComponent();
         }
     }

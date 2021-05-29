@@ -33,8 +33,10 @@ namespace FinancistoAdapter
                         ColumnAttribute pattr = (ColumnAttribute) p.GetCustomAttribute(typeof (ColumnAttribute));
                         if (pattr != null)
                         {
-                            EntityPropertyInfo pInfo = new EntityPropertyInfo(p);
-                            pInfo.Converter = (IPropertyConverter) Activator.CreateInstance(typeof(DefaultConverter));
+                            EntityPropertyInfo pInfo = new EntityPropertyInfo(p)
+                            {
+                                Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))
+                            };
                             pInfo.Converter.PropertyType = p.PropertyType;
                             info.Properties[pattr.Name] = pInfo;
                         }

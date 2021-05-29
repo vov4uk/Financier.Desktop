@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Financier.DataAccess.View
 {
-    public abstract class TransactionsView
+    public abstract class TransactionsView : Entity
     {
         [NotMapped]
         public const string TRANSFER_DELIMITER = " \u00BB ";

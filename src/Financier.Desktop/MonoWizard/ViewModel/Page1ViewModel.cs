@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace MonoWizard.ViewModel
+namespace Financier.Desktop.MonoWizard.ViewModel
 {
     public class Page1ViewModel : WizardBaseViewModel
     {
@@ -21,7 +21,7 @@ namespace MonoWizard.ViewModel
             set
             {
                 _accounts = value;
-                OnPropertyChanged("Accounts");
+                RaisePropertyChanged(nameof(Accounts));
             }
         }
 
@@ -32,7 +32,7 @@ namespace MonoWizard.ViewModel
             set
             {
                 _monoAccount = value;
-                OnPropertyChanged("MonoAccount");
+                RaisePropertyChanged(nameof(MonoAccount));
             }
         }
 

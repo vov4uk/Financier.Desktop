@@ -12,6 +12,7 @@ using System.Resources;
 using System.Threading.Tasks;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.Abstractions;
+using Financier.DataAccess.Monobank;
 
 namespace Financier.DataAccess
 {
@@ -151,6 +152,32 @@ namespace Financier.DataAccess
                 }
 
                 await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task ImportMonoTransactions(int accountId, List<MonoTransaction> transactions)
+        {
+            using (var uow = CreateUnitOfWork())
+            {
+                var _currencies = await uow.GetRepository<Currency>().GetAllAsync();
+                var _locations = await uow.GetRepository<Location>().GetAllAsync();
+
+                var transactionsRepo = uow.GetRepository<Transaction>();
+                var transToAdd = transactions.Select(x => new Transaction
+                {
+                    Id = 0,
+                    FromAccountId = accountId,
+                    FromAmount = (long)(x.CardCurrencyAmount * 100),
+                    OriginalFromAmmount = x.ExchangeRate == null ? 0 : (long)(x.OperationAmount * 100),
+                    OriginalCurrencyId = x.ExchangeRate == null ? 0 : _currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
+                    CategoryId = 0,
+                    LocationId = _locations.FirstOrDefault(l => l.Name.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0,
+                    Note = x.Description,
+                    DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
+                }).ToList();
+
+                await transactionsRepo.AddRangeAsync(transToAdd);
+                await uow.SaveChangesAsync();
             }
         }
         public IUnitOfWork CreateUnitOfWork()

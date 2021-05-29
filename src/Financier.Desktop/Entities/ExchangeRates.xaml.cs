@@ -9,11 +9,8 @@ namespace Financier.Desktop.Entities
     /// </summary>
     public partial class ExchangeRates : UserControl
     {
-        public RangeObservableCollection<CurrencyExchangeRate> ExchangeRatesList { get; }
-        public ExchangeRates(RangeObservableCollection<CurrencyExchangeRate> rates)
+        public ExchangeRates()
         {
-            ExchangeRatesList = rates;
-            DataContext = this;
             InitializeComponent();
         }
     }

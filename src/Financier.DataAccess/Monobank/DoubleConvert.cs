@@ -3,7 +3,7 @@ using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using System;
 
-namespace Financier.Desktop.MonoWizard.Model
+namespace Financier.DataAccess.Monobank
 {
     public class DoubleConvert : DoubleConverter
     {
@@ -14,7 +14,7 @@ namespace Financier.Desktop.MonoWizard.Model
 
         public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            bool isNum = double.TryParse(Convert.ToString(text), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out var retNum);
+            bool isNum = double.TryParse(Convert.ToString(text), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out double retNum);
             if (!isNum)
             {
                 return default(double?);

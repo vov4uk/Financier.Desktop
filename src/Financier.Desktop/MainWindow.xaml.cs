@@ -1,9 +1,10 @@
-﻿using Financier.Desktop.Entities;
+﻿using Financier.DataAccess.Data;
+using Financier.Desktop.MonoWizard.View;
+using Financier.Desktop.MonoWizard.ViewModel;
 using Financier.Desktop.ViewModel;
 using FinancistoAdapter;
-using MonoWizard;
-using MonoWizard.ViewModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Forms;
@@ -20,10 +21,11 @@ namespace Financier.Desktop
         {
             InitializeComponent();
             VM = new FinancierVM();
+
             DataContext = VM;
         }
 
-        private async void RestoreBackup_OnClick(object sender, RoutedEventArgs e)
+        private async void OpenBackup_OnClick(object sender, RoutedEventArgs e)
         {
             using (var openFileDialog = new OpenFileDialog
             {
@@ -36,69 +38,14 @@ namespace Financier.Desktop
                     await VM.OpenBackup(openFileDialog.FileName);
                 }
             }
-            Accounts_Click(null, null);
-        }
-
-        private void Accounts_Click(object sender, RoutedEventArgs e)
-        {
-            UIPanel.Children.Clear();
-            UIPanel.Children.Add(new Accounts(VM.Accounts));
-        }
-
-        private void Categories_Click(object sender, RoutedEventArgs e)
-        {
-            UIPanel.Children.Clear();
-            UIPanel.Children.Add(new Categories(VM.Categories));
-        }
-
-        private void Projects_Click(object sender, RoutedEventArgs e)
-        {
-            UIPanel.Children.Clear();
-            UIPanel.Children.Add(new Projects(VM.Projects));
-        }
-
-        private void Payees_Click(object sender, RoutedEventArgs e)
-        {
-            UIPanel.Children.Clear();
-            UIPanel.Children.Add(new Payees(VM.Payees));
-        }
-
-        private void Currencies_Click(object sender, RoutedEventArgs e)
-        {
-            UIPanel.Children.Clear();
-            UIPanel.Children.Add(new Currencies(VM.Currencies));
-        }
-
-        private void ExchangeRates_Click(object sender, RoutedEventArgs e)
-        {
-            UIPanel.Children.Clear();
-            UIPanel.Children.Add(new ExchangeRates(VM.Rates));
-        }
-
-        private void Locations_Click(object sender, RoutedEventArgs e)
-        {
-            UIPanel.Children.Clear();
-            UIPanel.Children.Add(new Locations(VM.Locations));
-        }
-        
-        private void Budget_Click(object sender, RoutedEventArgs e)
-        {
-            UIPanel.Children.Clear();
-            UIPanel.Children.Add(new Budgets(VM.Budgets));
-        }
-
-        private void Blotter_Click(object sender, RoutedEventArgs e)
-        {
-            UIPanel.Children.Clear();
-            UIPanel.Children.Add(new Blotter(VM.Transactions));
         }
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            UIPanel.Children.Clear();
-            await VM.OpenBackup(@"C:\Users\vkhmelovskyi\Desktop\Financisto\20210527_005841_365.backup");
-            UIPanel.Children.Add(new Blotter(VM.Transactions));
+            //UIPanel.Children.Clear();
+            //await VM.OpenBackup(@"C:\Users\vkhmelovskyi\Desktop\Financisto\20210527_005841_365.backup");
+            //UIPanel.Children.Add(new Blotter(VM.Transactions));
 #endif
         }
 
@@ -114,7 +61,7 @@ namespace Financier.Desktop
                 {
                     var fileName = openFileDialog.FileName;
                     var dialog = new MonoWizardWindow();
-                    var viewModel = new MonoWizardViewModel(VM.Accounts, fileName);
+                    var viewModel = new MonoWizardViewModel(VM.Pages.OfType<AccountsVM>().First().Entities.OfType<Account>().ToList() , fileName);
                     await viewModel.LoadTransactions();
                     viewModel.RequestClose += (sender, args) =>
                     {
