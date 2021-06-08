@@ -1,11 +1,12 @@
 ﻿<RibbonWindow  x:Class="Financier.Desktop.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        xmlns:data="clr-namespace:Financier.DataAccess.Data;assembly=Financier.DataAccess"
-        xmlns:dataView="clr-namespace:Financier.DataAccess.View;assembly=Financier.DataAccess"
-        Icon="pack://application:,,,/Images/ic_launcher.png"
-        Title="Financier Desktop"
-        Loaded="RibbonWindow_Loaded">
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+               xmlns:data="clr-namespace:Financier.DataAccess.Data;assembly=Financier.DataAccess"
+               xmlns:dataView="clr-namespace:Financier.DataAccess.View;assembly=Financier.DataAccess"
+               xmlns:converters="clr-namespace:Financier.Desktop.Converters"
+               Icon="pack://application:,,,/Images/ic_launcher.png"
+               Title="Financier Desktop"
+               Loaded="RibbonWindow_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -20,6 +21,7 @@
             <x:Type x:Key="CurrencyExchangeRateType" TypeName="data:CurrencyExchangeRate"/>
             <x:Type x:Key="BudgetType" TypeName="data:Budget"/>
             <x:Type x:Key="TransactionsViewType" TypeName="dataView:BlotterTransactions"/>
+            <converters:StringEmptyToVisibilityConverter x:Key="stringToVisibilityConverter"/>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -75,9 +77,20 @@
 
             </RibbonTab>
         </Ribbon>
-        <DockPanel  Name="UIPanel" Grid.Row="1">
+        <DockPanel Grid.Row="1">
             <ContentPresenter Content="{Binding Path=CurrentPage}" DataContext="{Binding Path=CurrentPage}"/>
         </DockPanel>
+        <Grid Grid.Row="1"
+              AllowDrop="True"
+              Visibility="{Binding Path=OpenBackupPath, Converter={StaticResource stringToVisibilityConverter}}"
+              Drop="Grid_Drop">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="256"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Image Source="pack://application:,,,/Images/drag-drop-icon.png" Height="256" Width="265" />
+            <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold">Drop .backup file here</TextBlock>
+        </Grid>
     </Grid>
 
 </RibbonWindow >

@@ -9,18 +9,46 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\AccountType\account_type_asset.png" />
+    <None Remove="Images\AccountType\account_type_bank.png" />
+    <None Remove="Images\AccountType\account_type_card.png" />
+    <None Remove="Images\AccountType\account_type_card_amex.png" />
+    <None Remove="Images\AccountType\account_type_card_cirrus.png" />
+    <None Remove="Images\AccountType\account_type_card_default.png" />
+    <None Remove="Images\AccountType\account_type_card_diners.png" />
+    <None Remove="Images\AccountType\account_type_card_discover.png" />
+    <None Remove="Images\AccountType\account_type_card_hipercard.png" />
+    <None Remove="Images\AccountType\account_type_card_jcb.png" />
+    <None Remove="Images\AccountType\account_type_card_maestro.png" />
+    <None Remove="Images\AccountType\account_type_card_mastercard.png" />
+    <None Remove="Images\AccountType\account_type_card_mir.png" />
+    <None Remove="Images\AccountType\account_type_card_nets.png" />
+    <None Remove="Images\AccountType\account_type_card_unionpay.png" />
+    <None Remove="Images\AccountType\account_type_card_visa.png" />
+    <None Remove="Images\AccountType\account_type_card_visa_electron.png" />
+    <None Remove="Images\AccountType\account_type_cash.png" />
+    <None Remove="Images\AccountType\account_type_electronic.png" />
+    <None Remove="Images\AccountType\account_type_liability.png" />
+    <None Remove="Images\AccountType\account_type_other.png" />
     <None Remove="Images\actionbar_db_backup.png" />
     <None Remove="Images\actionbar_db_restore.png" />
     <None Remove="Images\actionbar_export.png" />
     <None Remove="Images\actionbar_filter_cancel.png" />
     <None Remove="Images\backup_file.png" />
+    <None Remove="Images\drag-drop-icon.png" />
+    <None Remove="Images\ic_action_add.png" />
     <None Remove="Images\ic_action_arrow_left_bottom.png" />
     <None Remove="Images\ic_action_arrow_right_top.png" />
     <None Remove="Images\ic_action_arrow_top_down.png" />
+    <None Remove="Images\ic_action_cancel.png" />
     <None Remove="Images\ic_action_category.png" />
+    <None Remove="Images\ic_action_edit.png" />
     <None Remove="Images\ic_action_gear.png" />
     <None Remove="Images\ic_action_info.png" />
+    <None Remove="Images\ic_action_minus.png" />
     <None Remove="Images\ic_action_share.png" />
+    <None Remove="Images\ic_action_transfer.png" />
+    <None Remove="Images\ic_action_trash.png" />
     <None Remove="Images\ic_launcher.ico" />
     <None Remove="Images\ic_launcher.png" />
     <None Remove="Images\ic_menu_back.png" />
@@ -41,18 +69,46 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\AccountType\account_type_asset.png" />
+    <Resource Include="Images\AccountType\account_type_bank.png" />
+    <Resource Include="Images\AccountType\account_type_card.png" />
+    <Resource Include="Images\AccountType\account_type_card_amex.png" />
+    <Resource Include="Images\AccountType\account_type_card_cirrus.png" />
+    <Resource Include="Images\AccountType\account_type_card_default.png" />
+    <Resource Include="Images\AccountType\account_type_card_diners.png" />
+    <Resource Include="Images\AccountType\account_type_card_discover.png" />
+    <Resource Include="Images\AccountType\account_type_card_hipercard.png" />
+    <Resource Include="Images\AccountType\account_type_card_jcb.png" />
+    <Resource Include="Images\AccountType\account_type_card_maestro.png" />
+    <Resource Include="Images\AccountType\account_type_card_mastercard.png" />
+    <Resource Include="Images\AccountType\account_type_card_mir.png" />
+    <Resource Include="Images\AccountType\account_type_card_nets.png" />
+    <Resource Include="Images\AccountType\account_type_card_unionpay.png" />
+    <Resource Include="Images\AccountType\account_type_card_visa.png" />
+    <Resource Include="Images\AccountType\account_type_card_visa_electron.png" />
+    <Resource Include="Images\AccountType\account_type_cash.png" />
+    <Resource Include="Images\AccountType\account_type_electronic.png" />
+    <Resource Include="Images\AccountType\account_type_liability.png" />
+    <Resource Include="Images\AccountType\account_type_other.png" />
     <Resource Include="Images\actionbar_db_backup.png" />
     <Resource Include="Images\actionbar_db_restore.png" />
     <Resource Include="Images\actionbar_export.png" />
     <Resource Include="Images\actionbar_filter_cancel.png" />
     <Resource Include="Images\backup_file.png" />
+    <Resource Include="Images\drag-drop-icon.png" />
+    <Resource Include="Images\ic_action_add.png" />
     <Resource Include="Images\ic_action_arrow_left_bottom.png" />
     <Resource Include="Images\ic_action_arrow_right_top.png" />
     <Resource Include="Images\ic_action_arrow_top_down.png" />
+    <Resource Include="Images\ic_action_cancel.png" />
     <Resource Include="Images\ic_action_category.png" />
+    <Resource Include="Images\ic_action_edit.png" />
     <Resource Include="Images\ic_action_gear.png" />
     <Resource Include="Images\ic_action_info.png" />
+    <Resource Include="Images\ic_action_minus.png" />
     <Resource Include="Images\ic_action_share.png" />
+    <Resource Include="Images\ic_action_transfer.png" />
+    <Resource Include="Images\ic_action_trash.png" />
     <Resource Include="Images\ic_launcher.png" />
     <Resource Include="Images\ic_menu_back.png" />
     <Resource Include="Images\ic_tab_accounts_selected.png" />
@@ -72,9 +128,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Emoji.Wpf" Version="0.3.0" />
+    <PackageReference Include="Emoji.Wpf" Version="0.3.3" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.1.0" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="System.Linq.Async" Version="5.0.0" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>

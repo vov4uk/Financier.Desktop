@@ -168,7 +168,7 @@ namespace Financier.DataAccess
                     Id = 0,
                     FromAccountId = accountId,
                     FromAmount = (long)(x.CardCurrencyAmount * 100),
-                    OriginalFromAmmount = x.ExchangeRate == null ? 0 : (long)(x.OperationAmount * 100),
+                    OriginalFromAmount = x.ExchangeRate == null ? 0 : (long)(x.OperationAmount * 100),
                     OriginalCurrencyId = x.ExchangeRate == null ? 0 : _currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
                     CategoryId = 0,
                     LocationId = _locations.FirstOrDefault(l => l.Name.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0,

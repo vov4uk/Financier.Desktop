@@ -21,6 +21,8 @@ namespace Financier.DataAccess.View
 
         [ForeignKey("to_account_currency")]
         public int? to_account_currency_id { get; set; }
+
+        [ForeignKey("category")]
         public int? category_id { get; set; }
         public string category_title { get; set; }
         public int category_left { get; set; }
@@ -55,6 +57,7 @@ namespace Financier.DataAccess.View
         public virtual Currency from_account_currency{ get; set; }
         public virtual Currency to_account_currency{ get; set; }
         public virtual Currency original_currency{ get; set; }
+        public virtual Category category { get; set; }
 
         [NotMapped]
         public string Type

@@ -19,6 +19,5 @@
         </Style.Triggers>
     </Style>
 
-    <SolidColorBrush x:Key="WinBackgroundBrush" Color="#FFF0F0F0"/>
     <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0"/>
 </ResourceDictionary>

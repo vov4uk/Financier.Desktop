@@ -60,10 +60,10 @@ namespace Financier.DataAccess.Data
 
         [ForeignKey("OriginalCurrency")]
         [Column("original_currency_id")]
-        public int OriginalCurrencyId { get; set; }
+        public int? OriginalCurrencyId { get; set; }
 
         [Column("original_from_amount")]
-        public long OriginalFromAmmount { get; set; }
+        public long? OriginalFromAmount { get; set; }
 
         [Column(UpdatedOnColumn)]
         public long UpdatedOn { get; set; }

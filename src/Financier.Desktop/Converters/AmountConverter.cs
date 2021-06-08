@@ -10,14 +10,18 @@ namespace Financier.Desktop.Converters
         {
             if (long.TryParse(System.Convert.ToString(value), out var amount))
             {
-                return (amount / 100.0).ToString("F2");
+                if (System.Convert.ToString(parameter) == "false")
+                {
+                    return amount / 100.0m;
+                }
+                return Math.Abs(amount / 100.0m);
             }
             return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var amount = System.Convert.ToDouble(value);
+            var amount = System.Convert.ToDecimal(value);
             return (long)(amount *100);
         }
     }

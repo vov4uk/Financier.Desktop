@@ -1,4 +1,5 @@
 ﻿using Financier.DataAccess.Data;
+using Financier.Desktop.Entities;
 using Financier.Desktop.MonoWizard.View;
 using Financier.Desktop.MonoWizard.ViewModel;
 using Financier.Desktop.ViewModel;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Forms;
+using DataFormats = System.Windows.DataFormats;
 
 namespace Financier.Desktop
 {
@@ -42,11 +44,10 @@ namespace Financier.Desktop
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
-#if DEBUG
-            //UIPanel.Children.Clear();
-            //await VM.OpenBackup(@"C:\Users\vkhmelovskyi\Desktop\Financisto\20210527_005841_365.backup");
-            //UIPanel.Children.Add(new Blotter(VM.Transactions));
-#endif
+            #if DEBUG
+            await VM.OpenBackup(@"C:\D\Financisto\20210428_185525_708.backup");
+            VM.CurrentPage = VM.Pages.OfType<BlotterVM>().First();
+            #endif
         }
 
         private async void Mono_Click(object sender, RoutedEventArgs e)
@@ -86,6 +87,18 @@ namespace Financier.Desktop
                     await VM.SaveBackup(dialog.FileName);
 
                     System.Windows.Forms.MessageBox.Show("Backup done.");
+                }
+            }
+        }
+
+        private async void Grid_Drop(object sender, System.Windows.DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+                if (files?.Any(x => Path.GetExtension(x) == ".backup") == true)
+                {
+                    await VM.OpenBackup(files.FirstOrDefault(x => Path.GetExtension(x) == ".backup"));
                 }
             }
         }

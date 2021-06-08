@@ -1,0 +1,143 @@
+﻿<UserControl x:Class="Financier.Desktop.Entities.SubTransactionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Financier.Desktop.Entities"
+             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:Financier.Desktop.Converters"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionVM}, IsDesignTimeCreatable=True}"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="400">
+    <UserControl.Resources>
+        <BitmapImage x:Key="ic_action_cancel" 
+                     UriSource="pack://application:,,,/Images/ic_action_cancel.png"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converters:AmountConverter x:Key="AmountConverter" />
+        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0"/>
+
+    </UserControl.Resources>
+    <GroupBox Margin="5"
+              Header="Transaction details"
+              FontSize="12"
+              Background="{StaticResource WindowBackgroundBrush}">
+        <GroupBox.Resources>
+            <Style TargetType="{x:Type Image}">
+                <Setter Property="Height" Value="20"/>
+                <Setter Property="Width" Value="20"/>
+            </Style>
+            <Style TargetType="{x:Type xctk:IconButton}">
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="Width" Value="24"/>
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </GroupBox.Resources>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="24"/>
+            </Grid.RowDefinitions>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+
+                    <!--Category-->
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="24"/>
+
+                    <!--amount-->
+                    <RowDefinition Height="Auto"/>
+                    <!--Spit-->
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="15"/>
+
+                    <!--note-->
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="24"/>
+                    <!--project-->
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="24"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="24"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="categoryTb">Cetegory</TextBlock>
+
+                <xctk:WatermarkComboBox  Grid.Column="0"
+                                         Grid.Row="1"
+                                         IsEditable="True"
+                                         x:Name="caregory"
+                                         ItemsSource="{Binding Categories}"
+                                         SelectedValuePath="Id"
+                                         DisplayMemberPath="Title"
+                                         SelectedValue="{Binding CategoryId}">
+                    <!--<xctk:WatermarkComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <emoji:TextBlock Text="{Binding Title}" />
+                                </DataTemplate>
+                        </xctk:WatermarkComboBox.ItemTemplate>-->
+                </xctk:WatermarkComboBox>
+
+                <xctk:IconButton Grid.Row="1" Grid.Column="2"
+                                 Command="{Binding ClearCategoryCommand}">
+                    <xctk:IconButton.CommandParameter>
+                        <sys:Int32>0</sys:Int32>
+                    </xctk:IconButton.CommandParameter>
+                    <xctk:IconButton.Icon>
+                        <Image Source="{StaticResource ic_action_cancel}"/>
+                    </xctk:IconButton.Icon>
+                </xctk:IconButton>
+
+                <local:AmountControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                     DataContext="{Binding}"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">Unsplit amount</TextBlock>
+                <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" 
+                           Text="{Binding UnSplitAmount, Converter={StaticResource AmountConverter}}"/>
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+                           x:Name="noteTb">Note</TextBlock>
+                <TextBox   Grid.Row="6" Grid.Column="0"
+                           x:Name="note"
+                           Text="{Binding Note}"/>
+                <xctk:IconButton Grid.Row="6" Grid.Column="2"
+                                 Command="{Binding ClearNotesCommand}">
+                    <xctk:IconButton.Icon>
+                        <Image Source="{StaticResource ic_action_cancel}"/>
+                    </xctk:IconButton.Icon>
+                </xctk:IconButton>
+
+                <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"
+                           x:Name="projectTb">Project</TextBlock>
+
+                <xctk:WatermarkComboBox Grid.Row="8" Grid.Column="0"
+                                        x:Name="project"
+                                        IsEditable="True"
+                                        ItemsSource="{Binding Projects}"
+                                        SelectedValue="{Binding ProjectId}"
+                                        SelectedValuePath="Id"
+                                        DisplayMemberPath="Title"/>
+                <xctk:IconButton Grid.Row="8" Grid.Column="2"
+                             Command="{Binding Transaction.ClearProjectCommand}">
+                    <xctk:IconButton.Icon>
+                        <Image Source="{StaticResource ic_action_cancel}"/>
+                    </xctk:IconButton.Icon>
+                </xctk:IconButton>
+
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Margin="2">SAVE</Button>
+                <Button Grid.Column="1" Margin="2">CANCEL</Button>
+            </Grid>
+        </Grid>
+    </GroupBox>
+</UserControl>

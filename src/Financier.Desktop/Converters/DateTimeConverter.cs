@@ -14,6 +14,11 @@ namespace Financier.Desktop.Converters
             return StartDate.AddMilliseconds(timestamp).ToLocalTime().ToString(format);
         }
 
+        public DateTime Convert(long timestamp)
+        {
+            return StartDate.AddMilliseconds(timestamp).ToLocalTime();
+        }
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var dateStr = System.Convert.ToString(value);

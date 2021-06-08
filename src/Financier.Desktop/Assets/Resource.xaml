@@ -30,5 +30,8 @@
     <DataTemplate DataType="{x:Type ViewModel:ProjectsVM}">
         <View:Projects/>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModel:InfoVM}">
+        <View:InfoControl/>
+    </DataTemplate>
 
 </ResourceDictionary>
