@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/khmelovskyi/Financier.Desktop/_apis/build/status/vov4uk.Financier.Desktop?branchName=master)](https://dev.azure.com/khmelovskyi/Financier.Desktop/_build/latest?definitionId=2&branchName=master)
+
 # Financier.Desktop
 WORK IN PROGRESS
 ## About
