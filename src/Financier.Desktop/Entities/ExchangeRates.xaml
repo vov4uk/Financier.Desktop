@@ -10,7 +10,12 @@
         <convert:DateTimeConverter x:Key="datetime_converter"></convert:DateTimeConverter>
     </UserControl.Resources>
     <Grid>
-        <DataGrid Margin="5" ItemsSource="{Binding Path=Entities}" AutoGenerateColumns="False" CanUserAddRows="false">
+        <DataGrid Margin="5"
+                  ItemsSource="{Binding Path=Entities}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  FontSize="14"
+                  IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, Converter= {StaticResource datetime_converter}}"></DataGridTextColumn>
                 <DataGridTextColumn Header="From" Binding="{Binding Path=FromCurrency.Name}"></DataGridTextColumn>

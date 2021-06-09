@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -101,28 +100,39 @@ namespace Financier.Desktop.ViewModel
                 }.AsReadOnly();
         }
 
-        private async void BlotterVM_OpenTransactionRaised(object sender, int e)
+        private async void BlotterVM_OpenTransactionRaised(object sender, TransactionsView e)
+        {
+            if (e.from_account_id > 0 && e.to_account_id > 0 && e.category_id == 0)
+            {
+                await OpenTransferDialog(e._id);
+            }
+            else
+            {
+                await OpenTransactionDialog(e._id);
+            }
+        }
+
+        private async Task OpenTransactionDialog(int e)
         {
             TransactionVM context;
             using (var uow = db.CreateUnitOfWork())
             {
-                var transaction = await uow.GetRepository<BlotterTransactions>().FindByAsync(x => x._id == e, x => x.original_currency, x => x.category);
-                var subTransactions = await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == e, o => o.OriginalCurrency, c => c.Category);
+                var transactions = await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == e || x.Id == e, o => o.OriginalCurrency, c => c.Category);
 
-                var transactionVM = ConvertTransaction(transaction);
-                if (subTransactions?.Any() == true)
+                var transactionVM = ConvertTransaction(transactions.First(x => x.Id == e));
+                if (transactions?.Any(x => x.ParentId == e) == true)
                 {
-                    var sub = subTransactions.Select(x => ConvertTransaction(x));
-                    transactionVM.SubTransactions = new ObservableCollection<TransactionVM>(sub);
+                    var subTransactions = transactions.Where(x => x.ParentId == e).Select(x => ConvertTransaction(x));
+                    transactionVM.SubTransactions = new ObservableCollection<TransactionVM>(subTransactions);
                 }
                 context = transactionVM ?? new TransactionVM();
 
-                var allAccounts = await uow.GetRepository<Account>().FindManyAsync(x => x.IsActive ,x => x.Currency);
+                var allAccounts = await uow.GetRepository<Account>().GetAllAsync(x => x.Currency);
                 var allCategories = await uow.GetRepository<Category>().GetAllAsync();
-                var allPayees = await uow.GetRepository<Payee>().FindManyAsync(x => x.IsActive);
+                var allPayees = await uow.GetRepository<Payee>().GetAllAsync();
                 var currencies = await uow.GetRepository<Currency>().GetAllAsync();
-                var locations = await uow.GetRepository<Location>().FindManyAsync(x => x.IsActive == true);
-                var projects = await uow.GetRepository<Project>().FindManyAsync(x => x.IsActive == true);
+                var locations = await uow.GetRepository<Location>().GetAllAsync();
+                var projects = await uow.GetRepository<Project>().GetAllAsync();
                 context.Accounts = new ObservableCollection<Account>(allAccounts);
                 context.Categories = new ObservableCollection<Category>(allCategories);
                 context.Payees = new ObservableCollection<Payee>(allPayees);
@@ -130,35 +140,58 @@ namespace Financier.Desktop.ViewModel
                 context.Locations = new ObservableCollection<Location>(locations);
                 context.Projects = new ObservableCollection<Project>(projects);
             }
-            var dialog = new Window();
+            var dialog = new Window
             {
-                dialog.Content = new TransactionControl() { DataContext = context };
-                dialog.Height = 640;
-                dialog.Width = 340;
-                dialog.Show();
-            }
+                Content = new TransactionControl() { DataContext = context },
+                ResizeMode = ResizeMode.NoResize,
+                Height = 640,
+                Width = 340,
+                ShowInTaskbar = false
+            };
+            context.RequestCancel += (sender, args) =>
+            {
+                dialog.Close();
+            };
+            context.RequestSave += (sender, args) =>
+            {
+                dialog.Close();
+            };
+            dialog.ShowDialog();
         }
 
-        private TransactionVM ConvertTransaction(BlotterTransactions transaction)
+        private async Task OpenTransferDialog(int e)
         {
-            return new TransactionVM
+            TransferVM context;
+            using (var uow = db.CreateUnitOfWork())
             {
-                Id = transaction._id,
-                AccountId = transaction.from_account_id,
-                CategoryId = transaction.category_id,
-                Category = transaction.category,
-                PayeeId = transaction.payee_id,
-                CurrencyId = transaction.original_currency_id,
-                Currency = transaction.original_currency,
-                LocationId = transaction.location_id,
-                ProjectId = transaction.project_id,
-                Note = transaction.note,
-                FromAmount = transaction.from_amount,
-                OriginalFromAmount = transaction.original_from_amount,
-                IsAmountNegative = transaction.from_amount < 0,
-                Date = new DateTimeConverter().Convert(transaction.datetime),
+                var transaction = await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == e, o => o.OriginalCurrency, c => c.Category);
+
+                var transactionVM = ConvertTransfer(transaction);
+                context = transactionVM ?? new TransferVM();
+
+                var allAccounts = await uow.GetRepository<Account>().GetAllAsync(x => x.Currency);
+                var projects = await uow.GetRepository<Project>().GetAllAsync();
+                context.Accounts = new ObservableCollection<Account>(allAccounts);
+            }
+            var dialog = new Window
+            {
+                Content = new TransferControl() { DataContext = context },
+                ResizeMode = ResizeMode.NoResize,
+                Height = 385,
+                Width = 340,
+                ShowInTaskbar = false
             };
+            context.RequestCancel += (sender, args) =>
+            {
+                dialog.Close();
+            };
+            context.RequestSave += (sender, args) =>
+            {
+                dialog.Close();
+            };
+            dialog.ShowDialog();
         }
+
         private TransactionVM ConvertTransaction(Transaction transaction)
         {
             return new TransactionVM
@@ -176,6 +209,20 @@ namespace Financier.Desktop.ViewModel
                 FromAmount = transaction.FromAmount,
                 OriginalFromAmount = transaction.OriginalFromAmount,
                 IsAmountNegative = transaction.FromAmount < 0,
+                Date = new DateTimeConverter().Convert(transaction.DateTime),
+            };
+        }
+        
+        private TransferVM ConvertTransfer(Transaction transaction)
+        {
+            return new TransferVM
+            {
+                Id = transaction.Id,
+                FromAccountId = transaction.FromAccountId,
+                ToAccountId = transaction.ToAccountId,
+                Note = transaction.Note,
+                FromAmount = transaction.FromAmount,
+                ToAmount = transaction.ToAmount,
                 Date = new DateTimeConverter().Convert(transaction.DateTime),
             };
         }
@@ -224,11 +271,11 @@ namespace Financier.Desktop.ViewModel
             var duration = DateTime.Now - start;
             sb.AppendLine($"Duration : {duration}");
             var info = new InfoVM { Text = sb.ToString() };
-            info.RequestClose += Info_RequestClose;
+            info.RequestClose += InfoClose;
             CurrentPage = info;
         }
 
-        private void Info_RequestClose(object sender, EventArgs e)
+        private void InfoClose(object sender, EventArgs e)
         {
             CurrentPage = Pages.OfType<AccountsVM>().First();
         }

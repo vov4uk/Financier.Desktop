@@ -6,7 +6,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <DataGrid Margin="5" ItemsSource="{Binding Path=Entities}" AutoGenerateColumns="False" CanUserAddRows="false">
+        <DataGrid Margin="5"
+                  ItemsSource="{Binding Path=Entities}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  FontSize="14"
+                  IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>

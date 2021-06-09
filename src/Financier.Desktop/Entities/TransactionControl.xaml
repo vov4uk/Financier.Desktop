@@ -10,7 +10,7 @@
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionControlVM}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionVM}, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
@@ -206,7 +206,10 @@
                                     <Image Source="{StaticResource ic_action_transfer}"/>
                                 </xctk:IconButton.Icon>
                             </xctk:IconButton>
-                            <xctk:IconButton  Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Margin="0,3,0,0" VerticalAlignment="Top">
+                            <xctk:IconButton  Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" 
+                                              Margin="0,3,0,0"
+                                              VerticalAlignment="Top"
+                                              Command="{Binding AddSubTransactionCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource ic_action_add}"/>
                                 </xctk:IconButton.Icon>
@@ -301,8 +304,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Margin="2">SAVE</Button>
-                <Button Grid.Column="1" Margin="2">CANCEL</Button>
+                <Button Grid.Column="0" Margin="2"
+                        Command="{Binding SaveCommand}"
+                        Content="SAVE"/>
+                <Button Grid.Column="1" Margin="2"
+                        Command="{Binding CancelCommand}"
+                        Content="CANCEL"/>
             </Grid>
         </Grid>
     </GroupBox>

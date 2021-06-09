@@ -1,5 +1,4 @@
 ﻿using Financier.DataAccess.View;
-using Financier.Desktop.Entities;
 using Prism.Commands;
 using System;
 
@@ -7,7 +6,7 @@ namespace Financier.Desktop.ViewModel
 {
     public class BlotterVM : EntityBaseVM<BlotterTransactions>
     {
-        public event EventHandler<int> OpenTransactionRaised;
+        public event EventHandler<TransactionsView> OpenTransactionRaised;
 
         public BlotterTransactions _selectedValue;
         public BlotterTransactions SelectedValue
@@ -31,7 +30,7 @@ namespace Financier.Desktop.ViewModel
         private void OpenTransacrionWindow(TransactionsView obj)
         {
             if (OpenTransactionRaised != null)
-                OpenTransactionRaised(this, obj._id);
+                OpenTransactionRaised(this, obj);
         }
     }
 }

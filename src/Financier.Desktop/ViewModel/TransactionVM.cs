@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace Financier.Desktop.ViewModel
 {
-    public class TransactionVM : BindableBase
+    public class TransactionVM : BindableBase, ICloneable
     {
         private DateTime date;
         private int id;
@@ -49,10 +49,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_changeFromAmountSignCommand == null)
-                    _changeFromAmountSignCommand = new DelegateCommand(()=> { IsAmountNegative = !isAmountNegative; });
-
-                return _changeFromAmountSignCommand;
+                return _changeFromAmountSignCommand ??= new DelegateCommand(() => { IsAmountNegative = !isAmountNegative; });
             }
         }
 
@@ -61,10 +58,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_clearPayeeCommand == null)
-                    _clearPayeeCommand = new DelegateCommand(() => { PayeeId = default; });
-
-                return _clearPayeeCommand;
+                return _clearPayeeCommand ??= new DelegateCommand(() => { PayeeId = default; });
             }
         }
 
@@ -73,10 +67,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_clearNotesCommand == null)
-                    _clearNotesCommand = new DelegateCommand(() => { Note = default; });
-
-                return _clearNotesCommand;
+                return _clearNotesCommand ??= new DelegateCommand(() => { Note = default; });
             }
         }
 
@@ -85,10 +76,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_clearLocationCommand == null)
-                    _clearLocationCommand = new DelegateCommand(() => { LocationId = default; });
-
-                return _clearLocationCommand;
+                return _clearLocationCommand ??= new DelegateCommand(() => { LocationId = default; });
             }
         }
 
@@ -97,14 +85,11 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_clearCategoryCommand == null)
-                    _clearCategoryCommand = new DelegateCommand<int?>(
+                return _clearCategoryCommand ??= new DelegateCommand<int?>(
                         (int? i) =>
                         {
                             CategoryId = i;
                         });
-
-                return _clearCategoryCommand;
             }
         }
 
@@ -113,10 +98,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_clearFromAmountCommand == null)
-                    _clearFromAmountCommand = new DelegateCommand(() => { FromAmount = 0; });
-
-                return _clearFromAmountCommand;
+                return _clearFromAmountCommand ??= new DelegateCommand(() => { FromAmount = 0; });
             }
         }
 
@@ -125,10 +107,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_clearOriginalFromAmountCommand == null)
-                    _clearOriginalFromAmountCommand = new DelegateCommand(() => { OriginalFromAmount = 0; });
-
-                return _clearOriginalFromAmountCommand;
+                return _clearOriginalFromAmountCommand ??= new DelegateCommand(() => { OriginalFromAmount = 0; });
             }
         }
 
@@ -137,10 +116,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_clearProjectCommand == null)
-                    _clearProjectCommand = new DelegateCommand(() => { projectId = default; });
-
-                return _clearProjectCommand;
+                return _clearProjectCommand ??= new DelegateCommand(() => { projectId = default; });
             }
         }
 
@@ -149,12 +125,10 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_deleteSubTransactionCommand == null)
-                    _deleteSubTransactionCommand = new DelegateCommand<TransactionVM>((TransactionVM tr) => { 
-                        subTransactions.Remove(tr); 
-                    });
-
-                return _deleteSubTransactionCommand;
+                return _deleteSubTransactionCommand ??= new DelegateCommand<TransactionVM>((TransactionVM tr) =>
+                {
+                    subTransactions.Remove(tr);
+                });
             }
         }
 
@@ -163,26 +137,91 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_openSubTransactionDialogCommand == null)
-                    _openSubTransactionDialogCommand = new DelegateCommand<TransactionVM>((TransactionVM tr) =>
-                    {
-                        tr.Categories = Categories;
-                        tr.Projects = Projects;
-                        var dialog = new Window();
-                        {
-                            dialog.Content = new SubTransactionControl() { DataContext = tr };
-                            dialog.Height = 640;
-                            dialog.Width = 340;
-                            dialog.Show();
-                        }
-                    });
-
-                return _openSubTransactionDialogCommand;
+                return _openSubTransactionDialogCommand ??= new DelegateCommand<TransactionVM>(ShowSubTransactionDialog);
             }
         }
 
-        // TODO : add currency and category
-        // TODO : add controls if account currency <> selected curency
+        private DelegateCommand _addSubTransactionCommand;
+        public DelegateCommand AddSubTransactionCommand
+        {
+            get
+            {
+                return _addSubTransactionCommand ??= new DelegateCommand(() => ShowSubTransactionDialog(new TransactionVM()));
+            }
+        }
+
+        private void ShowSubTransactionDialog(TransactionVM tr)
+        {
+            var copy = tr.Clone() as TransactionVM;
+            copy.Categories = Categories;
+            copy.Projects = Projects;
+
+            var dialog = new Window
+            {
+                Content = new SubTransactionControl() { DataContext = copy },
+                ResizeMode = ResizeMode.NoResize,
+                Height = 340,
+                Width = 340,
+                ShowInTaskbar = false,
+            };
+
+            copy.RequestCancel += (sender, args) =>
+            {
+                dialog.Close();
+            };
+            copy.RequestSave += (sender, args) =>
+            {
+                dialog.Close();
+            };
+            dialog.ShowDialog();
+        }
+
+        private DelegateCommand _cancelCommand;
+        public DelegateCommand CancelCommand
+        {
+            get
+            {
+                if (_cancelCommand == null)
+                    _cancelCommand = new DelegateCommand(Cancel);
+
+                return _cancelCommand;
+            }
+        }
+
+        private DelegateCommand _saveCommand;
+        public DelegateCommand SaveCommand
+        {
+            get
+            {
+                if (_saveCommand == null)
+                    _saveCommand = new DelegateCommand(Save);
+
+                return _saveCommand;
+            }
+        }
+
+        private void Cancel()
+        {
+            EventHandler handler = RequestCancel;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
+
+        private void Save()
+        {
+            EventHandler handler = RequestSave;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        public event EventHandler RequestCancel;
+        public event EventHandler RequestSave;
+
 
         public Category Category
         {
@@ -234,7 +273,7 @@ namespace Financier.Desktop.ViewModel
             set
             {
                 date = value;
-                RaisePropertyChanged(nameof(AccountId));
+                RaisePropertyChanged(nameof(Date));
             }
         }
 

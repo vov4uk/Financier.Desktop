@@ -19,7 +19,8 @@
                   SelectedItem="{Binding SelectedValue}"
                   ScrollViewer.CanContentScroll="True"
                   IsReadOnly="True"
-                  CanUserAddRows="false">
+                  CanUserAddRows="false"
+                  FontSize="14">
             <DataGrid.InputBindings>
                 <MouseBinding
                     MouseAction="LeftDoubleClick"
@@ -51,7 +52,7 @@
                 <DataGridTemplateColumn Header="">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <emoji:TextBlock FontSize="14" Text="{Binding Path=TransactionTitle}"/>
+                            <emoji:TextBlock Text="{Binding Path=TransactionTitle}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
