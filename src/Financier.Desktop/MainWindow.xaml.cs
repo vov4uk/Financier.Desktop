@@ -64,14 +64,17 @@ namespace Financier.Desktop
                     var dialog = new MonoWizardWindow();
                     var viewModel = new MonoWizardViewModel(VM.Pages.OfType<AccountsVM>().First().Entities.OfType<Account>().ToList() , fileName);
                     await viewModel.LoadTransactions();
-                    viewModel.RequestClose += (sender, args) =>
+                    viewModel.RequestClose += async (sender, args) =>
                     {
                         dialog.Close();
+                        if (args)
+                        {
+                            var monoToImport = viewModel.TransactionsToImport;
+                            await VM.ImportMonoTransactions(viewModel.MonoBankAccount.Id, monoToImport);
+                        }
                     };
                     dialog.DataContext = viewModel;
                     dialog.ShowDialog();
-                    var monoToImport = viewModel.TransactionsToImport;
-                    await VM.ImportMonoTransactions(viewModel.MonoBankAccount.Id, monoToImport);
                 }
             }
         }

@@ -36,15 +36,15 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             get
             {
                 if (_cancelCommand == null)
-                    _cancelCommand = new DelegateCommand(CancelOrder);
+                    _cancelCommand = new DelegateCommand(Cancel);
 
                 return _cancelCommand;
             }
         }
 
-        void CancelOrder()
+        void Cancel()
         {
-            OnRequestClose();
+            OnRequestClose(false);
         }
 
         private DelegateCommand _moveNextCommand;
@@ -68,7 +68,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 if (CurrentPageIndex < Pages.Count - 1)
                     CurrentPage = Pages[CurrentPageIndex + 1];
                 else
-                    OnRequestClose();
+                    OnRequestClose(true);
             }
         }
 
@@ -168,7 +168,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         /// <summary>
         /// Raised when the wizard should be removed from the UI.
         /// </summary>
-        public event EventHandler RequestClose;
+        public event EventHandler<bool> RequestClose;
 
         #endregion // Events
 
@@ -200,12 +200,12 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        void OnRequestClose()
+        void OnRequestClose(bool save)
         {
             TransactionsToImport = _pages.OfType<Page2ViewModel>().Single().TransactionsToImport;
-            EventHandler handler = RequestClose;
+            EventHandler <bool> handler = RequestClose;
             if (handler != null)
-                handler(this, EventArgs.Empty);
+                handler(this, save);
         }
 
         public async Task LoadTransactions()

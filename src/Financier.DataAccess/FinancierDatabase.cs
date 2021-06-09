@@ -162,21 +162,26 @@ namespace Financier.DataAccess
                 var _currencies = await uow.GetRepository<Currency>().GetAllAsync();
                 var _locations = await uow.GetRepository<Location>().GetAllAsync();
 
-                var transactionsRepo = uow.GetRepository<Transaction>();
-                var transToAdd = transactions.Select(x => new Transaction
+                List<Transaction> transToAdd = new List<Transaction>();
+                foreach (var x in transactions)
                 {
-                    Id = 0,
-                    FromAccountId = accountId,
-                    FromAmount = (long)(x.CardCurrencyAmount * 100),
-                    OriginalFromAmount = x.ExchangeRate == null ? 0 : (long)(x.OperationAmount * 100),
-                    OriginalCurrencyId = x.ExchangeRate == null ? 0 : _currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
-                    CategoryId = 0,
-                    LocationId = _locations.FirstOrDefault(l => l.Name.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0,
-                    Note = x.Description,
-                    DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
-                }).ToList();
+                    var locationId = _locations.FirstOrDefault(l => l.Name.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+                    var newTr = new Transaction
+                    {
+                        Id = 0,
+                        FromAccountId = accountId,
+                        FromAmount = (long)(x.CardCurrencyAmount * 100),
+                        OriginalFromAmount = x.ExchangeRate == null ? 0 : (long)(x.OperationAmount * 100),
+                        OriginalCurrencyId = x.ExchangeRate == null ? 0 : _currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
+                        CategoryId = 0,
+                        LocationId = locationId,
+                        Note = locationId > 0 ? null : x.Description,
+                        DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
+                    };
+                    transToAdd.Add(newTr);
+                }
 
-                await transactionsRepo.AddRangeAsync(transToAdd);
+                await uow.GetRepository<Transaction>().AddRangeAsync(transToAdd);
                 await uow.SaveChangesAsync();
             }
         }

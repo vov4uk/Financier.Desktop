@@ -294,7 +294,7 @@ namespace Financier.Desktop.ViewModel
             {
                 allItems = allItems.Where(predicate).ToList();
             }
-            if (predicate != null)
+            if (keySelector != null)
             {
                 allItems = allItems.OrderBy(keySelector).ToList();
             }

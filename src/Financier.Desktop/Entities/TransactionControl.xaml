@@ -89,7 +89,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="120"/>
                         </Grid.ColumnDefinitions>
-                        <xctk:IconButton Grid.Row="0" Grid.Column="0" >
+                        <xctk:IconButton Grid.Row="0" Grid.Column="0"
+                                         IsEnabled="False">
                             <xctk:IconButton.Icon>
                                 <Image Source="pack://application:,,,/Images/ic_action_info.png" />
                             </xctk:IconButton.Icon>
