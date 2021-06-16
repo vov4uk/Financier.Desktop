@@ -21,10 +21,11 @@ namespace Financier.DataAccess
             modelBuilder.Entity<AllTransactions>().ToView("v_all_transactions").HasKey(x => x._id);
             modelBuilder.Entity<BlotterTransactions>().ToView("v_blotter").HasKey(x => x._id);
             modelBuilder.Entity<BlotterTransactionsForAccountWithSplits>().ToView("v_blotter_for_account_with_splits").HasKey(x => x._id);
-            modelBuilder.Entity<Transaction>()
-                .HasOne(v => v.Parent)
-                .WithMany(v => v.SubTransactions)
-                .HasForeignKey(v => v.ParentId);
+            //modelBuilder.Entity<Transaction>()
+            //    .HasOne(v => v.Parent)
+            //    .WithMany(v => v.SubTransactions)
+            //    .HasForeignKey(v => v.ParentId);
+
         }
 
         public DbSet<Account> Accounts { get; set; }

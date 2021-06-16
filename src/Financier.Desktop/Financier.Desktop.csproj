@@ -34,6 +34,7 @@
     <None Remove="Images\actionbar_db_restore.png" />
     <None Remove="Images\actionbar_export.png" />
     <None Remove="Images\actionbar_filter_cancel.png" />
+    <None Remove="Images\actionbar_tiles_large.png" />
     <None Remove="Images\backup_file.png" />
     <None Remove="Images\drag-drop-icon.png" />
     <None Remove="Images\ic_action_add.png" />
@@ -42,6 +43,7 @@
     <None Remove="Images\ic_action_arrow_top_down.png" />
     <None Remove="Images\ic_action_cancel.png" />
     <None Remove="Images\ic_action_category.png" />
+    <None Remove="Images\ic_action_copy.png" />
     <None Remove="Images\ic_action_edit.png" />
     <None Remove="Images\ic_action_gear.png" />
     <None Remove="Images\ic_action_info.png" />
@@ -94,6 +96,7 @@
     <Resource Include="Images\actionbar_db_restore.png" />
     <Resource Include="Images\actionbar_export.png" />
     <Resource Include="Images\actionbar_filter_cancel.png" />
+    <Resource Include="Images\actionbar_tiles_large.png" />
     <Resource Include="Images\backup_file.png" />
     <Resource Include="Images\drag-drop-icon.png" />
     <Resource Include="Images\ic_action_add.png" />
@@ -102,6 +105,7 @@
     <Resource Include="Images\ic_action_arrow_top_down.png" />
     <Resource Include="Images\ic_action_cancel.png" />
     <Resource Include="Images\ic_action_category.png" />
+    <Resource Include="Images\ic_action_copy.png" />
     <Resource Include="Images\ic_action_edit.png" />
     <Resource Include="Images\ic_action_gear.png" />
     <Resource Include="Images\ic_action_info.png" />

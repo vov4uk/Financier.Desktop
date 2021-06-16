@@ -35,12 +35,12 @@ namespace Hik.DataAccess
 
         public virtual Task<List<T>> GetAllAsync()
         {
-            return ctx.Set<T>().ToListAsync();
+            return ctx.Set<T>().AsNoTracking().ToListAsync();
         }
 
         public virtual async Task<List<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
-            var result = ctx.Set<T>().Where(i => true);
+            var result = ctx.Set<T>().AsNoTracking().Where(i => true);
 
             foreach (var includeExpression in includes)
                 result = result.Include(includeExpression);
@@ -63,7 +63,7 @@ namespace Hik.DataAccess
         public virtual async Task<T> FindByAsync(Expression<Func<T, bool>> predicate,
             params Expression<Func<T, object>>[] includes)
         {
-            var result = ctx.Set<T>().Where(predicate);
+            var result = ctx.Set<T>().AsNoTracking().Where(predicate);
 
             foreach (var includeExpression in includes)
                 result = result.Include(includeExpression);
@@ -81,7 +81,7 @@ namespace Hik.DataAccess
         public virtual async Task<List<T>> FindManyAsync(Expression<Func<T, bool>> predicate,
             params Expression<Func<T, object>>[] includes)
         {
-            var result = ctx.Set<T>().Where(predicate);
+            var result = ctx.Set<T>().AsNoTracking().Where(predicate);
 
             foreach (var includeExpression in includes)
                 result = result.Include(includeExpression);
@@ -98,8 +98,9 @@ namespace Hik.DataAccess
 
                 return await Task.FromResult(true);
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return await Task.FromResult(false);
             }
         }

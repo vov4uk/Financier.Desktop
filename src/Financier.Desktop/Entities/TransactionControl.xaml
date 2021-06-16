@@ -187,7 +187,7 @@
                                             DataContext="{Binding}"/>
 
                     <Border Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" 
-                            Visibility="{Binding IsSplitCategory, Converter={StaticResource BoolToVis}}"
+                            Visibility="{Binding IsSplitCategory, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                             BorderBrush="LightGray"
                             BorderThickness="0 1 0 1">
                         <Grid x:Name="UnsplitAmountGrid">
@@ -201,7 +201,7 @@
                                 <RowDefinition Height="15"/>
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">Unsplit amount</TextBlock>
-                            <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding UnSplitAmount, Converter={StaticResource AmountConverter}}"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding UnsplitAmount, Converter={StaticResource AmountConverter}, ConverterParameter=false, Mode=OneWay}"/>
                             <xctk:IconButton Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Margin="0,3,0,0" VerticalAlignment="Top">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource ic_action_transfer}"/>
@@ -222,7 +222,7 @@
                              ItemsSource="{Binding SubTransactions}"
                              HorizontalContentAlignment="Stretch"
                              DataContext="{Binding}"
-                             Visibility="{Binding IsSplitCategory, Converter={StaticResource BoolToVis}}">
+                             Visibility="{Binding IsSplitCategory, Converter={StaticResource BoolToVis}, Mode=OneWay}">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type viewmodel:TransactionVM}">
                                 <Grid HorizontalAlignment="Stretch">
@@ -239,7 +239,7 @@
                                     </Grid.InputBindings>
                                     <emoji:TextBlock Grid.Column="0" 
                                                      Text="{Binding Category.Title}"
-                                                     HorizontalAlignment="Left"
+                                                     HorizontalAlignment="Stretch"
                                                      VerticalAlignment="Center"
                                                      Margin="5 0 0 0"/>
                                     <TextBlock Grid.Column="1" 

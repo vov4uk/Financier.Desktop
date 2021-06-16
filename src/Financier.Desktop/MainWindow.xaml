@@ -22,6 +22,8 @@
             <x:Type x:Key="BudgetType" TypeName="data:Budget"/>
             <x:Type x:Key="TransactionsViewType" TypeName="dataView:BlotterTransactions"/>
             <converters:StringEmptyToVisibilityConverter x:Key="stringToVisibilityConverter"/>
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+            <converters:InverseBooleanConverter x:Key="InverseBool" />
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -41,12 +43,13 @@
                 <RibbonApplicationMenu>
                     <RibbonApplicationMenuItem Header="Open" Click="OpenBackup_OnClick" ImageSource="pack://application:,,,/Images/actionbar_db_restore.png" />
                     <RibbonApplicationMenuItem Header="Save" Click="SaveBackup_Click" ImageSource="pack://application:,,,/Images/actionbar_db_backup.png" />
-                    <RibbonApplicationMenuItem Header="Options" ImageSource="pack://application:,,,/Images/ic_action_gear.png" />
-                    <RibbonApplicationMenuItem Header="Exit" ImageSource="pack://application:,,,/Images/ic_menu_back.png" />
+                    <RibbonApplicationMenuItem Header="Options" ImageSource="pack://application:,,,/Images/ic_action_gear.png" IsEnabled="False" />
+                    <RibbonApplicationMenuItem Header="Exit" Click="Exit_Click" ImageSource="pack://application:,,,/Images/ic_menu_back.png" />
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
 
-            <RibbonTab Header="Main">
+            <RibbonTab Header="Main"
+                       Selector.IsSelected="{Binding Path=IsTransactionPageSelected, Mode=OneWay, Converter={StaticResource InverseBool}}">
                 <RibbonGroup x:Name="Entities" Header="Entities">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_accounts_unselected.png" Label="Accounts" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource AccountType}" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_categories.png" Label="Categories" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource CategoryType}"/>
@@ -75,6 +78,34 @@
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png" Label="Import from CSV" Click="Mono_Click" />
                 </RibbonGroup>
 
+            </RibbonTab>
+            <RibbonTab Header="Transaction"
+                       Selector.IsSelected="{Binding Path=IsTransactionPageSelected, Mode=OneWay}"
+                       Visibility="{Binding Path=IsTransactionPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                       DataContext="{Binding}">
+                <RibbonGroup x:Name="Transaction" Header="General">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png" 
+                                  Label="Add Expense"
+                                  Command="{Binding Path=Blotter.AddTransactionCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_transfer.png"
+                                  Label="Add Transfer"
+                                  Command="{Binding Path=Blotter.AddTransferCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_tiles_large.png"
+                                  Label="Add Template"
+                                  Command="{Binding Path=Blotter.AddTemplateCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_edit.png"
+                                  Label="Edit"
+                                  Command="{Binding Path=Blotter.EditCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_copy.png"
+                                  Label="Duplicate"
+                                  Command="{Binding Path=Blotter.DuplicateCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
+                                  Label="Delete"
+                                  Command="{Binding Path=Blotter.DeleteCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_info.png"
+                                  Label="Info"
+                                  Command="{Binding Path=Blotter.InfoCommand}" />
+                </RibbonGroup>
             </RibbonTab>
         </Ribbon>
         <DockPanel Grid.Row="1">

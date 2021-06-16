@@ -24,7 +24,7 @@
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
-        <TextBlock Grid.Row="1">Please select transaction with same balance</TextBlock>
+        <TextBlock Grid.Row="1" FontSize="12">Please select transaction with same balance as selected account, otherwise all transactions will be impoted</TextBlock>
         <DataGrid x:Name ="transactions"
                   Grid.Row="2"
                   ItemsSource="{Binding Path=Transactions}"

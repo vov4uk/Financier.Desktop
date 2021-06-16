@@ -101,23 +101,23 @@ namespace Financier.DataAccess.Data
         [Column("attached_picture")]
         public string AttachedPicture { get; set; }
 
-        public Transaction Parent { get; set; }
+        public virtual Transaction Parent { get; set; }
 
-        public Account FromAccount { get; set; }
+        public virtual Account FromAccount { get; set; }
 
-        public Account ToAccount { get; set; }
+        public virtual Account ToAccount { get; set; }
 
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
-        public Payee Payee { get; set; }
+        public virtual Payee Payee { get; set; }
 
-        public Project Project { get; set; }
+        public virtual Project Project { get; set; }
 
-        public Location Location { get; set; }
+        public virtual Location Location { get; set; }
 
-        public Currency OriginalCurrency { get; set; }
+        public virtual Currency OriginalCurrency { get; set; }
 
-        public List<Transaction> SubTransactions { get; set; }
+        public virtual List<Transaction> SubTransactions { get; set; }
 
     }
 }

@@ -4,12 +4,15 @@ using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 
 namespace Financier.Desktop.ViewModel
 {
-    public class TransactionVM : BindableBase, ICloneable
+    public class TransactionVM : BindableBase
     {
+        // TODO : Split SubTransaction entities as base class
         private DateTime date;
         private int id;
         private int accountId;
@@ -19,11 +22,11 @@ namespace Financier.Desktop.ViewModel
         private long fromAmount;
         private long? originalFromAmmount;
         private long unSplitAmount;
+        private long parentTransactionSplitedAmount = 0;
         private int? locationId;
         private string note;
         private int? projectId;
         private bool isAmountNegative;
-        private bool isSplitCategory;
         private ObservableCollection<TransactionVM> subTransactions;
         private Category category;
         private Currency currency;
@@ -43,6 +46,9 @@ namespace Financier.Desktop.ViewModel
 
         public ObservableCollection<Project> Projects { get; set; }
         #endregion
+
+        public event EventHandler RequestCancel;
+        public event EventHandler RequestSave;
 
         private DelegateCommand _changeFromAmountSignCommand;
         public DelegateCommand ChangeFromAmountSignCommand
@@ -128,6 +134,7 @@ namespace Financier.Desktop.ViewModel
                 return _deleteSubTransactionCommand ??= new DelegateCommand<TransactionVM>((TransactionVM tr) =>
                 {
                     subTransactions.Remove(tr);
+                    RecalculateUnSplitAmount();
                 });
             }
         }
@@ -137,7 +144,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                return _openSubTransactionDialogCommand ??= new DelegateCommand<TransactionVM>(ShowSubTransactionDialog);
+                return _openSubTransactionDialogCommand ??= new DelegateCommand<TransactionVM>((tr) => ShowSubTransactionDialog(tr, false));
             }
         }
 
@@ -146,23 +153,28 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                return _addSubTransactionCommand ??= new DelegateCommand(() => ShowSubTransactionDialog(new TransactionVM()));
+                return _addSubTransactionCommand ??= new DelegateCommand(() => ShowSubTransactionDialog(new TransactionVM() { FromAmount = UnsplitAmount , IsAmountNegative = UnsplitAmount < 0 }, true));
             }
         }
 
-        private void ShowSubTransactionDialog(TransactionVM tr)
+        private void ShowSubTransactionDialog(TransactionVM tr, bool isNewItem)
         {
-            var copy = tr.Clone() as TransactionVM;
+            var copy = new TransactionVM();
+            CopySubTransaction(copy, tr);
+
+            copy.IsAmountNegative = tr.FromAmount <= 0;
+            copy.FromAmount = Math.Abs(tr.FromAmount);
             copy.Categories = Categories;
             copy.Projects = Projects;
-
+            copy.IsSubTransaction = true;
+            RecalculateUnSplitAmount();
+            copy.ParentTransactionUnSplitAmount = isNewItem ? UnsplitAmount : UnsplitAmount - Math.Abs(tr.FromAmount);
             var dialog = new Window
             {
-                Content = new SubTransactionControl() { DataContext = copy },
                 ResizeMode = ResizeMode.NoResize,
                 Height = 340,
                 Width = 340,
-                ShowInTaskbar = false,
+                ShowInTaskbar = Debugger.IsAttached,
             };
 
             copy.RequestCancel += (sender, args) =>
@@ -172,8 +184,27 @@ namespace Financier.Desktop.ViewModel
             copy.RequestSave += (sender, args) =>
             {
                 dialog.Close();
+                var modifiedCopy = sender as TransactionVM;
+                CopySubTransaction(tr, modifiedCopy);
+
+                if (isNewItem)
+                {
+                    subTransactions.Add(tr);
+                }
+                RecalculateUnSplitAmount();
+                SaveCommand.RaiseCanExecuteChanged();
             };
+            dialog.Content = new SubTransactionControl() { DataContext = copy };
             dialog.ShowDialog();
+        }
+
+        private void CopySubTransaction(TransactionVM tr, TransactionVM modifiedCopy)
+        {
+            tr.CategoryId = modifiedCopy.CategoryId;
+            tr.Category = Categories.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
+            tr.FromAmount = modifiedCopy.RealFromAmount;
+            tr.Note = modifiedCopy.Note;
+            tr.ProjectId = modifiedCopy.ProjectId;
         }
 
         private DelegateCommand _cancelCommand;
@@ -181,10 +212,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_cancelCommand == null)
-                    _cancelCommand = new DelegateCommand(Cancel);
-
-                return _cancelCommand;
+                return _cancelCommand ??= new DelegateCommand(() => RequestCancel?.Invoke(this, EventArgs.Empty));
             }
         }
 
@@ -193,34 +221,18 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                if (_saveCommand == null)
-                    _saveCommand = new DelegateCommand(Save);
-
-                return _saveCommand;
+                return _saveCommand ??= new DelegateCommand(() => RequestSave?.Invoke(this, EventArgs.Empty), CanSaveCommandExecute);
             }
         }
 
-        private void Cancel()
+        private bool CanSaveCommandExecute()
         {
-            EventHandler handler = RequestCancel;
-            if (handler != null)
-                handler(this, EventArgs.Empty);
+            if (IsSplitCategory)
+            {
+                return UnsplitAmount == 0;
+            }
+            return true;
         }
-
-        private void Save()
-        {
-            EventHandler handler = RequestSave;
-            if (handler != null)
-                handler(this, EventArgs.Empty);
-        }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-
-        public event EventHandler RequestCancel;
-        public event EventHandler RequestSave;
 
 
         public Category Category
@@ -264,6 +276,7 @@ namespace Financier.Desktop.ViewModel
             {
                 subTransactions = value;
                 RaisePropertyChanged(nameof(SubTransactions));
+                RecalculateUnSplitAmount();
             }
         }
 
@@ -322,29 +335,49 @@ namespace Financier.Desktop.ViewModel
             {
                 categoryId = value;
                 RaisePropertyChanged(nameof(CategoryId));
-                IsSplitCategory = categoryId == -1;
+                RaisePropertyChanged(nameof(IsSplitCategory));
             }
         }
 
         public bool IsSplitCategory
         {
-            get => isSplitCategory;
-            private set
+            get { return categoryId == -1; }
+        }
+        
+        public long RealFromAmount
+        {
+            get { return Math.Abs(FromAmount) * (IsAmountNegative ? -1 : 1); }
+        }
+
+        public long UnsplitAmount
+        {
+            get => unSplitAmount;
+            set
             {
-                isSplitCategory = value;
-                RaisePropertyChanged(nameof(IsSplitCategory));
+                unSplitAmount = value;
+                RaisePropertyChanged(nameof(UnsplitAmount));
             }
         }
 
-        public long UnSplitAmount
+        public long ParentTransactionUnSplitAmount
         {
-            get => unSplitAmount;
-            private set
+            get => parentTransactionSplitedAmount;
+            set
             {
-                unSplitAmount = value;
-                RaisePropertyChanged(nameof(UnSplitAmount));
+                parentTransactionSplitedAmount = value;
+                RaisePropertyChanged(nameof(ParentTransactionUnSplitAmount));
+                RecalculateUnSplitAmount();
             }
         }
+
+        public long SplitAmount
+        {
+            get
+            {
+                return subTransactions?.Sum(x => x.fromAmount) ?? 0;
+            }
+        }
+
 
         public long FromAmount
         {
@@ -353,10 +386,31 @@ namespace Financier.Desktop.ViewModel
             {
                 fromAmount = value;
                 RaisePropertyChanged(nameof(FromAmount));
-                if (originalFromAmmount != null && originalFromAmmount != 0)
-                {
-                    Rate = Math.Abs((fromAmount / 100.0) / (originalFromAmmount.Value / 100.0));
-                }
+                RecalculateRate();
+                RecalculateUnSplitAmount();
+                SaveCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public bool IsSubTransaction { get; set; }
+
+        private void RecalculateRate()
+        {
+            if (originalFromAmmount != null && originalFromAmmount != 0)
+            {
+                Rate = Math.Abs((fromAmount / 100.0) / (originalFromAmmount.Value / 100.0));
+            }
+        }
+
+        private void RecalculateUnSplitAmount()
+        {
+            if (!IsSubTransaction)
+            {
+                UnsplitAmount = RealFromAmount - SplitAmount;
+            }
+            else
+            {
+                UnsplitAmount = ParentTransactionUnSplitAmount - RealFromAmount;
             }
         }
 
@@ -366,11 +420,8 @@ namespace Financier.Desktop.ViewModel
             set
             {
                 originalFromAmmount = value;
-                if (originalFromAmmount != null && originalFromAmmount != 0)
-                {
-                    Rate = Math.Abs((fromAmount / 100.0) / (originalFromAmmount.Value / 100.0));
-                }
                 RaisePropertyChanged(nameof(OriginalFromAmount));
+                RecalculateRate();
             }
         }
 
@@ -409,6 +460,7 @@ namespace Financier.Desktop.ViewModel
             {
                 isAmountNegative = value;
                 RaisePropertyChanged(nameof(IsAmountNegative));
+                RecalculateUnSplitAmount();
             }
         }
 

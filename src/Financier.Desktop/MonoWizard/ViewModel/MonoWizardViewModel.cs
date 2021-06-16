@@ -35,10 +35,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         {
             get
             {
-                if (_cancelCommand == null)
-                    _cancelCommand = new DelegateCommand(Cancel);
-
-                return _cancelCommand;
+                return _cancelCommand ??= new DelegateCommand(Cancel);
             }
         }
 
@@ -52,7 +49,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         {
             get
             {
-                return _moveNextCommand ?? (_moveNextCommand = new DelegateCommand(MoveToNextPage, () => CanMoveToNextPage));
+                return _moveNextCommand ??= new DelegateCommand(MoveToNextPage, () => CanMoveToNextPage);
             }
         }
 
@@ -83,7 +80,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         {
             get
             {
-                return _movePreviousCommand ?? (_movePreviousCommand = new DelegateCommand(MoveToPreviousPage, () => CanMoveToPreviousPage));
+                return _movePreviousCommand ??= new DelegateCommand(MoveToPreviousPage, () => CanMoveToPreviousPage);
             }
         }
 

@@ -22,7 +22,7 @@ namespace Financier.Desktop.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var amount = System.Convert.ToDecimal(value);
-            return (long)(amount *100);
+            return System.Convert.ToInt64(amount * 100.0m);
         }
     }
 }

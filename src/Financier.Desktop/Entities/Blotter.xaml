@@ -24,7 +24,7 @@
             <DataGrid.InputBindings>
                 <MouseBinding
                     MouseAction="LeftDoubleClick"
-                    Command="{Binding OpenTransactionDialogCommand}"
+                    Command="{Binding EditCommand}"
                     CommandParameter="{Binding SelectedValue}"/>
             </DataGrid.InputBindings>
             <DataGrid.Columns>

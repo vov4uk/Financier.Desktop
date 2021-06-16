@@ -1,5 +1,6 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -34,10 +35,6 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             {
                 _startTransaction = value;
                 RaisePropertyChanged(nameof(StartTransaction));
-                if (_startTransaction != null)
-                {
-                    TransactionsToImport = _transactions.OrderByDescending(x => x.Date).Where(x => x.Date > _startTransaction.Date).ToList();
-                }
             }
         }
 
@@ -54,7 +51,17 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        public List<MonoTransaction> TransactionsToImport { get; set; }
+        public List<MonoTransaction> TransactionsToImport {
+            get
+            {
+                var startDate = new DateTime(2017, 11, 17); // Monobank launched
+                if (_startTransaction != null)
+                {
+                    startDate = _startTransaction.Date;
+                }
+                return _transactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
+            }
+        }
 
         public override string Title
         {

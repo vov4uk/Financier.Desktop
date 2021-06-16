@@ -170,8 +170,8 @@ namespace Financier.DataAccess
                     {
                         Id = 0,
                         FromAccountId = accountId,
-                        FromAmount = (long)(x.CardCurrencyAmount * 100),
-                        OriginalFromAmount = x.ExchangeRate == null ? 0 : (long)(x.OperationAmount * 100),
+                        FromAmount = Convert.ToInt64(x.CardCurrencyAmount * 100.0),
+                        OriginalFromAmount = x.ExchangeRate == null ? 0 : Convert.ToInt64(x.OperationAmount * 100.0),
                         OriginalCurrencyId = x.ExchangeRate == null ? 0 : _currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
                         CategoryId = 0,
                         LocationId = locationId,

@@ -1,5 +1,4 @@
 ﻿using Financier.DataAccess.Data;
-using Financier.Desktop.Entities;
 using Financier.Desktop.MonoWizard.View;
 using Financier.Desktop.MonoWizard.ViewModel;
 using Financier.Desktop.ViewModel;
@@ -18,6 +17,15 @@ namespace Financier.Desktop
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+
+        static MainWindow()
+        {
+            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+        }
+
         FinancierVM VM { get; }
         public MainWindow()
         {
@@ -104,6 +112,11 @@ namespace Financier.Desktop
                     await VM.OpenBackup(files.FirstOrDefault(x => Path.GetExtension(x) == ".backup"));
                 }
             }
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }

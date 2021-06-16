@@ -97,8 +97,8 @@
                                      DataContext="{Binding}"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">Unsplit amount</TextBlock>
-                <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" 
-                           Text="{Binding UnSplitAmount, Converter={StaticResource AmountConverter}}"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                           Text="{Binding UnsplitAmount, Converter={StaticResource AmountConverter}, ConverterParameter=false, Mode=OneWay}"/>
 
                 <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
                            x:Name="noteTb">Note</TextBlock>

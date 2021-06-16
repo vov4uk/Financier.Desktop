@@ -7,16 +7,22 @@ namespace Financier.Desktop.Converters
     public class DateTimeConverter : IValueConverter
     {
         private const string  format = "yyyy'-'MM'-'dd' 'HH':'mm':'ss";
-        private DateTime StartDate = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+        private static DateTime StartDate = new DateTime(1970, 1, 1, 0, 0, 0, 0);
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double timestamp = double.Parse(System.Convert.ToString(value));
-            return StartDate.AddMilliseconds(timestamp).ToLocalTime().ToString(format);
+            long timestamp = long.Parse(System.Convert.ToString(value));
+            return Convert(timestamp).ToString(format);
         }
 
-        public DateTime Convert(long timestamp)
+        public static DateTime Convert(long timestamp)
         {
             return StartDate.AddMilliseconds(timestamp).ToLocalTime();
+        }
+
+        public static long ConvertBack(DateTime timestamp)
+        {
+            DateTimeOffset dto = new DateTimeOffset(timestamp);
+            return dto.ToUnixTimeMilliseconds();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -27,8 +33,7 @@ namespace Financier.Desktop.Converters
                 date = (DateTime)value;
             }
 
-            DateTimeOffset dto = new DateTimeOffset(date);
-            return dto.ToUnixTimeMilliseconds();
+            return ConvertBack(date);
         }
     }
 }
