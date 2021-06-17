@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
-namespace FinancistoAdapter
+namespace Financier.Adapter
 {
     public class BackupReader : IDisposable
     {

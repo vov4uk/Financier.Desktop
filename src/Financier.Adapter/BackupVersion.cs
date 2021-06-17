@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FinancistoAdapter
+namespace Financier.Adapter
 {
     public class BackupVersion
     {

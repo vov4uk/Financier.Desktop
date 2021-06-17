@@ -6,7 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace FinancistoAdapter
+namespace Financier.Adapter
 {
     public class BackupWriter : IDisposable
     {

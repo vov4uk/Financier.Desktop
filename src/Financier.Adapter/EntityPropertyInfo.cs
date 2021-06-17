@@ -1,9 +1,9 @@
 using Financier.DataAccess.Data;
-using FinancistoAdapter.Converters;
+using Financier.Adapter.Converters;
 using System;
 using System.Reflection;
 
-namespace FinancistoAdapter
+namespace Financier.Adapter
 {
     public class EntityPropertyInfo
     {

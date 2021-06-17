@@ -141,7 +141,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FinancistoAdapter\FinancistoAdapter.csproj" />
+    <ProjectReference Include="..\Financier.Adapter\Financier.Adapter.csproj" />
   </ItemGroup>
 
   <ItemGroup>

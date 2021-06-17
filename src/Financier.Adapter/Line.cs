@@ -1,4 +1,4 @@
-﻿namespace FinancistoAdapter
+﻿namespace Financier.Adapter
 {
     public class Line
     {

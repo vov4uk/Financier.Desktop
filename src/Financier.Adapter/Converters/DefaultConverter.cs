@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace FinancistoAdapter.Converters
+namespace Financier.Adapter.Converters
 {
     public class DefaultConverter : IPropertyConverter
     {

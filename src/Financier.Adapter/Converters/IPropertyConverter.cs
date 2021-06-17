@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FinancistoAdapter.Converters
+namespace Financier.Adapter.Converters
 {
     public interface IPropertyConverter
     {

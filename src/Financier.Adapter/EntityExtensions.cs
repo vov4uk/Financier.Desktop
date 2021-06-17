@@ -1,5 +1,5 @@
 ﻿using Financier.DataAccess.Data;
-using FinancistoAdapter.Converters;
+using Financier.Adapter.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace FinancistoAdapter
+namespace Financier.Adapter
 {
     public static class EntityExtensions
     {

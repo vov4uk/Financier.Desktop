@@ -5,7 +5,7 @@ using Financier.DataAccess.Monobank;
 using Financier.DataAccess.View;
 using Financier.Desktop.Converters;
 using Financier.Desktop.Entities;
-using FinancistoAdapter;
+using Financier.Adapter;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;

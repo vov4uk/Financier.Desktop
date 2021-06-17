@@ -2,7 +2,7 @@
 using Financier.Desktop.MonoWizard.View;
 using Financier.Desktop.MonoWizard.ViewModel;
 using Financier.Desktop.ViewModel;
-using FinancistoAdapter;
+using Financier.Adapter;
 using System.IO;
 using System.Linq;
 using System.Windows;

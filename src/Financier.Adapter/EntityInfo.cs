@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FinancistoAdapter
+namespace Financier.Adapter
 {
     public class EntityInfo
     {
