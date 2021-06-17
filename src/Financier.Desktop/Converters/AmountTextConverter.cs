@@ -15,7 +15,7 @@ namespace Financier.Desktop.Converters
 
             if (long.TryParse(values[0].ToString(), out var totalAmount))
             {
-                return Utils.setAmountText(values[1] as Currency, totalAmount, false);
+                return Utils.SetAmountText(values[1] as Currency, totalAmount, false);
             }
 
             return values[0].ToString();

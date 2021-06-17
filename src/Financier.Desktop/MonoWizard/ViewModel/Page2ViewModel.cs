@@ -9,28 +9,31 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 {
     public class Page2ViewModel : WizardBaseViewModel
     {
-        #region Constructor
+        private Account _monoAccount;
+
+        private MonoTransaction _startTransaction;
+
+        private RangeObservableCollection<MonoTransaction> _transactions;
+
         public Page2ViewModel(List<MonoTransaction> records)
         {
             _transactions = new RangeObservableCollection<MonoTransaction>(records);
         }
-        #endregion
-
-        private RangeObservableCollection<MonoTransaction> _transactions;
-        public RangeObservableCollection<MonoTransaction> Transactions
+        public Account MonoAccount
         {
-            get { return _transactions; }
+            get => _monoAccount;
             set
             {
-                _transactions = value;
-                RaisePropertyChanged(nameof(Transactions));
+                _monoAccount = value;
+                RaisePropertyChanged(nameof(MonoAccount));
+                double balance = _monoAccount.TotalAmount / 100.0;
+                StartTransaction = _transactions?.FirstOrDefault(x => Math.Abs(x.Balance - balance) < 0.01);
             }
         }
 
-        private MonoTransaction _startTransaction;
         public MonoTransaction StartTransaction
         {
-            get { return _startTransaction; }
+            get => _startTransaction;
             set
             {
                 _startTransaction = value;
@@ -38,19 +41,17 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        private Account _monoAccount;
-        public Account MonoAccount
+        public override string Title => "Please select transaction";
+
+        public RangeObservableCollection<MonoTransaction> Transactions
         {
-            get { return _monoAccount; }
+            get => _transactions;
             set
             {
-                _monoAccount = value;
-                RaisePropertyChanged(nameof(MonoAccount));
-                double balance = _monoAccount.TotalAmount / 100.0;
-                StartTransaction = _transactions?.FirstOrDefault(x => x.Balance == balance);
+                _transactions = value;
+                RaisePropertyChanged(nameof(Transactions));
             }
         }
-
         public List<MonoTransaction> TransactionsToImport {
             get
             {
@@ -62,15 +63,6 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 return _transactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
             }
         }
-
-        public override string Title
-        {
-            get
-            {
-                return "Page 2";
-            }
-        }
-
         public override bool IsValid()
         {
             return true;

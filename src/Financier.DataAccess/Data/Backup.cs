@@ -26,15 +26,6 @@
         public static string[] RESTORE_SCRIPTS = {
             "_20100114_1158_alter_accounts_types",
             "_20110903_0129_alter_template_splits",
-            "_20171230_1852_alter_electronic_account_type"
-    };
-        public static string[] BACKUP_TABLES = {
-            ACCOUNT_TABLE, ATTRIBUTES_TABLE, CATEGORY_ATTRIBUTE_TABLE,
-            TRANSACTION_ATTRIBUTE_TABLE, BUDGET_TABLE, CATEGORY_TABLE,
-            CURRENCY_TABLE, LOCATIONS_TABLE, PROJECT_TABLE, TRANSACTION_TABLE,
-            PAYEE_TABLE, CCARD_CLOSING_DATE_TABLE, SMS_TEMPLATES_TABLE,
-            "split", /* todo: seems not used, found only in old 20110422_0051_create_split_table.sql, should be removed then */
-            EXCHANGE_RATES_TABLE
-    };
-}
+            "_20171230_1852_alter_electronic_account_type"};
+    }
 }

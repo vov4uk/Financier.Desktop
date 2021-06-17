@@ -23,7 +23,6 @@ namespace Financier.DataAccess.Data
         public string Symbol { get; set; }
 
         [Column("symbol_format")]
-
         public string SymbolFormat { get; set; }// = SymbolFormat.RS;
 
         [Column("is_default")]
@@ -42,7 +41,7 @@ namespace Financier.DataAccess.Data
         public long UpdatedOn { get; set; }
 
         [NotMapped]
-        public static Currency EMPTY = new Currency()
+        public static Currency Empty = new Currency
         {
             Id = 0,
             Name = "",

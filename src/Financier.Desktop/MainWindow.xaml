@@ -1,6 +1,6 @@
 ﻿<RibbonWindow  x:Class="Financier.Desktop.MainWindow"
                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:data="clr-namespace:Financier.DataAccess.Data;assembly=Financier.DataAccess"
                xmlns:dataView="clr-namespace:Financier.DataAccess.View;assembly=Financier.DataAccess"
                xmlns:converters="clr-namespace:Financier.Desktop.Converters"
@@ -10,26 +10,26 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Assets/Resource.xaml"/>
+                <ResourceDictionary Source="/Assets/Resource.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <x:Type x:Key="AccountType" TypeName="data:Account"/>
-            <x:Type x:Key="CategoryType" TypeName="data:Category"/>
-            <x:Type x:Key="ProjectType" TypeName="data:Project"/>
-            <x:Type x:Key="PayeeType" TypeName="data:Payee"/>
-            <x:Type x:Key="LocationType" TypeName="data:Location"/>
-            <x:Type x:Key="CurrencyType" TypeName="data:Currency"/>
-            <x:Type x:Key="CurrencyExchangeRateType" TypeName="data:CurrencyExchangeRate"/>
-            <x:Type x:Key="BudgetType" TypeName="data:Budget"/>
-            <x:Type x:Key="TransactionsViewType" TypeName="dataView:BlotterTransactions"/>
-            <converters:StringEmptyToVisibilityConverter x:Key="stringToVisibilityConverter"/>
+            <x:Type x:Key="AccountType" TypeName="data:Account" />
+            <x:Type x:Key="CategoryType" TypeName="data:Category" />
+            <x:Type x:Key="ProjectType" TypeName="data:Project" />
+            <x:Type x:Key="PayeeType" TypeName="data:Payee" />
+            <x:Type x:Key="LocationType" TypeName="data:Location" />
+            <x:Type x:Key="CurrencyType" TypeName="data:Currency" />
+            <x:Type x:Key="CurrencyExchangeRateType" TypeName="data:CurrencyExchangeRate" />
+            <x:Type x:Key="BudgetType" TypeName="data:Budget" />
+            <x:Type x:Key="TransactionsViewType" TypeName="dataView:BlotterTransactions" />
+            <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InverseBooleanConverter x:Key="InverseBool" />
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <Ribbon x:Name="FinancierDesktop" SelectedIndex="0">
@@ -52,10 +52,10 @@
                        Selector.IsSelected="{Binding Path=IsTransactionPageSelected, Mode=OneWay, Converter={StaticResource InverseBool}}">
                 <RibbonGroup x:Name="Entities" Header="Entities">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_accounts_unselected.png" Label="Accounts" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource AccountType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_categories.png" Label="Categories" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource CategoryType}"/>
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_categories.png" Label="Categories" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource CategoryType}" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_projects.png" Label="Projects" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource ProjectType}" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_payees.png" Label="Payees" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource PayeeType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_locations.png" Label="Locations" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource LocationType}"/>
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_locations.png" Label="Locations" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource LocationType}" />
                     <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_currencies.png" Label="Currencies" Click="Currencies_Click" />-->
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_exchange_rates.png" Label="Exchange rates" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource CurrencyExchangeRateType}" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_budgets_unselected.png" Label="Budget" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource BudgetType}" />
@@ -77,14 +77,13 @@
                 <RibbonGroup x:Name="Mono" Header="Monobank" IsEnabled="True">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png" Label="Import from CSV" Click="Mono_Click" />
                 </RibbonGroup>
-
             </RibbonTab>
             <RibbonTab Header="Transaction"
                        Selector.IsSelected="{Binding Path=IsTransactionPageSelected, Mode=OneWay}"
                        Visibility="{Binding Path=IsTransactionPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                        DataContext="{Binding}">
                 <RibbonGroup x:Name="Transaction" Header="General">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png" 
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
                                   Label="Add Expense"
                                   Command="{Binding Path=Blotter.AddTransactionCommand}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_transfer.png"
@@ -109,19 +108,18 @@
             </RibbonTab>
         </Ribbon>
         <DockPanel Grid.Row="1">
-            <ContentPresenter Content="{Binding Path=CurrentPage}" DataContext="{Binding Path=CurrentPage}"/>
+            <ContentPresenter Content="{Binding Path=CurrentPage}" DataContext="{Binding Path=CurrentPage}" />
         </DockPanel>
         <Grid Grid.Row="1"
               AllowDrop="True"
-              Visibility="{Binding Path=OpenBackupPath, Converter={StaticResource stringToVisibilityConverter}}"
+              Visibility="{Binding Path=OpenBackupPath, Converter={StaticResource StringToVisibilityConverter}}"
               Drop="Grid_Drop">
             <Grid.RowDefinitions>
-                <RowDefinition Height="256"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="256" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Image Source="pack://application:,,,/Images/drag-drop-icon.png" Height="256" Width="265" />
             <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold">Drop .backup file here</TextBlock>
         </Grid>
     </Grid>
-
 </RibbonWindow >

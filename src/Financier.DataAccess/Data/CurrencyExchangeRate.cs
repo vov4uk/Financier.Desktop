@@ -6,7 +6,6 @@ namespace Financier.DataAccess.Data
     [Table(Backup.EXCHANGE_RATES_TABLE)]
     public class CurrencyExchangeRate : Entity, IIdentity
     {
-
         [Key, Column("from_currency_id"), ForeignKey("FromCurrency")]
         public int FromCurrencyId { get; set; }
 
@@ -21,7 +20,7 @@ namespace Financier.DataAccess.Data
 
         [Column(UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
-        
+
         [Column("remote_key")]
         public long RemoteKey { get; set; }
 

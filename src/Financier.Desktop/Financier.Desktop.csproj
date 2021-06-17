@@ -132,6 +132,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DataGridExtensions" Version="2.6.0-beta1" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="4.6.97" />
     <PackageReference Include="Emoji.Wpf" Version="0.3.3" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />

@@ -4,19 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Financier.DataAccess
 {
-    public class FinancierDataContext : DbContext
+    public sealed class FinancierDataContext : DbContext
     {
         public FinancierDataContext(DbContextOptions<FinancierDataContext> options)
                 : base(options)
         {
-            this.ChangeTracker.AutoDetectChangesEnabled = false;
-            this.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTrackingWithIdentityResolution;
+            ChangeTracker.AutoDetectChangesEnabled = false;
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTrackingWithIdentityResolution;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CurrencyExchangeRate>().HasKey( x => new { x.FromCurrencyId, x.ToCurrencyId, x.Date });
-            modelBuilder.Entity<RunningBalance>().HasKey( x => new { x.TransactionId, x.AccountId });
+            modelBuilder.Entity<CurrencyExchangeRate>().HasKey(x => new { x.FromCurrencyId, x.ToCurrencyId, x.Date });
+            modelBuilder.Entity<RunningBalance>().HasKey(x => new { x.TransactionId, x.AccountId });
             modelBuilder.Entity<CategoryAttribute>().HasNoKey();
             modelBuilder.Entity<AllTransactions>().ToView("v_all_transactions").HasKey(x => x._id);
             modelBuilder.Entity<BlotterTransactions>().ToView("v_blotter").HasKey(x => x._id);
@@ -25,7 +25,6 @@ namespace Financier.DataAccess
             //    .HasOne(v => v.Parent)
             //    .WithMany(v => v.SubTransactions)
             //    .HasForeignKey(v => v.ParentId);
-
         }
 
         public DbSet<Account> Accounts { get; set; }

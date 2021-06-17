@@ -17,93 +17,35 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 {
     public class MonoWizardViewModel : BindableBase
     {
+        private readonly List<Account> accounts = new();
         private readonly string csvFilePath;
-        private readonly List<MonoTransaction> monoTransactions = new List<MonoTransaction>();
-        private readonly List<Account> accounts = new List<Account>();
+        private readonly List<MonoTransaction> monoTransactions = new();
+
+        private DelegateCommand _cancelCommand;
+        private DelegateCommand _moveNextCommand;
+        private DelegateCommand _movePreviousCommand;
+
+        private WizardBaseViewModel _currentPage;
+        private ReadOnlyCollection<WizardBaseViewModel> _pages;
+
         public MonoWizardViewModel(List<Account> accounts, string csvFilePath)
         {
             this.accounts.AddRange(accounts);
             this.csvFilePath = csvFilePath;
         }
+        public event EventHandler<bool> RequestClose;
 
-        /// <summary>
-        /// Returns the command which, when executed, cancels the order 
-        /// and causes the Wizard to be removed from the user interface.
-        /// </summary>
-        private DelegateCommand _cancelCommand;
         public DelegateCommand CancelCommand
         {
             get
             {
-                return _cancelCommand ??= new DelegateCommand(Cancel);
+                return _cancelCommand ??= new DelegateCommand(()=> OnRequestClose(false));
             }
         }
 
-        void Cancel()
-        {
-            OnRequestClose(false);
-        }
-
-        private DelegateCommand _moveNextCommand;
-        public DelegateCommand MoveNextCommand
-        {
-            get
-            {
-                return _moveNextCommand ??= new DelegateCommand(MoveToNextPage, () => CanMoveToNextPage);
-            }
-        }
-
-        bool CanMoveToNextPage
-        {
-            get { return CurrentPage != null && CurrentPage.IsValid(); }
-        }
-
-        void MoveToNextPage()
-        {
-            if (CanMoveToNextPage)
-            {
-                if (CurrentPageIndex < Pages.Count - 1)
-                    CurrentPage = Pages[CurrentPageIndex + 1];
-                else
-                    OnRequestClose(true);
-            }
-        }
-
-        #region MovePreviousCommand
-
-        /// <summary>
-        /// Returns the command which, when executed, causes the CurrentPage 
-        /// property to reference the previous page in the workflow.
-        /// </summary>
-        private DelegateCommand _movePreviousCommand;
-        public DelegateCommand MovePreviousCommand
-        {
-            get
-            {
-                return _movePreviousCommand ??= new DelegateCommand(MoveToPreviousPage, () => CanMoveToPreviousPage);
-            }
-        }
-
-        bool CanMoveToPreviousPage
-        {
-            get { return 0 < CurrentPageIndex; }
-        }
-
-        void MoveToPreviousPage()
-        {
-            if (CanMoveToPreviousPage)
-                CurrentPage = Pages[CurrentPageIndex - 1];
-        }
-
-        #endregion // MovePreviousCommand
-
-        /// <summary>
-        /// Returns the page ViewModel that the user is currently viewing.
-        /// </summary>
-        private WizardBaseViewModel _currentPage;
         public WizardBaseViewModel CurrentPage
         {
-            get { return _currentPage; }
+            get => _currentPage;
             private set
             {
                 if (value == _currentPage)
@@ -113,9 +55,9 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                     _currentPage.IsCurrentPage = false;
 
 
-                if (_currentPage is Page1ViewModel)
+                if (_currentPage is Page1ViewModel model)
                 {
-                    var monoAccount = ((Page1ViewModel)_currentPage).MonoAccount;
+                    var monoAccount = model.MonoAccount;
                     ((Page2ViewModel)value).MonoAccount = monoAccount;
                     MonoBankAccount = monoAccount;
                 }
@@ -133,57 +75,34 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        /// <summary>
-        /// Returns true if the user is currently viewing the last page 
-        /// in the workflow.  This property is used by CoffeeWizardView
-        /// to switch the Next button's text to "Finish" when the user
-        /// has reached the final page.
-        /// </summary>
-        public bool IsOnLastPage
-        {
-            get { return CurrentPageIndex == Pages.Count - 1; }
-        }
-
-        /// <summary>
-        /// Returns a read-only collection of all page ViewModels.
-        /// </summary>
-        private ReadOnlyCollection<WizardBaseViewModel> _pages;
-        public ReadOnlyCollection<WizardBaseViewModel> Pages
-        {
-            get
-            {
-                return _pages;
-            }
-        }
-
-        public List<MonoTransaction> TransactionsToImport { get; set; }
+        public bool IsOnLastPage => CurrentPageIndex == Pages.Count - 1;
 
         public Account MonoBankAccount { get; set; }
 
-        #region Events
-
-        /// <summary>
-        /// Raised when the wizard should be removed from the UI.
-        /// </summary>
-        public event EventHandler<bool> RequestClose;
-
-        #endregion // Events
-
-        #region Private Helpers
-
-        void CreatePages()
+        public DelegateCommand MoveNextCommand
         {
-            _pages = new List<WizardBaseViewModel>
-                {
-                    new Page1ViewModel(accounts),
-                    new Page2ViewModel(monoTransactions)
-                }.AsReadOnly();
+            get
+            {
+                return _moveNextCommand ??= new DelegateCommand(MoveToNextPage, () => CanMoveToNextPage);
+            }
         }
 
-        public string Title
+        public DelegateCommand MovePreviousCommand
         {
-            get { return CurrentPage == null ? string.Empty : CurrentPage.Title; }
+            get
+            {
+                return _movePreviousCommand ??= new DelegateCommand(MoveToPreviousPage, () => CanMoveToPreviousPage);
+            }
         }
+
+        public ReadOnlyCollection<WizardBaseViewModel> Pages => _pages;
+
+        public string Title => CurrentPage == null ? string.Empty : CurrentPage.Title;
+        public List<MonoTransaction> TransactionsToImport { get; set; }
+
+        bool CanMoveToNextPage => CurrentPage != null && CurrentPage.IsValid();
+
+        bool CanMoveToPreviousPage => 0 < CurrentPageIndex;
 
         int CurrentPageIndex
         {
@@ -197,6 +116,44 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
+        public async Task LoadTransactions()
+        {
+            if (File.Exists(csvFilePath))
+            {
+                await using FileStream file = File.OpenRead(csvFilePath);
+                using StreamReader streamReader = new StreamReader(file, Encoding.UTF8);
+                using var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture);
+                var records = await csv.GetRecordsAsync<MonoTransaction>().ToListAsync();
+                monoTransactions.AddRange(records);
+                CreatePages();
+                CurrentPage = Pages[0];
+            }
+        }
+
+        void CreatePages()
+        {
+            _pages = new List<WizardBaseViewModel>
+                {
+                    new Page1ViewModel(accounts),
+                    new Page2ViewModel(monoTransactions)
+                }.AsReadOnly();
+        }
+
+        void MoveToNextPage()
+        {
+            if (CanMoveToNextPage)
+            {
+                if (CurrentPageIndex < Pages.Count - 1)
+                    CurrentPage = Pages[CurrentPageIndex + 1];
+                else
+                    OnRequestClose(true);
+            }
+        }
+        void MoveToPreviousPage()
+        {
+            if (CanMoveToPreviousPage)
+                CurrentPage = Pages[CurrentPageIndex - 1];
+        }
         void OnRequestClose(bool save)
         {
             TransactionsToImport = _pages.OfType<Page2ViewModel>().Single().TransactionsToImport;
@@ -205,25 +162,5 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 handler(this, save);
         }
 
-        public async Task LoadTransactions()
-        {
-            if (File.Exists(csvFilePath))
-            {
-                using (FileStream file = File.OpenRead(csvFilePath))
-                {
-                    using (StreamReader streamReader = new StreamReader(file, Encoding.UTF8))
-                    {
-                        using (var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture))
-                        {
-                            var records = await csv.GetRecordsAsync<MonoTransaction>().ToListAsync();
-                            monoTransactions.AddRange(records);
-                            CreatePages();
-                            CurrentPage = Pages[0];
-                        }
-                    }
-                }
-            }
-        }
-        #endregion
     }
 }

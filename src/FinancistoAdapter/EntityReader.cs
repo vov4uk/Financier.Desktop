@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Financier.DataAccess.Data;
+using FinancistoAdapter.Converters;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
-using Financier.DataAccess.Data;
-using FinancistoAdapter.Converters;
 
 namespace FinancistoAdapter
 {
@@ -30,7 +30,7 @@ namespace FinancistoAdapter
                     entities[attr.Name] = info;
                     foreach (PropertyInfo p in t.GetProperties())
                     {
-                        ColumnAttribute pattr = (ColumnAttribute) p.GetCustomAttribute(typeof (ColumnAttribute));
+                        ColumnAttribute pattr = (ColumnAttribute)p.GetCustomAttribute(typeof(ColumnAttribute));
                         if (pattr != null)
                         {
                             EntityPropertyInfo pInfo = new EntityPropertyInfo(p)
@@ -49,55 +49,53 @@ namespace FinancistoAdapter
 
         public static IEnumerable<Entity> ParseBackupFile(string fileName)
         {
-            using (var reader = new BackupReader(fileName))
+            using var reader = new BackupReader(fileName);
+            List<Entity> entities = new List<Entity>();
+
+            var entityTypes = GetEntityTypes();
+            Entity entity = null;
+            EntityInfo entityInfo = null;
+            string prevField = string.Empty;
+            string entityType = string.Empty;
+            foreach (Line line in reader.GetLines().Select(s => new Line(s)))
             {
-                List<Entity> entities = new List<Entity>();
-
-                var entityTypes = GetEntityTypes();
-                Entity entity = null;
-                EntityInfo entityInfo = null;
-                string prevField = string.Empty;
-                string entityType = string.Empty;
-                foreach (Line line in reader.GetLines().Select(s => new Line(s)))
+                if (line.Key == Entity.ENTITY)
                 {
-                    if (line.Key == Entity.ENTITY)
+                    prevField = string.Empty;
+                    entityType = line.Value;
+                    if (!string.IsNullOrEmpty(line.Value) && entityTypes.TryGetValue(line.Value, out entityInfo))
+                        entity = (Entity)Activator.CreateInstance(entityInfo.EntityType);
+                    if (!EntityColumnsOrder.ContainsKey(entityType))
                     {
-                        prevField = string.Empty;
-                        entityType = line.Value;
-                        if (!string.IsNullOrEmpty(line.Value) && entityTypes.TryGetValue(line.Value, out entityInfo))
-                            entity = (Entity)Activator.CreateInstance(entityInfo.EntityType);
-                        if (!EntityColumnsOrder.ContainsKey(entityType))
-                        {
-                            EntityColumnsOrder.Add(entityType, new List<string>());
-                        }
+                        EntityColumnsOrder.Add(entityType, new List<string>());
                     }
-                    else if (line.Key == Entity.END && entity != null)
+                }
+                else if (line.Key == Entity.END && entity != null)
+                {
+                    entities.Add(entity);
+                    entity = null;
+                    entityType = string.Empty;
+                }
+                else if (entity != null && line.Value != null)
+                {
+                    if (entityInfo != null && entityInfo.Properties.TryGetValue(line.Key, out var property))
                     {
-                        entities.Add(entity);
-                        entity = null;
-                        entityType = string.Empty;
-                    }
-                    else if (entity != null && line.Value != null)
-                    {
-                        if (entityInfo != null && entityInfo.Properties.TryGetValue(line.Key, out var property))
-                        {
-                            property.SetValue(entity, line.Value);
-                        }
-
-                        var order = EntityColumnsOrder[entityType];
-                        if (!order.Contains(line.Key))
-                        {
-                            var newOrder = order.IndexOf(prevField);
-                            order.Insert(newOrder + 1, line.Key);
-                        }
-                        prevField = line.Key;
+                        property.SetValue(entity, line.Value);
                     }
 
-                    BackupVersion = reader.BackupVersion;
+                    var order = EntityColumnsOrder[entityType];
+                    if (!order.Contains(line.Key))
+                    {
+                        var newOrder = order.IndexOf(prevField);
+                        order.Insert(newOrder + 1, line.Key);
+                    }
+                    prevField = line.Key;
                 }
 
-                return entities;
+                BackupVersion = reader.BackupVersion;
             }
+
+            return entities;
         }
     }
 }

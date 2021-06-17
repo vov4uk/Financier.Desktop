@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Financier.DataAccess.Data;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Financier.DataAccess.Data;
 
 namespace FinancistoAdapter
 {
     public class BackupWriter : IDisposable
     {
-        private TextWriter _writer;
-        private string _fileName;
+        private readonly TextWriter _writer;
+        private readonly string _fileName;
 
         public BackupVersion BackupVersion { get; }
 
@@ -28,8 +29,12 @@ namespace FinancistoAdapter
             WriteFooter(_writer);
             _writer.Flush();
             _writer.Close();
-            Compress(Path.GetFileNameWithoutExtension(_fileName), _fileName);
-            //File.Delete(Path.GetFileNameWithoutExtension(_fileName));
+            var fileWithoutExt = Path.GetFileNameWithoutExtension(_fileName);
+            Compress(fileWithoutExt, _fileName);
+            if (!Debugger.IsAttached && File.Exists(fileWithoutExt))
+            {
+                File.Delete(fileWithoutExt);
+            }
         }
 
         private void WriteHeader(TextWriter bw)
@@ -66,7 +71,6 @@ namespace FinancistoAdapter
 
         private void ExportTable<T>(TextWriter bw, T[] ent) where T : Entity
         {
-
             if (ent.Length > 0)
             {
                 foreach (var item in ent)
@@ -76,11 +80,10 @@ namespace FinancistoAdapter
             }
         }
 
-        public static string generateFileName()
+        public static string GenerateFileName()
         {
             return DateTime.Now.ToString("yyyyMMdd'_'HHmmss'_'fff") + ".backup";
         }
-
 
         public void Dispose()
         {
@@ -89,18 +92,12 @@ namespace FinancistoAdapter
 
         public void Compress(string sourceFile, string compressedFile)
         {
-            using (FileStream sourceStream = new FileStream(sourceFile, FileMode.OpenOrCreate))
-            {
-                using (FileStream targetStream = File.Create(compressedFile))
-                {
-                    using (GZipStream compressionStream = new GZipStream(targetStream, CompressionMode.Compress))
-                    {
-                        sourceStream.CopyTo(compressionStream);
-                        compressionStream.Flush();
-                        compressionStream.Close();
-                    }
-                }
-            }
+            using FileStream sourceStream = new FileStream(sourceFile, FileMode.OpenOrCreate);
+            using FileStream targetStream = File.Create(compressedFile);
+            using GZipStream compressionStream = new GZipStream(targetStream, CompressionMode.Compress);
+            sourceStream.CopyTo(compressionStream);
+            compressionStream.Flush();
+            compressionStream.Close();
         }
     }
 }

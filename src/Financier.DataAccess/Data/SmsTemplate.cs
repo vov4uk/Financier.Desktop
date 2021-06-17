@@ -34,6 +34,5 @@ namespace Financier.DataAccess.Data
         public Account Account { get; set; }
 
         public Category Category { get; set; }
-
     }
 }

@@ -6,7 +6,7 @@ namespace FinancistoAdapter.Converters
 {
     public class DefaultConverter : IPropertyConverter
     {
-        private static NumberFormatInfo nfi = new NumberFormatInfo { NumberDecimalSeparator = "." };
+        private static readonly NumberFormatInfo Nfi = new NumberFormatInfo { NumberDecimalSeparator = "." };
 
         public object Convert(object value)
         {
@@ -20,20 +20,20 @@ namespace FinancistoAdapter.Converters
                     if (int.TryParse((string)value, out int i))
                         return System.Convert.ToBoolean(i);
                 }
-                if (type == typeof(double) && value is string)
+                if (type == typeof(double) && value is string s)
                 {
 
-                    bool isNum = double.TryParse((string)value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var retNum);
+                    bool isNum = double.TryParse(s, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var retNum);
                     if (!isNum)
                     {
                         return default(double?);
                     }
                     return retNum;
                 }
-                if (type == typeof(float) && value is string)
+                if (type == typeof(float) && value is string s1)
                 {
 
-                    bool isNum = float.TryParse((string)value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var retNum);
+                    bool isNum = float.TryParse(s1, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var retNum);
                     if (!isNum)
                     {
                         return default(float?);
@@ -62,11 +62,11 @@ namespace FinancistoAdapter.Converters
             }
             if (type == typeof(double))
             {
-                return ((double)value).ToString("0.####", nfi);
+                return ((double)value).ToString("0.####", Nfi);
             }
             if (type == typeof(float))
             {
-                return ((float)value).ToString("0.####", nfi);
+                return ((float)value).ToString("0.####", Nfi);
             }
             return System.Convert.ToString(value);
         }

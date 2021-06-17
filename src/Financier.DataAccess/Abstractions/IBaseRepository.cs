@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Financier.DataAccess.Abstractions
 {
@@ -29,6 +29,5 @@ namespace Financier.DataAccess.Abstractions
         Task<bool> DeleteAsync(Expression<Func<T, bool>> identity, params Expression<Func<T, object>>[] includes);
 
         Task<bool> DeleteAsync(T entity);
-
     }
 }

@@ -37,16 +37,14 @@ namespace Financier.Desktop
 
         private async void OpenBackup_OnClick(object sender, RoutedEventArgs e)
         {
-            using (var openFileDialog = new OpenFileDialog
+            using var openFileDialog = new OpenFileDialog
             {
                 Multiselect = false,
                 Filter = "Backup files (*.backup)|*.backup"
-            })
+            };
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    await VM.OpenBackup(openFileDialog.FileName);
-                }
+                await VM.OpenBackup(openFileDialog.FileName);
             }
         }
 
@@ -60,45 +58,41 @@ namespace Financier.Desktop
 
         private async void Mono_Click(object sender, RoutedEventArgs e)
         {
-            using (var openFileDialog = new OpenFileDialog
+            using var openFileDialog = new OpenFileDialog
             {
                 Multiselect = false,
                 Filter = "CSV files (*.csv)|*.csv"
-            })
+            };
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                var fileName = openFileDialog.FileName;
+                var dialog = new MonoWizardWindow();
+                var viewModel = new MonoWizardViewModel(VM.Pages.OfType<AccountsVM>().First().Entities.OfType<Account>().ToList() , fileName);
+                await viewModel.LoadTransactions();
+                viewModel.RequestClose += async (o, args) =>
                 {
-                    var fileName = openFileDialog.FileName;
-                    var dialog = new MonoWizardWindow();
-                    var viewModel = new MonoWizardViewModel(VM.Pages.OfType<AccountsVM>().First().Entities.OfType<Account>().ToList() , fileName);
-                    await viewModel.LoadTransactions();
-                    viewModel.RequestClose += async (sender, args) =>
+                    dialog.Close();
+                    if (args)
                     {
-                        dialog.Close();
-                        if (args)
-                        {
-                            var monoToImport = viewModel.TransactionsToImport;
-                            await VM.ImportMonoTransactions(viewModel.MonoBankAccount.Id, monoToImport);
-                        }
-                    };
-                    dialog.DataContext = viewModel;
-                    dialog.ShowDialog();
-                }
+                        var monoToImport = viewModel.TransactionsToImport;
+                        await VM.ImportMonoTransactions(viewModel.MonoBankAccount.Id, monoToImport);
+                    }
+                };
+                dialog.DataContext = viewModel;
+                dialog.ShowDialog();
             }
         }
 
         private async void SaveBackup_Click(object sender, RoutedEventArgs e)
         {
-            using (SaveFileDialog dialog = new SaveFileDialog())
+            using SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Backup files (*.backup)|*.backup";
+            dialog.FileName = Path.Combine(Path.GetDirectoryName(VM.OpenBackupPath), BackupWriter.GenerateFileName());
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                dialog.Filter = "Backup files (*.backup)|*.backup";
-                dialog.FileName = Path.Combine(Path.GetDirectoryName(VM.OpenBackupPath), BackupWriter.generateFileName());
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    await VM.SaveBackup(dialog.FileName);
+                await VM.SaveBackup(dialog.FileName);
 
-                    System.Windows.Forms.MessageBox.Show("Backup done.");
-                }
+                System.Windows.Forms.MessageBox.Show("Backup done.");
             }
         }
 

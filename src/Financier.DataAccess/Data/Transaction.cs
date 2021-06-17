@@ -54,7 +54,7 @@ namespace Financier.DataAccess.Data
 
         [Column("blob_key")]
         public string BlobKey { get; set; }
-        
+
         [Column("remote_key")]
         public string RemoteKey { get; set; }
 
@@ -118,6 +118,5 @@ namespace Financier.DataAccess.Data
         public virtual Currency OriginalCurrency { get; set; }
 
         public virtual List<Transaction> SubTransactions { get; set; }
-
     }
 }

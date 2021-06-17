@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FinancistoAdapter
+﻿namespace FinancistoAdapter
 {
     public class Line
     {
@@ -8,17 +6,11 @@ namespace FinancistoAdapter
         {
             if (!string.IsNullOrEmpty(rawLine))
             {
-                string[] splitted = rawLine.Split(new[] {':'}, 2);
+                string[] splitted = rawLine.Split(new[] { ':' }, 2);
                 Key = splitted[0];
-                if (splitted.Length > 1) 
+                if (splitted.Length > 1)
                     Value = splitted[1];
             }
-        }
-
-        public Line(string key, string value)
-        {
-            Key = key;
-            Value = value;
         }
 
         public string Key { get; set; }

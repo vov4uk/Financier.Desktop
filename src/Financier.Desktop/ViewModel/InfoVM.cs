@@ -7,33 +7,21 @@ namespace Financier.Desktop.ViewModel
     public class InfoVM : BindableBase
     {
         private DelegateCommand _exitCommand;
+        private string _text;
+
+        public event EventHandler RequestClose;
+
         public DelegateCommand ExitCommand
         {
             get
             {
-                if (_exitCommand == null)
-                    _exitCommand = new DelegateCommand(Exit);
-
-                return _exitCommand;
+                return _exitCommand ??= new DelegateCommand(() => RequestClose?.Invoke(this, EventArgs.Empty));
             }
         }
 
-        private void Exit()
-        {
-            EventHandler handler = RequestClose;
-            if (handler != null)
-                handler(this, EventArgs.Empty);
-        }
-
-        public event EventHandler RequestClose;
-
-        private string _text;
         public string Text
         {
-            get
-            {
-                return _text;
-            }
+            get => _text;
             set
             {
                 _text = value;

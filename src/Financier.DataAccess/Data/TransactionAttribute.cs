@@ -10,7 +10,6 @@ namespace Financier.DataAccess.Data
     [Table(Backup.TRANSACTION_ATTRIBUTE_TABLE)]
     public class TransactionAttribute : Entity
     {
-
         [ForeignKey("Transaction")]
         [Key, Column("transaction_id")]
         public int TransactionId { get; set; }
@@ -22,8 +21,8 @@ namespace Financier.DataAccess.Data
         [Column("value")]
         public string Value { get; set; }
 
-        public virtual Transaction Transaction { get; set;}
+        public virtual Transaction Transaction { get; set; }
 
-        public virtual AttributeDefinition Attribute { get; set;}
+        public virtual AttributeDefinition Attribute { get; set; }
     }
 }

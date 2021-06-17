@@ -16,7 +16,9 @@ namespace Financier.Desktop.ViewModel
                     _entities = new RangeObservableCollection<T>();
                     RaisePropertyChanged(nameof(Entities));
                 }
-            return _entities; }
+
+                return _entities;
+            }
             set
             {
                 _entities = value;

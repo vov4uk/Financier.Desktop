@@ -21,6 +21,5 @@ namespace Financier.DataAccess.Data
 
         [Column(UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
-
     }
 }

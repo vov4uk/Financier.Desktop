@@ -1,40 +1,41 @@
 ﻿using System.Text;
 
-namespace Financier.DataAccess
+namespace Financier.DataAccess.Utils
 {
     public static class TransactionTitleUtils
     {
         public static string GenerateTransactionTitle(string payee, string note, string location, int? categoryId, string category, int? toAccount)
         {
-            if (categoryId == -1) {
-                return generateTransactionTitleForSplit(payee, note, location);
-            } else 
+            if (categoryId == -1)
             {
-                return generateTransactionTitleForRegular(categoryId, payee, note, location, category, toAccount);
+                return GenerateTransactionTitleForSplit(payee, note, location);
+            }
+            else
+            {
+                return GenerateTransactionTitleForRegular(categoryId, payee, note, location, category, toAccount);
             }
         }
 
-        private static string generateTransactionTitleForRegular(int? categoryId, string payee, string note, string location, string category, int? toAccount)
+        private static string GenerateTransactionTitleForRegular(int? categoryId, string payee, string note,
+            string location, string category, int? toAccount)
         {
             StringBuilder sb = new StringBuilder();
-            var secondPart = joinAdditionalFields(sb, payee, note, location);
+            var secondPart = JoinAdditionalFields(sb, payee, note, location);
             if (!string.IsNullOrEmpty(category))
             {
-                var cat = categoryId > 0 ? category : toAccount > 0 ? "Transfer" : "<NO CATEGORY>" ;
+                var cat = categoryId > 0 ? category : toAccount > 0 ? "Transfer" : "<NO CATEGORY>";
                 sb.Append(cat);
                 if (!string.IsNullOrEmpty(secondPart))
                 {
                     sb.Append(" (").Append(secondPart).Append(")");
                 }
+
                 return sb.ToString();
             }
-            else
-            {
-                return secondPart;
-            }
+            return secondPart;
         }
 
-        private static string joinAdditionalFields(StringBuilder sb, string payee, string note, string location)
+        private static string JoinAdditionalFields(StringBuilder sb, string payee, string note, string location)
         {
             sb.Clear();
             Append(sb, payee);
@@ -45,29 +46,29 @@ namespace Financier.DataAccess
             return secondPart;
         }
 
-        private static string generateTransactionTitleForSplit(string payee, string note, string location)
+        private static string GenerateTransactionTitleForSplit(string payee, string note, string location)
         {
             StringBuilder sb = new StringBuilder();
-            var secondPart = joinAdditionalFields(sb, note, location);
+            var secondPart = JoinAdditionalFields(sb, note, location);
             if (!string.IsNullOrEmpty(payee))
             {
                 if (!string.IsNullOrEmpty(secondPart))
                 {
                     return sb.Append("[").Append(payee).Append("...] ").Append(secondPart).ToString();
                 }
-                else { return sb.Append("[").Append(payee).Append("...]").ToString(); }
+
+                return sb.Append("[").Append(payee).Append("...]").ToString();
             }
-            else
+
+            if (!string.IsNullOrEmpty(secondPart))
             {
-                if (!string.IsNullOrEmpty(secondPart))
-                {
-                    return sb.Append("[...] ").Append(secondPart).ToString();
-                }
-                else return "[...]";
+                return sb.Append("[...] ").Append(secondPart).ToString();
             }
+
+            return "[...]";
         }
 
-        private static string joinAdditionalFields(StringBuilder sb, string note, string location)
+        private static string JoinAdditionalFields(StringBuilder sb, string note, string location)
         {
             sb.Clear();
             Append(sb, location);
@@ -77,7 +78,7 @@ namespace Financier.DataAccess
             return secondPart;
         }
 
-        private static void Append(StringBuilder sb, string s) 
+        private static void Append(StringBuilder sb, string s)
         {
             if (!string.IsNullOrEmpty(s))
             {

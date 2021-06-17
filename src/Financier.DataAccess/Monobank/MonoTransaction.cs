@@ -1,14 +1,13 @@
-﻿using System;
-using System.Diagnostics;
-using CsvHelper.Configuration.Attributes;
+﻿using CsvHelper.Configuration.Attributes;
 using CsvHelper.TypeConversion;
+using System;
+using System.Diagnostics;
 
 namespace Financier.DataAccess.Monobank
 {
     [DebuggerDisplay("{Description} : {CardCurrencyAmount} : {Balance}")]
     public class MonoTransaction
     {
-
         [Name("Date and time", "Дата i час операції"), TypeConverter(typeof(DateTimeConvert)), Index(0)]
         public DateTime Date { get; set; }
 

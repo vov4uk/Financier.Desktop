@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Financier.DataAccess.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using Financier.DataAccess.Abstractions;
-using Hik.DataAccess;
-using Microsoft.EntityFrameworkCore;
 
 namespace Financier.DataAccess
 {

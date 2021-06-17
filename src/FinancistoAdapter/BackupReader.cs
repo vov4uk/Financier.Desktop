@@ -30,14 +30,17 @@ namespace FinancistoAdapter
                 switch (line.Key)
                 {
                     case Backup.PACKAGE:
-                        BackupVersion.Package = line.Value; 
+                        BackupVersion.Package = line.Value;
                         break;
+
                     case Backup.VERSION_CODE:
                         BackupVersion.VersionCode = int.Parse(line.Value);
                         break;
+
                     case Backup.VERSION_NAME:
                         BackupVersion.Version = Version.Parse(line.Value);
                         break;
+
                     case Backup.DATABASE_VERSION:
                         BackupVersion.DatabaseVersion = int.Parse(line.Value);
                         break;
@@ -56,7 +59,7 @@ namespace FinancistoAdapter
             {
                 if (!string.IsNullOrEmpty(line))
                     yield return line;
-}
+            }
         }
 
         public void Dispose()
