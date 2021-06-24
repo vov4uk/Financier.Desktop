@@ -36,46 +36,83 @@
 
             <Ribbon.HelpPaneContent>
                 <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_action_info.png" />-->
-                <Label Content="{Binding Path=OpenBackupPath}"></Label>
+                <Label Content="{Binding Path=OpenBackupPath}" />
             </Ribbon.HelpPaneContent>
 
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>
-                    <RibbonApplicationMenuItem Header="Open" Click="OpenBackup_OnClick" ImageSource="pack://application:,,,/Images/actionbar_db_restore.png" />
-                    <RibbonApplicationMenuItem Header="Save" Click="SaveBackup_Click" ImageSource="pack://application:,,,/Images/actionbar_db_backup.png" />
-                    <RibbonApplicationMenuItem Header="Options" ImageSource="pack://application:,,,/Images/ic_action_gear.png" IsEnabled="False" />
-                    <RibbonApplicationMenuItem Header="Exit" Click="Exit_Click" ImageSource="pack://application:,,,/Images/ic_menu_back.png" />
+                    <RibbonApplicationMenuItem Header="Open"
+                                               Click="OpenBackup_OnClick"
+                                               ImageSource="pack://application:,,,/Images/actionbar_db_restore.png" />
+                    <RibbonApplicationMenuItem Header="Save"
+                                               Click="SaveBackup_Click"
+                                               ImageSource="pack://application:,,,/Images/actionbar_db_backup.png" />
+                    <RibbonApplicationMenuItem Header="Options"
+                                               ImageSource="pack://application:,,,/Images/ic_action_gear.png"
+                                               IsEnabled="False" />
+                    <RibbonApplicationMenuItem Header="Exit"
+                                               Click="Exit_Click"
+                                               ImageSource="pack://application:,,,/Images/ic_menu_back.png" />
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
 
             <RibbonTab Header="Main"
                        Selector.IsSelected="{Binding Path=IsTransactionPageSelected, Mode=OneWay, Converter={StaticResource InverseBool}}">
-                <RibbonGroup x:Name="Entities" Header="Entities">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_accounts_unselected.png" Label="Accounts" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource AccountType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_categories.png" Label="Categories" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource CategoryType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_projects.png" Label="Projects" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource ProjectType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_payees.png" Label="Payees" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource PayeeType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_locations.png" Label="Locations" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource LocationType}" />
-                    <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_currencies.png" Label="Currencies" Click="Currencies_Click" />-->
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_exchange_rates.png" Label="Exchange rates" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource CurrencyExchangeRateType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_budgets_unselected.png" Label="Budget" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource BudgetType}" />
+                <RibbonGroup Header="Entities">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_accounts_unselected.png"
+                                  Label="Accounts"
+                                  Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource AccountType}" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_categories.png"
+                                  Label="Categories" Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource CategoryType}" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_projects.png"
+                                  Label="Projects" Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource ProjectType}" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_payees.png"
+                                  Label="Payees" Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource PayeeType}" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_locations.png"
+                                  Label="Locations" Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource LocationType}" />
+                    <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_currencies.png"
+                                  Label="Currencies" Click="Currencies_Click" />-->
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_exchange_rates.png"
+                                  Label="Exchange rates"
+                                  Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource CurrencyExchangeRateType}" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_budgets_unselected.png"
+                                  Label="Budget"
+                                  Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource BudgetType}"
+                                  IsEnabled="False" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Blotter" Header="Blotter">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_blotter_selected.png" Label="Blotter" Command="{Binding Path=MenuNavigateCommand}" CommandParameter="{StaticResource TransactionsViewType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/actionbar_filter_cancel.png" Label="Clear filter" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_blotter_selected.png"
+                                  Label="Blotter"
+                                  Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource TransactionsViewType}" />
+                    <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/actionbar_filter_cancel.png" Label="Clear filter" />-->
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Reports" Header="Reports" IsEnabled="False">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_reports_selected.png" Label="By category" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png" Label="Project costs" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_reports_selected.png"
+                                  Label="By category" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
+                                  Label="Project costs" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png" Label="Export to excel" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/backup_file.png" Label="Export to csv" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png"
+                                  Label="Export to excel" />
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/backup_file.png"
+                                  Label="Export to csv" />
                 </RibbonGroup>
-                <RibbonGroup x:Name="Mono" Header="Monobank" IsEnabled="True">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png" Label="Import from CSV" Click="Mono_Click" />
+                <RibbonGroup Header="Monobank"
+                             IsEnabled="True">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png"
+                                  Label="Import from CSV"
+                                  Click="Mono_Click" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="Transaction"
@@ -108,7 +145,8 @@
             </RibbonTab>
         </Ribbon>
         <DockPanel Grid.Row="1">
-            <ContentPresenter Content="{Binding Path=CurrentPage}" DataContext="{Binding Path=CurrentPage}" />
+            <ContentPresenter Content="{Binding Path=CurrentPage}"
+                              DataContext="{Binding Path=CurrentPage}" />
         </DockPanel>
         <Grid Grid.Row="1"
               AllowDrop="True"
@@ -118,8 +156,13 @@
                 <RowDefinition Height="256" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Image Source="pack://application:,,,/Images/drag-drop-icon.png" Height="256" Width="265" />
-            <TextBlock Grid.Row="1" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold">Drop .backup file here</TextBlock>
+            <Image Source="pack://application:,,,/Images/drag-drop-icon.png"
+                   Height="256"
+                   Width="265" />
+            <TextBlock Grid.Row="1"
+                       HorizontalAlignment="Center"
+                       FontSize="14"
+                       FontWeight="Bold">Drop .backup file here</TextBlock>
         </Grid>
     </Grid>
 </RibbonWindow >

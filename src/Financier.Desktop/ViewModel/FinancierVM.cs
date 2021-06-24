@@ -1,7 +1,6 @@
 ﻿using Financier.DataAccess;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
-using Financier.DataAccess.Monobank;
 using Financier.DataAccess.View;
 using Financier.Desktop.Converters;
 using Financier.Desktop.Entities;
@@ -76,11 +75,18 @@ namespace Financier.Desktop.ViewModel
             get => saveBackupPath;
             set => SetProperty(ref saveBackupPath, value);
         }
-        public async Task ImportMonoTransactions(int accountId, List<MonoTransaction> transactions)
-        {
-            await db.ImportMonoTransactions(accountId, transactions);
 
-            await db.RebuildRunningBalanceForAccount(accountId);
+        public async Task ImportMonoTransactions(List<Transaction> transactions)
+        {
+            await db.ImportMonoTransactions(transactions);
+            foreach (var accId in transactions
+                .Where(x => x.ToAccountId > 0)
+                .Select(x => x.ToAccountId)
+                .Distinct())
+            {
+                await db.RebuildRunningBalanceForAccount(accId);
+            }
+            await db.RebuildRunningBalanceForAccount(transactions.Select(x => x.FromAccountId).FirstOrDefault());
             await RefreshBlotterTransactions();
         }
 

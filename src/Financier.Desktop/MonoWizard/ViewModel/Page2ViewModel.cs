@@ -52,17 +52,16 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 RaisePropertyChanged(nameof(Transactions));
             }
         }
-        public List<MonoTransaction> TransactionsToImport {
+
+        public List<MonoTransaction> MonoTransactions 
+        {
             get
             {
-                var startDate = new DateTime(2017, 11, 17); // Monobank launched
-                if (_startTransaction != null)
-                {
-                    startDate = _startTransaction.Date;
-                }
+                var startDate = _startTransaction?.Date ?? new DateTime(2017, 11, 17); // Monobank launched
                 return _transactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
             }
         }
+
         public override bool IsValid()
         {
             return true;

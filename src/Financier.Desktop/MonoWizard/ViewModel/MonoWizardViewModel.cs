@@ -17,7 +17,10 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 {
     public class MonoWizardViewModel : BindableBase
     {
-        private readonly List<Account> accounts = new();
+        private readonly List<Account> accounts;
+        private readonly List<Currency> currencies;
+        private readonly List<Location> locations;
+        private readonly List<Category> categories;
         private readonly string csvFilePath;
         private readonly List<MonoTransaction> monoTransactions = new();
 
@@ -28,9 +31,12 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         private WizardBaseViewModel _currentPage;
         private ReadOnlyCollection<WizardBaseViewModel> _pages;
 
-        public MonoWizardViewModel(List<Account> accounts, string csvFilePath)
+        public MonoWizardViewModel(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, string csvFilePath)
         {
-            this.accounts.AddRange(accounts);
+            this.accounts = new List<Account>(accounts);
+            this.currencies = new List<Currency>(currencies);
+            this.locations = new List<Location>(locations);
+            this.categories = new List<Category>(categories);
             this.csvFilePath = csvFilePath;
         }
         public event EventHandler<bool> RequestClose;
@@ -55,11 +61,17 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                     _currentPage.IsCurrentPage = false;
 
 
-                if (_currentPage is Page1ViewModel model)
+                if (_currentPage is Page1ViewModel page1)
                 {
-                    var monoAccount = model.MonoAccount;
+                    var monoAccount = page1.MonoAccount;
                     ((Page2ViewModel)value).MonoAccount = monoAccount;
                     MonoBankAccount = monoAccount;
+                }
+
+                if (_currentPage is Page2ViewModel page2)
+                {
+                    ((Page3ViewModel)value).MonoAccount = MonoBankAccount;
+                    ((Page3ViewModel)value).SetMonoTransactions(page2.MonoTransactions);
                 }
 
                 _currentPage = value;
@@ -98,7 +110,8 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         public ReadOnlyCollection<WizardBaseViewModel> Pages => _pages;
 
         public string Title => CurrentPage == null ? string.Empty : CurrentPage.Title;
-        public List<MonoTransaction> TransactionsToImport { get; set; }
+
+        public List<Transaction> TransactionsToImport { get; set; }
 
         bool CanMoveToNextPage => CurrentPage != null && CurrentPage.IsValid();
 
@@ -135,7 +148,8 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             _pages = new List<WizardBaseViewModel>
                 {
                     new Page1ViewModel(accounts),
-                    new Page2ViewModel(monoTransactions)
+                    new Page2ViewModel(monoTransactions),
+                    new Page3ViewModel(accounts, currencies, locations, categories)
                 }.AsReadOnly();
         }
 
@@ -154,12 +168,27 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             if (CanMoveToPreviousPage)
                 CurrentPage = Pages[CurrentPageIndex - 1];
         }
+
         void OnRequestClose(bool save)
         {
-            TransactionsToImport = _pages.OfType<Page2ViewModel>().Single().TransactionsToImport;
-            EventHandler <bool> handler = RequestClose;
-            if (handler != null)
-                handler(this, save);
+            TransactionsToImport = _pages.OfType<Page3ViewModel>().Single().FinancierTransactions.Select(x =>
+                new Transaction
+                {
+                    Id = 0,
+                    FromAccountId = x.FromAccountId,
+                    FromAmount = x.FromAmount,
+                    OriginalFromAmount = x.OriginalFromAmount ?? 0,
+                    OriginalCurrencyId = x.OriginalCurrencyId,
+                    CategoryId = x.ToAccountId > 0 ? 0 : x.CategoryId,
+                    LocationId = x.LocationId,
+                    Note = x.Note,
+                    DateTime = x.DateTime,
+                    ToAccountId = x.ToAccountId,
+                    ToAmount = x.ToAccountId > 0 ? Math.Abs(x.OriginalFromAmount ?? x.FromAmount) : 0
+
+                }).ToList();
+
+            RequestClose?.Invoke(this, save);
         }
 
     }

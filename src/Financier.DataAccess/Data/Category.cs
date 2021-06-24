@@ -33,5 +33,14 @@ namespace Financier.DataAccess.Data
 
         [Column(UpdatedOnColumn)]
         public long? UpdatedOn { get; set; }
+
+        [NotMapped]
+        public static Category None = new Category()
+        {
+            Id = 0,
+            Left = 1,
+            Right = 2,
+            Title = "<NO_CATEGORY>"
+        };
     }
 }

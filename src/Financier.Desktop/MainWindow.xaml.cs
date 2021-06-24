@@ -1,5 +1,4 @@
-﻿using Financier.DataAccess.Data;
-using Financier.Desktop.MonoWizard.View;
+﻿using Financier.Desktop.MonoWizard.View;
 using Financier.Desktop.MonoWizard.ViewModel;
 using Financier.Desktop.ViewModel;
 using Financier.Adapter;
@@ -27,6 +26,7 @@ namespace Financier.Desktop
         }
 
         FinancierVM VM { get; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -67,7 +67,13 @@ namespace Financier.Desktop
             {
                 var fileName = openFileDialog.FileName;
                 var dialog = new MonoWizardWindow();
-                var viewModel = new MonoWizardViewModel(VM.Pages.OfType<AccountsVM>().First().Entities.OfType<Account>().ToList() , fileName);
+
+                var accounts = VM.Pages.OfType<AccountsVM>().First().Entities.ToList();
+                var currencies = VM.Pages.OfType<CurrenciesVM>().First().Entities.ToList();
+                var locations = VM.Pages.OfType<LocationsVM>().First().Entities.ToList();
+                var categories = VM.Pages.OfType<CategoriesVM>().First().Entities.ToList();
+
+                var viewModel = new MonoWizardViewModel(accounts, currencies, locations, categories, fileName);
                 await viewModel.LoadTransactions();
                 viewModel.RequestClose += async (o, args) =>
                 {
@@ -75,7 +81,8 @@ namespace Financier.Desktop
                     if (args)
                     {
                         var monoToImport = viewModel.TransactionsToImport;
-                        await VM.ImportMonoTransactions(viewModel.MonoBankAccount.Id, monoToImport);
+                        await VM.ImportMonoTransactions(monoToImport);
+                        System.Windows.Forms.MessageBox.Show($"Imported {monoToImport.Count} transactions");
                     }
                 };
                 dialog.DataContext = viewModel;
@@ -92,7 +99,7 @@ namespace Financier.Desktop
             {
                 await VM.SaveBackup(dialog.FileName);
 
-                System.Windows.Forms.MessageBox.Show("Backup done.");
+                System.Windows.Forms.MessageBox.Show($"Backup done. Saved {dialog.FileName}");
             }
         }
 

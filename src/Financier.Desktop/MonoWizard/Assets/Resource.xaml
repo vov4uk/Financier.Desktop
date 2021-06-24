@@ -10,6 +10,10 @@
         <View:Page2 />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type ViewModel:Page3ViewModel}">
+        <View:Page3 />
+    </DataTemplate>
+
     <Style TargetType="{x:Type Button}" x:Key="moveNextButtonStyle">
         <Setter Property="Content" Value="Next" />
         <Style.Triggers>

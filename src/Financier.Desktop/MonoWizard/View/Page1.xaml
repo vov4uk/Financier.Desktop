@@ -29,10 +29,10 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
                 <DataGridTextColumn Header="Total Amount" Binding="{Binding Path=TotalAmount, Converter= {StaticResource AmountConverter}}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.Name}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -151,32 +151,10 @@ namespace Financier.DataAccess
             }
         }
 
-        public async Task ImportMonoTransactions(int accountId, List<MonoTransaction> transactions)
+        public async Task ImportMonoTransactions(List<Transaction> transactions)
         {
             using var uow = CreateUnitOfWork();
-            var currencies = await uow.GetRepository<Currency>().GetAllAsync();
-            var locations = await uow.GetRepository<Location>().GetAllAsync();
-
-            List<Transaction> transToAdd = new List<Transaction>();
-            foreach (var x in transactions)
-            {
-                var locationId = locations.FirstOrDefault(l => l.Name.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
-                var newTr = new Transaction
-                {
-                    Id = 0,
-                    FromAccountId = accountId,
-                    FromAmount = Convert.ToInt64(x.CardCurrencyAmount * 100.0),
-                    OriginalFromAmount = x.ExchangeRate == null ? 0 : Convert.ToInt64(x.OperationAmount * 100.0),
-                    OriginalCurrencyId = x.ExchangeRate == null ? 0 : currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
-                    CategoryId = 0,
-                    LocationId = locationId,
-                    Note = locationId > 0 ? null : x.Description,
-                    DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
-                };
-                transToAdd.Add(newTr);
-            }
-
-            await uow.GetRepository<Transaction>().AddRangeAsync(transToAdd);
+            await uow.GetRepository<Transaction>().AddRangeAsync(transactions);
             await uow.SaveChangesAsync();
         }
 
