@@ -15,7 +15,12 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Center" FontWeight="Bold">Select MonoBank account</TextBlock>
-        <DataGrid Margin="5" Grid.Row="1" ItemsSource="{Binding Accounts}" AutoGenerateColumns="False" CanUserAddRows="false" SelectedItem="{Binding MonoAccount}">
+        <DataGrid Margin="5" Grid.Row="1" 
+                  ItemsSource="{Binding Accounts}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="false"
+                  IsReadOnly="True"
+                  SelectedItem="{Binding MonoAccount}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Active">
                     <DataGridTemplateColumn.CellTemplate>

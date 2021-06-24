@@ -171,22 +171,25 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 
         void OnRequestClose(bool save)
         {
-            TransactionsToImport = _pages.OfType<Page3ViewModel>().Single().FinancierTransactions.Select(x =>
-                new Transaction
-                {
-                    Id = 0,
-                    FromAccountId = x.FromAccountId,
-                    FromAmount = x.FromAmount,
-                    OriginalFromAmount = x.OriginalFromAmount ?? 0,
-                    OriginalCurrencyId = x.OriginalCurrencyId,
-                    CategoryId = x.ToAccountId > 0 ? 0 : x.CategoryId,
-                    LocationId = x.LocationId,
-                    Note = x.Note,
-                    DateTime = x.DateTime,
-                    ToAccountId = x.ToAccountId,
-                    ToAmount = x.ToAccountId > 0 ? Math.Abs(x.OriginalFromAmount ?? x.FromAmount) : 0
+            if (save)
+            {
+                TransactionsToImport = _pages.OfType<Page3ViewModel>().Single().FinancierTransactions.Select(x =>
+                    new Transaction
+                    {
+                        Id = 0,
+                        FromAccountId = x.FromAccountId,
+                        FromAmount = x.FromAmount,
+                        OriginalFromAmount = x.OriginalFromAmount ?? 0,
+                        OriginalCurrencyId = x.OriginalCurrencyId,
+                        CategoryId = x.ToAccountId > 0 ? 0 : x.CategoryId,
+                        LocationId = x.LocationId,
+                        Note = x.Note,
+                        DateTime = x.DateTime,
+                        ToAccountId = x.ToAccountId,
+                        ToAmount = x.ToAccountId > 0 ? Math.Abs(x.OriginalFromAmount ?? x.FromAmount) : 0
 
-                }).ToList();
+                    }).ToList();
+            }
 
             RequestClose?.Invoke(this, save);
         }

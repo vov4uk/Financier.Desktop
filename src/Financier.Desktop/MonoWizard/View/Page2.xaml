@@ -30,6 +30,7 @@
                   AutoGenerateColumns="True"
                   ScrollViewer.CanContentScroll="True"
                   CanUserAddRows="false"
+                  IsReadOnly="True"
                   SelectedItem="{Binding StartTransaction}"/>
     </Grid>
 </UserControl>
