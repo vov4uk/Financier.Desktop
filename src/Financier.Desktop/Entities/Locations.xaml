@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Financier.Desktop.Entities.Locations"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <DataGrid Margin="5"
+                  ItemsSource="{Binding Path=Entities}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  FontSize="14"
+                  IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Active">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Ellipse Name="MyImage" Fill="Green" Width="14" Height="14" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsActive}" Value="False">
+                                    <Setter TargetName="MyImage" Property="Fill" Value="Red" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Active" Binding="{Binding Path=IsActive}"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn Header="Address" Binding="{Binding Path=Address}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
