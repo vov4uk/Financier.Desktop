@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CsvHelper;
 using Financier.DataAccess.Data;
@@ -17,6 +18,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 {
     public class MonoWizardViewModel : BindableBase
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly List<Account> accounts;
         private readonly List<Currency> currencies;
         private readonly List<Location> locations;
@@ -66,18 +68,24 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                     var monoAccount = page1.MonoAccount;
                     ((Page2ViewModel)value).MonoAccount = monoAccount;
                     MonoBankAccount = monoAccount;
+                    Logger.Info($"MonoBankAccount -> {JsonSerializer.Serialize(monoAccount)}");
                 }
 
                 if (_currentPage is Page2ViewModel page2)
                 {
                     ((Page3ViewModel)value).MonoAccount = MonoBankAccount;
                     ((Page3ViewModel)value).SetMonoTransactions(page2.MonoTransactions);
+                    Logger.Info($"MonoTransactions count -> {page2.MonoTransactions.Count}");
                 }
 
                 _currentPage = value;
 
                 if (_currentPage != null)
+                {
                     _currentPage.IsCurrentPage = true;
+                    Logger.Info($"Current page -> {_currentPage.GetType().FullName}");
+                }
+
 
                 MovePreviousCommand.RaiseCanExecuteChanged();
                 MoveNextCommand.RaiseCanExecuteChanged();
@@ -133,6 +141,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         {
             if (File.Exists(csvFilePath))
             {
+                Logger.Info($"csvFilePath -> {csvFilePath}");
                 await using FileStream file = File.OpenRead(csvFilePath);
                 using StreamReader streamReader = new StreamReader(file, Encoding.UTF8);
                 using var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture);

@@ -13,11 +13,11 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 
         private MonoTransaction _startTransaction;
 
-        private RangeObservableCollection<MonoTransaction> _transactions;
+        private RangeObservableCollection<MonoTransaction> allTransactions;
 
         public Page2ViewModel(List<MonoTransaction> records)
         {
-            _transactions = new RangeObservableCollection<MonoTransaction>(records);
+            allTransactions = new RangeObservableCollection<MonoTransaction>(records);
         }
         public Account MonoAccount
         {
@@ -27,7 +27,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 _monoAccount = value;
                 RaisePropertyChanged(nameof(MonoAccount));
                 double balance = _monoAccount.TotalAmount / 100.0;
-                StartTransaction = _transactions?.FirstOrDefault(x => Math.Abs(x.Balance - balance) < 0.01);
+                StartTransaction = allTransactions?.FirstOrDefault(x => Math.Abs(x.Balance - balance) < 0.01);
             }
         }
 
@@ -43,13 +43,13 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 
         public override string Title => "Please select transaction";
 
-        public RangeObservableCollection<MonoTransaction> Transactions
+        public RangeObservableCollection<MonoTransaction> AllTransactions
         {
-            get => _transactions;
+            get => allTransactions;
             set
             {
-                _transactions = value;
-                RaisePropertyChanged(nameof(Transactions));
+                allTransactions = value;
+                RaisePropertyChanged(nameof(AllTransactions));
             }
         }
 
@@ -58,7 +58,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             get
             {
                 var startDate = _startTransaction?.Date ?? new DateTime(2017, 11, 17); // Monobank launched
-                return _transactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
+                return allTransactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
             }
         }
 

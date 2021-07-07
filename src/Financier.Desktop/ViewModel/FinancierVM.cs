@@ -20,6 +20,7 @@ namespace Financier.Desktop.ViewModel
 {
     public class FinancierVM : BindableBase
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly List<Entity> keyLessEntities = new();
         private DelegateCommand<Type> _menuNavigateCommand;
 
@@ -49,6 +50,7 @@ namespace Financier.Desktop.ViewModel
             set
             {
                 SetProperty(ref currentPage, value);
+                Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
                 RaisePropertyChanged(nameof(CurrentPage));
                 RaisePropertyChanged(nameof(IsTransactionPageSelected));
             }
@@ -132,6 +134,7 @@ namespace Financier.Desktop.ViewModel
             var info = new InfoVM { Text = sb.ToString() };
             info.RequestClose += InfoClose;
             CurrentPage = info;
+            Logger.Info(info.Text);
         }
 
         public async Task SaveBackup(string backupPath)
@@ -373,18 +376,20 @@ namespace Financier.Desktop.ViewModel
             {
                 if (e > 0)
                 {
+                    Logger.Info($"Edit Transaction {e}");
                     var transactions = await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == e || x.Id == e, o => o.OriginalCurrency, c => c.Category);
                     transaction = transactions.First(x => x.Id == e);
                     var transactionVm = ConvertTransaction(transaction);
                     if (transactions.Any(x => x.ParentId == e))
                     {
-                        IEnumerable<TransactionVM> subTransactions = transactions.Where(x => x.ParentId == e).Select(x => ConvertTransaction(x));
+                        IEnumerable<TransactionVM> subTransactions = transactions.Where(x => x.ParentId == e).Select(ConvertTransaction);
                         transactionVm.SubTransactions = new ObservableCollection<TransactionVM>(subTransactions);
                     }
                     context = transactionVm;
                 }
                 else
                 {
+                    Logger.Info("Create Transaction");
                     transaction = new Transaction { DateTime = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0 };
                     context = ConvertTransaction(transaction);
                 }
@@ -414,10 +419,12 @@ namespace Financier.Desktop.ViewModel
             context.RequestCancel += (_, _) =>
             {
                 dialog.Close();
+                Logger.Info("Transaction close");
             };
             context.RequestSave += async (sender, _) =>
             {
                 dialog.Close();
+                Logger.Info("Transaction save");
                 try
                 {
                     using var uow = db.CreateUnitOfWork();
@@ -458,7 +465,7 @@ namespace Financier.Desktop.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    Logger.Error(ex);
                 }
 
                 await RefreshBlotterTransactions();
@@ -475,10 +482,12 @@ namespace Financier.Desktop.ViewModel
             {
                 if (e != 0)
                 {
+                    Logger.Info($"Edit transfer {e}");
                     transaction = await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == e, o => o.OriginalCurrency, c => c.Category);
                 }
                 else
                 {
+                    Logger.Info("Create transfer");
                     transaction = new Transaction { DateTime = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0, CategoryId = 0 };
                 }
 
@@ -499,10 +508,12 @@ namespace Financier.Desktop.ViewModel
             context.RequestCancel += (_, _) =>
             {
                 dialog.Close();
+                Logger.Info("Transfer close");
             };
             context.RequestSave += async (sender, _) =>
             {
                 dialog.Close();
+                Logger.Info("Transfer save");
                 MapTransfer(sender as TransferVM, transaction);
                 await InsertTransaction(new[] { transaction });
                 await RefreshBlotterTransactions();

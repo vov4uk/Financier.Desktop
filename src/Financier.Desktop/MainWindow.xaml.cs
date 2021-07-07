@@ -1,4 +1,5 @@
-﻿using Financier.Desktop.MonoWizard.View;
+﻿using System;
+using Financier.Desktop.MonoWizard.View;
 using Financier.Desktop.MonoWizard.ViewModel;
 using Financier.Desktop.ViewModel;
 using Financier.Adapter;
@@ -16,6 +17,7 @@ namespace Financier.Desktop
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         static MainWindow()
         {
@@ -29,10 +31,12 @@ namespace Financier.Desktop
 
         public MainWindow()
         {
+            AppDomain.CurrentDomain.UnhandledException += (_, e ) => Logger.Error((Exception)e.ExceptionObject);
             InitializeComponent();
             VM = new FinancierVM();
 
             DataContext = VM;
+            Logger.Info("App started");
         }
 
         private async void OpenBackup_OnClick(object sender, RoutedEventArgs e)
@@ -44,6 +48,7 @@ namespace Financier.Desktop
             };
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                Logger.Info($"Opened backup : {openFileDialog.FileName}");
                 await VM.OpenBackup(openFileDialog.FileName);
             }
         }
@@ -83,6 +88,7 @@ namespace Financier.Desktop
                         var monoToImport = viewModel.TransactionsToImport;
                         await VM.ImportMonoTransactions(monoToImport);
                         System.Windows.Forms.MessageBox.Show($"Imported {monoToImport.Count} transactions");
+                        Logger.Info($"Imported {monoToImport.Count} transactions");
                     }
                 };
                 dialog.DataContext = viewModel;
@@ -92,14 +98,17 @@ namespace Financier.Desktop
 
         private async void SaveBackup_Click(object sender, RoutedEventArgs e)
         {
-            using SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = "Backup files (*.backup)|*.backup";
-            dialog.FileName = Path.Combine(Path.GetDirectoryName(VM.OpenBackupPath), BackupWriter.GenerateFileName());
+            using SaveFileDialog dialog = new SaveFileDialog
+            {
+                Filter = "Backup files (*.backup)|*.backup",
+                FileName = Path.Combine(Path.GetDirectoryName(VM.OpenBackupPath), BackupWriter.GenerateFileName())
+            };
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 await VM.SaveBackup(dialog.FileName);
 
                 System.Windows.Forms.MessageBox.Show($"Backup done. Saved {dialog.FileName}");
+                Logger.Info($"Backup done. Saved {dialog.FileName}");
             }
         }
 
@@ -110,6 +119,7 @@ namespace Financier.Desktop
                 string[] files = e.Data.GetData(DataFormats.FileDrop, true) as string[];
                 if (files?.Any(x => Path.GetExtension(x) == ".backup") == true)
                 {
+                    Logger.Info($"Drag & drop backup  : {files.FirstOrDefault(x => Path.GetExtension(x) == ".backup")}");
                     await VM.OpenBackup(files.FirstOrDefault(x => Path.GetExtension(x) == ".backup"));
                 }
             }
