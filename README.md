@@ -1,10 +1,7 @@
 Build &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [![Build Status](https://dev.azure.com/khmelovskyi/Financier.Desktop/_apis/build/status/vov4uk.Financier.Desktop?branchName=master)](https://dev.azure.com/khmelovskyi/Financier.Desktop/_build/latest?definitionId=2&branchName=master)
 
-Release &nbsp; &nbsp; &nbsp; [![GitHub release](https://img.shields.io/github/release/vov4uk/Financier.Desktop.svg?style=flat-square)](https://github.com/vov4uk/Financier.Desktop/releases) 
-[![Github Releases](https://img.shields.io/github/downloads-pre/vov4uk/Financier.Desktop/latest/total.svg?style=flat-square)](https://github.com/vov4uk/Financier.Desktop/releases)
-
-Beta &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [![GitHub (pre-)release](https://img.shields.io/github/release/vov4uk/Financier.Desktop/all.svg?style=flat-square)](https://github.com/vov4uk/Financier.Desktop/releases) 
-[![Github Releases](https://img.shields.io/github/downloads/vov4uk/Financier.Desktop/latest/total.svg?style=flat-square)](https://github.com/vov4uk/Financier.Desktop/releases)
+Release &nbsp; &nbsp; &nbsp; [![GitHub (pre-)release](https://img.shields.io/github/release/vov4uk/Financier.Desktop/all.svg?style=flat-square)](https://github.com/vov4uk/Financier.Desktop/releases) 
+[![Github Releases](https://img.shields.io/github/downloads/vov4uk/Financier.Desktop/total)](https://github.com/vov4uk/Financier.Desktop/releases)
 
 # Financier.Desktop
 WORK IN PROGRESS
