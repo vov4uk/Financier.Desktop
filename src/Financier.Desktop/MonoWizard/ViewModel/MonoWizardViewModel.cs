@@ -182,26 +182,55 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         {
             if (save)
             {
-                TransactionsToImport = _pages.OfType<Page3ViewModel>().Single().FinancierTransactions.Select(x =>
-                    new Transaction
-                    {
-                        Id = 0,
-                        FromAccountId = x.FromAccountId,
-                        FromAmount = x.FromAmount,
-                        OriginalFromAmount = x.OriginalFromAmount ?? 0,
-                        OriginalCurrencyId = x.OriginalCurrencyId,
-                        CategoryId = x.ToAccountId > 0 ? 0 : x.CategoryId,
-                        LocationId = x.LocationId,
-                        Note = x.Note,
-                        DateTime = x.DateTime,
-                        ToAccountId = x.ToAccountId,
-                        ToAmount = x.ToAccountId > 0 ? Math.Abs(x.OriginalFromAmount ?? x.FromAmount) : 0
-
-                    }).ToList();
+                TransactionsToImport = _pages.OfType<Page3ViewModel>()
+                    .Single()
+                    .FinancierTransactions
+                    .Select(TransformMonoTransaction)
+                    .ToList();
             }
 
             RequestClose?.Invoke(this, save);
         }
 
+
+        private Transaction TransformMonoTransaction(FinancierTransactionViewModel x)
+        {
+            var result = new Transaction
+            {
+                Id = 0,
+                FromAmount = x.FromAmount,
+                OriginalFromAmount = x.OriginalFromAmount ?? 0,
+                OriginalCurrencyId = x.OriginalCurrencyId,
+                Note = x.Note,
+                LocationId = x.LocationId,
+                CategoryId = 0,
+                DateTime = x.DateTime,
+                ToAmount = 0
+            };
+
+            if (x.ToAccountId > 0) // Transfer From Mono
+            {
+                result.FromAccountId = x.MonoAccountId;
+                result.ToAccountId = x.ToAccountId;
+                result.ToAmount = Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
+            }
+            else
+            if (x.FromAccountId > 0) // Transfer To Mono
+            {
+                result.FromAccountId = x.FromAccountId;
+                result.ToAccountId = x.MonoAccountId;
+                result.ToAmount = Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
+                result.FromAmount = -1 * Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
+            }
+            else // Expanse
+            {
+                result.FromAccountId = x.MonoAccountId;
+                result.CategoryId = x.CategoryId;
+                result.ToAccountId = 0;
+                result.ToAmount = 0;
+            }
+
+            return result;
+        }
     }
 }

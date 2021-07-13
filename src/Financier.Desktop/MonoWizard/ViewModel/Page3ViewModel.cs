@@ -102,12 +102,13 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 var locationId = locations.FirstOrDefault(l => l.Name.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var newTr = new FinancierTransactionViewModel
                 {
-                    FromAccountId = MonoAccount.Id,
+                    MonoAccountId = MonoAccount.Id,
                     FromAmount = Convert.ToInt64(x.CardCurrencyAmount * 100.0),
                     OriginalFromAmount = x.ExchangeRate == null ? null : Convert.ToInt64(x.OperationAmount * 100.0),
                     OriginalCurrencyId = x.ExchangeRate == null ? 0 : currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
                     CategoryId = 0,
                     ToAccountId = 0,
+                    FromAccountId = 0,
                     LocationId = locationId,
                     Note = locationId > 0 ? null : x.Description,
                     DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
