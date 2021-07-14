@@ -24,14 +24,46 @@
                   DataContext="{Binding}"
                   CanUserAddRows="false">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Date" Binding="{Binding Path=DateTime, Converter= {StaticResource DatetimeConverter}}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Account" Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.MonoAccount.Title}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Date"
+                                    Binding="{Binding Path=DateTime, Converter= {StaticResource DatetimeConverter}}"
+                                    IsReadOnly="True"/>
+                <DataGridTemplateColumn Header="From Account" IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <xctk:WatermarkComboBox IsEditable="True"
+                                                    ItemsSource="{Binding
+                                                                  RelativeSource={RelativeSource Mode=FindAncestor,
+                                                                  AncestorType={x:Type DataGrid}},
+                                                                  Path=DataContext.Accounts}"
+                                                    SelectedValue="{Binding
+                                Path=FromAccountId,
+                                Mode=TwoWay,
+                                NotifyOnTargetUpdated=True,
+                                UpdateSourceTrigger=PropertyChanged}"
+                                                    SelectedValuePath="Id"
+                                                    DisplayMemberPath="Title" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Account"
+                                    Binding="{Binding
+                                              RelativeSource={RelativeSource Mode=FindAncestor,
+                                              AncestorType={x:Type DataGrid}},
+                                              Path=DataContext.MonoAccount.Title}" 
+                                    IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="Category" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
-                                                    ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.Categories}"
-                                                    SelectedValue="{Binding Path= CategoryId, Mode=TwoWay, NotifyOnTargetUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                                                    ItemsSource="{Binding
+                                RelativeSource={RelativeSource Mode=FindAncestor,
+                                AncestorType={x:Type DataGrid}},
+                                Path=DataContext.Categories}"
+                                                    SelectedValue="{Binding
+                                Path= CategoryId,
+                                Mode=TwoWay,
+                                NotifyOnTargetUpdated=True,
+                                UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedValuePath="Id"
                                                     DisplayMemberPath="Title" />
                         </DataTemplate>
@@ -41,28 +73,59 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
-                                                    ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.Accounts}"
-                                                    SelectedValue="{Binding Path=ToAccountId, Mode=TwoWay, NotifyOnTargetUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                                                    ItemsSource="{Binding
+                                RelativeSource={RelativeSource
+                                Mode=FindAncestor,
+                                AncestorType={x:Type DataGrid}},
+                                Path=DataContext.Accounts}"
+                                                    SelectedValue="{Binding
+                                Path=ToAccountId,
+                                Mode=TwoWay,
+                                NotifyOnTargetUpdated=True,
+                                UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedValuePath="Id"
                                                     DisplayMemberPath="Title" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="Amount" Binding="{Binding Path=FromAmount, Converter={StaticResource AmountConverter}}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Original Amount" Binding="{Binding Path=OriginalFromAmount, Converter={StaticResource AmountConverter}}" IsReadOnly="True"/>
-                <DataGridTemplateColumn Header="Location" IsReadOnly="False">
+                <DataGridTextColumn Header="Amount"
+                                    Binding="{Binding
+                    Path=FromAmount,
+                    Converter={StaticResource AmountConverter},
+                    ConverterParameter=false}"
+                                    IsReadOnly="True"/>
+                <DataGridTextColumn Header="Original Amount"
+                                    Binding="{Binding
+                    Path=OriginalFromAmount,
+                    Converter={StaticResource AmountConverter},
+                    ConverterParameter=false}"
+                                    IsReadOnly="True"/>
+                <DataGridTemplateColumn Header="Location"
+                                        IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
-                                                    ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.Locations}"
-                                                    SelectedValue="{Binding Path=LocationId, Mode=TwoWay, NotifyOnTargetUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                                                    ItemsSource="{Binding
+                                RelativeSource={RelativeSource Mode=FindAncestor,
+                                AncestorType={x:Type DataGrid}},
+                                Path=DataContext.Locations}"
+                                                    SelectedValue="{Binding 
+                                Path=LocationId,
+                                Mode=TwoWay,
+                                NotifyOnTargetUpdated=True,
+                                UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedValuePath="Id"
                                                     DisplayMemberPath="Title" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Note" Binding="{Binding Path=Note, Mode=TwoWay, NotifyOnTargetUpdated=True, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False"/>
+                <DataGridTextColumn Header="Note" Binding="{Binding
+                    Path=Note,
+                    Mode=TwoWay,
+                    NotifyOnTargetUpdated=True,
+                    UpdateSourceTrigger=PropertyChanged}"
+                                    IsReadOnly="False"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

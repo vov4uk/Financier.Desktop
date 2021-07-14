@@ -10,6 +10,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         private string note;
 
         public int FromAccountId { get; set; }
+        public int MonoAccountId { get; set; }
         public long FromAmount { get; set; }
 
         public int ToAccountId
