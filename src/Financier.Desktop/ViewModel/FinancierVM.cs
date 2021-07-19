@@ -108,6 +108,7 @@ namespace Financier.Desktop.ViewModel
             {
                 var allAccounts = await uow.GetRepository<Account>().GetAllAsync(x => x.Currency);
                 var allTransactions = await uow.GetRepository<BlotterTransactions>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
+                var byCategoryReport = await uow.GetRepository<ByCategoryReport>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
                 var allCategories = await uow.GetRepository<Category>().GetAllAsync();
                 var allRates = await uow.GetRepository<CurrencyExchangeRate>().GetAllAsync(x => x.FromCurrency, x => x.ToCurrency);
 
@@ -115,6 +116,7 @@ namespace Financier.Desktop.ViewModel
                 AddEntities(allTransactions.OrderByDescending(x => x.datetime).ToList(), sb, true);
                 AddEntities(allCategories.Where(x => x.Id > 0).ToList(), sb);
                 AddEntities(allRates.ToList(), sb);
+                AddEntities(byCategoryReport.ToList(), sb);
             }
 
             AddEntities(entities.OfType<Project>().ToList(), sb);
@@ -308,7 +310,8 @@ namespace Financier.Desktop.ViewModel
                     new ExchangeRatesVM(),
                     new LocationsVM(),
                     new PayeesVM(),
-                    new ProjectsVM()
+                    new ProjectsVM(),
+                    new ReportVM()
                 }.AsReadOnly();
         }
 
@@ -368,6 +371,7 @@ namespace Financier.Desktop.ViewModel
         {
             CurrentPage = Pages.FirstOrDefault(x => x.GetType().BaseType.GetGenericArguments().Single() == type);
         }
+
         private async Task OpenTransactionDialog(int e)
         {
             TransactionVM context;
