@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using Financier.Desktop.ViewModel;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Financier.Desktop.Entities
 {
@@ -7,9 +9,17 @@ namespace Financier.Desktop.Entities
     /// </summary>
     public partial class Report : UserControl
     {
+
         public Report()
         {
             InitializeComponent();
+            Loaded += Report_Loaded;
+            SizeChanged += Report_Loaded;
+        }
+
+        private void Report_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((ReportVM)DataContext).RefreshReport(PlotPresenter.RenderSize.Width);
         }
     }
 }

@@ -33,7 +33,9 @@
         public event EventHandler<TransactionsView> DuplicateRaised;
 
         public event EventHandler<TransactionsView> EditRaised;
+
         public event EventHandler<TransactionsView> InfoRaised;
+
         public DelegateCommand AddTemplateCommand
         {
             get

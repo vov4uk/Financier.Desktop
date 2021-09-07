@@ -81,6 +81,7 @@ namespace Financier.Desktop.ViewModel
         public async Task ImportMonoTransactions(List<Transaction> transactions)
         {
             await db.ImportMonoTransactions(transactions);
+
             foreach (var accId in transactions
                 .Where(x => x.ToAccountId > 0)
                 .Select(x => x.ToAccountId)
@@ -106,17 +107,29 @@ namespace Financier.Desktop.ViewModel
 
             using (var uow = db.CreateUnitOfWork())
             {
-                var allAccounts = await uow.GetRepository<Account>().GetAllAsync(x => x.Currency);
-                var allTransactions = await uow.GetRepository<BlotterTransactions>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
-                var byCategoryReport = await uow.GetRepository<ByCategoryReport>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
+                var allAccounts = await uow.GetRepository<Account>()
+                    .GetAllAsync(x => x.Currency);
+
+                var allTransactions = await uow.GetRepository<BlotterTransactions>()
+                    .GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
+
+                var byCategoryReport = await uow.GetRepository<ByCategoryReport>()
+                    .GetAllAsync(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
+
                 var allCategories = await uow.GetRepository<Category>().GetAllAsync();
-                var allRates = await uow.GetRepository<CurrencyExchangeRate>().GetAllAsync(x => x.FromCurrency, x => x.ToCurrency);
+
+                var allRates = await uow.GetRepository<CurrencyExchangeRate>()
+                    .GetAllAsync(x => x.FromCurrency, x => x.ToCurrency);
 
                 AddEntities(allAccounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList(), sb);
                 AddEntities(allTransactions.OrderByDescending(x => x.datetime).ToList(), sb, true);
                 AddEntities(allCategories.Where(x => x.Id > 0).ToList(), sb);
                 AddEntities(allRates.ToList(), sb);
-                AddEntities(byCategoryReport.ToList(), sb);
+
+                sb?.AppendLine($"Imported {typeof(ReportVM).Name}");
+                var vm = _pages.OfType<ReportVM>().First();
+                vm.Entities = new RangeObservableCollection<ByCategoryReport>(byCategoryReport.ToList());
+                vm.AllCategories = allCategories.Where(x => x.Id > 0).ToList();
             }
 
             AddEntities(entities.OfType<Project>().ToList(), sb);

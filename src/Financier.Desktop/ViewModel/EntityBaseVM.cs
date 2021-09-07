@@ -10,7 +10,8 @@ namespace Financier.Desktop.ViewModel
         private RangeObservableCollection<T> _entities;
         public RangeObservableCollection<T> Entities
         {
-            get {
+            get
+            {
                 if (_entities == null)
                 {
                     _entities = new RangeObservableCollection<T>();

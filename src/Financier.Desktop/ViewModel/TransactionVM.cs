@@ -62,7 +62,7 @@ namespace Financier.Desktop.ViewModel
         private int? payeeId;
         private int? projectId;
         private double rate;
-        private ObservableCollection<TransactionVM> subTransactions;
+        private ObservableCollection<TransactionVM> subTransactions = new ObservableCollection<TransactionVM>();
         private long unSplitAmount;
         public event EventHandler RequestCancel;
 

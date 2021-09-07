@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using Financier.DataAccess.Data;
 
 namespace Financier.DataAccess.View
 {
+    [DebuggerDisplay("{name} - {to_amount}")]
     public class ByCategoryReport : Entity, IIdentity
     {
         [Column(IdColumn)]

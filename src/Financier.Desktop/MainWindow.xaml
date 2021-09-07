@@ -103,8 +103,8 @@
                                   Label="By category"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource ReportType}"/>
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
-                                  Label="Project costs" />
+                    <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
+                                  Label="Project costs" />-->
                 </RibbonGroup>
                 <RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png"

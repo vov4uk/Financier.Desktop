@@ -204,6 +204,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 Note = x.Note,
                 LocationId = x.LocationId,
                 CategoryId = 0,
+                Category = default,
                 DateTime = x.DateTime,
                 ToAmount = 0
             };
@@ -227,6 +228,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 result.FromAccountId = x.MonoAccountId;
                 result.CategoryId = x.CategoryId;
                 result.ToAccountId = 0;
+                result.ToAccount = default;
                 result.ToAmount = 0;
             }
 
