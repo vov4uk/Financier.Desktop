@@ -18,6 +18,7 @@
             <x:Type x:Key="PayeeType" TypeName="data:Payee" />
             <x:Type x:Key="LocationType" TypeName="data:Location" />
             <x:Type x:Key="CurrencyType" TypeName="data:Currency" />
+            <x:Type x:Key="ReportType" TypeName="dataView:ByCategoryReport" />
             <x:Type x:Key="CurrencyExchangeRateType" TypeName="data:CurrencyExchangeRate" />
             <x:Type x:Key="BudgetType" TypeName="data:Budget" />
             <x:Type x:Key="TransactionsViewType" TypeName="dataView:BlotterTransactions" />
@@ -96,11 +97,14 @@
                     <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/actionbar_filter_cancel.png" Label="Clear filter" />-->
                 </RibbonGroup>
 
-                <RibbonGroup x:Name="Reports" Header="Reports" IsEnabled="False">
+                <RibbonGroup x:Name="Reports"
+                             Header="Reports">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_reports_selected.png"
-                                  Label="By category" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
-                                  Label="Project costs" />
+                                  Label="By category"
+                                  Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource ReportType}"/>
+                    <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
+                                  Label="Project costs" />-->
                 </RibbonGroup>
                 <RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png"
