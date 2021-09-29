@@ -8,10 +8,17 @@
     <Grid>
         <DataGrid Margin="5"
                   ItemsSource="{Binding Path=Entities}"
+                  SelectedItem="{Binding SelectedValue}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   FontSize="14"
                   IsReadOnly="True">
+            <DataGrid.InputBindings>
+                <MouseBinding
+                    MouseAction="LeftDoubleClick"
+                    Command="{Binding EditCommand}"
+                    CommandParameter="{Binding SelectedValue}" />
+            </DataGrid.InputBindings>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Active">
                     <DataGridTemplateColumn.CellTemplate>
@@ -25,8 +32,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Active" Binding="{Binding Path=IsActive}"/>
-                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"/>
                 <DataGridTextColumn Header="Address" Binding="{Binding Path=Address}"/>
             </DataGrid.Columns>
         </DataGrid>

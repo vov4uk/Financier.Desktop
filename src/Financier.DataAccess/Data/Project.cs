@@ -17,6 +17,6 @@ namespace Financier.DataAccess.Data
         public string Title { get; set; }
 
         [Column(UpdatedOnColumn)]
-        public long? UpdatedOn { get; set; }
+        public long UpdatedOn { get; set; }
     }
 }

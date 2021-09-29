@@ -15,6 +15,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Financier.Desktop.ViewModel.Dialog;
+using Financier.Desktop.Entities.Controls;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -27,6 +29,7 @@ namespace Financier.Desktop.ViewModel
         private ReadOnlyCollection<BindableBase> _pages;
         private AccountsVM accountsVm;
         private BlotterVM blotter;
+        private LocationsVM locations;
         private BindableBase currentPage;
         private FinancierDatabase db;
         private string openBackupPath;
@@ -44,6 +47,12 @@ namespace Financier.Desktop.ViewModel
             set => SetProperty(ref blotter, value);
         }
 
+        public LocationsVM Locations
+        {
+            get => locations;
+            set => SetProperty(ref locations, value);
+        }
+
         public BindableBase CurrentPage
         {
             get => currentPage;
@@ -53,9 +62,12 @@ namespace Financier.Desktop.ViewModel
                 Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
                 RaisePropertyChanged(nameof(CurrentPage));
                 RaisePropertyChanged(nameof(IsTransactionPageSelected));
+                RaisePropertyChanged(nameof(IsLocationPageSelected));
             }
         }
         public bool IsTransactionPageSelected => currentPage is BlotterVM;
+
+        public bool IsLocationPageSelected => currentPage is LocationsVM;
 
         public DelegateCommand<Type> MenuNavigateCommand
         {
@@ -301,7 +313,7 @@ namespace Financier.Desktop.ViewModel
             if (Blotter != null)
             {
                 Blotter.EditRaised -= BlotterVM_OpenTransactionRaised;
-                Blotter.AddTransactionRaised -= Blotter_AddTransactionRaised;
+                Blotter.AddRaised -= Blotter_AddTransactionRaised;
                 Blotter.AddTransferRaised -= Blotter_AddTransferRaised;
                 Blotter.DeleteRaised -= Blotter_DeleteRaised;
                 Blotter.DuplicateRaised -= Blotter_DuplicateRaised;
@@ -309,10 +321,22 @@ namespace Financier.Desktop.ViewModel
 
             Blotter = new BlotterVM();
             Blotter.EditRaised += BlotterVM_OpenTransactionRaised;
-            Blotter.AddTransactionRaised += Blotter_AddTransactionRaised;
+            Blotter.AddRaised += Blotter_AddTransactionRaised;
             Blotter.AddTransferRaised += Blotter_AddTransferRaised;
             Blotter.DeleteRaised += Blotter_DeleteRaised;
             Blotter.DuplicateRaised += Blotter_DuplicateRaised;
+
+            if (Locations != null)
+            {
+                Locations.AddRaised -= Locations_AddRaised;
+                Locations.EditRaised -= Locations_EditRaised;
+                Locations.DeleteRaised -= Locations_DeleteRaised;
+            }
+            Locations = new LocationsVM();
+            Locations.AddRaised += Locations_AddRaised;
+            Locations.EditRaised += Locations_EditRaised;
+            Locations.DeleteRaised += Locations_DeleteRaised;
+
             _pages = new List<BindableBase>
                 {
                     accountsVm,
@@ -321,11 +345,26 @@ namespace Financier.Desktop.ViewModel
                     new CategoriesVM(),
                     new CurrenciesVM(),
                     new ExchangeRatesVM(),
-                    new LocationsVM(),
+                    Locations,
                     new PayeesVM(),
                     new ProjectsVM(),
                     new ReportVM()
                 }.AsReadOnly();
+        }
+
+        private void Locations_DeleteRaised(object sender, Location e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async void Locations_EditRaised(object sender, Location e)
+        {
+            await OpenLocationDialog(e.Id);
+        }
+
+        private async void Locations_AddRaised(object sender, EventArgs e)
+        {
+            await OpenLocationDialog(0);
         }
 
         private void InfoClose(object sender, EventArgs e)
@@ -333,19 +372,21 @@ namespace Financier.Desktop.ViewModel
             CurrentPage = Pages.OfType<AccountsVM>().First();
         }
 
-        private async Task InsertTransaction(IEnumerable<Transaction> transactions)
+        private async Task InsertOrUpdate<T>(IEnumerable<T> entities)
+            where T: Entity, IIdentity
         {
             using var uow = db.CreateUnitOfWork();
-            var trRepo = uow.GetRepository<Transaction>();
-            foreach (var transaction in transactions)
+            var trRepo = uow.GetRepository<T>();
+            foreach (var item in entities)
             {
-                if (transaction.Id == 0)
+                item.UpdatedOn = DateTimeConverter.ConvertBack(DateTime.Now);
+                if (item.Id == 0)
                 {
-                    await trRepo.AddAsync(transaction);
+                    await trRepo.AddAsync(item);
                 }
                 else
                 {
-                    await trRepo.UpdateAsync(transaction);
+                    await trRepo.UpdateAsync(item);
                 }
             }
             await uow.SaveChangesAsync();
@@ -532,16 +573,75 @@ namespace Financier.Desktop.ViewModel
                 dialog.Close();
                 Logger.Info("Transfer save");
                 MapTransfer(sender as TransferVM, transaction);
-                await InsertTransaction(new[] { transaction });
+                await InsertOrUpdate(new[] { transaction });
                 await RefreshBlotterTransactions();
             };
             dialog.ShowDialog();
         }
+
         private async Task RefreshBlotterTransactions()
         {
             using var uow = db.CreateUnitOfWork();
             var allTransactions = await uow.GetRepository<BlotterTransactions>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
             AddEntities(allTransactions.OrderByDescending(x => x.datetime).ToList(), null, true);
+        }
+
+        private async Task RefreshLocations()
+        {
+            using var uow = db.CreateUnitOfWork();
+            var locations = await uow.GetRepository<Location>().GetAllAsync();
+            AddEntities(locations.Where(x => x.Id > 0).ToList(), null, true);
+        }
+
+        private async Task OpenLocationDialog(int e)
+        {
+            LocationVM context;
+            Location selectedValue;
+
+            using (var uow = db.CreateUnitOfWork())
+            {
+                if (e != 0)
+                {
+                    Logger.Info($"Edit location {e}");
+                    selectedValue = await uow.GetRepository<Location>().FindByAsync(x => x.Id == e);
+                }
+                else
+                {
+                    Logger.Info("Create location");
+                    selectedValue = new Location { Date = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0 };
+                }
+
+                context = new LocationVM(selectedValue);
+            }
+
+            var dialog = new Window
+            {
+                Content = new LocationControl() { DataContext = context },
+                ResizeMode = ResizeMode.NoResize,
+                Height = 240,
+                Width = 300,
+                ShowInTaskbar = Debugger.IsAttached
+            };
+            context.RequestCancel += (_, _) =>
+            {
+                dialog.Close();
+                Logger.Info("Location dialog close");
+            };
+            context.RequestSave += async (sender, _) =>
+            {
+                dialog.Close();
+                Logger.Info("Location dialog save");
+                var updatedItem = sender as LocationVM;
+                selectedValue.IsActive = updatedItem.IsActive;
+                selectedValue.Address = updatedItem.Address;
+                selectedValue.Title = updatedItem.Title;
+                selectedValue.Name = updatedItem.Title;
+                selectedValue.Id = updatedItem.Id;
+
+                await InsertOrUpdate(new[] { selectedValue });
+                await RefreshLocations();
+            };
+            dialog.ShowDialog();
         }
     }
 }

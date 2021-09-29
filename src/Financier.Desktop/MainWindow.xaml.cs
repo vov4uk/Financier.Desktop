@@ -17,6 +17,8 @@ namespace Financier.Desktop
     /// </summary>
     public partial class MainWindow : RibbonWindow
     {
+        private const string BackupFormat = "*.backup";
+        private const string Backup = ".backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         static MainWindow()
@@ -44,7 +46,7 @@ namespace Financier.Desktop
             using var openFileDialog = new OpenFileDialog
             {
                 Multiselect = false,
-                Filter = "Backup files (*.backup)|*.backup"
+                Filter = $"Backup files ({BackupFormat})|{BackupFormat}"
             };
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -55,10 +57,12 @@ namespace Financier.Desktop
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            #if DEBUG
-            await VM.OpenBackup(@"C:\D\Financisto\20210428_185525_708.backup");
-            VM.CurrentPage = VM.Pages.OfType<BlotterVM>().First();
-            #endif
+            var backup = Directory.EnumerateFiles(@$"C:\Users\{Environment.UserName}\Dropbox\apps\FinancierAndroid", BackupFormat).OrderByDescending(x => x).FirstOrDefault();
+            if (!string.IsNullOrEmpty(backup))
+            {
+                await VM.OpenBackup(backup);
+                VM.CurrentPage = VM.Pages.OfType<BlotterVM>().First();
+            }
         }
 
         private async void Mono_Click(object sender, RoutedEventArgs e)
@@ -85,10 +89,20 @@ namespace Financier.Desktop
                     dialog.Close();
                     if (args)
                     {
-                        var monoToImport = viewModel.TransactionsToImport;
+
+                        var monoToImport = viewModel.TransactionsToImport.Where(item =>
+                        !VM.Blotter.Entities.Any(x =>
+                        x.from_account_id == item.FromAccountId &&
+                        x.datetime == item.DateTime &&
+                        x.from_amount == item.FromAmount)).ToList();
+
+                        var duplicatesCount = viewModel.TransactionsToImport.Count - monoToImport.Count;
+
                         await VM.ImportMonoTransactions(monoToImport);
-                        System.Windows.Forms.MessageBox.Show($"Imported {monoToImport.Count} transactions");
-                        Logger.Info($"Imported {monoToImport.Count} transactions");
+                        System.Windows.Forms.MessageBox.Show($"Imported {monoToImport.Count} transactions."
+                            + ((duplicatesCount > 0) ? $" Skiped {duplicatesCount} duplicates." : string.Empty));
+
+                        Logger.Info($"Imported {monoToImport.Count} transactions. Found duplicates : {duplicatesCount}");
                     }
                 };
                 dialog.DataContext = viewModel;
@@ -100,7 +114,7 @@ namespace Financier.Desktop
         {
             using SaveFileDialog dialog = new SaveFileDialog
             {
-                Filter = "Backup files (*.backup)|*.backup",
+                Filter = $"Backup files ({BackupFormat})|{BackupFormat}",
                 FileName = Path.Combine(Path.GetDirectoryName(VM.OpenBackupPath), BackupWriter.GenerateFileName())
             };
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -117,10 +131,10 @@ namespace Financier.Desktop
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = e.Data.GetData(DataFormats.FileDrop, true) as string[];
-                if (files?.Any(x => Path.GetExtension(x) == ".backup") == true)
+                if (files?.Any(x => Path.GetExtension(x) == Backup) == true)
                 {
-                    Logger.Info($"Drag & drop backup  : {files.FirstOrDefault(x => Path.GetExtension(x) == ".backup")}");
-                    await VM.OpenBackup(files.FirstOrDefault(x => Path.GetExtension(x) == ".backup"));
+                    Logger.Info($"Drag & drop backup  : {files.FirstOrDefault(x => Path.GetExtension(x) == Backup)}");
+                    await VM.OpenBackup(files.FirstOrDefault(x => Path.GetExtension(x) == Backup));
                 }
             }
         }

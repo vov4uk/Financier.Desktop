@@ -32,7 +32,7 @@ namespace Financier.DataAccess.Data
         public int? LastProjectId { get; set; }
 
         [Column(UpdatedOnColumn)]
-        public long? UpdatedOn { get; set; }
+        public long UpdatedOn { get; set; }
 
         [NotMapped]
         public static Category None = new Category()
