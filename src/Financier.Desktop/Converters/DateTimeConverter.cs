@@ -7,11 +7,17 @@ namespace Financier.Desktop.Converters
     public class DateTimeConverter : IValueConverter
     {
         private const string  FORMAT = "yyyy'-'MM'-'dd' 'HH':'mm':'ss";
+        private const string  FORMAT_DAY = "yyyy'-'MM'-'dd";
         private static readonly DateTime StartDate = new DateTime(1970, 1, 1, 0, 0, 0, 0);
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             long timestamp = long.Parse(System.Convert.ToString(value) ?? string.Empty);
-            return Convert(timestamp).ToString(FORMAT);
+            var date = Convert(timestamp);
+            if (date == date.Date)
+            {
+                return date.ToString(FORMAT_DAY);
+            }
+            return date.ToString(FORMAT);
         }
 
         public static DateTime Convert(long timestamp)

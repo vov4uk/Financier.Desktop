@@ -160,7 +160,42 @@
                                   Command="{Binding Path=Locations.EditCommand}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
                                   Label="Delete"
+                                  IsEnabled="False"
                                   Command="{Binding Path=Locations.DeleteCommand}" />
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Project"
+                       Selector.IsSelected="{Binding Path=IsProjectPageSelected, Mode=OneWay}"
+                       Visibility="{Binding Path=IsProjectPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                       DataContext="{Binding}">
+                <RibbonGroup x:Name="Project" Header="General">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
+                                  Label="Add"
+                                  Command="{Binding Path=Projects.AddCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_edit.png"
+                                  Label="Edit"
+                                  Command="{Binding Path=Projects.EditCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
+                                  Label="Delete"
+                                  IsEnabled="False"
+                                  Command="{Binding Path=Projects.DeleteCommand}" />
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab Header="Payee"
+                       Selector.IsSelected="{Binding Path=IsPayeePageSelected, Mode=OneWay}"
+                       Visibility="{Binding Path=IsPayeePageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                       DataContext="{Binding}">
+                <RibbonGroup x:Name="Payee" Header="General">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
+                                  Label="Add"
+                                  Command="{Binding Path=Payees.AddCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_edit.png"
+                                  Label="Edit"
+                                  Command="{Binding Path=Payees.EditCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
+                                  Label="Delete"
+                                  IsEnabled="False"
+                                  Command="{Binding Path=Payees.DeleteCommand}" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
