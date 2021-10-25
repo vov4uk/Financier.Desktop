@@ -1,5 +1,6 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +17,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         private RangeObservableCollection<Location> locations;
         private RangeObservableCollection<Category> categories;
         private RangeObservableCollection<FinancierTransactionViewModel> financierTransactions;
+        private DelegateCommand<FinancierTransactionViewModel> _deleteCommand;
 
         public Page3ViewModel(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories)
         {
@@ -25,6 +27,14 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             this.locations = new RangeObservableCollection<Location>(locations);
             this.categories = new RangeObservableCollection<Category>(categories);
             this.categories.Insert(0, Category.None);
+        }
+
+        public DelegateCommand<FinancierTransactionViewModel> DeleteCommand
+        {
+            get
+            {
+                return _deleteCommand ??= new DelegateCommand<FinancierTransactionViewModel>(tr => { financierTransactions.Remove(tr); });
+            }
         }
 
         public Account MonoAccount
@@ -99,18 +109,20 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             List<FinancierTransactionViewModel> transToAdd = new List<FinancierTransactionViewModel>();
             foreach (var x in transactions)
             {
-                var locationId = locations.FirstOrDefault(l => l.Name.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+                var locationId = locations.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
+                                                            || l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ??  0;
+                var categoryId = categories.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var newTr = new FinancierTransactionViewModel
                 {
                     MonoAccountId = MonoAccount.Id,
                     FromAmount = Convert.ToInt64(x.CardCurrencyAmount * 100.0),
                     OriginalFromAmount = x.ExchangeRate == null ? null : Convert.ToInt64(x.OperationAmount * 100.0),
                     OriginalCurrencyId = x.ExchangeRate == null ? 0 : currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
-                    CategoryId = 0,
+                    CategoryId = categoryId,
                     ToAccountId = 0,
                     FromAccountId = 0,
                     LocationId = locationId,
-                    Note = locationId > 0 ? null : x.Description,
+                    Note = (locationId > 0 || categoryId > 0) ? null : x.Description,
                     DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
                 };
                 transToAdd.Add(newTr);

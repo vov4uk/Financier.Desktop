@@ -15,6 +15,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Financier.Desktop.ViewModel.Dialog;
+using Financier.Desktop.Entities.Controls;
+using Humanizer;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -27,11 +30,14 @@ namespace Financier.Desktop.ViewModel
         private ReadOnlyCollection<BindableBase> _pages;
         private AccountsVM accountsVm;
         private BlotterVM blotter;
+        private LocationsVM locations;
         private BindableBase currentPage;
         private FinancierDatabase db;
         private string openBackupPath;
 
         private string saveBackupPath;
+        private ProjectsVM projects;
+        private PayeesVM payees;
 
         public FinancierVM()
         {
@@ -44,6 +50,24 @@ namespace Financier.Desktop.ViewModel
             set => SetProperty(ref blotter, value);
         }
 
+        public LocationsVM Locations
+        {
+            get => locations;
+            set => SetProperty(ref locations, value);
+        }
+
+        public ProjectsVM Projects
+        {
+            get => projects;
+            set => SetProperty(ref projects, value);
+        }
+
+        public PayeesVM Payees
+        {
+            get => payees;
+            set => SetProperty(ref payees, value);
+        }
+
         public BindableBase CurrentPage
         {
             get => currentPage;
@@ -53,9 +77,18 @@ namespace Financier.Desktop.ViewModel
                 Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
                 RaisePropertyChanged(nameof(CurrentPage));
                 RaisePropertyChanged(nameof(IsTransactionPageSelected));
+                RaisePropertyChanged(nameof(IsLocationPageSelected));
+                RaisePropertyChanged(nameof(IsProjectPageSelected));
+                RaisePropertyChanged(nameof(IsPayeePageSelected));
             }
         }
         public bool IsTransactionPageSelected => currentPage is BlotterVM;
+
+        public bool IsLocationPageSelected => currentPage is LocationsVM;
+
+        public bool IsProjectPageSelected => currentPage is ProjectsVM;
+
+        public bool IsPayeePageSelected => currentPage is PayeesVM;
 
         public DelegateCommand<Type> MenuNavigateCommand
         {
@@ -132,9 +165,9 @@ namespace Financier.Desktop.ViewModel
                 vm.AllCategories = allCategories.Where(x => x.Id > 0).ToList();
             }
 
-            AddEntities(entities.OfType<Project>().ToList(), sb);
-            AddEntities(entities.OfType<Payee>().ToList(), sb);
-            AddEntities(entities.OfType<Location>().ToList(), sb);
+            AddEntities(entities.OfType<Project>().Where(x => x.Id > 0).OrderBy(x => x.Id).ToList(), sb);
+            AddEntities(entities.OfType<Payee>().Where(x => x.Id > 0).OrderBy(x => x.Id).ToList(), sb);
+            AddEntities(entities.OfType<Location>().Where(x => x.Id > 0).OrderBy(x => x.Id).ToList(), sb);
             AddEntities(entities.OfType<Currency>().ToList(), sb);
             AddEntities(entities.OfType<Budget>().ToList(), sb);
 
@@ -197,7 +230,7 @@ namespace Financier.Desktop.ViewModel
         private void AddEntities<T>(List<T> entities, StringBuilder sb, bool replace = false)
         where T : Entity
         {
-            sb?.AppendLine($"Imported {entities.Count} {typeof(T).Name}");
+            sb?.AppendLine($"Imported {typeof(T).Name.ToQuantity(entities.Count)}");
             var vm = _pages.FirstOrDefault(x => x.GetType().BaseType.GetGenericArguments().Single() == typeof(T)) as EntityBaseVM<T>;
             if (replace)
             {
@@ -212,7 +245,7 @@ namespace Financier.Desktop.ViewModel
         private void AddKeylessEntities<T>(List<T> entities, StringBuilder sb)
         where T : Entity
         {
-            sb?.AppendLine($"Imported {entities.Count} {typeof(T).Name}");
+            sb?.AppendLine($"Imported {typeof(T).Name.ToQuantity(entities.Count)}");
             keyLessEntities.AddRange(entities);
         }
 
@@ -301,7 +334,7 @@ namespace Financier.Desktop.ViewModel
             if (Blotter != null)
             {
                 Blotter.EditRaised -= BlotterVM_OpenTransactionRaised;
-                Blotter.AddTransactionRaised -= Blotter_AddTransactionRaised;
+                Blotter.AddRaised -= Blotter_AddTransactionRaised;
                 Blotter.AddTransferRaised -= Blotter_AddTransferRaised;
                 Blotter.DeleteRaised -= Blotter_DeleteRaised;
                 Blotter.DuplicateRaised -= Blotter_DuplicateRaised;
@@ -309,10 +342,44 @@ namespace Financier.Desktop.ViewModel
 
             Blotter = new BlotterVM();
             Blotter.EditRaised += BlotterVM_OpenTransactionRaised;
-            Blotter.AddTransactionRaised += Blotter_AddTransactionRaised;
+            Blotter.AddRaised += Blotter_AddTransactionRaised;
             Blotter.AddTransferRaised += Blotter_AddTransferRaised;
             Blotter.DeleteRaised += Blotter_DeleteRaised;
             Blotter.DuplicateRaised += Blotter_DuplicateRaised;
+
+            if (Locations != null)
+            {
+                Locations.AddRaised -= Locations_AddRaised;
+                Locations.EditRaised -= Locations_EditRaised;
+                Locations.DeleteRaised -= Locations_DeleteRaised;
+            }
+            Locations = new LocationsVM();
+            Locations.AddRaised += Locations_AddRaised;
+            Locations.EditRaised += Locations_EditRaised;
+            Locations.DeleteRaised += Locations_DeleteRaised;
+
+            if (Payees != null)
+            {
+                Payees.AddRaised -= Payees_AddRaised;
+                Payees.EditRaised -= Payees_EditRaised;
+                Payees.DeleteRaised -= Payees_DeleteRaised;
+            }
+            Payees = new PayeesVM();
+            Payees.AddRaised += Payees_AddRaised; ;
+            Payees.EditRaised += Payees_EditRaised; ;
+            Payees.DeleteRaised += Payees_DeleteRaised;
+
+            if (Projects != null)
+            {
+                Projects.AddRaised -= Projects_AddRaised;
+                Projects.EditRaised -= Projects_EditRaised;
+                Projects.DeleteRaised -= Projects_DeleteRaised;
+            }
+            Projects = new ProjectsVM();
+            Projects.AddRaised += Projects_AddRaised;
+            Projects.EditRaised += Projects_EditRaised;
+            Projects.DeleteRaised += Projects_DeleteRaised;
+
             _pages = new List<BindableBase>
                 {
                     accountsVm,
@@ -321,11 +388,56 @@ namespace Financier.Desktop.ViewModel
                     new CategoriesVM(),
                     new CurrenciesVM(),
                     new ExchangeRatesVM(),
-                    new LocationsVM(),
-                    new PayeesVM(),
-                    new ProjectsVM(),
+                    Locations,
+                    Payees,
+                    Projects,
                     new ReportVM()
                 }.AsReadOnly();
+        }
+
+        private void Projects_DeleteRaised(object sender, Project e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async void Projects_EditRaised(object sender, Project e)
+        {
+            await OpenProjectDialog(e.Id);
+        }
+
+        private async void Projects_AddRaised(object sender, EventArgs e)
+        {
+            await OpenProjectDialog(0);
+        }
+
+        private void Payees_DeleteRaised(object sender, Payee e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async void Payees_EditRaised(object sender, Payee e)
+        {
+            await OpenPayeeDialog(e.Id);
+        }
+
+        private async void Payees_AddRaised(object sender, EventArgs e)
+        {
+            await OpenPayeeDialog(0);
+        }
+
+        private void Locations_DeleteRaised(object sender, Location e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async void Locations_EditRaised(object sender, Location e)
+        {
+            await OpenLocationDialog(e.Id);
+        }
+
+        private async void Locations_AddRaised(object sender, EventArgs e)
+        {
+            await OpenLocationDialog(0);
         }
 
         private void InfoClose(object sender, EventArgs e)
@@ -333,19 +445,21 @@ namespace Financier.Desktop.ViewModel
             CurrentPage = Pages.OfType<AccountsVM>().First();
         }
 
-        private async Task InsertTransaction(IEnumerable<Transaction> transactions)
+        private async Task InsertOrUpdate<T>(IEnumerable<T> entities)
+            where T: Entity, IIdentity
         {
             using var uow = db.CreateUnitOfWork();
-            var trRepo = uow.GetRepository<Transaction>();
-            foreach (var transaction in transactions)
+            var trRepo = uow.GetRepository<T>();
+            foreach (var item in entities)
             {
-                if (transaction.Id == 0)
+                item.UpdatedOn = DateTimeConverter.ConvertBack(DateTime.Now);
+                if (item.Id == 0)
                 {
-                    await trRepo.AddAsync(transaction);
+                    await trRepo.AddAsync(item);
                 }
                 else
                 {
-                    await trRepo.UpdateAsync(transaction);
+                    await trRepo.UpdateAsync(item);
                 }
             }
             await uow.SaveChangesAsync();
@@ -532,16 +646,174 @@ namespace Financier.Desktop.ViewModel
                 dialog.Close();
                 Logger.Info("Transfer save");
                 MapTransfer(sender as TransferVM, transaction);
-                await InsertTransaction(new[] { transaction });
+                await InsertOrUpdate(new[] { transaction });
                 await RefreshBlotterTransactions();
             };
             dialog.ShowDialog();
         }
+
         private async Task RefreshBlotterTransactions()
         {
             using var uow = db.CreateUnitOfWork();
             var allTransactions = await uow.GetRepository<BlotterTransactions>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
             AddEntities(allTransactions.OrderByDescending(x => x.datetime).ToList(), null, true);
+        }
+
+        private async Task RefreshEntities<T>()
+            where T: Entity, IIdentity
+        {
+            using var uow = db.CreateUnitOfWork();
+            var locations = await uow.GetRepository<T>().GetAllAsync();
+            AddEntities(locations.Where(x => x.Id > 0).OrderBy(x => x.Id).ToList(), null, true);
+        }
+
+        private async Task OpenLocationDialog(int e)
+        {
+            LocationVM context;
+            Location selectedValue;
+
+            using (var uow = db.CreateUnitOfWork())
+            {
+                if (e != 0)
+                {
+                    Logger.Info($"Edit location {e}");
+                    selectedValue = await uow.GetRepository<Location>().FindByAsync(x => x.Id == e);
+                }
+                else
+                {
+                    Logger.Info("Create location");
+                    selectedValue = new Location { Date = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0 };
+                }
+
+                context = new LocationVM(selectedValue);
+            }
+
+            var dialog = new Window
+            {
+                Content = new LocationControl() { DataContext = context },
+                ResizeMode = ResizeMode.NoResize,
+                Height = 240,
+                Width = 300,
+                ShowInTaskbar = Debugger.IsAttached
+            };
+            context.RequestCancel += (_, _) =>
+            {
+                dialog.Close();
+                Logger.Info("Location dialog close");
+            };
+            context.RequestSave += async (sender, _) =>
+            {
+                dialog.Close();
+                Logger.Info("Location dialog save");
+                var updatedItem = sender as LocationVM;
+                selectedValue.IsActive = updatedItem.IsActive;
+                selectedValue.Address = updatedItem.Address;
+                selectedValue.Title = updatedItem.Title;
+                selectedValue.Name = updatedItem.Title;
+                selectedValue.Id = updatedItem.Id;
+
+                await InsertOrUpdate(new[] { selectedValue });
+                await RefreshEntities<Location>();
+            };
+            dialog.ShowDialog();
+        }
+
+        private async Task OpenProjectDialog(int e)
+        {
+            EntityWithTitleVM context;
+            Project selectedValue;
+
+            using (var uow = db.CreateUnitOfWork())
+            {
+                if (e != 0)
+                {
+                    Logger.Info($"Edit Project {e}");
+                    selectedValue = await uow.GetRepository<Project>().FindByAsync(x => x.Id == e);
+                }
+                else
+                {
+                    Logger.Info("Create Project");
+                    selectedValue = new Project { Id = 0 };
+                }
+
+                context = new EntityWithTitleVM(selectedValue);
+            }
+
+            var dialog = new Window
+            {
+                Content = new EntityWithTitleControl() { DataContext = context },
+                ResizeMode = ResizeMode.NoResize,
+                Height = 180,
+                Width = 300,
+                ShowInTaskbar = Debugger.IsAttached
+            };
+            context.RequestCancel += (_, _) =>
+            {
+                dialog.Close();
+                Logger.Info("Project dialog close");
+            };
+            context.RequestSave += async (sender, _) =>
+            {
+                dialog.Close();
+                Logger.Info("Project dialog save");
+                var updatedItem = sender as EntityWithTitleVM;
+                selectedValue.IsActive = updatedItem.IsActive;
+                selectedValue.Title = updatedItem.Title;
+                selectedValue.Id = updatedItem.Id;
+
+                await InsertOrUpdate(new[] { selectedValue });
+                await RefreshEntities<Project>();
+            };
+            dialog.ShowDialog();
+        }
+
+        private async Task OpenPayeeDialog(int e)
+        {
+            EntityWithTitleVM context;
+            Payee selectedValue;
+
+            using (var uow = db.CreateUnitOfWork())
+            {
+                if (e != 0)
+                {
+                    Logger.Info($"Edit Payee {e}");
+                    selectedValue = await uow.GetRepository<Payee>().FindByAsync(x => x.Id == e);
+                }
+                else
+                {
+                    Logger.Info("Create Payee");
+                    selectedValue = new Payee { Id = 0 };
+                }
+
+                context = new EntityWithTitleVM(selectedValue);
+            }
+
+            var dialog = new Window
+            {
+                Content = new EntityWithTitleControl() { DataContext = context },
+                ResizeMode = ResizeMode.NoResize,
+                Height = 180,
+                Width = 300,
+                ShowInTaskbar = Debugger.IsAttached
+            };
+            context.RequestCancel += (_, _) =>
+            {
+                dialog.Close();
+                Logger.Info("Project dialog close");
+            };
+            context.RequestSave += async (sender, _) =>
+            {
+                dialog.Close();
+                Logger.Info("Project dialog save");
+                var updatedItem = sender as EntityWithTitleVM;
+                selectedValue.IsActive = updatedItem.IsActive;
+                selectedValue.Title = updatedItem.Title;
+                selectedValue.Id = updatedItem.Id;
+
+                await InsertOrUpdate(new[] { selectedValue });
+                await RefreshEntities<Payee>();
+            };
+            dialog.ShowDialog();
         }
     }
 }

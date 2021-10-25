@@ -65,5 +65,8 @@ namespace Financier.DataAccess.View
         public int? payee_id { get; set; }
         public Payee payee { get; set; }
         public string status { get; set; }
+
+        [NotMapped]
+        public long UpdatedOn { get; set; }
     }
 }

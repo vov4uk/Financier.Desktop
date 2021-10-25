@@ -44,6 +44,6 @@ namespace Financier.DataAccess.Data
         public int? Count { get; set; }
 
         [Column(UpdatedOnColumn)]
-        public long? UpdatedOn { get; set; }
+        public long UpdatedOn { get; set; }
     }
 }

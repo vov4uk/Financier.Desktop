@@ -6,33 +6,21 @@
 
     public class BlotterVM : EntityBaseVM<BlotterTransactions>
     {
-        public BlotterTransactions _selectedValue;
+        //private BlotterTransactions _selectedValue;
 
         private DelegateCommand _addTemplateCommand;
 
-        private DelegateCommand _addTransactionCommand;
-
         private DelegateCommand _addTransferCommand;
 
-        private DelegateCommand _deleteCommand;
-
         private DelegateCommand _duplicateCommand;
-
-        private DelegateCommand _editCommand;
 
         private DelegateCommand _infoCommand;
 
         public event EventHandler AddTemplateRaised;
 
-        public event EventHandler AddTransactionRaised;
-
         public event EventHandler AddTransferRaised;
 
-        public event EventHandler<TransactionsView> DeleteRaised;
-
         public event EventHandler<TransactionsView> DuplicateRaised;
-
-        public event EventHandler<TransactionsView> EditRaised;
 
         public event EventHandler<TransactionsView> InfoRaised;
 
@@ -44,27 +32,11 @@
             }
         }
 
-        public DelegateCommand AddTransactionCommand
-        {
-            get
-            {
-                return _addTransactionCommand ??= new DelegateCommand(() => AddTransactionRaised?.Invoke(this, EventArgs.Empty));
-            }
-        }
-
         public DelegateCommand AddTransferCommand
         {
             get
             {
                 return _addTransferCommand ??= new DelegateCommand(() => AddTransferRaised?.Invoke(this, EventArgs.Empty));
-            }
-        }
-
-        public DelegateCommand DeleteCommand
-        {
-            get
-            {
-                return _deleteCommand ??= new DelegateCommand(() => DeleteRaised?.Invoke(this, SelectedValue), () => SelectedValue != null);
             }
         }
 
@@ -76,14 +48,6 @@
             }
         }
 
-        public DelegateCommand EditCommand
-        {
-            get
-            {
-                return _editCommand ??= new DelegateCommand(() => EditRaised?.Invoke(this, SelectedValue), () => SelectedValue != null);
-            }
-        }
-
         public DelegateCommand InfoCommand
         {
             get
@@ -92,17 +56,20 @@
             }
         }
 
-        public BlotterTransactions SelectedValue
-        {
-            get => _selectedValue;
-            set
-            {
-                SetProperty(ref _selectedValue, value);
-                EditCommand.RaiseCanExecuteChanged();
-                DuplicateCommand.RaiseCanExecuteChanged();
-                DeleteCommand.RaiseCanExecuteChanged();
-                InfoCommand.RaiseCanExecuteChanged();
-            }
-        }
+        // Need for commands not avaliable in base class
+//#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
+//        public BlotterTransactions SelectedValue
+//#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
+//        {
+//            get => _selectedValue;
+//            set
+//            {
+//                SetProperty(ref _selectedValue, value);
+//                EditCommand.RaiseCanExecuteChanged();
+//                DuplicateCommand.RaiseCanExecuteChanged();
+//                DeleteCommand.RaiseCanExecuteChanged();
+//                InfoCommand.RaiseCanExecuteChanged();
+//            }
+//        }
     }
 }

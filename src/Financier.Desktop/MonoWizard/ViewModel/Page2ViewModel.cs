@@ -1,5 +1,6 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,11 +15,21 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         private MonoTransaction _startTransaction;
 
         private RangeObservableCollection<MonoTransaction> allTransactions;
+        private DelegateCommand<MonoTransaction> _deleteCommand;
 
         public Page2ViewModel(List<MonoTransaction> records)
         {
             allTransactions = new RangeObservableCollection<MonoTransaction>(records);
         }
+
+        public DelegateCommand<MonoTransaction> DeleteCommand
+        {
+            get
+            {
+                return _deleteCommand ??= new DelegateCommand<MonoTransaction>(tr => { allTransactions.Remove(tr); });
+            }
+        }
+
         public Account MonoAccount
         {
             get => _monoAccount;
@@ -53,7 +64,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        public List<MonoTransaction> MonoTransactions 
+        public List<MonoTransaction> MonoTransactions
         {
             get
             {

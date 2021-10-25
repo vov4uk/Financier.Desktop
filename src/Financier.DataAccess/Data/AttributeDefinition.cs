@@ -30,5 +30,8 @@ namespace Financier.DataAccess.Data
 
         [Column("default_value")]
         public string DefaultValue { get; set; }
+
+        [NotMapped]
+        public long UpdatedOn { get; set; }
     }
 }
