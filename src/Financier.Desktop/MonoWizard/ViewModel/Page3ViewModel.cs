@@ -109,8 +109,8 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             List<FinancierTransactionViewModel> transToAdd = new List<FinancierTransactionViewModel>();
             foreach (var x in transactions)
             {
-                var locationId = locations.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
-                                                            || l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ??  0;
+                var locationId = locations.FirstOrDefault(l => (!string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))
+                                                            || (!string.IsNullOrEmpty(l.Address) && l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase)))?.Id ??  0;
                 var categoryId = categories.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var newTr = new FinancierTransactionViewModel
                 {

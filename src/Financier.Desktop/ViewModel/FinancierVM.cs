@@ -490,7 +490,8 @@ namespace Financier.Desktop.ViewModel
             tr.FromAmount = vm.FromAmount;
             tr.ToAmount = vm.ToAmount;
             tr.DateTime = DateTimeConverter.ConvertBack(vm.Date);
-
+            tr.OriginalCurrencyId = vm.FromAccount.CurrencyId;
+            tr.OriginalFromAmount = vm.FromAmount;
             tr.CategoryId = 0;
         }
 

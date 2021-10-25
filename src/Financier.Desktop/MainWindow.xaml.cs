@@ -33,7 +33,6 @@ namespace Financier.Desktop
 
         public MainWindow()
         {
-            AppDomain.CurrentDomain.UnhandledException += (_, e ) => Logger.Error((Exception)e.ExceptionObject);
             InitializeComponent();
             VM = new FinancierVM();
 
