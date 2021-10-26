@@ -146,8 +146,7 @@
     <PackageReference Include="DataGridExtensions" Version="2.6.0-beta1" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="4.6.97" />
     <PackageReference Include="Emoji.Wpf" Version="0.3.3" />
-    <PackageReference Include="Humanizer.Core" Version="2.11.10" />
-    <PackageReference Include="NLog" Version="4.7.10" />
+    <PackageReference Include="NLog" Version="5.0.0-preview.2" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="System.Linq.Async" Version="5.0.0" />
     <PackageReference Include="System.Runtime" Version="4.3.1" />

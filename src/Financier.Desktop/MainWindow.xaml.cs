@@ -1,5 +1,4 @@
 ﻿using System;
-using Financier.Desktop.MonoWizard.View;
 using Financier.Desktop.MonoWizard.ViewModel;
 using Financier.Desktop.ViewModel;
 using Financier.Adapter;
@@ -9,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Forms;
 using DataFormats = System.Windows.DataFormats;
+using Financier.Desktop.Wizards;
 
 namespace Financier.Desktop
 {
@@ -74,14 +74,14 @@ namespace Financier.Desktop
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var fileName = openFileDialog.FileName;
-                var dialog = new MonoWizardWindow();
+                var dialog = new WizardWindow();
 
                 var accounts = VM.Pages.OfType<AccountsVM>().First().Entities.ToList();
                 var currencies = VM.Pages.OfType<CurrenciesVM>().First().Entities.ToList();
                 var locations = VM.Pages.OfType<LocationsVM>().First().Entities.ToList();
                 var categories = VM.Pages.OfType<CategoriesVM>().First().Entities.ToList();
 
-                var viewModel = new MonoWizardViewModel(accounts, currencies, locations, categories, fileName);
+                var viewModel = new MonoWizardVM(accounts, currencies, locations, categories, fileName);
                 await viewModel.LoadTransactions();
                 viewModel.RequestClose += async (o, args) =>
                 {

@@ -3,7 +3,7 @@ using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.View;
 using Financier.Desktop.Converters;
-using Financier.Desktop.Entities;
+using Financier.Desktop.Views;
 using Financier.Adapter;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -16,8 +16,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Financier.Desktop.ViewModel.Dialog;
-using Financier.Desktop.Entities.Controls;
-using Humanizer;
+using Financier.Desktop.Views.Controls;
+using Financier.Desktop.Reports.ViewModel;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -230,7 +230,7 @@ namespace Financier.Desktop.ViewModel
         private void AddEntities<T>(List<T> entities, StringBuilder sb, bool replace = false)
         where T : Entity
         {
-            sb?.AppendLine($"Imported {typeof(T).Name.ToQuantity(entities.Count)}");
+            sb?.AppendLine($"Imported {typeof(T).Name} {entities.Count}");
             var vm = _pages.FirstOrDefault(x => x.GetType().BaseType.GetGenericArguments().Single() == typeof(T)) as EntityBaseVM<T>;
             if (replace)
             {
@@ -245,7 +245,7 @@ namespace Financier.Desktop.ViewModel
         private void AddKeylessEntities<T>(List<T> entities, StringBuilder sb)
         where T : Entity
         {
-            sb?.AppendLine($"Imported {typeof(T).Name.ToQuantity(entities.Count)}");
+            sb?.AppendLine($"Imported {typeof(T).Name} {entities.Count}");
             keyLessEntities.AddRange(entities);
         }
 
