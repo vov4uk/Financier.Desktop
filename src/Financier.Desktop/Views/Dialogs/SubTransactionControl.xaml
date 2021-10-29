@@ -95,7 +95,7 @@
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">Un-split amount</TextBlock>
                 <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
-                           Text="{Binding UnsplitAmount, Converter={StaticResource AmountConverter}, ConverterParameter=false, Mode=OneWay}" />
+                           Text="{Binding UnsplitAmount, Converter={StaticResource AmountConverter}, StringFormat=F2, ConverterParameter=false, Mode=OneWay}" />
 
                 <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">Note</TextBlock>
                 <TextBox   Grid.Row="6" Grid.Column="0"

@@ -24,7 +24,7 @@
             <TextBlock.Text>
                 <MultiBinding StringFormat="{} Selected account {0} with balance {1} {2}">
                     <Binding Path="MonoAccount.Title" />
-                    <Binding Path="MonoAccount.TotalAmount" Converter="{StaticResource AmountConverter}" />
+                    <Binding Path="MonoAccount.TotalAmount" StringFormat="F2" Converter="{StaticResource AmountConverter}" />
                     <Binding Path="MonoAccount.Currency.Name" />
                 </MultiBinding>
             </TextBlock.Text>
@@ -48,7 +48,7 @@
                                     Binding="{Binding Path=Date, StringFormat='yyyy.MM.dd HH:mm:ss'}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False"/>
                 <DataGridTextColumn Header="UAH"
-                                    Binding="{Binding Path=CardCurrencyAmount}"
+                                    Binding="{Binding Path=CardCurrencyAmount, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
 
                 <DataGridTemplateColumn Header="Operation amount"
@@ -58,7 +58,7 @@
                             <TextBlock HorizontalAlignment="Right">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{} {0} {1}">
-                                        <Binding Path="OperationAmount" />
+                                        <Binding Path="OperationAmount" StringFormat="F2" />
                                         <Binding Path="OperationCurrency" />
                                     </MultiBinding>
                                 </TextBlock.Text>
@@ -67,16 +67,16 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="ExchangeRate"
-                                    Binding="{Binding Path=ExchangeRate}"
+                                    Binding="{Binding Path=ExchangeRate, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
                 <DataGridTextColumn Header="Commission"
-                                    Binding="{Binding Path=Commission}"
+                                    Binding="{Binding Path=Commission, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
                 <DataGridTextColumn Header="Cashback"
-                                    Binding="{Binding Path=Cashback}"
+                                    Binding="{Binding Path=Cashback, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
                 <DataGridTextColumn Header="Balance"
-                                    Binding="{Binding Path=Balance}"
+                                    Binding="{Binding Path=Balance, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">

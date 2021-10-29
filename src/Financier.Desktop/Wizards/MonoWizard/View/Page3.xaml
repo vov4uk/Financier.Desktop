@@ -5,11 +5,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:convert="clr-namespace:Financier.Desktop.Converters"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:ei="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <convert:AmountConverter x:Key="AmountConverter"/>
         <convert:DateTimeConverter x:Key="DatetimeConverter" />
+        <BitmapImage x:Key="IcActionCancel"   UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -97,12 +100,14 @@
                 <DataGridTextColumn Header="Amount"
                                     Binding="{Binding
                                               Path=FromAmount,
+                                              StringFormat=F2,
                                               Converter={StaticResource AmountConverter},
                                               ConverterParameter=false}"
                                     IsReadOnly="True"/>
                 <DataGridTextColumn Header="Original Amount"
                                     Binding="{Binding
                                               Path=OriginalFromAmount,
+                                              StringFormat=F2,
                                               Converter={StaticResource AmountConverter},
                                               ConverterParameter=false}"
                                     IsReadOnly="True"/>
@@ -125,12 +130,38 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Note" Binding="{Binding
-                                                            Path=Note,
-                                                            Mode=TwoWay,
-                                                            NotifyOnTargetUpdated=True,
-                                                            UpdateSourceTrigger=PropertyChanged}"
-                                    IsReadOnly="False"/>
+                <DataGridTemplateColumn Header="Note"
+                                    IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center">
+
+                                <TextBox x:Name="ThatThangToClear"
+                                         BorderThickness="0"
+                                         Text="{Binding
+                                                Path=Note,
+                                                Mode=TwoWay,
+                                                NotifyOnTargetUpdated=True,
+                                                UpdateSourceTrigger=PropertyChanged}"
+                                         Width="200"/>
+                                <xctk:IconButton Margin="4,0" Height="20" Background="Transparent" BorderThickness="0">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <ei:ChangePropertyAction
+                                                TargetObject="{Binding ElementName=ThatThangToClear}"
+                                                PropertyName="Text" Value="{x:Null}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                    <xctk:IconButton.Icon>
+                                        <Image Source="{StaticResource IcActionCancel}" />
+                                    </xctk:IconButton.Icon>
+                                </xctk:IconButton>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

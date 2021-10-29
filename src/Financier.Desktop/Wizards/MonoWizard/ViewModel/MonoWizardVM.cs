@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,28 +8,20 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CsvHelper;
 using Financier.DataAccess.Data;
-using Prism.Commands;
-using Prism.Mvvm;
 using Financier.DataAccess.Monobank;
+using Financier.Desktop.Wizards;
+using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 
 namespace Financier.Desktop.MonoWizard.ViewModel
 {
-    public class MonoWizardVM : BindableBase
+    public class MonoWizardVM : WizardBaseVM
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly List<Account> accounts;
         private readonly List<Currency> currencies;
         private readonly List<Location> locations;
         private readonly List<Category> categories;
         private readonly string csvFilePath;
         private readonly List<MonoTransaction> monoTransactions = new();
-
-        private DelegateCommand _cancelCommand;
-        private DelegateCommand _moveNextCommand;
-        private DelegateCommand _movePreviousCommand;
-
-        private WizardBaseVM _currentPage;
-        private ReadOnlyCollection<WizardBaseVM> _pages;
 
         public MonoWizardVM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, string csvFilePath)
         {
@@ -41,101 +31,40 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             this.categories = new List<Category>(categories);
             this.csvFilePath = csvFilePath;
         }
-        public event EventHandler<bool> RequestClose;
 
-        public DelegateCommand CancelCommand
+        public override void AfterCurrentPageUpdated(WizardPageBaseVM currentPage)
         {
-            get
+            if (currentPage != null)
             {
-                return _cancelCommand ??= new DelegateCommand(()=> OnRequestClose(false));
+                currentPage.IsCurrentPage = true;
+                Logger.Info($"Current page -> {_currentPage.GetType().FullName}");
             }
         }
 
-        public WizardBaseVM CurrentPage
+        public override void BeforeCurrentPageUpdated(WizardPageBaseVM currentPage, WizardPageBaseVM value)
         {
-            get => _currentPage;
-            private set
+            if (currentPage != null)
+                currentPage.IsCurrentPage = false;
+
+            if (currentPage is Page1VM page1)
             {
-                if (value == _currentPage)
-                    return;
+                var monoAccount = page1.MonoAccount;
+                ((Page2VM)value).MonoAccount = monoAccount;
+                MonoBankAccount = monoAccount;
+                Logger.Info($"MonoBankAccount -> {JsonSerializer.Serialize(monoAccount)}");
+            }
 
-                if (_currentPage != null)
-                    _currentPage.IsCurrentPage = false;
-
-
-                if (_currentPage is Page1VM page1)
-                {
-                    var monoAccount = page1.MonoAccount;
-                    ((Page2VM)value).MonoAccount = monoAccount;
-                    MonoBankAccount = monoAccount;
-                    Logger.Info($"MonoBankAccount -> {JsonSerializer.Serialize(monoAccount)}");
-                }
-
-                if (_currentPage is Page2VM page2)
-                {
-                    ((Page3VM)value).MonoAccount = MonoBankAccount;
-                    ((Page3VM)value).SetMonoTransactions(page2.MonoTransactions);
-                    Logger.Info($"MonoTransactions count -> {page2.MonoTransactions.Count}");
-                }
-
-                _currentPage = value;
-
-                if (_currentPage != null)
-                {
-                    _currentPage.IsCurrentPage = true;
-                    Logger.Info($"Current page -> {_currentPage.GetType().FullName}");
-                }
-
-
-                MovePreviousCommand.RaiseCanExecuteChanged();
-                MoveNextCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged(nameof(Title));
-                RaisePropertyChanged(nameof(CurrentPage));
-                RaisePropertyChanged(nameof(IsOnLastPage));
+            if (currentPage is Page2VM page2)
+            {
+                ((Page3VM)value).MonoAccount = MonoBankAccount;
+                ((Page3VM)value).SetMonoTransactions(page2.MonoTransactions);
+                Logger.Info($"MonoTransactions count -> {page2.MonoTransactions.Count}");
             }
         }
-
-        public bool IsOnLastPage => CurrentPageIndex == Pages.Count - 1;
 
         public Account MonoBankAccount { get; set; }
 
-        public DelegateCommand MoveNextCommand
-        {
-            get
-            {
-                return _moveNextCommand ??= new DelegateCommand(MoveToNextPage, () => CanMoveToNextPage);
-            }
-        }
-
-        public DelegateCommand MovePreviousCommand
-        {
-            get
-            {
-                return _movePreviousCommand ??= new DelegateCommand(MoveToPreviousPage, () => CanMoveToPreviousPage);
-            }
-        }
-
-        public ReadOnlyCollection<WizardBaseVM> Pages => _pages;
-
-        public string Title => CurrentPage == null ? string.Empty : CurrentPage.Title;
-
         public List<Transaction> TransactionsToImport { get; set; }
-
-        bool CanMoveToNextPage => CurrentPage != null && CurrentPage.IsValid();
-
-        bool CanMoveToPreviousPage => 0 < CurrentPageIndex;
-
-        int CurrentPageIndex
-        {
-            get
-            {
-                if (CurrentPage == null)
-                {
-                    Debug.Fail("Why is the current page null?");
-                }
-                return Pages.IndexOf(CurrentPage);
-            }
-        }
 
         public async Task LoadTransactions()
         {
@@ -147,14 +76,14 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 using var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture);
                 var records = await csv.GetRecordsAsync<MonoTransaction>().ToListAsync();
                 monoTransactions.AddRange(records);
-                CreatePages();
+                this.CreatePages();
                 CurrentPage = Pages[0];
             }
         }
 
-        void CreatePages()
+        public override void CreatePages()
         {
-            _pages = new List<WizardBaseVM>
+            _pages = new List<WizardPageBaseVM>
                 {
                     new Page1VM(accounts),
                     new Page2VM(monoTransactions),
@@ -162,23 +91,8 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 }.AsReadOnly();
         }
 
-        void MoveToNextPage()
-        {
-            if (CanMoveToNextPage)
-            {
-                if (CurrentPageIndex < Pages.Count - 1)
-                    CurrentPage = Pages[CurrentPageIndex + 1];
-                else
-                    OnRequestClose(true);
-            }
-        }
-        void MoveToPreviousPage()
-        {
-            if (CanMoveToPreviousPage)
-                CurrentPage = Pages[CurrentPageIndex - 1];
-        }
 
-        void OnRequestClose(bool save)
+       public override void OnRequestClose(bool save)
         {
             if (save)
             {
@@ -188,10 +102,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                     .Select(TransformMonoTransaction)
                     .ToList();
             }
-
-            RequestClose?.Invoke(this, save);
         }
-
 
         private Transaction TransformMonoTransaction(FinancierTransactionVM x)
         {

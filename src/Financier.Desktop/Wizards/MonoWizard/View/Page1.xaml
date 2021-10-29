@@ -36,7 +36,7 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}"/>
                 <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
-                <DataGridTextColumn Header="Total Amount" Binding="{Binding Path=TotalAmount, Converter= {StaticResource AmountConverter}}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Total Amount" Binding="{Binding Path=TotalAmount, StringFormat=F2, Converter= {StaticResource AmountConverter}}"/>
                 <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.Name}"/>
             </DataGrid.Columns>
         </DataGrid>

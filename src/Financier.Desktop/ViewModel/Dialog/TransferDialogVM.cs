@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class TransferVM : BindableBase
+    public class TransferDialogVM : BindableBase
     {
         private DelegateCommand _cancelCommand;
         private DelegateCommand _clearNotesCommand;

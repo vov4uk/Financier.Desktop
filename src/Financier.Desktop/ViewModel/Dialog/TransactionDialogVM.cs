@@ -5,12 +5,14 @@ using System.Linq;
 using System.Windows;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Views;
+using Financier.Desktop.Wizards;
+using Financier.Desktop.Wizards.RecipesWizard.ViewModel;
 using Prism.Commands;
 using Prism.Mvvm;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class TransactionVM : BindableBase
+    public class TransactionDialogVM : BindableBase
     {
         private DelegateCommand _addSubTransactionCommand;
 
@@ -32,9 +34,11 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private DelegateCommand _clearProjectCommand;
 
-        private DelegateCommand<TransactionVM> _deleteSubTransactionCommand;
+        private DelegateCommand<TransactionDialogVM> _deleteSubTransactionCommand;
 
-        private DelegateCommand<TransactionVM> _openSubTransactionDialogCommand;
+        private DelegateCommand<TransactionDialogVM> _openSubTransactionDialogCommand;
+
+        private DelegateCommand _openRecipesDialogCommand;
 
         private DelegateCommand _saveCommand;
 
@@ -62,7 +66,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private int? payeeId;
         private int? projectId;
         private double rate;
-        private ObservableCollection<TransactionVM> subTransactions = new ObservableCollection<TransactionVM>();
+        private ObservableCollection<TransactionDialogVM> subTransactions = new ObservableCollection<TransactionDialogVM>();
         private long unSplitAmount;
         public event EventHandler RequestCancel;
 
@@ -98,7 +102,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             {
                 return _addSubTransactionCommand ??= new DelegateCommand(() =>
                     ShowSubTransactionDialog(
-                        new TransactionVM { FromAmount = UnsplitAmount, IsAmountNegative = UnsplitAmount < 0 }, true));
+                        new TransactionDialogVM { FromAmount = UnsplitAmount, IsAmountNegative = UnsplitAmount < 0 }, true));
             }
         }
 
@@ -188,11 +192,11 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        public DelegateCommand<TransactionVM> DeleteSubTransactionCommand
+        public DelegateCommand<TransactionDialogVM> DeleteSubTransactionCommand
         {
             get
             {
-                return _deleteSubTransactionCommand ??= new DelegateCommand<TransactionVM>(tr =>
+                return _deleteSubTransactionCommand ??= new DelegateCommand<TransactionDialogVM>(tr =>
                 {
                     subTransactions.Remove(tr);
                     RecalculateUnSplitAmount();
@@ -261,12 +265,21 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        public DelegateCommand<TransactionVM> OpenSubTransactionDialogCommand
+        public DelegateCommand<TransactionDialogVM> OpenSubTransactionDialogCommand
         {
             get
             {
                 return _openSubTransactionDialogCommand ??=
-                    new DelegateCommand<TransactionVM>(tr => ShowSubTransactionDialog(tr, false));
+                    new DelegateCommand<TransactionDialogVM>(tr => ShowSubTransactionDialog(tr, false));
+            }
+        }
+
+        public DelegateCommand OpenRecipesDialogCommand
+        {
+            get
+            {
+                return _openRecipesDialogCommand ??=
+                    new DelegateCommand(ShowRecepiesDialog);
             }
         }
 
@@ -385,7 +398,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return subTransactions?.Sum(x => x.fromAmount) ?? 0; }
         }
 
-        public ObservableCollection<TransactionVM> SubTransactions
+        public ObservableCollection<TransactionDialogVM> SubTransactions
         {
             get => subTransactions;
             set
@@ -412,7 +425,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             return true;
         }
 
-        private void CopySubTransaction(TransactionVM tr, TransactionVM modifiedCopy)
+        private void CopySubTransaction(TransactionDialogVM tr, TransactionDialogVM modifiedCopy)
         {
             tr.CategoryId = modifiedCopy.CategoryId;
             tr.Category = Categories.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
@@ -435,9 +448,10 @@ namespace Financier.Desktop.ViewModel.Dialog
                 UnsplitAmount = ParentTransactionUnSplitAmount - RealFromAmount;
         }
 
-        private void ShowSubTransactionDialog(TransactionVM tr, bool isNewItem)
+
+        private void ShowSubTransactionDialog(TransactionDialogVM tr, bool isNewItem)
         {
-            var copy = new TransactionVM();
+            var copy = new TransactionDialogVM();
             CopySubTransaction(copy, tr);
 
             copy.IsAmountNegative = tr.FromAmount <= 0;
@@ -459,7 +473,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             copy.RequestSave += (sender, _) =>
             {
                 dialog.Close();
-                var modifiedCopy = sender as TransactionVM;
+                var modifiedCopy = sender as TransactionDialogVM;
                 CopySubTransaction(tr, modifiedCopy);
 
                 if (isNewItem) subTransactions.Add(tr);
@@ -467,6 +481,28 @@ namespace Financier.Desktop.ViewModel.Dialog
                 SaveCommand.RaiseCanExecuteChanged();
             };
             dialog.Content = new SubTransactionControl { DataContext = copy };
+            dialog.ShowDialog();
+        }
+
+        private void ShowRecepiesDialog()
+        {
+            var dialog = new WizardWindow();
+
+            var viewModel = new RecipesVM(Categories.ToList()) { TotalAmount = fromAmount / 100.0};
+            viewModel.CreatePages();
+            viewModel.RequestClose += (o, args) =>
+            {
+                dialog.Close();
+                var vm = o as RecipesVM;
+                foreach (var item in vm.TransactionsToImport)
+                {
+                    item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
+                    subTransactions.Add(item);
+                }
+                RecalculateUnSplitAmount();
+                SaveCommand.RaiseCanExecuteChanged();
+            };
+            dialog.DataContext = viewModel;
             dialog.ShowDialog();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
+using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Linq;
 
 namespace Financier.Desktop.MonoWizard.ViewModel
 {
-    public class Page3VM : WizardBaseVM
+    public class Page3VM : WizardPageBaseVM
     {
         private Account _monoAccount;
         private RangeObservableCollection<Account> accounts;

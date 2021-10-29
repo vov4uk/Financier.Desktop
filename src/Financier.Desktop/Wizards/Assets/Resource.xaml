@@ -1,17 +1,29 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:ViewModel="clr-namespace:Financier.Desktop.MonoWizard.ViewModel" 
-                    xmlns:View="clr-namespace:Financier.Desktop.MonoWizard.View">
-    <DataTemplate DataType="{x:Type ViewModel:Page1VM}">
-        <View:Page1/>
+                    xmlns:MonoViewModel="clr-namespace:Financier.Desktop.MonoWizard.ViewModel" 
+                    xmlns:MonoView="clr-namespace:Financier.Desktop.MonoWizard.View"
+                    xmlns:RecipesViewModel="clr-namespace:Financier.Desktop.Wizards.RecipesWizard.ViewModel" 
+                    xmlns:RecipesView="clr-namespace:Financier.Desktop.Wizards.RecipesWizard.View"
+                    >
+
+    <DataTemplate DataType="{x:Type RecipesViewModel:Page1VM}">
+        <RecipesView:Page1/>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type ViewModel:Page2VM}">
-        <View:Page2 />
+    <DataTemplate DataType="{x:Type RecipesViewModel:Page2VM}">
+        <RecipesView:Page2 />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type ViewModel:Page3VM}">
-        <View:Page3 />
+    <DataTemplate DataType="{x:Type MonoViewModel:Page1VM}">
+        <MonoView:Page1/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type MonoViewModel:Page2VM}">
+        <MonoView:Page2 />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type MonoViewModel:Page3VM}">
+        <MonoView:Page3 />
     </DataTemplate>
 
     <Style TargetType="{x:Type Button}" x:Key="moveNextButtonStyle">

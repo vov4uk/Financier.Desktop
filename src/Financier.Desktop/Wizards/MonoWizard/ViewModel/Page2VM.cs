@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Financier.Desktop.MonoWizard.ViewModel
 {
-    public class Page2VM : WizardBaseVM
+    public class Page2VM : WizardPageBaseVM
     {
         private Account _monoAccount;
 

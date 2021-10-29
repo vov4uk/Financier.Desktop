@@ -33,7 +33,7 @@
                 <DataGridTextColumn Header="Total Amount">
                     <DataGridTextColumn.Binding>
                         <MultiBinding Converter="{StaticResource AmountConverter}">
-                            <Binding Path="TotalAmount" />
+                            <Binding Path="TotalAmount" StringFormat="F2" />
                             <Binding Path="Currency" />
                         </MultiBinding>
                     </DataGridTextColumn.Binding>

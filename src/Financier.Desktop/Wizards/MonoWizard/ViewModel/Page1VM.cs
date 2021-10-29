@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Financier.Desktop.MonoWizard.ViewModel
 {
-    public class Page1VM : WizardBaseVM
+    public class Page1VM : WizardPageBaseVM
     {
 
         private RangeObservableCollection<Account> _accounts;

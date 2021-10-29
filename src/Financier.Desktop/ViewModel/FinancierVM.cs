@@ -293,7 +293,7 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private TransactionVM ConvertTransaction(Transaction transaction)
+        private TransactionDialogVM ConvertTransaction(Transaction transaction)
         {
             return new()
             {
@@ -314,7 +314,7 @@ namespace Financier.Desktop.ViewModel
             };
         }
 
-        private TransferVM ConvertTransfer(Transaction transaction)
+        private TransferDialogVM ConvertTransfer(Transaction transaction)
         {
             return new()
             {
@@ -465,7 +465,7 @@ namespace Financier.Desktop.ViewModel
             await uow.SaveChangesAsync();
         }
 
-        private void MapTransaction(TransactionVM vm, Transaction tr)
+        private void MapTransaction(TransactionDialogVM vm, Transaction tr)
         {
             tr.Id = vm.Id;
             tr.FromAccountId = vm.AccountId;
@@ -481,7 +481,7 @@ namespace Financier.Desktop.ViewModel
             tr.DateTime = DateTimeConverter.ConvertBack(vm.Date);
         }
 
-        private void MapTransfer(TransferVM vm, Transaction tr)
+        private void MapTransfer(TransferDialogVM vm, Transaction tr)
         {
             tr.Id = vm.Id;
             tr.FromAccountId = vm.FromAccountId;
@@ -502,7 +502,7 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OpenTransactionDialog(int e)
         {
-            TransactionVM context;
+            TransactionDialogVM context;
             Transaction transaction;
             using (var uow = db.CreateUnitOfWork())
             {
@@ -514,8 +514,8 @@ namespace Financier.Desktop.ViewModel
                     var transactionVm = ConvertTransaction(transaction);
                     if (transactions.Any(x => x.ParentId == e))
                     {
-                        IEnumerable<TransactionVM> subTransactions = transactions.Where(x => x.ParentId == e).Select(ConvertTransaction);
-                        transactionVm.SubTransactions = new ObservableCollection<TransactionVM>(subTransactions);
+                        IEnumerable<TransactionDialogVM> subTransactions = transactions.Where(x => x.ParentId == e).Select(ConvertTransaction);
+                        transactionVm.SubTransactions = new ObservableCollection<TransactionDialogVM>(subTransactions);
                     }
                     context = transactionVm;
                 }
@@ -561,7 +561,7 @@ namespace Financier.Desktop.ViewModel
                 {
                     using var uow = db.CreateUnitOfWork();
                     var trRepo = uow.GetRepository<Transaction>();
-                    var vm = sender as TransactionVM;
+                    var vm = sender as TransactionDialogVM;
                     var transactions = new List<Transaction>();
                     MapTransaction(vm, transaction);
                     transactions.Add(transaction);
@@ -575,7 +575,7 @@ namespace Financier.Desktop.ViewModel
                             tr.Parent = transaction;
                             tr.FromAccountId = transaction.FromAccountId;
                             tr.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
-                            tr.OriginalFromAmount = transaction.OriginalFromAmount;
+                            tr.OriginalFromAmount = item.OriginalFromAmount;
                             tr.DateTime = transaction.DateTime;
                             tr.Category = default;
                             transactions.Add(tr);
@@ -607,7 +607,7 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OpenTransferDialog(int e)
         {
-            TransferVM context;
+            TransferDialogVM context;
             Transaction transaction;
 
             using (var uow = db.CreateUnitOfWork())
@@ -646,7 +646,7 @@ namespace Financier.Desktop.ViewModel
             {
                 dialog.Close();
                 Logger.Info("Transfer save");
-                MapTransfer(sender as TransferVM, transaction);
+                MapTransfer(sender as TransferDialogVM, transaction);
                 await InsertOrUpdate(new[] { transaction });
                 await RefreshBlotterTransactions();
             };
