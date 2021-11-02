@@ -72,7 +72,7 @@
                                                                   AncestorType={x:Type DataGrid}},
                                                                   Path=DataContext.Categories}"
                                                     SelectedValue="{Binding
-                                                                    Path= CategoryId,
+                                                                    Path=CategoryId,
                                                                     Mode=TwoWay,
                                                                     NotifyOnTargetUpdated=True,
                                                                     UpdateSourceTrigger=PropertyChanged}"
@@ -81,30 +81,48 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Amount"
-                                    Binding="{Binding
+                <DataGridTemplateColumn Header="Amount"
+                                        IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Right"
+                                       Text="{Binding
                                               Path=FromAmount,
                                               StringFormat=F2,
                                               Converter={StaticResource AmountConverter},
-                                              ConverterParameter=false}"
-                                    IsReadOnly="False"/>
+                                              ConverterParameter=false}">
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Note"
-                                    IsReadOnly="False">
+                                        MaxWidth="200"
+                                        IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Center"
+                            <Grid   HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
                                 <TextBox x:Name="ThatThangToClear"
                                          BorderThickness="0"
+                                         HorizontalAlignment="Stretch"
+                                         HorizontalContentAlignment="Left"
+                                         Grid.Column="0"
                                          Text="{Binding
                                                 Path=Note,
                                                 Mode=TwoWay,
                                                 NotifyOnTargetUpdated=True,
-                                                UpdateSourceTrigger=PropertyChanged}"
-                                         Width="200"/>
-                                <xctk:IconButton Margin="4,0" Height="20" Background="Transparent" BorderThickness="0">
+                                                UpdateSourceTrigger=PropertyChanged}"/>
+                                <xctk:IconButton
+                                    Margin="4,0"
+                                    Height="20"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Grid.Column="1">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <ei:ChangePropertyAction
@@ -116,7 +134,25 @@
                                         <Image Source="{StaticResource IcActionCancel}" />
                                     </xctk:IconButton.Icon>
                                 </xctk:IconButton>
-                            </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Project" IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <xctk:WatermarkComboBox IsEditable="True"
+                                                    ItemsSource="{Binding
+                                                                  RelativeSource={RelativeSource Mode=FindAncestor,
+                                                                  AncestorType={x:Type DataGrid}},
+                                                                  Path=DataContext.Projects}"
+                                                    SelectedValue="{Binding
+                                                                    Path=ProjectId,
+                                                                    Mode=TwoWay,
+                                                                    NotifyOnTargetUpdated=True,
+                                                                    UpdateSourceTrigger=PropertyChanged}"
+                                                    SelectedValuePath="Id"
+                                                    DisplayMemberPath="Title" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

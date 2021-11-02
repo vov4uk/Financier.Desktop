@@ -17,16 +17,18 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         private RangeObservableCollection<Currency> currencies;
         private RangeObservableCollection<Location> locations;
         private RangeObservableCollection<Category> categories;
+        private RangeObservableCollection<Project> projects;
         private RangeObservableCollection<FinancierTransactionVM> financierTransactions;
         private DelegateCommand<FinancierTransactionVM> _deleteCommand;
 
-        public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories)
+        public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, List<Project> projects)
         {
             this.accounts = new RangeObservableCollection<Account>(accounts);
             this.originalAccounts = new List<Account>(accounts);
             this.currencies = new RangeObservableCollection<Currency>(currencies);
             this.locations = new RangeObservableCollection<Location>(locations);
             this.categories = new RangeObservableCollection<Category>(categories);
+            this.projects = new RangeObservableCollection<Project>(projects);
             this.categories.Insert(0, Category.None);
         }
 
@@ -102,6 +104,16 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             {
                 locations = value;
                 RaisePropertyChanged(nameof(Locations));
+            }
+        }
+
+        public RangeObservableCollection<Project> Projects
+        {
+            get => projects;
+            set
+            {
+                projects = value;
+                RaisePropertyChanged(nameof(Projects));
             }
         }
 

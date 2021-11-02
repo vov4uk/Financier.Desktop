@@ -36,7 +36,18 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}"/>
                 <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
-                <DataGridTextColumn Header="Total Amount" Binding="{Binding Path=TotalAmount, StringFormat=F2, Converter= {StaticResource AmountConverter}}"/>
+                <DataGridTemplateColumn Header="Total Amount">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Right"
+                                       Text="{Binding
+                                              Path=TotalAmount,
+                                              StringFormat=F2,
+                                              Converter={StaticResource AmountConverter}}">
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.Name}"/>
             </DataGrid.Columns>
         </DataGrid>

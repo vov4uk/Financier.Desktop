@@ -20,15 +20,22 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         private readonly List<Currency> currencies;
         private readonly List<Location> locations;
         private readonly List<Category> categories;
+        private readonly List<Project> projects;
         private readonly string csvFilePath;
         private readonly List<MonoTransaction> monoTransactions = new();
 
-        public MonoWizardVM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, string csvFilePath)
+        public MonoWizardVM(List<Account> accounts,
+            List<Currency> currencies,
+            List<Location> locations,
+            List<Category> categories,
+            List<Project> projects,
+            string csvFilePath)
         {
-            this.accounts = new List<Account>(accounts);
-            this.currencies = new List<Currency>(currencies);
-            this.locations = new List<Location>(locations);
-            this.categories = new List<Category>(categories);
+            this.accounts = accounts;
+            this.currencies = currencies;
+            this.locations = locations;
+            this.categories = categories;
+            this.projects = projects;
             this.csvFilePath = csvFilePath;
         }
 
@@ -46,7 +53,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             if (currentPage != null)
                 currentPage.IsCurrentPage = false;
 
-            if (currentPage is Page1VM page1)
+            if (currentPage is Page1VM page1 && value is Page2VM)
             {
                 var monoAccount = page1.MonoAccount;
                 ((Page2VM)value).MonoAccount = monoAccount;
@@ -54,7 +61,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 Logger.Info($"MonoBankAccount -> {JsonSerializer.Serialize(monoAccount)}");
             }
 
-            if (currentPage is Page2VM page2)
+            if (currentPage is Page2VM page2 && value is Page3VM)
             {
                 ((Page3VM)value).MonoAccount = MonoBankAccount;
                 ((Page3VM)value).SetMonoTransactions(page2.MonoTransactions);
@@ -87,7 +94,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 {
                     new Page1VM(accounts),
                     new Page2VM(monoTransactions),
-                    new Page3VM(accounts, currencies, locations, categories)
+                    new Page3VM(accounts, currencies, locations, categories, projects)
                 }.AsReadOnly();
         }
 
@@ -114,6 +121,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 OriginalCurrencyId = x.OriginalCurrencyId,
                 Note = x.Note,
                 LocationId = x.LocationId,
+                ProjectId = x.ProjectId,
                 CategoryId = 0,
                 Category = default,
                 DateTime = x.DateTime,

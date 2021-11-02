@@ -15,10 +15,12 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         public override bool IsValid() => true;
 
         private RangeObservableCollection<Category> categories;
+        private RangeObservableCollection<Project> projects;
 
-        public Page2VM(List<Category> categories)
+        public Page2VM(List<Category> categories, List<Project> projects)
         {
             this.categories = new RangeObservableCollection<Category>(categories);
+            this.projects = new RangeObservableCollection<Project>(projects);
         }
 
         private RangeObservableCollection<FinancierTransactionVM> financierTransactions;
@@ -105,6 +107,16 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             {
                 categories = value;
                 RaisePropertyChanged(nameof(Categories));
+            }
+        }
+
+        public RangeObservableCollection<Project> Projects
+        {
+            get => projects;
+            set
+            {
+                projects = value;
+                RaisePropertyChanged(nameof(Projects));
             }
         }
     }

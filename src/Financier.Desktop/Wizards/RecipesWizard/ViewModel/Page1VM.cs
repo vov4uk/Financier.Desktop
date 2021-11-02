@@ -73,7 +73,6 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             double tmp = 0.0;
             Amounts.Clear();
-            text = text.Replace("а", "a").Replace("А", "A");
 
             var lines = text.Split(Environment.NewLine);
             foreach (var line in lines)

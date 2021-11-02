@@ -32,7 +32,7 @@ namespace Financier.Desktop.Reports
                 ChartPresenter.Children.Add(new BarChartItem(coef, value));
             }
 
-            Summary.Text = $"{totalNegative/ 100.0}{values.First().CurrencySign} | +{totalPositive / 100.0}{values.First().CurrencySign}";
+            Summary.Text = $"{totalNegative / 100.0:F2}{values.First().CurrencySign} | +{totalPositive / 100.0:F2}{values.First().CurrencySign}";
         }
     }
 }

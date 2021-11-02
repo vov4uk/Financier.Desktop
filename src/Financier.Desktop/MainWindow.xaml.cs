@@ -80,8 +80,9 @@ namespace Financier.Desktop
                 var currencies = VM.Pages.OfType<CurrenciesVM>().First().Entities.ToList();
                 var locations = VM.Pages.OfType<LocationsVM>().First().Entities.ToList();
                 var categories = VM.Pages.OfType<CategoriesVM>().First().Entities.ToList();
+                var projects = VM.Pages.OfType<ProjectsVM>().First().Entities.ToList();
 
-                var viewModel = new MonoWizardVM(accounts, currencies, locations, categories, fileName);
+                var viewModel = new MonoWizardVM(accounts, currencies, locations, categories, projects, fileName);
                 await viewModel.LoadTransactions();
                 viewModel.RequestClose += async (o, args) =>
                 {

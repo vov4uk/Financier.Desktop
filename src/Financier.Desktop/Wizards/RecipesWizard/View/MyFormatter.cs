@@ -7,7 +7,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
 {
     public class MyFormatter : ITextFormatter
     {
-        public const string Pattern = @"((\+|\-)?)\d+(?:(\.|\,)?\d+)(\s+)A";
+        public const string Pattern = @"((\+|\-)?)\d+(?:(\.|\,)?\d+)(\s+)(A|a|а|А)";
 
         public string GetText(FlowDocument document)
         {
@@ -17,7 +17,6 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
         public void SetText(FlowDocument document, string text)
         {
             string reg = @"\d+";
-            text = text.Replace("а", "a").Replace("А","A");
 
             Paragraph p = new Paragraph();
 

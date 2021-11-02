@@ -7,6 +7,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private int toAccountId;
         private int categoryId;
         private int locationId;
+        private int projectId;
         private string note;
 
         public int FromAccountId { get; set; }
@@ -44,6 +45,16 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             {
                 locationId = value;
                 RaisePropertyChanged(nameof(LocationId));
+            }
+        }
+
+        public int ProjectId
+        {
+            get => projectId;
+            set
+            {
+                projectId = value;
+                RaisePropertyChanged(nameof(ProjectId));
             }
         }
 

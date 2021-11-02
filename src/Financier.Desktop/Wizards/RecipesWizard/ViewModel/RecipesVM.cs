@@ -10,10 +10,12 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
     public class RecipesVM : WizardBaseVM
     {
         private readonly List<Category> categories;
+        private readonly List<Project> projects;
 
-        public RecipesVM(List<Category> categories)
+        public RecipesVM(List<Category> categories, List<Project> projects)
         {
             this.categories = categories;
+            this.projects = projects;
         }
 
         public double TotalAmount
@@ -29,7 +31,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
         public override void BeforeCurrentPageUpdated(WizardPageBaseVM old, WizardPageBaseVM newValue)
         {
-            if (old is Page1VM page1)
+            if (old is Page1VM page1 && newValue is Page2VM)
             {
                 page1.CalculateCurrentAmount();
                 ((Page2VM)newValue).SetMonoTransactions(page1.Amounts);
@@ -42,7 +44,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             _pages = new List<WizardPageBaseVM>()
             {
                 new Page1VM(){ TotalAmount = this.TotalAmount},
-                new Page2VM(categories) { TotalAmount = this.TotalAmount},
+                new Page2VM(categories, projects) { TotalAmount = this.TotalAmount},
             }.AsReadOnly();
 
             CurrentPage = Pages[0];
@@ -70,6 +72,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 OriginalCurrencyId = x.OriginalCurrencyId,
                 Note = x.Note,
                 LocationId = x.LocationId,
+                ProjectId = x.ProjectId,
                 CategoryId = x.CategoryId,
                 Category = default,
             };

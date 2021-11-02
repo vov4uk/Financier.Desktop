@@ -476,7 +476,7 @@ namespace Financier.Desktop.ViewModel
             tr.Category = default;
             tr.PayeeId = vm.PayeeId ?? 0;
             tr.LocationId = vm.LocationId ?? 0;
-            tr.ProjectId = vm.ProjectId ?? 0;
+            tr.ProjectId = vm.CategoryId == Category.Split.Id ? 0 : (vm.ProjectId ?? 0);
             tr.Note = vm.Note;
             tr.DateTime = DateTimeConverter.ConvertBack(vm.Date);
         }
@@ -563,7 +563,9 @@ namespace Financier.Desktop.ViewModel
                     var trRepo = uow.GetRepository<Transaction>();
                     var vm = sender as TransactionDialogVM;
                     var transactions = new List<Transaction>();
+
                     MapTransaction(vm, transaction);
+
                     transactions.Add(transaction);
                     if (vm?.SubTransactions?.Any() == true)
                     {

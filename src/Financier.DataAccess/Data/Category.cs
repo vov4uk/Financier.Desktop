@@ -42,5 +42,14 @@ namespace Financier.DataAccess.Data
             Right = 2,
             Title = "<NO_CATEGORY>"
         };
+
+        [NotMapped]
+        public static Category Split = new Category()
+        {
+            Id = -1,
+            Left = 0,
+            Right = 0,
+            Title = "<SPLIT_CATEGORY>"
+        };
     }
 }

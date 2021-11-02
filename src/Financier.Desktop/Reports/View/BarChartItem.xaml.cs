@@ -19,35 +19,35 @@ namespace Financier.Desktop.Reports
         {
             Title.Text = row.Title;
 
-            var positiveAbs = System.Math.Abs(row.TotalPositiveAmount);
-            var negativeAbs = System.Math.Abs(row.TotalNegativeAmount);
+            var positiveAbs = Math.Abs(row.TotalPositiveAmount);
+            var negativeAbs = Math.Abs(row.TotalNegativeAmount);
 
             if (row.GetAbsoluteMax() == positiveAbs)
             {
                 Bar1.Fill = new SolidColorBrush { Color = Colors.Green };
                 Bar1.Width = Math.Max(15, positiveAbs * coef);
-                Label1.Text = $"+{positiveAbs / 100.0}{row.CurrencySign}";
+                Label1.Text = $"+{positiveAbs / 100.0:F2}{row.CurrencySign}";
 
                 if (negativeAbs > 0)
                 {
                     Stack2.Visibility = System.Windows.Visibility.Visible;
                     Bar2.Fill = new SolidColorBrush { Color = Colors.Orange };
                     Bar2.Width = Math.Max(15, negativeAbs * coef);
-                    Label2.Text = $"-{positiveAbs / 100.0}{row.CurrencySign}";
+                    Label2.Text = $"-{positiveAbs / 100.0:F2}{row.CurrencySign}";
                 }
 
-            } else if (row.GetAbsoluteMax() == negativeAbs) 
+            } else if (row.GetAbsoluteMax() == negativeAbs)
             {
                 Bar1.Fill = new SolidColorBrush { Color = Colors.Orange };
                 Bar1.Width = Math.Max(15, negativeAbs * coef);
-                Label1.Text = $"-{negativeAbs / 100.0}{row.CurrencySign}";
+                Label1.Text = $"-{negativeAbs / 100.0:F2}{row.CurrencySign}";
 
                 if (positiveAbs > 0)
                 {
                     Stack2.Visibility = System.Windows.Visibility.Visible;
                     Bar2.Fill = new SolidColorBrush { Color = Colors.Green };
                     Bar2.Width = Math.Max(15, positiveAbs * coef);
-                    Label2.Text = $"+{positiveAbs / 100.0}{row.CurrencySign}";
+                    Label2.Text = $"+{positiveAbs / 100.0:F2}{row.CurrencySign}";
                 }
             }
         }
