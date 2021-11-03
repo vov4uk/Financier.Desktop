@@ -97,19 +97,19 @@
                         </xctk:IconButton>
                         <DatePicker      Grid.Row="0" Grid.Column="1"
                              Margin="2"
-                             SelectedDate="{Binding Date}" />
+                             SelectedDate="{Binding Transaction.Date}" />
                         <xctk:TimePicker Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2"
                              Margin="2"
                              HorizontalAlignment="Stretch"
-                             Value="{Binding Date}" />
+                             Value="{Binding Transaction.Date}" />
                     </Grid>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" >Account</TextBlock>
                     <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                ItemsSource="{Binding Accounts}"
-                               SelectedItem="{Binding Account}"
+                               SelectedItem="{Binding Transaction.Account}"
                                SelectedValuePath="Id"
-                               SelectedValue="{Binding AccountId}"
+                               SelectedValue="{Binding Transaction.AccountId}"
                                DisplayMemberPath="Title" />
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">Payee</TextBlock>
@@ -117,7 +117,7 @@
                                  IsEditable="True"
                                  ItemsSource="{Binding Payees}"
                                  SelectedValuePath="Id"
-                                 SelectedValue="{Binding PayeeId}"
+                                 SelectedValue="{Binding Transaction.PayeeId}"
                                  DisplayMemberPath="Title" />
                     <xctk:IconButton Grid.Row="4" Grid.Column="1"
                                      Command="{Binding ClearPayeeCommand}">
@@ -139,7 +139,7 @@
                                                  ItemsSource="{Binding Categories}"
                                                  SelectedValuePath="Id"
                                                  DisplayMemberPath="Title"
-                                                 SelectedValue="{Binding CategoryId}">
+                                                 SelectedValue="{Binding Transaction.CategoryId}">
                             <!--<xctk:WatermarkComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <emoji:TextBlock Text="{Binding Title}" />
@@ -169,8 +169,8 @@
                     <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" >Currency</TextBlock>
                     <xctk:WatermarkComboBox  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
                                              ItemsSource="{Binding Currencies}"
-                                             SelectedItem="{Binding OriginalCurrency}"
-                                             SelectedValue="{Binding OriginalCurrencyId}"
+                                             SelectedItem="{Binding Transaction.OriginalCurrency}"
+                                             SelectedValue="{Binding Transaction.OriginalCurrencyId}"
                                              SelectedValuePath="Id"
                                              DisplayMemberPath="Title"
                                              Watermark="Same as account" />
@@ -179,7 +179,7 @@
                                             DataContext="{Binding}" />
 
                     <Border Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2"
-                            Visibility="{Binding IsSplitCategory, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                            Visibility="{Binding Transaction.IsSplitCategory, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                             BorderBrush="LightGray"
                             BorderThickness="0 1 0 1">
                         <Grid>
@@ -197,7 +197,7 @@
                                        Grid.ColumnSpan="2"
                                        Text="Un-split amount"/>
                             <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
-                                       Text="{Binding UnsplitAmount, Converter={StaticResource AmountConverter}, ConverterParameter=false, StringFormat=F2, Mode=OneWay}" />
+                                       Text="{Binding Transaction.UnsplitAmount, Converter={StaticResource AmountConverter}, ConverterParameter=false, StringFormat=F2, Mode=OneWay}" />
                             <xctk:IconButton Grid.Column="2"
                                              Grid.Row="0"
                                              Grid.RowSpan="2"
@@ -232,25 +232,25 @@
                     </Border>
 
                     <ListBox Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2"
-                             ItemsSource="{Binding SubTransactions}"
+                             ItemsSource="{Binding Transaction.SubTransactions}"
                              HorizontalContentAlignment="Stretch"
                              DataContext="{Binding}">
                         <ListBox.Style>
                             <Style TargetType="ListBox">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSplitCategory}" Value="True">
+                                    <DataTrigger Binding="{Binding Transaction.IsSplitCategory}" Value="True">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </ListBox.Style>
                         <ListBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type viewmodel:TransactionDialogVM}">
+                            <DataTemplate DataType="{x:Type viewmodel:TransactionDTO}">
                                 <Grid HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="24" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.InputBindings>
@@ -258,6 +258,22 @@
                                                           Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.OpenSubTransactionDialogCommand}"
                                                           CommandParameter="{Binding}" />
                                     </Grid.InputBindings>
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsAmountNegative}" Value="true">
+                                                    <DataTrigger.Setters>
+                                                        <Setter Property="Background" Value="LightPink"/>
+                                                    </DataTrigger.Setters>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsAmountNegative}" Value="false">
+                                                    <DataTrigger.Setters>
+                                                        <Setter Property="Background" Value="YellowGreen"/>
+                                                    </DataTrigger.Setters>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
                                     <emoji:TextBlock Grid.Column="0"
                                                      Text="{Binding Category.Title}"
                                                      HorizontalAlignment="Stretch"
@@ -286,7 +302,7 @@
                     <xctk:WatermarkComboBox   Grid.Row="14" Grid.Column="0"
                                   IsEditable="True"
                                   ItemsSource="{Binding Locations}"
-                                  SelectedValue="{Binding LocationId}"
+                                  SelectedValue="{Binding Transaction.LocationId}"
                                   SelectedValuePath="Id"
                                   DisplayMemberPath="Title" />
                     <xctk:IconButton Grid.Row="14" Grid.Column="1"
@@ -300,7 +316,7 @@
                                Grid.ColumnSpan="2"
                                Text="Note"/>
                     <TextBox   Grid.Row="16" Grid.Column="0"
-                               Text="{Binding Note}" />
+                               Text="{Binding Transaction.Note}" />
                     <xctk:IconButton Grid.Row="16" Grid.Column="1"
                                      Command="{Binding ClearNotesCommand}">
                         <xctk:IconButton.Icon>
@@ -317,14 +333,14 @@
                                              x:Name="ProjectIdBox"
                                              IsEditable="True"
                                              ItemsSource="{Binding Projects}"
-                                             SelectedValue="{Binding ProjectId}"
+                                             SelectedValue="{Binding Transaction.ProjectId}"
                                              SelectedValuePath="Id"
                                              DisplayMemberPath="Title" >
                         <xctk:WatermarkComboBox.Style>
                             <Style TargetType="xctk:WatermarkComboBox">
                                 <Setter Property="Visibility" Value="Visible"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSplitCategory}" Value="True">
+                                    <DataTrigger Binding="{Binding Transaction.IsSplitCategory}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>

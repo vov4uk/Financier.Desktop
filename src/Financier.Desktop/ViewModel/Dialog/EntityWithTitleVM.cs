@@ -1,17 +1,11 @@
 ﻿using Financier.DataAccess.Data;
 using Prism.Commands;
-using Prism.Mvvm;
-using System;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class EntityWithTitleVM : BindableBase
+    public class EntityWithTitleVM : DialogBaseVM
     {
-        private DelegateCommand _cancelCommand;
-
         private DelegateCommand _clearTitleCommand;
-
-        private DelegateCommand _saveCommand;
 
         private int id;
         private bool isActive;
@@ -35,26 +29,9 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
         }
 
-        public event EventHandler RequestCancel;
-
-        public event EventHandler RequestSave;
-
-        public DelegateCommand CancelCommand
-        {
-            get { return _cancelCommand ??= new DelegateCommand(() => RequestCancel?.Invoke(this, EventArgs.Empty)); }
-        }
-
         public DelegateCommand ClearTitleCommand
         {
             get { return _clearTitleCommand ??= new DelegateCommand(() => { Title = default; }); }
-        }
-
-        public DelegateCommand SaveCommand
-        {
-            get
-            {
-                return _saveCommand ??= new DelegateCommand(() => RequestSave?.Invoke(this, EventArgs.Empty));
-            }
         }
 
         public int Id

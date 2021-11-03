@@ -5,9 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:Financier.Desktop.Converters"
-             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionVM}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransferDialogVM}, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
@@ -75,57 +75,61 @@
                         <ColumnDefinition Width="120" />
                     </Grid.ColumnDefinitions>
                     <xctk:IconButton Grid.Row="0" Grid.Column="0"
-                                         IsEnabled="False">
+                                     IsEnabled="False">
                         <xctk:IconButton.Icon>
                             <Image Source="pack://application:,,,/Images/ic_action_info.png" />
                         </xctk:IconButton.Icon>
                     </xctk:IconButton>
                     <DatePicker      Grid.Row="0" Grid.Column="1"
-                             Margin="2"
-                             SelectedDate="{Binding Date}" />
+                                     Margin="2"
+                                     SelectedDate="{Binding Transfer.Date}" />
                     <xctk:TimePicker Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="1"
-                             Margin="2"
-                             HorizontalAlignment="Stretch"
-                             Value="{Binding Date}" />
+                                     Margin="2"
+                                     HorizontalAlignment="Stretch"
+                                     Value="{Binding Transfer.Date}" />
                 </Grid>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" >From Account</TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                           Text="From Account"/>
                 <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                               ItemsSource="{Binding Accounts}"
-                               SelectedItem="{Binding FromAccount}"
-                               SelectedValuePath="Id"
-                               SelectedValue="{Binding FromAccountId}"
-                               DisplayMemberPath="Title" />
+                           ItemsSource="{Binding Accounts}"
+                           SelectedItem="{Binding Transfer.FromAccount}"
+                           SelectedValuePath="Id"
+                           SelectedValue="{Binding Transfer.FromAccountId}"
+                           DisplayMemberPath="Title" />
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" >To Account</TextBlock>
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" 
+                           Text="To Account"/>
                 <ComboBox  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
-                               ItemsSource="{Binding Accounts}"
-                               SelectedItem="{Binding ToAccount}"
-                               SelectedValuePath="Id"
-                               SelectedValue="{Binding ToAccountId}"
-                               DisplayMemberPath="Title" />
+                           ItemsSource="{Binding Accounts}"
+                           SelectedItem="{Binding Transfer.ToAccount}"
+                           SelectedValuePath="Id"
+                           SelectedValue="{Binding Transfer.ToAccountId}"
+                           DisplayMemberPath="Title" />
 
-                <TextBlock  Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" x:Name="FromAmountBlock"
-                            Text="{Binding Path=FromAccount.Currency.Name, StringFormat={}Amount Out ({0}), TargetNullValue=Amount}" />
+                <TextBlock  Grid.Column="0" Grid.Row="5"
+                            Grid.ColumnSpan="3"
+                            x:Name="FromAmountBlock"
+                            Text="{Binding Path=Transfer.FromAccount.Currency.Name, StringFormat={}Amount Out ({0}), TargetNullValue=Amount}" />
                 <xctk:IconButton    Grid.Column="0" Grid.Row="6"
-                            Height="24"
-                            Width="24">
+                                    Height="24"
+                                    Width="24">
                     <xctk:IconButton.Icon>
                         <Image Source="{StaticResource IcActionMinus}" />
                     </xctk:IconButton.Icon>
                 </xctk:IconButton>
                 <xctk:DecimalUpDown Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2"
-                            Value="{Binding FromAmount, Converter={StaticResource AmountConverter}, Mode=TwoWay, NotifyOnSourceUpdated=True}"
-                            Increment=".01"
-                            Minimum="0"
-                            FormatString="F2"
-                            ShowButtonSpinner="True" />
+                                    Value="{Binding Transfer.FromAmount, Converter={StaticResource AmountConverter}, Mode=TwoWay, NotifyOnSourceUpdated=True}"
+                                    Increment=".01"
+                                    Minimum="0"
+                                    FormatString="F2"
+                                    ShowButtonSpinner="True" />
 
                 <TextBlock  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3"
-                            Visibility="{Binding Path=IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                            Text="{Binding Path=ToAccount.Currency.Name, StringFormat={}Amount In ({0}), TargetNullValue=Amount}" />
+                            Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                            Text="{Binding Path=Transfer.ToAccount.Currency.Name, StringFormat={}Amount In ({0}), TargetNullValue=Amount}" />
                 <xctk:IconButton    Grid.Column="0" Grid.Row="8"
-                                    Visibility="{Binding Path=IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                                    Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                                     Height="24"
                                     Width="24">
                     <xctk:IconButton.Icon>
@@ -133,18 +137,18 @@
                     </xctk:IconButton.Icon>
                 </xctk:IconButton>
                 <xctk:DecimalUpDown Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="2"
-                                    Visibility="{Binding Path=IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                                    Value="{Binding ToAmount, Converter={StaticResource AmountConverter}, Mode=TwoWay, NotifyOnSourceUpdated=True}"
+                                    Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                                    Value="{Binding Transfer.ToAmount, Converter={StaticResource AmountConverter}, Mode=TwoWay, NotifyOnSourceUpdated=True}"
                                     Increment=".01"
                                     Minimum="0"
                                     FormatString="F2"
                                     ShowButtonSpinner="True" />
 
                 <TextBlock Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="3"
-                           Visibility="{Binding Path=IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">Rate</TextBlock>
+                           Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">Rate</TextBlock>
                 <xctk:DecimalUpDown Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3"
-                                    Visibility="{Binding Path=IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                                    Value="{Binding Rate}"
+                                    Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                                    Value="{Binding Transfer.Rate}"
                                     Increment="0.00001"
                                     Minimum="0"
                                     FormatString="F5"
@@ -153,13 +157,14 @@
                 <Border Grid.Column="0" Grid.Row="11" Grid.ColumnSpan="3"
                         BorderThickness="0 0 0 1"
                         BorderBrush="Gray"
-                        Visibility="{Binding Path=IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
-                    <TextBlock Text="{Binding RateString, Mode=OneWay}" />
+                        Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock Text="{Binding Transfer.RateString, Mode=OneWay}" />
                 </Border>
 
-                <TextBlock Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3" >Note</TextBlock>
+                <TextBlock Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3"
+                           Text="Note"/>
                 <TextBox   Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2"
-                           Text="{Binding Note}" />
+                           Text="{Binding Transfer.Note}" />
                 <xctk:IconButton Grid.Row="13" Grid.Column="2"
                                      Command="{Binding ClearNotesCommand}">
                     <xctk:IconButton.Icon>

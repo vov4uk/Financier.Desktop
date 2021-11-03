@@ -5,9 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:Financier.Desktop.Converters"
-             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionVM}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionDialogVM}, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
@@ -33,17 +33,17 @@
             <ColumnDefinition Width="24" />
         </Grid.ColumnDefinitions>
         <TextBlock          Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" x:Name="OriginalFromAmountBlock"
-                            Text="{Binding Path=OriginalCurrency.Name, StringFormat={}Amount ({0}), TargetNullValue=Amount}"
-                            Visibility="{Binding Path=IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}}" />
+                            Text="{Binding Path=Transaction.OriginalCurrency.Name, StringFormat={}Amount ({0}), TargetNullValue=Amount}"
+                            Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}}" />
         <xctk:IconButton    Grid.Column="0" Grid.Row="1"
                             IsEnabled="False"
                             Height="24"
                             Width="24"
-                            Visibility="{Binding Path=IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}}">
+                            Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}}">
             <xctk:IconButton.Style>
                 <Style TargetType="{x:Type xctk:IconButton}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsAmountNegative}" Value="true">
+                        <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="true">
                             <DataTrigger.Setters>
                                 <Setter Property="Icon">
                                     <Setter.Value>
@@ -52,7 +52,7 @@
                                 </Setter>
                             </DataTrigger.Setters>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsAmountNegative}" Value="false">
+                        <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="false">
                             <DataTrigger.Setters>
                                 <Setter Property="Icon">
                                     <Setter.Value>
@@ -67,25 +67,25 @@
         </xctk:IconButton>
         <xctk:DecimalUpDown Grid.Column="1" Grid.Row="1"
                             x:Name="Amount"
-                            Value="{Binding OriginalFromAmount, Converter={StaticResource AmountConverter}}"
+                            Value="{Binding Transaction.OriginalFromAmount, Converter={StaticResource AmountConverter}}"
                             Increment="0.01"
                             Minimum="0"
                             FormatString="F2"
                             ShowButtonSpinner="True"
-                            Visibility="{Binding Path=IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}" />
+                            Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}" />
 
         <xctk:IconButton   Grid.Column="2" Grid.Row="1"
                            Height="24"
                            Width="24"
                            Command="{Binding ClearOriginalFromAmountCommand}"
-                           Visibility="{Binding Path=IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                           Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
             <xctk:IconButton.Icon>
                 <Image Source="{StaticResource ic_action_cancel}" />
             </xctk:IconButton.Icon>
         </xctk:IconButton>
 
         <TextBlock          Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" x:Name="FromAmountBlock"
-                            Text="{Binding Path=Account.Currency.Name, StringFormat={}Amount ({0}), TargetNullValue=Amount}" />
+                            Text="{Binding Path=Transaction.Account.Currency.Name, StringFormat={}Amount ({0}), TargetNullValue=Amount}" />
         <xctk:IconButton    Grid.Column="0" Grid.Row="3"
                             x:Name="FromAmountSign"
                             Height="24"
@@ -94,7 +94,7 @@
             <xctk:IconButton.Style>
                 <Style TargetType="{x:Type xctk:IconButton}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsAmountNegative}" Value="true">
+                        <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="true">
                             <DataTrigger.Setters>
                                 <Setter Property="Icon">
                                     <Setter.Value>
@@ -103,7 +103,7 @@
                                 </Setter>
                             </DataTrigger.Setters>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsAmountNegative}" Value="false">
+                        <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="false">
                             <DataTrigger.Setters>
                                 <Setter Property="Icon">
                                     <Setter.Value>
@@ -118,11 +118,28 @@
         </xctk:IconButton>
         <xctk:DecimalUpDown Grid.Column="1" Grid.Row="3"
                             x:Name="OrigAmount"
-                            Value="{Binding FromAmount, Converter={StaticResource AmountConverter}, Mode=TwoWay, NotifyOnSourceUpdated=True}"
+                            Value="{Binding Transaction.FromAmount, Converter={StaticResource AmountConverter}, Mode=TwoWay, NotifyOnSourceUpdated=True}"
                             Increment=".01"
                             Minimum="0"
                             FormatString="F2"
-                            ShowButtonSpinner="True" />
+                            ShowButtonSpinner="True" >
+            <xctk:DecimalUpDown.Style>
+                <Style TargetType="{x:Type xctk:DecimalUpDown}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="true">
+                            <DataTrigger.Setters>
+                                <Setter Property="Background" Value="LightPink"/>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="false">
+                            <DataTrigger.Setters>
+                                <Setter Property="Background" Value="YellowGreen"/>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </xctk:DecimalUpDown.Style>
+        </xctk:DecimalUpDown>
 
         <xctk:IconButton   Grid.Column="2" Grid.Row="3"
                            Height="24"
@@ -134,17 +151,18 @@
         </xctk:IconButton>
 
         <TextBlock          Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3"
-                            Visibility="{Binding Path=IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">Rate</TextBlock>
+                            Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                            Text="Rate"/>
         <xctk:DecimalUpDown Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"
-                            Value="{Binding Rate}"
+                            Value="{Binding Transaction.Rate}"
                             Increment="0.00001"
                             Minimum="0"
                             FormatString="F5"
                             ShowButtonSpinner="True"
                             IsEnabled="False"
-                            Visibility="{Binding Path=IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}" />
+                            Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}" />
         <TextBlock          Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3"
-                            Visibility="{Binding Path=IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                            Text="{Binding RateString, Mode=OneWay}" />
+                            Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                            Text="{Binding Transaction.RateString, Mode=OneWay}" />
     </Grid>
 </UserControl>

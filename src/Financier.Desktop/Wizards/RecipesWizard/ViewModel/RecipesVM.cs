@@ -23,7 +23,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             get;
             set;
         }
-        public List<TransactionDialogVM> TransactionsToImport { get; private set; }
+        public List<TransactionDTO> TransactionsToImport { get; private set; }
 
         public override void AfterCurrentPageUpdated(WizardPageBaseVM newValue)
         {
@@ -61,9 +61,9 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        private TransactionDialogVM TransformMonoTransaction(FinancierTransactionVM x)
+        private TransactionDTO TransformMonoTransaction(FinancierTransactionVM x)
         {
-            var result = new TransactionDialogVM
+            var result = new TransactionDTO
             {
                 Id = 0,
                 FromAmount = x.FromAmount,
