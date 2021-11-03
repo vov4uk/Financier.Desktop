@@ -59,7 +59,12 @@
                 <DataGridTemplateColumn Header="">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <emoji:TextBlock Text="{Binding Path=TransactionTitle}" />
+                            <emoji:TextBlock Text="{Binding Path=TransactionTitle}" x:Name="Cell"/>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=HasNoCategory}" Value="True">
+                                    <Setter TargetName="Cell" Property="Background" Value="Pink" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

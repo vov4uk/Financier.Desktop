@@ -132,5 +132,8 @@ namespace Financier.DataAccess.View
                 return Utils.Utils.SetAmountText(from_account_currency, from_account_balance ?? 0, false);
             }
         }
+
+        [NotMapped]
+        public bool HasNoCategory => Type == "Expense" && category_id == 0;
     }
 }
