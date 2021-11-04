@@ -12,13 +12,13 @@ namespace Financier.Desktop.MonoWizard.ViewModel
     public class Page3VM : WizardPageBaseVM
     {
         private Account _monoAccount;
-        private RangeObservableCollection<Account> accounts;
+        private ObservableCollection<Account> accounts;
         private readonly List<Account> originalAccounts;
-        private RangeObservableCollection<Currency> currencies;
-        private RangeObservableCollection<Location> locations;
-        private RangeObservableCollection<Category> categories;
-        private RangeObservableCollection<Project> projects;
-        private RangeObservableCollection<FinancierTransactionVM> financierTransactions;
+        private ObservableCollection<Currency> currencies;
+        private ObservableCollection<Location> locations;
+        private ObservableCollection<Category> categories;
+        private ObservableCollection<Project> projects;
+        private ObservableCollection<FinancierTransactionVM> financierTransactions;
         private DelegateCommand<FinancierTransactionVM> _deleteCommand;
 
         public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, List<Project> projects)
@@ -26,9 +26,9 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             this.accounts = new RangeObservableCollection<Account>(accounts);
             this.originalAccounts = new List<Account>(accounts);
             this.currencies = new RangeObservableCollection<Currency>(currencies);
-            this.locations = new RangeObservableCollection<Location>(locations);
+            this.locations = new RangeObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
             this.categories = new RangeObservableCollection<Category>(categories);
-            this.projects = new RangeObservableCollection<Project>(projects);
+            this.projects = new RangeObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
             this.categories.Insert(0, Category.None);
         }
 
@@ -50,14 +50,14 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 if (_monoAccount != null)
                 {
                     Accounts = new RangeObservableCollection<Account>(
-                        originalAccounts.Where(x => x.Id != _monoAccount.Id));
+                        originalAccounts.Where(x => x.Id != _monoAccount.Id).OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
                 }
             }
         }
 
         public override string Title => "Please select categories";
 
-        public RangeObservableCollection<FinancierTransactionVM> FinancierTransactions
+        public ObservableCollection<FinancierTransactionVM> FinancierTransactions
         {
             get => financierTransactions;
             set
@@ -67,7 +67,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        public RangeObservableCollection<Account> Accounts
+        public ObservableCollection<Account> Accounts
         {
             get => accounts;
             set
@@ -77,7 +77,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        public RangeObservableCollection<Currency> Currencies
+        public ObservableCollection<Currency> Currencies
         {
             get => currencies;
             set
@@ -87,7 +87,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        public RangeObservableCollection<Category> Categories
+        public ObservableCollection<Category> Categories
         {
             get => categories;
             set
@@ -97,7 +97,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        public RangeObservableCollection<Location> Locations
+        public ObservableCollection<Location> Locations
         {
             get => locations;
             set
@@ -107,7 +107,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             }
         }
 
-        public RangeObservableCollection<Project> Projects
+        public ObservableCollection<Project> Projects
         {
             get => projects;
             set

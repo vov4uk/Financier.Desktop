@@ -63,8 +63,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             get
             {
-                return _clearCategoryCommand ??= new DelegateCommand<int?>(
-                    i => { Transaction.CategoryId = i; });
+                return _clearCategoryCommand ??= new DelegateCommand<int?>( i => { Transaction.CategoryId = i; });
             }
         }
 

@@ -8,20 +8,25 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:ei="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <convert:AmountConverter x:Key="AmountConverter"/>
-        <convert:DateTimeConverter x:Key="DatetimeConverter" />
-        <BitmapImage x:Key="IcActionCancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <convert:AmountConverter x:Key="AmountConverter"/>
+            <convert:DateTimeConverter x:Key="DatetimeConverter" />
+            <BitmapImage x:Key="IcActionCancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" FontSize="12">Please select Category, From\To Account, Location ...</TextBlock>
+        <TextBlock Grid.Row="0" FontSize="12"
+                   Text="Please select Category, From\To Account, Location ..."/>
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding Path=FinancierTransactions}"
                   AutoGenerateColumns="False"
@@ -51,7 +56,9 @@
                                                                     NotifyOnTargetUpdated=True,
                                                                     UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedValuePath="Id"
-                                                    DisplayMemberPath="Title" />
+                                                    TextSearch.TextPath="Title"
+                                                    ItemTemplate="{StaticResource ResourceKey=IActive}"/>
+
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -75,7 +82,8 @@
                                                                     NotifyOnTargetUpdated=True,
                                                                     UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedValuePath="Id"
-                                                    DisplayMemberPath="Title" />
+                                                    TextSearch.TextPath="Title"
+                                                    ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -94,7 +102,8 @@
                                                                     NotifyOnTargetUpdated=True,
                                                                     UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedValuePath="Id"
-                                                    DisplayMemberPath="Title" />
+                                                    TextSearch.TextPath="Title"
+                                                    ItemTemplate="{StaticResource ResourceKey=IActive}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -141,7 +150,8 @@
                                                                     NotifyOnTargetUpdated=True,
                                                                     UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedValuePath="Id"
-                                                    DisplayMemberPath="Title" />
+                                                    TextSearch.TextPath="Title"
+                                                    ItemTemplate="{StaticResource ResourceKey=IActive}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -202,7 +212,8 @@
                                                                     NotifyOnTargetUpdated=True,
                                                                     UpdateSourceTrigger=PropertyChanged}"
                                                     SelectedValuePath="Id"
-                                                    DisplayMemberPath="Title" />
+                                                    TextSearch.TextPath="Title"
+                                                    ItemTemplate="{StaticResource ResourceKey=IActive}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

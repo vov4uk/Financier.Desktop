@@ -3,7 +3,7 @@
 namespace Financier.DataAccess.Data
 {
     [Table(Backup.SMS_TEMPLATES_TABLE)]
-    public class SmsTemplate : Entity
+    public class SmsTemplate : Entity, IActive
     {
         [Column(IdColumn)]
         public int Id { get; set; } = -1;

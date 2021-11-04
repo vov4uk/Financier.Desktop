@@ -1,5 +1,4 @@
 ﻿using Financier.DataAccess.Data;
-using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -213,18 +212,18 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        private void RecalculateRate()
-        {
-            if (originalFromAmount != null && originalFromAmount != 0)
-                Rate = Math.Abs(fromAmount / 100.0 / (originalFromAmount.Value / 100.0));
-        }
-
         public void RecalculateUnSplitAmount()
         {
             if (!IsSubTransaction)
                 UnsplitAmount = RealFromAmount - SplitAmount;
             else
                 UnsplitAmount = ParentTransactionUnSplitAmount - RealFromAmount;
+        }
+
+        private void RecalculateRate()
+        {
+            if (originalFromAmount != null && originalFromAmount != 0)
+                Rate = Math.Abs(fromAmount / 100.0 / (originalFromAmount.Value / 100.0));
         }
     }
 }

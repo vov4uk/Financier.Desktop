@@ -14,12 +14,12 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 
         private MonoTransaction _startTransaction;
 
-        private RangeObservableCollection<MonoTransaction> allTransactions;
+        private ObservableCollection<MonoTransaction> allTransactions;
         private DelegateCommand<MonoTransaction> _deleteCommand;
 
         public Page2VM(List<MonoTransaction> records)
         {
-            allTransactions = new RangeObservableCollection<MonoTransaction>(records);
+            allTransactions = new ObservableCollection<MonoTransaction>(records);
         }
 
         public DelegateCommand<MonoTransaction> DeleteCommand
@@ -54,7 +54,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 
         public override string Title => "Please select transaction";
 
-        public RangeObservableCollection<MonoTransaction> AllTransactions
+        public ObservableCollection<MonoTransaction> AllTransactions
         {
             get => allTransactions;
             set

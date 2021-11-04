@@ -8,16 +8,16 @@ namespace Financier.Desktop.MonoWizard.ViewModel
     public class Page1VM : WizardPageBaseVM
     {
 
-        private RangeObservableCollection<Account> _accounts;
+        private ObservableCollection<Account> _accounts;
 
         private Account _monoAccount;
 
         public Page1VM(List<Account> records)
         {
-            _accounts = new RangeObservableCollection<Account>(records);
+            _accounts = new ObservableCollection<Account>(records);
             _monoAccount = _accounts?.FirstOrDefault(x => x.IsActive && x.Title.Contains("mono", System.StringComparison.OrdinalIgnoreCase));
         }
-        public RangeObservableCollection<Account> Accounts
+        public ObservableCollection<Account> Accounts
         {
             get => _accounts;
             set
