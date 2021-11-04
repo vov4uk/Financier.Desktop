@@ -81,12 +81,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
 
             document.Blocks.Clear();
             document.PageWidth = 2500;
-
-
             document.Blocks.Add(p);
-
-
         }
     }
-
 }
