@@ -5,7 +5,7 @@ namespace Financier.DataAccess.Data
 {
     [DebuggerDisplay("{Title}")]
     [Table(Backup.PAYEE_TABLE)]
-    public class Payee : Entity, IIdentity
+    public class Payee : Entity, IActive
     {
         [Column(IdColumn)]
         public int Id { get; set; } = -1;

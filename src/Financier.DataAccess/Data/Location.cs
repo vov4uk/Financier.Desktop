@@ -5,13 +5,13 @@ namespace Financier.DataAccess.Data
 {
     [DebuggerDisplay("{Title}")]
     [Table(Backup.LOCATIONS_TABLE)]
-    public class Location : Entity, IIdentity
+    public class Location : Entity, IActive
     {
         [Column(IdColumn)]
         public int Id { get; set; } = -1;
 
         [Column(IsActiveColumn)]
-        public bool? IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = true;
 
         [Column(TitleColumn)]
         public string Title { get; set; }

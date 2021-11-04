@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel" 
-                    xmlns:View="clr-namespace:Financier.Desktop.Entities">
+                    xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel"
+                    xmlns:Report="clr-namespace:Financier.Desktop.Reports.ViewModel"
+                    xmlns:View="clr-namespace:Financier.Desktop.Views">
 
     <DataTemplate DataType="{x:Type ViewModel:AccountsVM}">
         <View:Accounts/>
@@ -33,7 +34,7 @@
     <DataTemplate DataType="{x:Type ViewModel:InfoVM}">
         <View:InfoControl/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type ViewModel:ReportVM}">
+    <DataTemplate DataType="{x:Type Report:ReportVM}">
         <View:Report/>
     </DataTemplate>
 

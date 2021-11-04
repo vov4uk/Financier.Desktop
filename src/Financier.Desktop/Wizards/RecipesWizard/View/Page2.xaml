@@ -1,0 +1,170 @@
+﻿<UserControl x:Class="Financier.Desktop.Wizards.RecipesWizard.View.Page2"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:convert="clr-namespace:Financier.Desktop.Converters"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:ei="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <convert:AmountConverter x:Key="AmountConverter"/>
+            <BitmapImage x:Key="IcActionCancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" FontSize="12"
+                   Text="Please select Category, Project..."/>
+        <Grid Grid.Column="0"
+              Grid.Row="1"
+              Height="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="54"/>
+                <ColumnDefinition Width="54"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Width="50"
+                    HorizontalAlignment="Stretch"
+                    Content="Total"
+                    Command="{Binding Path=TotalCommand}"
+                    />
+            <Button Grid.Column="1"
+                    Width="50"
+                    HorizontalAlignment="Stretch"
+                    Content="Add row"
+                    Command="{Binding Path=AddRowCommand}"
+                />
+            <TextBlock Grid.Column="2"
+                       HorizontalAlignment="Right">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{} Total : {0:F2} Current : {1:F2} Diff : {2:F2}">
+                        <Binding Path="TotalAmount" Mode="OneTime" />
+                        <Binding Path="CalculatedAmount" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="Diff" UpdateSourceTrigger="PropertyChanged" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </Grid>
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding Path=FinancierTransactions}"
+                  AutoGenerateColumns="False"
+                  ScrollViewer.CanContentScroll="True"
+                  DataContext="{Binding}"
+                  CanUserAddRows="false">
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete"
+                            Command="{Binding DeleteCommand}"
+                            CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Category" IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <xctk:WatermarkComboBox IsEditable="True"
+                                                    ItemsSource="{Binding
+                                                                  RelativeSource={RelativeSource Mode=FindAncestor,
+                                                                  AncestorType={x:Type DataGrid}},
+                                                                  Path=DataContext.Categories}"
+                                                    SelectedValue="{Binding
+                                                                    Path=CategoryId,
+                                                                    Mode=TwoWay,
+                                                                    NotifyOnTargetUpdated=True,
+                                                                    UpdateSourceTrigger=PropertyChanged}"
+                                                    SelectedValuePath="Id"
+                                                    TextSearch.TextPath="Title"
+                                                    ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Amount"
+                                        IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Right"
+                                       Text="{Binding
+                                              Path=FromAmount,
+                                              StringFormat=F2,
+                                              Converter={StaticResource AmountConverter},
+                                              ConverterParameter=false}">
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Note"
+                                        MaxWidth="200"
+                                        IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid   HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox x:Name="ThatThangToClear"
+                                         BorderThickness="0"
+                                         HorizontalAlignment="Stretch"
+                                         HorizontalContentAlignment="Left"
+                                         Grid.Column="0"
+                                         Text="{Binding
+                                                Path=Note,
+                                                Mode=TwoWay,
+                                                NotifyOnTargetUpdated=True,
+                                                UpdateSourceTrigger=PropertyChanged}"/>
+                                <xctk:IconButton
+                                    Margin="4,0"
+                                    Height="20"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Grid.Column="1">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <ei:ChangePropertyAction
+                                                TargetObject="{Binding ElementName=ThatThangToClear}"
+                                                PropertyName="Text" Value="{x:Null}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                    <xctk:IconButton.Icon>
+                                        <Image Source="{StaticResource IcActionCancel}" />
+                                    </xctk:IconButton.Icon>
+                                </xctk:IconButton>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Project" IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <xctk:WatermarkComboBox IsEditable="True"
+                                                    ItemsSource="{Binding
+                                                                  RelativeSource={RelativeSource Mode=FindAncestor,
+                                                                  AncestorType={x:Type DataGrid}},
+                                                                  Path=DataContext.Projects}"
+                                                    SelectedValue="{Binding
+                                                                    Path=ProjectId,
+                                                                    Mode=TwoWay,
+                                                                    NotifyOnTargetUpdated=True,
+                                                                    UpdateSourceTrigger=PropertyChanged}"
+                                                    SelectedValuePath="Id"
+                                                    TextSearch.TextPath="Title"
+                                                    ItemTemplate="{StaticResource ResourceKey=IActive}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

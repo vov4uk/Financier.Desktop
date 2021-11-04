@@ -6,7 +6,7 @@ namespace Financier.DataAccess.Utils
 {
     public static class Utils
     {
-        public static decimal HUNDRED = new Decimal(100);
+        public static decimal HUNDRED = new decimal(100);
         public static string TRANSFER_DELIMITER = " \u00BB ";
 
         public static string SetAmountText(Currency c, long amount, bool addPlus)
@@ -26,12 +26,12 @@ namespace Financier.DataAccess.Utils
             return sb.ToString();
         }
 
-        public static String AmountToString(Currency c, long amount)
+        public static string AmountToString(Currency c, long amount)
         {
             return AmountToString(c, amount, false);
         }
 
-        public static String AmountToString(Currency c, decimal amount)
+        public static string AmountToString(Currency c, decimal amount)
         {
             StringBuilder sb = new StringBuilder();
             return AmountToString(sb, c, amount, false).ToString();
@@ -66,7 +66,7 @@ namespace Financier.DataAccess.Utils
             {
                 c = Currency.Empty;
             }
-            String s = (amount / HUNDRED).ToString("F2");
+            string s = (amount / HUNDRED).ToString("F2");
             if (s.EndsWith("."))
             {
                 s = s.Substring(0, s.Length - 1);
@@ -79,7 +79,7 @@ namespace Financier.DataAccess.Utils
             return sb;
         }
 
-        public static String GetTransferAmountText(Currency fromCurrency, long fromAmount, Currency toCurrency, long toAmount)
+        public static string GetTransferAmountText(Currency fromCurrency, long fromAmount, Currency toCurrency, long toAmount)
         {
             var sb = new StringBuilder();
             if (SameCurrency(fromCurrency, toCurrency))

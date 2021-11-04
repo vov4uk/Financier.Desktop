@@ -3,7 +3,7 @@ using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.View;
 using Financier.Desktop.Converters;
-using Financier.Desktop.Entities;
+using Financier.Desktop.Views;
 using Financier.Adapter;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -16,8 +16,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Financier.Desktop.ViewModel.Dialog;
-using Financier.Desktop.Entities.Controls;
-using Humanizer;
+using Financier.Desktop.Views.Controls;
+using Financier.Desktop.Reports.ViewModel;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -230,7 +230,7 @@ namespace Financier.Desktop.ViewModel
         private void AddEntities<T>(List<T> entities, StringBuilder sb, bool replace = false)
         where T : Entity
         {
-            sb?.AppendLine($"Imported {typeof(T).Name.ToQuantity(entities.Count)}");
+            sb?.AppendLine($"Imported {typeof(T).Name} {entities.Count}");
             var vm = _pages.FirstOrDefault(x => x.GetType().BaseType.GetGenericArguments().Single() == typeof(T)) as EntityBaseVM<T>;
             if (replace)
             {
@@ -245,7 +245,7 @@ namespace Financier.Desktop.ViewModel
         private void AddKeylessEntities<T>(List<T> entities, StringBuilder sb)
         where T : Entity
         {
-            sb?.AppendLine($"Imported {typeof(T).Name.ToQuantity(entities.Count)}");
+            sb?.AppendLine($"Imported {typeof(T).Name} {entities.Count}");
             keyLessEntities.AddRange(entities);
         }
 
@@ -293,7 +293,7 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private TransactionVM ConvertTransaction(Transaction transaction)
+        private TransactionDTO ConvertTransaction(Transaction transaction)
         {
             return new()
             {
@@ -314,7 +314,7 @@ namespace Financier.Desktop.ViewModel
             };
         }
 
-        private TransferVM ConvertTransfer(Transaction transaction)
+        private TransferDTO ConvertTransfer(Transaction transaction)
         {
             return new()
             {
@@ -465,7 +465,7 @@ namespace Financier.Desktop.ViewModel
             await uow.SaveChangesAsync();
         }
 
-        private void MapTransaction(TransactionVM vm, Transaction tr)
+        private void MapTransaction(TransactionDTO vm, Transaction tr)
         {
             tr.Id = vm.Id;
             tr.FromAccountId = vm.AccountId;
@@ -476,12 +476,12 @@ namespace Financier.Desktop.ViewModel
             tr.Category = default;
             tr.PayeeId = vm.PayeeId ?? 0;
             tr.LocationId = vm.LocationId ?? 0;
-            tr.ProjectId = vm.ProjectId ?? 0;
+            tr.ProjectId = vm.CategoryId == Category.Split.Id ? 0 : (vm.ProjectId ?? 0);
             tr.Note = vm.Note;
             tr.DateTime = DateTimeConverter.ConvertBack(vm.Date);
         }
 
-        private void MapTransfer(TransferVM vm, Transaction tr)
+        private void MapTransfer(TransferDTO vm, Transaction tr)
         {
             tr.Id = vm.Id;
             tr.FromAccountId = vm.FromAccountId;
@@ -490,7 +490,8 @@ namespace Financier.Desktop.ViewModel
             tr.FromAmount = vm.FromAmount;
             tr.ToAmount = vm.ToAmount;
             tr.DateTime = DateTimeConverter.ConvertBack(vm.Date);
-
+            tr.OriginalCurrencyId = vm.FromAccount.CurrencyId;
+            tr.OriginalFromAmount = vm.FromAmount;
             tr.CategoryId = 0;
         }
 
@@ -501,7 +502,7 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OpenTransactionDialog(int e)
         {
-            TransactionVM context;
+            TransactionDialogVM context = new TransactionDialogVM();
             Transaction transaction;
             using (var uow = db.CreateUnitOfWork())
             {
@@ -513,16 +514,16 @@ namespace Financier.Desktop.ViewModel
                     var transactionVm = ConvertTransaction(transaction);
                     if (transactions.Any(x => x.ParentId == e))
                     {
-                        IEnumerable<TransactionVM> subTransactions = transactions.Where(x => x.ParentId == e).Select(ConvertTransaction);
-                        transactionVm.SubTransactions = new ObservableCollection<TransactionVM>(subTransactions);
+                        IEnumerable<TransactionDTO> subTransactions = transactions.Where(x => x.ParentId == e).Select(ConvertTransaction);
+                        transactionVm.SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions);
                     }
-                    context = transactionVm;
+                    context.Transaction = transactionVm;
                 }
                 else
                 {
                     Logger.Info("Create Transaction");
                     transaction = new Transaction { DateTime = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0 };
-                    context = ConvertTransaction(transaction);
+                    context.Transaction = ConvertTransaction(transaction);
                 }
 
                 var allAccounts = await uow.GetRepository<Account>().GetAllAsync(x => x.Currency);
@@ -560,21 +561,23 @@ namespace Financier.Desktop.ViewModel
                 {
                     using var uow = db.CreateUnitOfWork();
                     var trRepo = uow.GetRepository<Transaction>();
-                    var vm = sender as TransactionVM;
+                    var vm = sender as TransactionDialogVM;
                     var transactions = new List<Transaction>();
-                    MapTransaction(vm, transaction);
+
+                    MapTransaction(vm.Transaction, transaction);
+
                     transactions.Add(transaction);
-                    if (vm?.SubTransactions?.Any() == true)
+                    if (vm.Transaction?.SubTransactions?.Any() == true)
                     {
-                        foreach (var item in vm.SubTransactions)
+                        foreach (var item in vm.Transaction.SubTransactions)
                         {
                             var tr = item.Id == 0 ? new Transaction() : await trRepo.FindByAsync(x => x.Id == item.Id);
-                            item.Date = vm.Date;
+                            item.Date = vm.Transaction.Date;
                             MapTransaction(item, tr);
                             tr.Parent = transaction;
                             tr.FromAccountId = transaction.FromAccountId;
                             tr.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
-                            tr.OriginalFromAmount = transaction.OriginalFromAmount;
+                            tr.OriginalFromAmount = item.OriginalFromAmount;
                             tr.DateTime = transaction.DateTime;
                             tr.Category = default;
                             transactions.Add(tr);
@@ -606,7 +609,7 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OpenTransferDialog(int e)
         {
-            TransferVM context;
+            TransferDialogVM context = new TransferDialogVM();
             Transaction transaction;
 
             using (var uow = db.CreateUnitOfWork())
@@ -622,7 +625,7 @@ namespace Financier.Desktop.ViewModel
                     transaction = new Transaction { DateTime = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0, CategoryId = 0 };
                 }
 
-                context = ConvertTransfer(transaction);
+                context.Transfer = ConvertTransfer(transaction);
 
                 var allAccounts = await uow.GetRepository<Account>().GetAllAsync(x => x.Currency);
                 context.Accounts = new ObservableCollection<Account>(allAccounts);
@@ -645,7 +648,7 @@ namespace Financier.Desktop.ViewModel
             {
                 dialog.Close();
                 Logger.Info("Transfer save");
-                MapTransfer(sender as TransferVM, transaction);
+                MapTransfer((sender as TransferDialogVM)?.Transfer, transaction);
                 await InsertOrUpdate(new[] { transaction });
                 await RefreshBlotterTransactions();
             };
