@@ -29,5 +29,13 @@ steps:
 
 - task: VSTest@2
   inputs:
+    testAssemblyVer2: |
+     **\bin\$(BuildConfiguration)\**\*tests*.dll
+     !**\obj\**
+     !**\ref\**
+     !**\xunit.runner.visualstudio.testadapter.dll
+     !**\xunit.runner.visualstudio.dotnetcore.testadapter.dll
+    codeCoverageEnabled: true
+    testRunTitle: '$(Build.DefinitionName) | $(Build.Reason) |$(Build.SourceVersion)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
