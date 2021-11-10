@@ -1,7 +1,6 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.DataBase.Scripts;
-using Financier.DataAccess.Monobank;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;

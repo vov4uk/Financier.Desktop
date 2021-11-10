@@ -137,7 +137,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             var dialog = new WizardWindow();
 
-            var viewModel = new RecipesVM(Categories.ToList(), Projects.ToList()) { TotalAmount = Transaction.FromAmount / 100.0 };
+            var viewModel = new RecipesVM(Categories.Where(x => x.Id > 0).ToList(), Projects.ToList()) { TotalAmount = Transaction.FromAmount / 100.0 };
             viewModel.CreatePages();
             viewModel.RequestClose += (o, args) =>
             {
