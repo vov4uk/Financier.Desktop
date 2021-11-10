@@ -41,6 +41,8 @@ namespace Financier.Desktop
         {
             MessageBox.Show(exception.Message);
             _logger.Error(exception);
+            _logger.Error(exception.InnerException);
+            _logger.Error(exception.StackTrace);
         }
     }
 }

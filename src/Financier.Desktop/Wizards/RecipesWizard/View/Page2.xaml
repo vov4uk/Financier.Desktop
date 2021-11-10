@@ -92,13 +92,16 @@
                                         IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock HorizontalAlignment="Right"
+                            <TextBox HorizontalAlignment="Stretch"
+                                     HorizontalContentAlignment="Right"
                                        Text="{Binding
                                               Path=FromAmount,
+                                              UpdateSourceTrigger=PropertyChanged,
+                                              Mode=TwoWay,
                                               StringFormat=F2,
                                               Converter={StaticResource AmountConverter},
                                               ConverterParameter=false}">
-                            </TextBlock>
+                            </TextBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

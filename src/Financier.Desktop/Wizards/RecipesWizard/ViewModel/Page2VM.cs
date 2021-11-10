@@ -23,7 +23,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             this.projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
         }
 
-        private RangeObservableCollection<FinancierTransactionVM> financierTransactions;
+        private ObservableCollection<FinancierTransactionVM> financierTransactions;
         private DelegateCommand<FinancierTransactionVM> _deleteCommand;
         private DelegateCommand _addRowCommand;
         private DelegateCommand _totalCommand;
@@ -32,7 +32,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
         public void SetMonoTransactions(List<FinancierTransactionVM> list)
         {
-            FinancierTransactions = new RangeObservableCollection<FinancierTransactionVM>(list);
+            FinancierTransactions = new ObservableCollection<FinancierTransactionVM>(list);
             CalculateFromAmounts();
         }
 
@@ -90,7 +90,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        public RangeObservableCollection<FinancierTransactionVM> FinancierTransactions
+        public ObservableCollection<FinancierTransactionVM> FinancierTransactions
         {
             get => financierTransactions;
             set
