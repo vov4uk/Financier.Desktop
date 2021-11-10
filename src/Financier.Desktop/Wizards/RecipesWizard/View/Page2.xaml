@@ -69,6 +69,9 @@
                             CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Order"
+                                    Binding="{Binding Path=Order, UpdateSourceTrigger=PropertyChanged}"
+                                    IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="Category" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -92,18 +95,22 @@
                                         IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock HorizontalAlignment="Right"
+                            <TextBox HorizontalAlignment="Stretch"
+                                     HorizontalContentAlignment="Right"
                                        Text="{Binding
                                               Path=FromAmount,
+                                              UpdateSourceTrigger=PropertyChanged,
+                                              Mode=TwoWay,
                                               StringFormat=F2,
                                               Converter={StaticResource AmountConverter},
                                               ConverterParameter=false}">
-                            </TextBlock>
+                            </TextBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Note"
                                         MaxWidth="200"
+                                        MinWidth="100"
                                         IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

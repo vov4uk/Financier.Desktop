@@ -142,14 +142,17 @@ namespace Financier.Desktop.ViewModel.Dialog
             viewModel.RequestClose += (o, args) =>
             {
                 dialog.Close();
-                var vm = o as RecipesVM;
-                foreach (var item in vm.TransactionsToImport)
+                if (args)
                 {
-                    item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
-                    Transaction.SubTransactions.Add(item);
+                    var vm = o as RecipesVM;
+                    foreach (var item in vm.TransactionsToImport)
+                    {
+                        item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
+                        Transaction.SubTransactions.Add(item);
+                    }
+                    Transaction.RecalculateUnSplitAmount();
+                    SaveCommand.RaiseCanExecuteChanged();
                 }
-                Transaction.RecalculateUnSplitAmount();
-                SaveCommand.RaiseCanExecuteChanged();
             };
             dialog.DataContext = viewModel;
             dialog.ShowDialog();
