@@ -14,39 +14,6 @@ namespace Financier.Adapter
         public static Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
         public static BackupVersion BackupVersion { get; private set; } = new BackupVersion();
 
-        private static IReadOnlyDictionary<string, EntityInfo> GetEntityTypes()
-        {
-            Type entityType = typeof(Entity);
-            Dictionary<string, EntityInfo> entities = new Dictionary<string, EntityInfo>();
-            IEnumerable<Type> types = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .Where(entityType.IsAssignableFrom);
-            foreach (Type t in types)
-            {
-                TableAttribute attr = t.GetCustomAttributes(typeof(TableAttribute), true).Cast<TableAttribute>().FirstOrDefault();
-                if (attr != null)
-                {
-                    EntityInfo info = new EntityInfo() { EntityType = t };
-                    entities[attr.Name] = info;
-                    foreach (PropertyInfo p in t.GetProperties())
-                    {
-                        ColumnAttribute pattr = (ColumnAttribute)p.GetCustomAttribute(typeof(ColumnAttribute));
-                        if (pattr != null)
-                        {
-                            EntityPropertyInfo pInfo = new EntityPropertyInfo(p)
-                            {
-                                Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))
-                            };
-                            pInfo.Converter.PropertyType = p.PropertyType;
-                            info.Properties[pattr.Name] = pInfo;
-                        }
-                    }
-                }
-            }
-
-            return new ReadOnlyDictionary<string, EntityInfo>(entities);
-        }
-
         public static IEnumerable<Entity> ParseBackupFile(string fileName)
         {
             using var reader = new BackupReader(fileName);
@@ -96,6 +63,39 @@ namespace Financier.Adapter
             }
 
             return entities;
+        }
+
+        private static IReadOnlyDictionary<string, EntityInfo> GetEntityTypes()
+        {
+            Type entityType = typeof(Entity);
+            Dictionary<string, EntityInfo> entities = new Dictionary<string, EntityInfo>();
+            IEnumerable<Type> types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes())
+                .Where(entityType.IsAssignableFrom);
+            foreach (Type t in types)
+            {
+                TableAttribute attr = t.GetCustomAttributes(typeof(TableAttribute), true).Cast<TableAttribute>().FirstOrDefault();
+                if (attr != null)
+                {
+                    EntityInfo info = new EntityInfo() { EntityType = t };
+                    entities[attr.Name] = info;
+                    foreach (PropertyInfo p in t.GetProperties())
+                    {
+                        ColumnAttribute pattr = (ColumnAttribute)p.GetCustomAttribute(typeof(ColumnAttribute));
+                        if (pattr != null)
+                        {
+                            EntityPropertyInfo pInfo = new EntityPropertyInfo(p)
+                            {
+                                Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))
+                            };
+                            pInfo.Converter.PropertyType = p.PropertyType;
+                            info.Properties[pattr.Name] = pInfo;
+                        }
+                    }
+                }
+            }
+
+            return new ReadOnlyDictionary<string, EntityInfo>(entities);
         }
     }
 }

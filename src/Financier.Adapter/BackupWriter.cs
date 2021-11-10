@@ -1,7 +1,6 @@
 ﻿using Financier.DataAccess.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -31,7 +30,7 @@ namespace Financier.Adapter
             _writer.Close();
             var fileWithoutExt = Path.GetFileNameWithoutExtension(_fileName);
             Compress(fileWithoutExt, _fileName);
-            if (!Debugger.IsAttached && File.Exists(fileWithoutExt))
+            if (File.Exists(fileWithoutExt))
             {
                 File.Delete(fileWithoutExt);
             }

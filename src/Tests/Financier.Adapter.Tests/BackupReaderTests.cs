@@ -21,6 +21,8 @@ namespace Financier.Adapter.Tests
             Assert.Equal("ru.orangesoftware.financisto", backupReader.BackupVersion.Package);
             Assert.Equal(new Version(1, 7, 4), backupReader.BackupVersion.Version);
             Assert.Equal(100, backupReader.BackupVersion.VersionCode);
+
+            backupReader.Dispose();
         }
     }
 }
