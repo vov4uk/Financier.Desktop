@@ -73,7 +73,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             double tmp = 0.0;
             Amounts.Clear();
-
+            int order = 1;
             var lines = text.Split(Environment.NewLine);
             foreach (var line in lines)
             {
@@ -91,7 +91,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                             Amounts.Add(new FinancierTransactionVM
                             {
                                 FromAmount = Convert.ToInt64(amount * -100.0),
-                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note
+                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note,
+                                Order = order++
                             });
                         }
                     }

@@ -69,6 +69,9 @@
                             CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Order"
+                                    Binding="{Binding Path=Order, UpdateSourceTrigger=PropertyChanged}"
+                                    IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="Category" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -107,6 +110,7 @@
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Note"
                                         MaxWidth="200"
+                                        MinWidth="100"
                                         IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

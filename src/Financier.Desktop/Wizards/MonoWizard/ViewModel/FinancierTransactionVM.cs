@@ -9,7 +9,16 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private int locationId;
         private int projectId;
         private string note;
+        private int order;
 
+        public int Order {
+            get => order;
+            set
+            {
+                order = value;
+                RaisePropertyChanged(nameof(Order));
+            }
+        }
         public int FromAccountId { get; set; }
         public int MonoAccountId { get; set; }
         public long FromAmount { get; set; }

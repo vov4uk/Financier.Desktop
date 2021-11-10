@@ -70,7 +70,14 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             get
             {
-                return _deleteCommand ??= new DelegateCommand<FinancierTransactionVM>(tr => { financierTransactions.Remove(tr); });
+                return _deleteCommand ??= new DelegateCommand<FinancierTransactionVM>(tr =>
+                {
+                    financierTransactions.Remove(tr);
+                    for (int i = 0; i < financierTransactions.Count; i++)
+                    {
+                        financierTransactions[i].Order = i + 1;
+                    }
+                });
             }
         }
 
@@ -78,7 +85,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             get
             {
-                return _addRowCommand ??= new DelegateCommand(() => { financierTransactions.Add(new FinancierTransactionVM()); });
+                return _addRowCommand ??= new DelegateCommand(() => { financierTransactions.Add(new FinancierTransactionVM() { Order = financierTransactions.Count + 1}); });
             }
         }
 
