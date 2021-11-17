@@ -94,6 +94,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             tr.CategoryId = modifiedCopy.CategoryId;
             tr.Category = Categories.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
             tr.FromAmount = modifiedCopy.RealFromAmount;
+            tr.IsAmountNegative = modifiedCopy.IsAmountNegative;
             tr.Note = modifiedCopy.Note;
             tr.ProjectId = modifiedCopy.ProjectId;
         }
@@ -137,7 +138,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             var dialog = new WizardWindow();
 
-            var viewModel = new RecipesVM(Categories.Where(x => x.Id > 0).ToList(), Projects.ToList()) { TotalAmount = Transaction.FromAmount / 100.0 };
+            var viewModel = new RecipesVM(Categories.Where(x => x.Id > 0).ToList(), Projects.ToList()) { TotalAmount = Transaction.RealFromAmount / 100.0 };
             viewModel.CreatePages();
             viewModel.RequestClose += (o, args) =>
             {

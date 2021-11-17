@@ -310,7 +310,8 @@ namespace Financier.Desktop.ViewModel
                 FromAmount = transaction.FromAmount,
                 OriginalFromAmount = transaction.OriginalFromAmount,
                 IsAmountNegative = transaction.FromAmount <= 0,
-                Date = DateTimeConverter.Convert(transaction.DateTime),
+                Date = DateTimeConverter.Convert(transaction.DateTime).Date,
+                Time = DateTimeConverter.Convert(transaction.DateTime),
             };
         }
 
@@ -324,7 +325,8 @@ namespace Financier.Desktop.ViewModel
                 Note = transaction.Note,
                 FromAmount = transaction.FromAmount,
                 ToAmount = transaction.ToAmount,
-                Date = DateTimeConverter.Convert(transaction.DateTime),
+                Date = DateTimeConverter.Convert(transaction.DateTime).Date,
+                Time = DateTimeConverter.Convert(transaction.DateTime),
             };
         }
 
@@ -478,7 +480,7 @@ namespace Financier.Desktop.ViewModel
             tr.LocationId = vm.LocationId ?? 0;
             tr.ProjectId = vm.CategoryId == Category.Split.Id ? 0 : (vm.ProjectId ?? 0);
             tr.Note = vm.Note;
-            tr.DateTime = DateTimeConverter.ConvertBack(vm.Date);
+            tr.DateTime = DateTimeConverter.ConvertBack(vm.DateTime);
         }
 
         private void MapTransfer(TransferDTO vm, Transaction tr)
@@ -489,7 +491,7 @@ namespace Financier.Desktop.ViewModel
             tr.Note = vm.Note;
             tr.FromAmount = vm.FromAmount;
             tr.ToAmount = vm.ToAmount;
-            tr.DateTime = DateTimeConverter.ConvertBack(vm.Date);
+            tr.DateTime = DateTimeConverter.ConvertBack(vm.DateTime);
             tr.OriginalCurrencyId = vm.FromAccount.CurrencyId;
             tr.OriginalFromAmount = vm.FromAmount;
             tr.CategoryId = 0;
@@ -573,6 +575,7 @@ namespace Financier.Desktop.ViewModel
                         {
                             var tr = item.Id == 0 ? new Transaction() : await trRepo.FindByAsync(x => x.Id == item.Id);
                             item.Date = vm.Transaction.Date;
+                            item.Time = vm.Transaction.Time;
                             MapTransaction(item, tr);
                             tr.Parent = transaction;
                             tr.FromAccountId = transaction.FromAccountId;

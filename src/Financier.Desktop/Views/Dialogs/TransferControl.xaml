@@ -86,7 +86,7 @@
                     <xctk:TimePicker Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="1"
                                      Margin="2"
                                      HorizontalAlignment="Stretch"
-                                     Value="{Binding Transfer.Date}" />
+                                     Value="{Binding Transfer.Time}" />
                 </Grid>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"

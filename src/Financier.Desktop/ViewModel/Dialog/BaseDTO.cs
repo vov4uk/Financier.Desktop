@@ -6,6 +6,7 @@ namespace Financier.Desktop.ViewModel.Dialog
     public class BaseDTO : BindableBase
     {
         private DateTime date;
+        private DateTime time;
         private int id;
         private string note;
         private double rate;
@@ -18,6 +19,21 @@ namespace Financier.Desktop.ViewModel.Dialog
                 date = value;
                 RaisePropertyChanged(nameof(Date));
             }
+        }
+
+        public DateTime Time
+        {
+            get => time;
+            set
+            {
+                time = value;
+                RaisePropertyChanged(nameof(Time));
+            }
+        }
+
+        public DateTime DateTime
+        {
+            get { return new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second); }
         }
 
         public int Id
