@@ -84,6 +84,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                     {
                         var number = res.Value.Substring(0, res.Value.Length - 2);
                         var amount = GetDouble(number);
+                        Console.WriteLine($"number {number} -> {amount}");
                         tmp += amount;
                         if (amount != 0.0)
                         {
@@ -93,7 +94,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                                 FromAmount = Convert.ToInt64(amount * -100.0),
                                 Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
                                 Order = order++
-                            });
+                            });                            
                         }
                     }
                 }
