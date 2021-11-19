@@ -6,7 +6,7 @@
     public class EntityExtensionsTests
     {
         [Fact]
-        public void ParseBackupFile_ReadEntitiesFromArchive_ReadCorrectCount()
+        public void ToBackupLines_TransfromTransactionToString_StringEquels()
         {
             var expectedString = @"$ENTITY:transactions
 _id:3

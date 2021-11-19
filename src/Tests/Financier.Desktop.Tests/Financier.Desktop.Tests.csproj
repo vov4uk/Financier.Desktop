@@ -2,13 +2,13 @@
 
   <PropertyGroup>
       <TargetFramework>net5.0-windows</TargetFramework>
-      <UseWPF>true</UseWPF>
       <IsPackable>false</IsPackable>
       <DebugType>full</DebugType>
       <AssemblyName>Financier.Desktop.Tests</AssemblyName>
       <RootNamespace>Financier.Desktop.Tests</RootNamespace>
       <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
       <IsTestProject>true</IsTestProject>
+      <OutputType>Library</OutputType>
   </PropertyGroup>
 
     <ItemGroup>
