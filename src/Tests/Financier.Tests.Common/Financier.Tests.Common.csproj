@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>Financier.Tests.Common</AssemblyName>
+    <RootNamespace>Financier.Tests.Common</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

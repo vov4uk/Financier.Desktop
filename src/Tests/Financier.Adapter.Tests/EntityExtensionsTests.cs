@@ -1,6 +1,6 @@
 ﻿namespace Financier.Adapter.Tests
 {
-    using Financier.Common.Tests;
+    using Financier.Tests.Common;
     using Xunit;
 
     public class EntityExtensionsTests

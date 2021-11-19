@@ -39,7 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Financier.Adapter\Financier.Adapter.csproj" />
-    <ProjectReference Include="..\Financier.Common.Tests\Financier.Common.Tests.csproj" />
+    <ProjectReference Include="..\Financier.Tests.Common\Financier.Tests.Common.csproj" />
   </ItemGroup>
 
 </Project>

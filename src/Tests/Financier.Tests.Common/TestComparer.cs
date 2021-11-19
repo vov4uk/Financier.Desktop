@@ -1,4 +1,4 @@
-﻿namespace Financier.Common.Tests
+﻿namespace Financier.Tests.Common
 {
     using System.Collections.Generic;
     using Financier.DataAccess.Data;

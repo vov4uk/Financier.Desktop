@@ -3,7 +3,7 @@
     using System;
     using System.IO;
     using System.Linq;
-    using Financier.Common.Tests;
+    using Financier.Tests.Common;
     using Financier.DataAccess.Data;
     using Xunit;
 

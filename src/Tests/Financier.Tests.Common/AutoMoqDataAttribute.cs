@@ -1,4 +1,6 @@
-﻿namespace Financier.Common.Tests
+﻿using Financier.Tests.Common;
+
+namespace Financier.Tests.Common
 {
     using System;
     using AutoFixture;
