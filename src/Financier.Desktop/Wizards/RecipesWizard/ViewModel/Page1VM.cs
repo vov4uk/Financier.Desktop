@@ -83,8 +83,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                     if (res.Success)
                     {
                         var number = res.Value.Substring(0, res.Value.Length - 2);
-                        var amount = GetDouble(number);
-                        Console.WriteLine($"number {number} -> {amount}");
+                        var amount = GetDouble(number.Replace(",", ".").Trim());
                         tmp += amount;
                         if (amount != 0.0)
                         {
