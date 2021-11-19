@@ -145,7 +145,8 @@
                                     ShowButtonSpinner="True" />
 
                 <TextBlock Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="3"
-                           Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">Rate</TextBlock>
+                           Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                           Text="Rate"/>
                 <xctk:DecimalUpDown Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3"
                                     Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                                     Value="{Binding Transfer.Rate}"

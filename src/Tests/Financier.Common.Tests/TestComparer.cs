@@ -1,9 +1,9 @@
-﻿namespace Financier.Adapter.Tests.Common
+﻿namespace Financier.Common.Tests
 {
     using System.Collections.Generic;
     using Financier.DataAccess.Data;
 
-    internal class TestComparer : IEqualityComparer<Transaction>
+    public class TestComparer : IEqualityComparer<Transaction>
     {
         public bool Equals(Transaction x, Transaction y)
         {

@@ -29,7 +29,8 @@
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
-        <TextBlock Grid.Row="1" FontSize="12">Please select transaction with same balance as selected account, otherwise all transactions will be imported</TextBlock>
+        <TextBlock Grid.Row="1" FontSize="12"
+                   Text="Please select transaction with same balance as selected account, otherwise all transactions will be imported"/>
         <DataGrid Grid.Row="2"
                   ItemsSource="{Binding Path=AllTransactions}"
                   AutoGenerateColumns="False"

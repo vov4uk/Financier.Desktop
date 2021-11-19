@@ -14,7 +14,8 @@
             <RowDefinition Height="20"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock HorizontalAlignment="Center" FontWeight="Bold">Select MonoBank account</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontWeight="Bold"
+                   Text="Select MonoBank account"/>
         <DataGrid Margin="5" Grid.Row="1" 
                   ItemsSource="{Binding Accounts}"
                   AutoGenerateColumns="False"

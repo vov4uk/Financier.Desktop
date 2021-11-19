@@ -114,7 +114,8 @@
                     </xctk:IconButton.Icon>
                 </xctk:IconButton>
 
-                <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2">Project</TextBlock>
+                <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
+                           Text="Project"/>
 
                 <xctk:WatermarkComboBox Grid.Row="8" Grid.Column="0"
                                         IsEditable="True"

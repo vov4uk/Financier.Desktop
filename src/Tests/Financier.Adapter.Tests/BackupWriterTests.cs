@@ -2,7 +2,7 @@ namespace Financier.Adapter.Tests
 {
     using System.Collections.Generic;
     using System.IO;
-    using Financier.Adapter.Tests.Common;
+    using Financier.Common.Tests;
     using Financier.DataAccess.Data;
     using Xunit;
 

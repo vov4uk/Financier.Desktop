@@ -91,7 +91,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                             Amounts.Add(new FinancierTransactionVM
                             {
                                 FromAmount = Convert.ToInt64(amount * -100.0),
-                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note,
+                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
                                 Order = order++
                             });
                         }

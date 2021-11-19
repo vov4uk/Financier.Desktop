@@ -23,7 +23,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 
         public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, List<Project> projects)
         {
-            this.accounts = new RangeObservableCollection<Account>(accounts);
+            this.accounts = new RangeObservableCollection<Account>(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
             this.originalAccounts = new List<Account>(accounts);
             this.currencies = new RangeObservableCollection<Currency>(currencies);
             this.locations = new RangeObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));

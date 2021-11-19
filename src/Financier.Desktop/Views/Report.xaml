@@ -29,14 +29,16 @@
                       Margin="2"
                       Width="80"
                       SelectedItem="{Binding Path=PeriodType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock VerticalAlignment="Center">From :</TextBlock>
+            <TextBlock VerticalAlignment="Center"
+                       Text="From :"/>
             <DatePicker SelectedDate="{Binding Path=From, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                         Width="110"
                         Margin="2"/>
             <xctk:TimePicker Value="{Binding Path=From, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                              Width="80"
                              Margin="2"/>
-            <TextBlock VerticalAlignment="Center">To :</TextBlock>
+            <TextBlock VerticalAlignment="Center"
+                       Text="To :"/>
             <DatePicker SelectedDate="{Binding Path=To, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                         Width="110"
                         Margin="2"/>

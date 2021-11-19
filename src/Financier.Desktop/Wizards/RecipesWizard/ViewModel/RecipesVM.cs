@@ -12,16 +12,18 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         private readonly List<Category> categories;
         private readonly List<Project> projects;
 
-        public RecipesVM(List<Category> categories, List<Project> projects)
+        public RecipesVM(double totalAmount, List<Category> categories, List<Project> projects)
         {
             this.categories = categories;
             this.projects = projects;
+            TotalAmount = totalAmount;
+            CreatePages();
         }
 
         public double TotalAmount
         {
             get;
-            set;
+            private set;
         }
         public List<TransactionDTO> TransactionsToImport { get; private set; }
 

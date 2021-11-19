@@ -534,12 +534,12 @@ namespace Financier.Desktop.ViewModel
                 var currencies = await uow.GetRepository<Currency>().GetAllAsync();
                 var locations = await uow.GetRepository<Location>().GetAllAsync();
                 var projects = await uow.GetRepository<Project>().GetAllAsync();
-                context.Accounts = new ObservableCollection<Account>(allAccounts);
+                context.Accounts = new ObservableCollection<Account>(allAccounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
                 context.Categories = new ObservableCollection<Category>(allCategories);
-                context.Payees = new ObservableCollection<Payee>(allPayees);
+                context.Payees = new ObservableCollection<Payee>(allPayees.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
                 context.Currencies = new ObservableCollection<Currency>(currencies);
-                context.Locations = new ObservableCollection<Location>(locations);
-                context.Projects = new ObservableCollection<Project>(projects);
+                context.Locations = new ObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+                context.Projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
             }
 
             var dialog = new Window

@@ -217,7 +217,8 @@
             <TextBlock Grid.Row="1"
                        HorizontalAlignment="Center"
                        FontSize="14"
-                       FontWeight="Bold">Drop .backup file here</TextBlock>
+                       FontWeight="Bold"
+                       Text="Drop .backup file here"/>
         </Grid>
     </Grid>
 </RibbonWindow >
