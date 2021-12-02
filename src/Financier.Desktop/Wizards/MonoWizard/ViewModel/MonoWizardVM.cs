@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 using CsvHelper;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
-using Financier.Desktop.Wizards;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
+using Financier.Desktop.MonoWizard.ViewModel;
 
-namespace Financier.Desktop.MonoWizard.ViewModel
+namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class MonoWizardVM : WizardBaseVM
     {
@@ -83,7 +82,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 using var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture);
                 var records = await csv.GetRecordsAsync<MonoTransaction>().ToListAsync();
                 monoTransactions.AddRange(records);
-                this.CreatePages();
+                CreatePages();
                 CurrentPage = Pages[0];
             }
         }
@@ -99,7 +98,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         }
 
 
-       public override void OnRequestClose(bool save)
+        public override void OnRequestClose(bool save)
         {
             if (save)
             {

@@ -1,9 +1,10 @@
 ﻿using Financier.DataAccess.Data;
+using Financier.Desktop.MonoWizard.ViewModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Financier.Desktop.MonoWizard.ViewModel
+namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page1VM : WizardPageBaseVM
     {
@@ -40,7 +41,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 
         public override bool IsValid()
         {
-            return true;
+            return MonoAccount != null;
         }
     }
 }

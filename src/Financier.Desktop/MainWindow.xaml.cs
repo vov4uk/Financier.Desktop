@@ -1,5 +1,4 @@
 ﻿using System;
-using Financier.Desktop.MonoWizard.ViewModel;
 using Financier.Desktop.ViewModel;
 using Financier.Adapter;
 using System.IO;
@@ -9,6 +8,7 @@ using System.Windows.Controls.Ribbon;
 using System.Windows.Forms;
 using DataFormats = System.Windows.DataFormats;
 using Financier.Desktop.Wizards;
+using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 
 namespace Financier.Desktop
 {

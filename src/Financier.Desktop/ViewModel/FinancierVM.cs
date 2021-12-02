@@ -495,6 +495,7 @@ namespace Financier.Desktop.ViewModel
             tr.OriginalCurrencyId = vm.FromAccount.CurrencyId;
             tr.OriginalFromAmount = vm.FromAmount;
             tr.CategoryId = 0;
+            tr.Category = default;
         }
 
         private void NavigateToType(Type type)

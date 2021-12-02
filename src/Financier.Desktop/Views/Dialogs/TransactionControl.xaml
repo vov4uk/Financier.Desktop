@@ -125,6 +125,7 @@
                                              IsEditable="True"
                                              ItemsSource="{Binding Payees}"
                                              SelectedValuePath="Id"
+                                             TextSearch.TextPath="Title"
                                              SelectedValue="{Binding Transaction.PayeeId}"
                                              ItemTemplate="{StaticResource ResourceKey=IActive}"
                                              />
@@ -151,11 +152,6 @@
                                                  TextSearch.TextPath="Title"
                                                  ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"
                                                  SelectedValue="{Binding Transaction.CategoryId}">
-                            <!--<xctk:WatermarkComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <emoji:TextBlock Text="{Binding Title}" />
-                                </DataTemplate>
-                            </xctk:WatermarkComboBox.ItemTemplate>-->
                         </xctk:WatermarkComboBox>
                         <xctk:IconButton   Grid.Column="1"
                                            Command="{Binding ClearCategoryCommand}">

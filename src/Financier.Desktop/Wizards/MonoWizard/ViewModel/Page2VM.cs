@@ -1,12 +1,13 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
+using Financier.Desktop.MonoWizard.ViewModel;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Financier.Desktop.MonoWizard.ViewModel
+namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page2VM : WizardPageBaseVM
     {

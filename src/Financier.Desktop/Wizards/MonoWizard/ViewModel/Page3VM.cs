@@ -1,13 +1,13 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
+using Financier.Desktop.MonoWizard.ViewModel;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Financier.Desktop.MonoWizard.ViewModel
+namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page3VM : WizardPageBaseVM
     {
@@ -24,7 +24,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, List<Project> projects)
         {
             this.accounts = new RangeObservableCollection<Account>(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
-            this.originalAccounts = new List<Account>(accounts);
+            originalAccounts = new List<Account>(accounts);
             this.currencies = new RangeObservableCollection<Currency>(currencies);
             this.locations = new RangeObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
             this.categories = new RangeObservableCollection<Category>(categories);
@@ -122,8 +122,8 @@ namespace Financier.Desktop.MonoWizard.ViewModel
             List<FinancierTransactionVM> transToAdd = new List<FinancierTransactionVM>();
             foreach (var x in transactions)
             {
-                var locationId = locations.FirstOrDefault(l => (!string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))
-                                                            || (!string.IsNullOrEmpty(l.Address) && l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase)))?.Id ??  0;
+                var locationId = locations.FirstOrDefault(l => !string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
+                                                            || !string.IsNullOrEmpty(l.Address) && l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var categoryId = categories.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var newTr = new FinancierTransactionVM
                 {
@@ -135,7 +135,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                     ToAccountId = 0,
                     FromAccountId = 0,
                     LocationId = locationId,
-                    Note = (locationId > 0 || categoryId > 0) ? null : x.Description,
+                    Note = locationId > 0 || categoryId > 0 ? null : x.Description,
                     DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
                 };
                 transToAdd.Add(newTr);

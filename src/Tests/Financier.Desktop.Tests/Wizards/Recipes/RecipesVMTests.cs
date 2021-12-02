@@ -1,4 +1,4 @@
-﻿namespace Financier.Desktop.Tests.Wizards
+﻿namespace Financier.Desktop.Tests.Wizards.Recipes
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
