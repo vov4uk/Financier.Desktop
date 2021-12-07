@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using CsvHelper;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
-using Financier.Desktop.MonoWizard.ViewModel;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {

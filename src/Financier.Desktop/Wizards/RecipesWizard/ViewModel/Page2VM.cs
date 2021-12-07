@@ -1,6 +1,4 @@
 ﻿using Financier.DataAccess.Data;
-using Financier.Desktop.MonoWizard.ViewModel;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using Prism.Commands;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,7 +6,7 @@ using System.Linq;
 
 namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
-    public class Page2VM : WizardPageBaseVM
+    public class Page2VM : RecipesWizardPageVMBase
     {
         public override string Title => "Transactions";
 
@@ -17,20 +15,20 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         private ObservableCollection<Category> categories;
         private ObservableCollection<Project> projects;
 
-        public Page2VM(List<Category> categories, List<Project> projects)
+        public Page2VM(List<Category> categories, List<Project> projects, double totalAmount)
         {
-            this.categories = new ObservableCollection<Category>(categories);
-            this.projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            Categories = new ObservableCollection<Category>(categories);
+            Projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            TotalAmount = totalAmount;
+            financierTransactions = new();
         }
 
         private ObservableCollection<FinancierTransactionVM> financierTransactions;
         private DelegateCommand<FinancierTransactionVM> _deleteCommand;
         private DelegateCommand _addRowCommand;
         private DelegateCommand _totalCommand;
-        private double calculatedAmount;
-        private double totalAmount;
 
-        public void SetMonoTransactions(List<FinancierTransactionVM> list)
+        public void SetTransactions(List<FinancierTransactionVM> list)
         {
             FinancierTransactions = new ObservableCollection<FinancierTransactionVM>(list);
             CalculateFromAmounts();
@@ -38,33 +36,9 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
         private void CalculateFromAmounts()
         {
-            this.CalculatedAmount =
+            base.CalculatedAmount =
                 FinancierTransactions.Sum(x => x.FromAmount) / 100.0;
         }
-
-        public double TotalAmount
-        {
-            get => totalAmount;
-            set
-            {
-                totalAmount = value;
-                this.RaisePropertyChanged(nameof(this.TotalAmount));
-                this.RaisePropertyChanged(nameof(this.Diff));
-            }
-        }
-
-        public double CalculatedAmount
-        {
-            get => calculatedAmount;
-            set
-            {
-                calculatedAmount = value;
-                this.RaisePropertyChanged(nameof(this.CalculatedAmount));
-                this.RaisePropertyChanged(nameof(this.Diff));
-            }
-        }
-
-        public double Diff => TotalAmount - CalculatedAmount;
 
         public DelegateCommand<FinancierTransactionVM> DeleteCommand
         {
@@ -100,7 +74,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         public ObservableCollection<FinancierTransactionVM> FinancierTransactions
         {
             get => financierTransactions;
-            set
+            private set
             {
                 financierTransactions = value;
                 RaisePropertyChanged(nameof(FinancierTransactions));
@@ -110,7 +84,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         public ObservableCollection<Category> Categories
         {
             get => categories;
-            set
+            private set
             {
                 categories = value;
                 RaisePropertyChanged(nameof(Categories));
@@ -120,7 +94,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         public ObservableCollection<Project> Projects
         {
             get => projects;
-            set
+            private set
             {
                 projects = value;
                 RaisePropertyChanged(nameof(Projects));

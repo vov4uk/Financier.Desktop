@@ -1,7 +1,5 @@
 ﻿using Financier.DataAccess.Data;
-using Financier.Desktop.MonoWizard.ViewModel;
 using Financier.Desktop.ViewModel.Dialog;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,7 +34,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             if (old is Page1VM page1 && newValue is Page2VM)
             {
                 page1.CalculateCurrentAmount();
-                ((Page2VM)newValue).SetMonoTransactions(page1.Amounts);
+                ((Page2VM)newValue).SetTransactions(page1.Amounts);
                 Logger.Info($"MonoTransactions count -> {page1.Amounts.Count}");
             }
         }
@@ -45,8 +43,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             _pages = new List<WizardPageBaseVM>()
             {
-                new Page1VM(){ TotalAmount = this.TotalAmount},
-                new Page2VM(categories, projects) { TotalAmount = this.TotalAmount},
+                new Page1VM(this.TotalAmount),
+                new Page2VM(categories, projects, this.TotalAmount),
             }.AsReadOnly();
 
             CurrentPage = Pages[0];

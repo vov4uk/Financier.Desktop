@@ -1,5 +1,4 @@
 ﻿using Financier.DataAccess.Data;
-using Financier.Desktop.MonoWizard.ViewModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

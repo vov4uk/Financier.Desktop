@@ -1,6 +1,6 @@
 ﻿using Prism.Mvvm;
 
-namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
+namespace Financier.Desktop.Wizards
 {
     public class FinancierTransactionVM : BindableBase
     {
@@ -11,7 +11,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private string note;
         private int order;
 
-        public int Order {
+        public int Order
+        {
             get => order;
             set
             {

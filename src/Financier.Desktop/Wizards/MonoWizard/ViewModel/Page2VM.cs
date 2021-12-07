@@ -1,6 +1,5 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
-using Financier.Desktop.MonoWizard.ViewModel;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;

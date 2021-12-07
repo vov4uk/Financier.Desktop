@@ -6,6 +6,7 @@
     using System.Linq;
     using Financier.DataAccess.Data;
     using Financier.DataAccess.Monobank;
+    using Financier.Desktop.Wizards;
     using Financier.Desktop.Wizards.MonoWizard.ViewModel;
     using Financier.Tests.Common;
     using Newtonsoft.Json;
