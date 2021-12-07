@@ -23,12 +23,12 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
         public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, List<Project> projects)
         {
-            this.accounts = new RangeObservableCollection<Account>(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            this.accounts = new ObservableCollection<Account>(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
             originalAccounts = new List<Account>(accounts);
-            this.currencies = new RangeObservableCollection<Currency>(currencies);
-            this.locations = new RangeObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
-            this.categories = new RangeObservableCollection<Category>(categories);
-            this.projects = new RangeObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            this.currencies = new ObservableCollection<Currency>(currencies);
+            this.locations = new ObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            this.categories = new ObservableCollection<Category>(categories);
+            this.projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
             this.categories.Insert(0, Category.None);
         }
 
@@ -60,7 +60,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         public ObservableCollection<FinancierTransactionVM> FinancierTransactions
         {
             get => financierTransactions;
-            set
+            private set
             {
                 financierTransactions = value;
                 RaisePropertyChanged(nameof(FinancierTransactions));
@@ -141,7 +141,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 transToAdd.Add(newTr);
             }
 
-            FinancierTransactions = new RangeObservableCollection<FinancierTransactionVM>(transToAdd);
+            FinancierTransactions = new ObservableCollection<FinancierTransactionVM>(transToAdd);
         }
 
         public override bool IsValid()

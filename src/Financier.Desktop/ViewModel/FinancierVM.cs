@@ -718,6 +718,7 @@ namespace Financier.Desktop.ViewModel
                 selectedValue.Title = updatedItem.Title;
                 selectedValue.Name = updatedItem.Title;
                 selectedValue.Id = updatedItem.Id;
+                selectedValue.Count = 0;
 
                 await InsertOrUpdate(new[] { selectedValue });
                 await RefreshEntities<Location>();
