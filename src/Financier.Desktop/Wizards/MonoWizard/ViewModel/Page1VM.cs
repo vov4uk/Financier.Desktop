@@ -15,13 +15,13 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
         public Page1VM(List<Account> records)
         {
-            _accounts = new ObservableCollection<Account>(records);
-            _monoAccount = _accounts?.FirstOrDefault(x => x.IsActive && x.Title.Contains("mono", System.StringComparison.OrdinalIgnoreCase));
+            Accounts = new ObservableCollection<Account>(records);
+            MonoAccount = Accounts.FirstOrDefault(x => x.IsActive && x.Title.Contains("mono", System.StringComparison.OrdinalIgnoreCase));
         }
         public ObservableCollection<Account> Accounts
         {
             get => _accounts;
-            set
+            private set
             {
                 _accounts = value;
                 RaisePropertyChanged(nameof(Accounts));

@@ -20,7 +20,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
         public Page2VM(List<MonoTransaction> records)
         {
-            allTransactions = new ObservableCollection<MonoTransaction>(records);
+            AllTransactions = new ObservableCollection<MonoTransaction>(records);
         }
 
         public DelegateCommand<MonoTransaction> DeleteCommand
@@ -39,7 +39,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 _monoAccount = value;
                 RaisePropertyChanged(nameof(MonoAccount));
                 double balance = _monoAccount.TotalAmount / 100.0;
-                StartTransaction = allTransactions?.FirstOrDefault(x => Math.Abs(x.Balance - balance) < 0.01);
+                StartTransaction = allTransactions.FirstOrDefault(x => Math.Abs(x.Balance - balance) < 0.01);
             }
         }
 
@@ -58,7 +58,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         public ObservableCollection<MonoTransaction> AllTransactions
         {
             get => allTransactions;
-            set
+            private set
             {
                 allTransactions = value;
                 RaisePropertyChanged(nameof(AllTransactions));

@@ -23,13 +23,13 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
         public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, List<Project> projects)
         {
-            this.accounts = new ObservableCollection<Account>(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
+            Accounts = new ObservableCollection<Account>(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
             originalAccounts = new List<Account>(accounts);
-            this.currencies = new ObservableCollection<Currency>(currencies);
-            this.locations = new ObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
-            this.categories = new ObservableCollection<Category>(categories);
-            this.projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
-            this.categories.Insert(0, Category.None);
+            Currencies = new ObservableCollection<Currency>(currencies);
+            Locations = new ObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            Categories = new ObservableCollection<Category>(categories);
+            Projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            Categories.Insert(0, Category.None);
         }
 
         public DelegateCommand<FinancierTransactionVM> DeleteCommand
@@ -49,7 +49,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 RaisePropertyChanged(nameof(MonoAccount));
                 if (_monoAccount != null)
                 {
-                    Accounts = new RangeObservableCollection<Account>(
+                    Accounts = new ObservableCollection<Account>(
                         originalAccounts.Where(x => x.Id != _monoAccount.Id).OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
                 }
             }
@@ -70,7 +70,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         public ObservableCollection<Account> Accounts
         {
             get => accounts;
-            set
+            private set
             {
                 accounts = value;
                 RaisePropertyChanged(nameof(Accounts));
@@ -80,7 +80,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         public ObservableCollection<Currency> Currencies
         {
             get => currencies;
-            set
+            private set
             {
                 currencies = value;
                 RaisePropertyChanged(nameof(Currencies));
@@ -90,7 +90,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         public ObservableCollection<Category> Categories
         {
             get => categories;
-            set
+            private set
             {
                 categories = value;
                 RaisePropertyChanged(nameof(Categories));
@@ -100,7 +100,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         public ObservableCollection<Location> Locations
         {
             get => locations;
-            set
+            private set
             {
                 locations = value;
                 RaisePropertyChanged(nameof(Locations));
@@ -110,7 +110,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         public ObservableCollection<Project> Projects
         {
             get => projects;
-            set
+            private set
             {
                 projects = value;
                 RaisePropertyChanged(nameof(Projects));

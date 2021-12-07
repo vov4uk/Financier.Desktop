@@ -13,7 +13,7 @@ namespace Financier.Desktop.Wizards
         private DelegateCommand _moveNextCommand;
         private DelegateCommand _movePreviousCommand;
 
-        protected  WizardPageBaseVM _currentPage;
+        protected WizardPageBaseVM _currentPage;
         protected ReadOnlyCollection<WizardPageBaseVM> _pages;
 
         public event EventHandler<bool> RequestClose;

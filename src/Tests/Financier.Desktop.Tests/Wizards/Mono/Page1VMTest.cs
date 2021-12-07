@@ -20,6 +20,7 @@
             Assert.Equal(monoAcc, vm.MonoAccount);
             Assert.Equal("Please select account", vm.Title);
             Assert.True(vm.IsValid());
+            Assert.Equal(accounts.Count, vm.Accounts.Count);
         }
 
         [Theory]
@@ -45,6 +46,12 @@
             var vm = new Page1VM(accounts);
 
             Assert.Equal(default, vm.MonoAccount);
+        }
+
+        [Fact]
+        public void Constructor_NullAccounts_ThrowsException()
+        {
+            Assert.Throws<ArgumentNullException>(() => new Page1VM(null));
         }
     }
 }
