@@ -113,7 +113,7 @@ namespace Financier.Desktop.ViewModel
 
         public async Task ImportMonoTransactions(List<Transaction> transactions)
         {
-            await db.ImportMonoTransactions(transactions);
+            await db.AddTransactionsAsync(transactions);
 
             foreach (var accId in transactions
                 .Where(x => x.ToAccountId > 0)
@@ -136,7 +136,7 @@ namespace Financier.Desktop.ViewModel
             var entities = EntityReader.ParseBackupFile(backupPath).ToList();
 
             db = new FinancierDatabase();
-            await db.Import(entities);
+            await db.ImportEntities(entities);
 
             using (var uow = db.CreateUnitOfWork())
             {
@@ -581,7 +581,7 @@ namespace Financier.Desktop.ViewModel
                             tr.Parent = transaction;
                             tr.FromAccountId = transaction.FromAccountId;
                             tr.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
-                            tr.OriginalFromAmount = item.OriginalFromAmount;
+                            tr.OriginalFromAmount = item.OriginalFromAmount ?? 0;
                             tr.DateTime = transaction.DateTime;
                             tr.Category = default;
                             transactions.Add(tr);
@@ -604,6 +604,7 @@ namespace Financier.Desktop.ViewModel
                 catch (Exception ex)
                 {
                     Logger.Error(ex);
+                    throw;
                 }
 
                 await RefreshBlotterTransactions();

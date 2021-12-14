@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.Desktop.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.Tests.Common", "src\Tests\Financier.Tests.Common\Financier.Tests.Common.csproj", "{4E5E902A-1023-4F77-9555-C9D5724060F9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.DataAccess.Tests", "src\Tests\Financier.DataAccess.Tests\Financier.DataAccess.Tests.csproj", "{C9388995-AFA0-42F3-989A-D066B8351074}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{4E5E902A-1023-4F77-9555-C9D5724060F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E5E902A-1023-4F77-9555-C9D5724060F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E5E902A-1023-4F77-9555-C9D5724060F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9388995-AFA0-42F3-989A-D066B8351074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9388995-AFA0-42F3-989A-D066B8351074}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9388995-AFA0-42F3-989A-D066B8351074}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9388995-AFA0-42F3-989A-D066B8351074}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{5B6482FC-512D-4C2F-A758-AD576A20000E} = {A3A6A897-B8F4-4D15-94D1-BA448C6E8905}
 		{AE153038-B594-4ED3-B752-F0E4F9E14144} = {A3A6A897-B8F4-4D15-94D1-BA448C6E8905}
 		{4E5E902A-1023-4F77-9555-C9D5724060F9} = {A3A6A897-B8F4-4D15-94D1-BA448C6E8905}
+		{C9388995-AFA0-42F3-989A-D066B8351074} = {A3A6A897-B8F4-4D15-94D1-BA448C6E8905}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B4AB9519-B4A6-4609-A991-729164B9579C}
