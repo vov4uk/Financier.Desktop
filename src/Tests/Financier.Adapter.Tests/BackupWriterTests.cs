@@ -12,12 +12,12 @@ namespace Financier.Adapter.Tests
         [AutoMoqData]
         public void GenerateBackup_ArchiveTransactions_FileExist(string fileName, BackupVersion version, List<Transaction> transactions)
         {
-            EntityReader.EntityColumnsOrder.Clear();
-            EntityReader.EntityColumnsOrder.Add("transactions", PredefinedData.TransactionsColumnsOrder);
+            Dictionary<string, List<string>> entityColumnsOrder = new Dictionary<string, List<string>>();
+            entityColumnsOrder.Add("transactions", PredefinedData.TransactionsColumnsOrder);
 
             string path = fileName + ".backup";
 
-            BackupWriter writer = new BackupWriter(path, version);
+            BackupWriter writer = new BackupWriter(path, version, entityColumnsOrder);
 
             writer.GenerateBackup(new List<Entity>(transactions));
 

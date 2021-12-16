@@ -10,7 +10,7 @@
         [Fact]
         public void Constructor_NoParameters_PagesCreated()
         {
-            var vm = new FinancierVM();
+            var vm = new FinancierVM(null);
 
             Assert.NotNull(vm.Blotter);
             Assert.NotNull(vm.Locations);
@@ -22,7 +22,7 @@
         [Fact]
         public void MenuNavigateCommand_ChangeCurrentPage_PropertiesUpdated()
         {
-            var vm = new FinancierVM();
+            var vm = new FinancierVM(null);
 
             vm.MenuNavigateCommand.Execute(typeof(BlotterTransactions));
             Assert.True(vm.IsTransactionPageSelected);

@@ -24,6 +24,13 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private DelegateCommand _openRecipesDialogCommand;
 
+        private readonly IDialogWrapper dialogWrapper;
+
+        public TransactionDialogVM(IDialogWrapper dialogWrapper)
+        {
+            this.dialogWrapper = dialogWrapper;
+        }
+
         public ObservableCollection<Account> Accounts { get; set; }
 
         public ObservableCollection<Currency> Currencies { get; set; }
@@ -113,7 +120,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
             copy.Transaction.ParentTransactionUnSplitAmount = isNewItem ? Transaction.UnsplitAmount : Transaction.UnsplitAmount - Math.Abs(dto.FromAmount);
 
-            var result = DialogHelper.ShowDialog<SubTransactionControl>(copy, 340, 340, "Sub Transaction");
+            var result = dialogWrapper.ShowDialog<SubTransactionControl>(copy, 340, 340, "Sub Transaction");
 
             if (result is SubTransactionDailogVM)
             {
@@ -135,7 +142,7 @@ namespace Financier.Desktop.ViewModel.Dialog
                 Categories.Where(x => x.Id > 0).ToList(),
                 Projects.ToList());
 
-            var save = DialogHelper.ShowWizard(viewModel);
+            var save = dialogWrapper.ShowWizard(viewModel);
 
             if (save)
             {

@@ -1,5 +1,6 @@
 ﻿namespace Financier.Adapter.Tests
 {
+    using System.Collections.Generic;
     using Financier.Tests.Common;
     using Xunit;
 
@@ -34,10 +35,10 @@ original_from_amount:0
 $$
 ";
 
-            EntityReader.EntityColumnsOrder.Clear();
-            EntityReader.EntityColumnsOrder.Add("transactions", PredefinedData.TransactionsColumnsOrder);
+            Dictionary<string, List<string>> entityColumnsOrder = new Dictionary<string, List<string>>();
+            entityColumnsOrder.Add("transactions", PredefinedData.TransactionsColumnsOrder);
 
-            var actualString = PredefinedData.Transaction.ToBackupLines();
+            var actualString = PredefinedData.Transaction.ToBackupLines(entityColumnsOrder);
 
             Assert.Equal(expectedString, actualString);
         }

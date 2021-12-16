@@ -6,10 +6,22 @@ using System.Windows.Forms;
 
 namespace Financier.Desktop.Helpers
 {
-    public static class DialogHelper
+    public interface IDialogWrapper
+    {
+        object ShowDialog<T>(DialogBaseVM context, double height, double width, string title = null)
+            where T : System.Windows.Controls.UserControl, new();
+
+        string OpenFileDialog(string fileExtention);
+
+        string SaveFileDialog(string fileExtention, string defaultPath = "");
+
+        bool ShowWizard(WizardBaseVM context);
+    }
+
+    public class DialogHelper : IDialogWrapper
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        public static object ShowDialog<T>(DialogBaseVM context, double height, double width, string title = null)
+        public object ShowDialog<T>(DialogBaseVM context, double height, double width, string title = null)
             where T : System.Windows.Controls.UserControl, new()
         {
             object result = null;
@@ -37,7 +49,7 @@ namespace Financier.Desktop.Helpers
             return result;
         }
 
-        public static bool ShowWizard(WizardBaseVM context)
+        public bool ShowWizard(WizardBaseVM context)
         {
             bool result = false;
             WizardWindow dialog = new WizardWindow();
@@ -53,7 +65,7 @@ namespace Financier.Desktop.Helpers
             return result;
         }
 
-        public static string OpenFileDialog(string fileExtention)
+        public string OpenFileDialog(string fileExtention)
         {
             using OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -67,7 +79,7 @@ namespace Financier.Desktop.Helpers
             return string.Empty;
         }
 
-        public static string SaveFileDialog(string fileExtention, string defaultPath = "")
+        public string SaveFileDialog(string fileExtention, string defaultPath = "")
         {
             using SaveFileDialog dialog = new SaveFileDialog
             {

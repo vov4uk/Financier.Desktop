@@ -31,6 +31,8 @@ namespace Financier.Desktop.ViewModel
         private DelegateCommand _monoCommand;
         private DelegateCommand _openBackupCommand;
         private DelegateCommand _saveBackupCommand;
+        private BackupVersion _backupVersion;
+        private Dictionary<string, List<string>> _entityColumnsOrder;
 
         private ReadOnlyCollection<BindableBase> _pages;
         private AccountsVM accountsVm;
@@ -44,8 +46,11 @@ namespace Financier.Desktop.ViewModel
         private ProjectsVM projects;
         private PayeesVM payees;
 
-        public FinancierVM()
+        private readonly IDialogWrapper dialogWrapper;
+
+        public FinancierVM(IDialogWrapper dialogWrapper)
         {
+            this.dialogWrapper = dialogWrapper;
             CreatePages();
         }
 
@@ -168,7 +173,9 @@ namespace Financier.Desktop.ViewModel
             var sb = new StringBuilder();
 
             OpenBackupPath = backupPath;
-            var entities = EntityReader.ParseBackupFile(backupPath).ToList();
+            var (entities, backupVersion, columnsOrder) = EntityReader.ParseBackupFile(backupPath);
+            _backupVersion = backupVersion;
+            _entityColumnsOrder = columnsOrder;
 
             db?.Dispose();
 
@@ -247,7 +254,7 @@ namespace Financier.Desktop.ViewModel
                 await AddBackupEntities<Category>(uow, itemsToBackup, x => x.Id > 0);
             }
 
-            using var bw = new BackupWriter(backupPath, EntityReader.BackupVersion);
+            using var bw = new BackupWriter(backupPath, _backupVersion, _entityColumnsOrder);
             bw.GenerateBackup(itemsToBackup);
         }
 
@@ -446,7 +453,7 @@ namespace Financier.Desktop.ViewModel
                 var viewModel = new MonoWizardVM(accounts, currencies, locations, categories, projects, fileName);
                 await viewModel.LoadTransactions();
 
-                var args = DialogHelper.ShowWizard(viewModel);
+                var args = dialogWrapper.ShowWizard(viewModel);
 
                 if (args)
                 {
@@ -469,7 +476,7 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OpenTransactionDialog(int id)
         {
-            TransactionDialogVM dialogVm = new TransactionDialogVM();
+            TransactionDialogVM dialogVm = new TransactionDialogVM(dialogWrapper);
             Transaction transaction = await db.GetOrCreateTransaction(id);
             IEnumerable<TransactionDTO> subTransactions = (await db.GetSubTransactions(id)).Select(x => new TransactionDTO(x));
             var transactionDto = new TransactionDTO(transaction);
@@ -487,7 +494,7 @@ namespace Financier.Desktop.ViewModel
                 dialogVm.Projects = await uow.GetAllOrderedByDefaultAsync<Project>();
             }
 
-            var result = DialogHelper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
+            var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
 
             if (result is TransactionDialogVM)
             {
@@ -526,7 +533,7 @@ namespace Financier.Desktop.ViewModel
             var uow = db.CreateUnitOfWork();
             dialogVm.Accounts = await uow.GetAllAsync<Account>(x => x.Currency);
 
-            var result = DialogHelper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
+            var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
 
             if (result is TransferDialogVM)
             {
@@ -556,7 +563,7 @@ namespace Financier.Desktop.ViewModel
             Location selectedValue = await db.GetOrCreate<Location>(id);
             LocationVM locationVm = new LocationVM(selectedValue);
 
-            var result = DialogHelper.ShowDialog<LocationControl>(locationVm, 240, 300, nameof(Location));
+            var result = dialogWrapper.ShowDialog<LocationControl>(locationVm, 240, 300, nameof(Location));
 
             if (result is LocationVM)
             {
@@ -582,7 +589,7 @@ namespace Financier.Desktop.ViewModel
             T selectedEntity = await db.GetOrCreate<T>(e); ;
             EntityWithTitleVM context = new EntityWithTitleVM(selectedEntity);
 
-            var result = DialogHelper.ShowDialog<EntityWithTitleControl>(context, 180, 300, typeof(T).Name);
+            var result = dialogWrapper.ShowDialog<EntityWithTitleControl>(context, 180, 300, typeof(T).Name);
 
             if (result is EntityWithTitleVM)
             {
@@ -598,7 +605,7 @@ namespace Financier.Desktop.ViewModel
 
         private async void OpenBackup_OnClick()
         {
-            var backupPath = DialogHelper.OpenFileDialog(Backup);
+            var backupPath = dialogWrapper.OpenFileDialog(Backup);
             if (!string.IsNullOrEmpty(backupPath))
             {
                 Logger.Info($"Opened backup : {backupPath}");
@@ -608,7 +615,7 @@ namespace Financier.Desktop.ViewModel
 
         private async void SaveBackup_Click()
         {
-            var backupPath = DialogHelper.SaveFileDialog(Backup, Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName()));
+            var backupPath = dialogWrapper.SaveFileDialog(Backup, Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName()));
             if (!string.IsNullOrEmpty(backupPath))
             {
                 await SaveBackup(backupPath);

@@ -11,11 +11,11 @@ namespace Financier.Adapter
 {
     public static class EntityReader
     {
-        public static Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
-        public static BackupVersion BackupVersion { get; private set; } = new BackupVersion();
-
-        public static IEnumerable<Entity> ParseBackupFile(string fileName)
+        public static (IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder) ParseBackupFile(string fileName)
         {
+            Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
+            BackupVersion BackupVersion = new BackupVersion();
+
             using var reader = new BackupReader(fileName);
             List<Entity> entities = new List<Entity>();
 
@@ -62,7 +62,7 @@ namespace Financier.Adapter
                 BackupVersion = reader.BackupVersion;
             }
 
-            return entities;
+            return (entities, reader.BackupVersion, EntityColumnsOrder);
         }
 
         private static IReadOnlyDictionary<string, EntityInfo> GetEntityTypes()

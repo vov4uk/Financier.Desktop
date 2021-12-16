@@ -11,12 +11,14 @@ namespace Financier.Adapter
     {
         private readonly TextWriter _writer;
         private readonly string _fileName;
+        private readonly Dictionary<string, List<string>> _entityColumnsOrder;
 
         public BackupVersion BackupVersion { get; }
 
-        public BackupWriter(string fileName, BackupVersion backupVersion)
+        public BackupWriter(string fileName, BackupVersion backupVersion, Dictionary<string, List<string>> entityColumnsOrder)
         {
             BackupVersion = backupVersion;
+            _entityColumnsOrder = entityColumnsOrder;
             _fileName = fileName;
             _writer = new StreamWriter(Path.GetFileNameWithoutExtension(_fileName));
         }
@@ -41,7 +43,7 @@ namespace Financier.Adapter
             bw.WriteLine($"{Backup.PACKAGE}:{BackupVersion.Package}");
             bw.WriteLine($"{Backup.VERSION_CODE}:{BackupVersion.VersionCode}");
             bw.WriteLine($"{Backup.VERSION_NAME}:{BackupVersion.Version}");
-            bw.WriteLine($"{Backup.DATABASE_VERSION}:{BackupVersion.DatabaseVersion}");
+            bw.WriteLine($"{Backup.DATABASE_VERSION}:{BackupVersion.DatabaseVersion++}");
             bw.WriteLine(Backup.START);
         }
 
@@ -74,7 +76,7 @@ namespace Financier.Adapter
             {
                 foreach (var item in ent)
                 {
-                    bw.Write(item.ToBackupLines());
+                    bw.Write(item.ToBackupLines(_entityColumnsOrder));
                 }
             }
         }
