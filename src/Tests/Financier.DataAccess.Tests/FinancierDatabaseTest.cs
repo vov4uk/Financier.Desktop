@@ -1,6 +1,7 @@
 ﻿namespace Financier.DataAccess.Tests
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Financier.DataAccess;
     using Financier.DataAccess.Data;
@@ -37,7 +38,7 @@
         }
 
         [Fact]
-        public async Task ImportMonoTransactions_TtransacrionsInvalid_CatchException()
+        public async Task AddTransactionsAsync_TtransacrionsInvalid_CatchException()
         {
             var db = new FinancierDatabase();
             await db.Seed();
@@ -57,11 +58,10 @@
         }
 
         [Fact]
-        public async Task ImportMonoTransactions_TtransacrionsValid_TransactionsAdded()
+        public async Task AddTransactionsAsync_TtransacrionsValid_TransactionsAdded()
         {
             var db = new FinancierDatabase();
             await db.Seed();
-
             var initData = await this.PredefineData(db);
 
             List<Transaction> transactions = new List<Transaction>()
@@ -160,11 +160,14 @@
                 var allTr = await balanceRepo.GetAllAsync();
                 Assert.Equal(transactions.Count, allTr.Count);
                 Assert.Equal(-600, allTr[2].Balance);
+
+                var acc = await uow.GetRepository<Account>().FindByAsync(x => x.Id == initData.account.Id);
+                Assert.Equal(-600, acc.TotalAmount);
             }
         }
 
         [Fact]
-        public async Task Import_DieferentEntityTypes_AllAddedToDB()
+        public async Task ImportEntities_DieferentEntityTypes_AllAddedToDB()
         {
             var db = new FinancierDatabase();
 
@@ -222,6 +225,207 @@
                 Assert.Single(await uow.GetRepository<Currency>().GetAllAsync());
                 Assert.Equal(3, (await uow.GetRepository<Category>().GetAllAsync()).Count);
             }
+        }
+
+        [Fact]
+        public async Task GetOrCreate_NewItem_CreateItem()
+        {
+            var db = new FinancierDatabase();
+            await db.Seed();
+            var account = await db.GetOrCreate<Account>(0);
+
+            Assert.Equal(0, account.Id);
+        }
+
+        [Fact]
+        public async Task GetOrCreate_ItemNotExist_ReturnNull()
+        {
+            var db = new FinancierDatabase();
+            await db.Seed();
+            var account = await db.GetOrCreate<Account>(1);
+
+            Assert.Null(account);
+        }
+
+        [Fact]
+        public async Task GetOrCreate_ItemExist_GetItem()
+        {
+            var db = new FinancierDatabase();
+            await db.Seed();
+            await this.PredefineData(db);
+
+            var account = await db.GetOrCreate<Account>(1);
+            var currency = await db.GetOrCreate<Currency>(1);
+            var category = await db.GetOrCreate<Category>(1);
+
+            Assert.Equal(1, account.Id);
+            Assert.Equal(1, currency.Id);
+            Assert.Equal(1, category.Id);
+        }
+
+        [Fact]
+        public async Task GetSubTransactions_IdIs0_EmptyCollection()
+        {
+            var db = new FinancierDatabase();
+            await db.Seed();
+            var transactions = await db.GetSubTransactions(0);
+
+            Assert.Empty(transactions);
+        }
+
+        [Fact]
+        public async Task GetSubTransactions_ItemNotExist_EmptyCollection()
+        {
+            var db = new FinancierDatabase();
+            await db.Seed();
+            var transactions = await db.GetSubTransactions(1);
+
+            Assert.Empty(transactions);
+        }
+
+        [Fact]
+        public async Task GetSubTransactions_ItemExist_GetItem()
+        {
+            var db = new FinancierDatabase();
+            List<Entity> entities = new List<Entity>()
+            {
+                new Currency() { Id = 1, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." },
+                new Category() { Id = 1, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = "Expanse" },
+                new Account() { Id = 1, Title = "Default account", CurrencyId = 1, Type = "CASH", IsActive = true },
+                new Transaction()
+                {
+                    Id = 1,
+                    FromAmount = -100,
+                    CategoryId = -1,
+                    OriginalCurrencyId = 1,
+                    FromAccountId = 1,
+                    OriginalFromAmount = 0,
+                    DateTime = 1639121044000,
+                },
+                new Transaction()
+                {
+                    Id = 2,
+                    ParentId = 1,
+                    FromAmount = -50,
+                    CategoryId = 0,
+                    OriginalCurrencyId = 1,
+                    FromAccountId = 1,
+                    OriginalFromAmount = 0,
+                    DateTime = 1639121044000,
+                },
+                new Transaction()
+                {
+                    Id = 3,
+                    ParentId = 1,
+                    FromAmount = -50,
+                    CategoryId = 1,
+                    OriginalCurrencyId = 1,
+                    FromAccountId = 1,
+                    OriginalFromAmount = 0,
+                    DateTime = 1639121044000,
+                },
+            };
+            await db.ImportEntities(entities);
+
+            var transactions = (await db.GetSubTransactions(1)).ToArray();
+
+            Assert.Equal(2, transactions.Count());
+            Assert.NotNull(transactions[0].Category);
+            Assert.NotNull(transactions[0].OriginalCurrency);
+            Assert.Equal(2, transactions[0].Id);
+        }
+
+        [Fact]
+        public async Task GetOrCreateTransaction_IdIs0_CreateItem()
+        {
+            var db = new FinancierDatabase();
+            await db.Seed();
+            var transaction = await db.GetOrCreateTransaction(0);
+
+            Assert.Equal(0, transaction.Id);
+            Assert.Equal(0, transaction.CategoryId);
+            Assert.True(transaction.DateTime > 0);
+        }
+
+        [Fact]
+        public async Task GetOrCreateTransaction_ItemNotExist_ReturnNull()
+        {
+            var db = new FinancierDatabase();
+            await db.Seed();
+            var transaction = await db.GetOrCreateTransaction(1);
+
+            Assert.Null(transaction);
+        }
+
+        [Fact]
+        public async Task GetOrCreateTransaction_ItemExist_GetItem()
+        {
+            var db = new FinancierDatabase();
+            List<Entity> entities = new List<Entity>()
+            {
+                new Currency() { Id = 1, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." },
+                new Category() { Id = 1, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = "Expanse" },
+                new Account() { Id = 1, Title = "Default account", CurrencyId = 1, Type = "CASH", IsActive = true },
+                new Transaction()
+                {
+                    Id = 1,
+                    FromAmount = -100,
+                    CategoryId = 1,
+                    OriginalCurrencyId = 1,
+                    FromAccountId = 1,
+                    OriginalFromAmount = 0,
+                    DateTime = 1639121044000,
+                },
+            };
+            await db.ImportEntities(entities);
+
+            var transaction = await db.GetOrCreateTransaction(1);
+
+            Assert.NotNull(transaction.Category);
+            Assert.NotNull(transaction.OriginalCurrency);
+            Assert.Equal(1, transaction.Id);
+        }
+
+        [Fact]
+        public async Task InsertOrUpdate_IdIs0_CreateItem()
+        {
+            var db = new FinancierDatabase();
+            await db.Seed();
+            await db.InsertOrUpdate(new[] { new Currency() { Id = 0, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." } });
+
+            using (var uow = db.CreateUnitOfWork())
+            {
+                var trRepo = uow.GetRepository<Currency>();
+                var dollar = await trRepo.FindByAsync(x => x.Title == "Dollar");
+                Assert.Equal("USD", dollar.Name);
+            }
+        }
+
+        [Fact]
+        public async Task InsertOrUpdate_ItemExist_UpdateItem()
+        {
+            var db = new FinancierDatabase();
+            await db.Seed();
+            var initData = await this.PredefineData(db);
+
+            initData.currency.Name = "UAH";
+            await db.InsertOrUpdate(new[] { initData.currency });
+
+            using (var uow = db.CreateUnitOfWork())
+            {
+                var trRepo = uow.GetRepository<Currency>();
+                var dollar = await trRepo.FindByAsync(x => x.Title == "Dollar");
+                Assert.Equal("UAH", dollar.Name);
+            }
+        }
+
+        [Fact]
+        public void CreateUnitOfWork_Execute_UOWCreated()
+        {
+            var db = new FinancierDatabase();
+            var uow = db.CreateUnitOfWork();
+
+            Assert.True(uow is UnitOfWork<FinancierDataContext>);
         }
 
         private async Task<(Account account, Currency currency, Category category)> PredefineData(FinancierDatabase db)

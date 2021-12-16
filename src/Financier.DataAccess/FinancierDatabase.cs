@@ -174,7 +174,7 @@ namespace Financier.DataAccess
 
         public async Task<Transaction> GetOrCreateTransaction(int id)
         {
-            if (id > 0)
+            if (id != 0)
             {
                 using var uow = CreateUnitOfWork();
                 return await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == id, o => o.OriginalCurrency, c => c.Category);
@@ -185,10 +185,10 @@ namespace Financier.DataAccess
 
         public async Task<IEnumerable<Transaction>> GetSubTransactions(int id)
         {
-            if (id > 0)
+            if (id != 0)
             {
                 using var uow = CreateUnitOfWork();
-                return await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == id, o => o.OriginalCurrency, c => c.Category);
+                return (await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == id, o => o.OriginalCurrency, c => c.Category)) ?? Array.Empty<Transaction>().ToList();
             }
 
             return Array.Empty<Transaction>();
