@@ -1,6 +1,4 @@
-﻿using Financier.DataAccess.Data;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace Financier.Desktop.Views
 {

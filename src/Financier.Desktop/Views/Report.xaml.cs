@@ -13,11 +13,11 @@ namespace Financier.Desktop.Views
         public Report()
         {
             InitializeComponent();
-            Loaded += Report_Loaded;
-            SizeChanged += Report_Loaded;
+            Loaded += RefreshReport;
+            SizeChanged += RefreshReport;
         }
 
-        private void Report_Loaded(object sender, RoutedEventArgs e)
+        private void RefreshReport(object sender, RoutedEventArgs e)
         {
             ((ReportVM)DataContext).RefreshReport(PlotPresenter.RenderSize.Width);
         }

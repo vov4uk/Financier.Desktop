@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Windows;
 using Financier.DataAccess.Data;
+using Financier.Desktop.Helpers;
 using Financier.Desktop.Views;
 using Financier.Desktop.Wizards;
 using Financier.Desktop.Wizards.RecipesWizard.ViewModel;
@@ -89,74 +88,65 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        private void CopySubTransaction(TransactionDTO tr, TransactionDTO modifiedCopy)
+        private void CopySubTransaction(TransactionDTO original, TransactionDTO modifiedCopy)
         {
-            tr.CategoryId = modifiedCopy.CategoryId;
-            tr.Category = Categories.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
-            tr.FromAmount = modifiedCopy.RealFromAmount;
-            tr.IsAmountNegative = modifiedCopy.IsAmountNegative;
-            tr.Note = modifiedCopy.Note;
-            tr.ProjectId = modifiedCopy.ProjectId;
+            original.CategoryId = modifiedCopy.CategoryId;
+            original.Category = Categories.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
+            original.FromAmount = modifiedCopy.RealFromAmount;
+            original.IsAmountNegative = modifiedCopy.IsAmountNegative;
+            original.Note = modifiedCopy.Note;
+            original.ProjectId = modifiedCopy.ProjectId;
         }
 
-        private void ShowSubTransactionDialog(TransactionDTO tr, bool isNewItem)
+        private void ShowSubTransactionDialog(TransactionDTO dto, bool isNewItem)
         {
             var copy = new SubTransactionDailogVM() { Transaction = new TransactionDTO() };
-            CopySubTransaction(copy.Transaction, tr);
+            CopySubTransaction(copy.Transaction, dto);
 
-            copy.Transaction.IsAmountNegative = tr.FromAmount <= 0;
-            copy.Transaction.FromAmount = Math.Abs(tr.FromAmount);
+            copy.Transaction.IsAmountNegative = dto.FromAmount <= 0;
+            copy.Transaction.FromAmount = Math.Abs(dto.FromAmount);
             copy.Categories = Categories;
             copy.Projects = Projects;
             copy.Transaction.IsSubTransaction = true;
+
             Transaction.RecalculateUnSplitAmount();
-            copy.Transaction.ParentTransactionUnSplitAmount = isNewItem ? Transaction.UnsplitAmount : Transaction.UnsplitAmount - Math.Abs(tr.FromAmount);
-            var dialog = new Window
-            {
-                ResizeMode = ResizeMode.NoResize,
-                Height = 340,
-                Width = 340,
-                ShowInTaskbar = Debugger.IsAttached
-            };
 
-            copy.RequestCancel += (_, _) => { dialog.Close(); };
-            copy.RequestSave += (sender, _) =>
-            {
-                dialog.Close();
-                var modifiedCopy = sender as SubTransactionDailogVM;
-                CopySubTransaction(tr, modifiedCopy.Transaction);
+            copy.Transaction.ParentTransactionUnSplitAmount = isNewItem ? Transaction.UnsplitAmount : Transaction.UnsplitAmount - Math.Abs(dto.FromAmount);
 
-                if (isNewItem) Transaction.SubTransactions.Add(tr);
+            var result = DialogHelper.ShowDialog<SubTransactionControl>(copy, 340, 340, "Sub Transaction");
+
+            if (result is SubTransactionDailogVM)
+            {
+                var modifiedCopy = result as SubTransactionDailogVM;
+                CopySubTransaction(dto, modifiedCopy.Transaction);
+
+                if (isNewItem) Transaction.SubTransactions.Add(dto);
                 Transaction.RecalculateUnSplitAmount();
                 SaveCommand.RaiseCanExecuteChanged();
-            };
-            dialog.Content = new SubTransactionControl { DataContext = copy };
-            dialog.ShowDialog();
+            }
         }
 
         private void ShowRecepiesDialog()
         {
             var dialog = new WizardWindow();
 
-            var viewModel = new RecipesVM(Transaction.RealFromAmount / 100.0, Categories.Where(x => x.Id > 0).ToList(), Projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id).ToList());
+            var viewModel = new RecipesVM(
+                Transaction.RealFromAmount / 100.0,
+                Categories.Where(x => x.Id > 0).ToList(),
+                Projects.ToList());
 
-            viewModel.RequestClose += (o, args) =>
+            var save = DialogHelper.ShowWizard(viewModel);
+
+            if (save)
             {
-                dialog.Close();
-                if (args)
+                foreach (var item in viewModel.TransactionsToImport)
                 {
-                    var vm = o as RecipesVM;
-                    foreach (var item in vm.TransactionsToImport)
-                    {
-                        item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
-                        Transaction.SubTransactions.Add(item);
-                    }
-                    Transaction.RecalculateUnSplitAmount();
-                    SaveCommand.RaiseCanExecuteChanged();
+                    item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
+                    Transaction.SubTransactions.Add(item);
                 }
-            };
-            dialog.DataContext = viewModel;
-            dialog.ShowDialog();
+                Transaction.RecalculateUnSplitAmount();
+                SaveCommand.RaiseCanExecuteChanged();
+            }
         }
     }
 }

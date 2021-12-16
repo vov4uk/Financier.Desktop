@@ -11,18 +11,11 @@ namespace Financier.Desktop.ViewModel.Dialog
         private bool isActive;
         private string title;
 
-        public EntityWithTitleVM(Project proj)
+        public EntityWithTitleVM(IActive proj)
         {
             Id = proj.Id;
             Title = proj.Title;
             IsActive = proj.IsActive == true;
-        }
-
-        public EntityWithTitleVM(Payee payee)
-        {
-            Id = payee.Id;
-            Title = payee.Title;
-            IsActive = payee.IsActive == true;
         }
 
         public EntityWithTitleVM()

@@ -56,7 +56,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    var res = Regex.Match(line, MyFormatter.Pattern, RegexOptions.IgnoreCase);
+                    var res = Regex.Match(line, RecipesFormatter.Pattern, RegexOptions.IgnoreCase);
                     if (res.Success)
                     {
                         var number = res.Value.Substring(0, res.Value.Length - 2);

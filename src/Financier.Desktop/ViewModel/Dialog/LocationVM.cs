@@ -9,12 +9,9 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private string address;
 
-        public LocationVM(Location location)
+        public LocationVM(Location location) : base(location)
         {
-            Id = location.Id;
-            Title = location.Name;
             Address = location.Address;
-            IsActive = location.IsActive == true;
         }
 
         public LocationVM()

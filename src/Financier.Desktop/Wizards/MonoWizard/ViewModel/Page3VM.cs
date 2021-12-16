@@ -25,9 +25,9 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             Accounts = new ObservableCollection<Account>(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
             originalAccounts = new List<Account>(accounts);
             Currencies = new ObservableCollection<Currency>(currencies);
-            Locations = new ObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            Locations = new ObservableCollection<Location>(locations.DefaultOrder());
             Categories = new ObservableCollection<Category>(categories);
-            Projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            Projects = new ObservableCollection<Project>(projects.DefaultOrder());
             Categories.Insert(0, Category.None);
         }
 

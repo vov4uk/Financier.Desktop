@@ -43,10 +43,10 @@
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>
                     <RibbonApplicationMenuItem Header="Open"
-                                               Click="OpenBackup_OnClick"
+                                               Command="{Binding Path=OpenBackupCommand}"
                                                ImageSource="pack://application:,,,/Images/actionbar_db_restore.png" />
                     <RibbonApplicationMenuItem Header="Save"
-                                               Click="SaveBackup_Click"
+                                               Command="{Binding Path=SaveBackupCommand}"
                                                ImageSource="pack://application:,,,/Images/actionbar_db_backup.png" />
                     <RibbonApplicationMenuItem Header="Options"
                                                ImageSource="pack://application:,,,/Images/ic_action_gear.png"
@@ -116,7 +116,8 @@
                              IsEnabled="True">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png"
                                   Label="Import from CSV"
-                                  Click="Mono_Click" />
+                                  Command="{Binding Path=MonoCommand}"
+                                  />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab Header="Transaction"

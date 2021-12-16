@@ -13,10 +13,15 @@
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
-        <BitmapImage x:Key="IcActionCancel"
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BitmapImage x:Key="IcActionCancel"
                      UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
-        <converters:AmountConverter x:Key="AmountConverter" />
-        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
+            <converters:AmountConverter x:Key="AmountConverter" />
+            <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
               Header="Transaction details"
@@ -73,13 +78,9 @@
                                          IsEditable="True"
                                          ItemsSource="{Binding Categories}"
                                          SelectedValuePath="Id"
-                                         DisplayMemberPath="Title"
+                                         TextSearch.TextPath="Title"
+                                         ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"
                                          SelectedValue="{Binding Transaction.CategoryId}">
-                    <!--<xctk:WatermarkComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <emoji:TextBlock Text="{Binding Title}" />
-                                </DataTemplate>
-                        </xctk:WatermarkComboBox.ItemTemplate>-->
                 </xctk:WatermarkComboBox>
 
                 <xctk:IconButton Grid.Row="1" Grid.Column="1"
@@ -122,7 +123,8 @@
                                         ItemsSource="{Binding Projects}"
                                         SelectedValue="{Binding Transaction.ProjectId}"
                                         SelectedValuePath="Id"
-                                        DisplayMemberPath="Title" />
+                                        TextSearch.TextPath="Title"
+                                        ItemTemplate="{StaticResource ResourceKey=IActive}" />
                 <xctk:IconButton Grid.Row="8" Grid.Column="1"
                              Command="{Binding ClearProjectCommand}">
                     <xctk:IconButton.Icon>

@@ -115,7 +115,7 @@ namespace Financier.DataAccess
                 await context.Database.ExecuteSqlRawAsync($"delete from running_balance where account_id={accountId}");
                 await context.SaveChangesAsync();
 
-                var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.from_account_id == accountId).OrderBy(x => x.datetime).ThenBy(x => x._id).ToListAsync();
+                var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.from_account_id == accountId).OrderBy(x => x.datetime).ToListAsync();
                 long balance = 0;
 
                 foreach (var transaction in transactions)
@@ -139,6 +139,11 @@ namespace Financier.DataAccess
                     await context.RunningBalance.AddAsync(new RunningBalance { Balance = (int)balance, AccountId = accountId, TransactionId = transaction._id });
                 }
 
+                var acc = context.Accounts.FirstOrDefault(x => x.Id == accountId);
+                acc.TotalAmount = balance;
+                var lastTransaction = transactions.Last();
+                acc.LastTransactionDate = lastTransaction.datetime;
+                context.Accounts.Update(acc);
                 await context.SaveChangesAsync();
             }
         }
@@ -154,6 +159,59 @@ namespace Financier.DataAccess
         public IUnitOfWork CreateUnitOfWork()
         {
             return new UnitOfWork<FinancierDataContext>(new FinancierDataContext(ContextOptions));
+        }
+
+        public async Task<T> GetOrCreate<T>(int id)
+            where T : class, IIdentity, new()
+        {
+            if (id != 0)
+            {
+                using var uow = CreateUnitOfWork();
+                return await uow.GetRepository<T>().FindByAsync(x => x.Id == id);
+            }
+            return new T { Id = 0 };
+        }
+
+        public async Task<Transaction> GetOrCreateTransaction(int id)
+        {
+            if (id > 0)
+            {
+                using var uow = CreateUnitOfWork();
+                return await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == id, o => o.OriginalCurrency, c => c.Category);
+            }
+
+            return new Transaction { DateTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds(), Id = 0, CategoryId = 0 };
+        }
+
+        public async Task<IEnumerable<Transaction>> GetSubTransactions(int id)
+        {
+            if (id > 0)
+            {
+                using var uow = CreateUnitOfWork();
+                return await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == id, o => o.OriginalCurrency, c => c.Category);
+            }
+
+            return Array.Empty<Transaction>();
+        }
+
+        public async Task InsertOrUpdate<T>(IEnumerable<T> entities)
+            where T : Entity, IIdentity
+        {
+            using var uow = CreateUnitOfWork();
+            var trRepo = uow.GetRepository<T>();
+            foreach (var item in entities)
+            {
+                item.UpdatedOn = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+                if (item.Id == 0)
+                {
+                    await trRepo.AddAsync(item);
+                }
+                else
+                {
+                    await trRepo.UpdateAsync(item);
+                }
+            }
+            await uow.SaveChangesAsync();
         }
     }
 }
