@@ -145,7 +145,7 @@
             Assert.Equal(2, fromMono.ToAccountId);
             Assert.Equal(-3000, fromMono.FromAmount);
             Assert.Equal(3000, fromMono.ToAmount);
-            Assert.Equal(1636964289000, fromMono.DateTime);
+            Assert.Equal(new DateTimeOffset(new DateTime(2021, 11, 15, 10, 18, 09)).ToUnixTimeMilliseconds(), fromMono.DateTime);
 
             // Transfer To Mono
             var toMono = vm.TransactionsToImport[40];
