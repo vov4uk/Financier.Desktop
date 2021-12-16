@@ -112,6 +112,7 @@
                             x:Name="FromAmountBlock"
                             Text="{Binding Path=Transfer.FromAccount.Currency.Name, StringFormat={}Amount Out ({0}), TargetNullValue=Amount}" />
                 <xctk:IconButton    Grid.Column="0" Grid.Row="6"
+                                    IsEnabled="False"
                                     Height="24"
                                     Width="24">
                     <xctk:IconButton.Icon>

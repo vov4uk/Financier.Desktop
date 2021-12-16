@@ -471,8 +471,8 @@ namespace Financier.Desktop.ViewModel
         {
             TransactionDialogVM dialogVm = new TransactionDialogVM();
             Transaction transaction = await db.GetOrCreateTransaction(id);
-            IEnumerable<TransactionDTO> subTransactions = (await db.GetSubTransactions(id)).Select(MapperHelper.Convert2TransactionDto);
-            var transactionDto = MapperHelper.Convert2TransactionDto(transaction);
+            IEnumerable<TransactionDTO> subTransactions = (await db.GetSubTransactions(id)).Select(x => new TransactionDTO(x));
+            var transactionDto = new TransactionDTO(transaction);
             transactionDto.SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions);
             dialogVm.Transaction = transactionDto;
 
@@ -522,7 +522,7 @@ namespace Financier.Desktop.ViewModel
         {
             TransferDialogVM dialogVm = new TransferDialogVM();
             Transaction transfer = await db.GetOrCreateTransaction(id);
-            dialogVm.Transfer = MapperHelper.Convert2TransferDto(transfer);
+            dialogVm.Transfer = new TransferDTO(transfer);
             var uow = db.CreateUnitOfWork();
             dialogVm.Accounts = await uow.GetAllAsync<Account>(x => x.Currency);
 

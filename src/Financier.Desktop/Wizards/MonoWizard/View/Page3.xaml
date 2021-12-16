@@ -15,7 +15,7 @@
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <convert:AmountConverter x:Key="AmountConverter"/>
-            <convert:DateTimeConverter x:Key="DatetimeConverter" />
+            <convert:UnixTimeConverter x:Key="DatetimeConverter" />
             <BitmapImage x:Key="IcActionCancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
         </ResourceDictionary>
     </UserControl.Resources>

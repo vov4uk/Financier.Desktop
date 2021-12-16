@@ -1,4 +1,6 @@
 ﻿using Financier.DataAccess.Data;
+using Financier.Desktop.Converters;
+using Financier.Desktop.Wizards;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -22,6 +24,41 @@ namespace Financier.Desktop.ViewModel.Dialog
         private int? projectId;
         private ObservableCollection<TransactionDTO> subTransactions = new ObservableCollection<TransactionDTO>();
         private long unSplitAmount;
+
+        public TransactionDTO() { }
+
+        public TransactionDTO(FinancierTransactionVM x)
+        {
+            Id = 0;
+            FromAmount = x.FromAmount;
+            IsAmountNegative = x.FromAmount < 0;
+            OriginalFromAmount = x.OriginalFromAmount ?? 0;
+            OriginalCurrencyId = x.OriginalCurrencyId;
+            Note = x.Note;
+            LocationId = x.LocationId;
+            ProjectId = x.ProjectId;
+            CategoryId = x.CategoryId;
+            Category = default;
+        }
+
+        public TransactionDTO(Transaction transaction)
+        {
+            Id = transaction.Id;
+            AccountId = transaction.FromAccountId;
+            CategoryId = transaction.CategoryId;
+            Category = transaction.Category;
+            PayeeId = transaction.PayeeId;
+            OriginalCurrencyId = transaction.OriginalCurrencyId;
+            OriginalCurrency = transaction.OriginalCurrency;
+            LocationId = transaction.LocationId;
+            ProjectId = transaction.ProjectId;
+            Note = transaction.Note;
+            FromAmount = transaction.FromAmount;
+            OriginalFromAmount = transaction.OriginalFromAmount;
+            IsAmountNegative = transaction.FromAmount <= 0;
+            Date = UnixTimeConverter.Convert(transaction.DateTime).Date;
+            Time = UnixTimeConverter.Convert(transaction.DateTime);
+        }
 
         public Account Account
         {

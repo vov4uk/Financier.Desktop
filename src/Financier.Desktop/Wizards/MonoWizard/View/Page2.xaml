@@ -9,7 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <convert:AmountConverter x:Key="AmountConverter"/>
-        <convert:DateTimeConverter x:Key="DatetimeConverter" />
+        <convert:UnixTimeConverter x:Key="DatetimeConverter" />
         <Style TargetType="DataGridCell">
             <Setter Property="TextBlock.TextAlignment" Value="Right" />
         </Style>

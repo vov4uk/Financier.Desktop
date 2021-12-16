@@ -14,7 +14,7 @@ namespace Financier.Desktop.Helpers
             tr.Note = dto.Note;
             tr.FromAmount = dto.FromAmount;
             tr.ToAmount = dto.ToAmount;
-            tr.DateTime = DateTimeConverter.ConvertBack(dto.DateTime);
+            tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.OriginalCurrencyId = dto.FromAccount.CurrencyId;
             tr.OriginalFromAmount = dto.FromAmount;
             tr.CategoryId = 0;
@@ -34,45 +34,7 @@ namespace Financier.Desktop.Helpers
             tr.LocationId = dto.LocationId ?? 0;
             tr.ProjectId = dto.CategoryId == Category.Split.Id ? 0 : (dto.ProjectId ?? 0);
             tr.Note = dto.Note;
-            tr.DateTime = DateTimeConverter.ConvertBack(dto.DateTime);
-        }
-
-
-        public static TransactionDTO Convert2TransactionDto(Transaction transaction)
-        {
-            return new()
-            {
-                Id = transaction.Id,
-                AccountId = transaction.FromAccountId,
-                CategoryId = transaction.CategoryId,
-                Category = transaction.Category,
-                PayeeId = transaction.PayeeId,
-                OriginalCurrencyId = transaction.OriginalCurrencyId,
-                OriginalCurrency = transaction.OriginalCurrency,
-                LocationId = transaction.LocationId,
-                ProjectId = transaction.ProjectId,
-                Note = transaction.Note,
-                FromAmount = transaction.FromAmount,
-                OriginalFromAmount = transaction.OriginalFromAmount,
-                IsAmountNegative = transaction.FromAmount <= 0,
-                Date = DateTimeConverter.Convert(transaction.DateTime).Date,
-                Time = DateTimeConverter.Convert(transaction.DateTime),
-            };
-        }
-
-        public static TransferDTO Convert2TransferDto(Transaction transaction)
-        {
-            return new()
-            {
-                Id = transaction.Id,
-                FromAccountId = transaction.FromAccountId,
-                ToAccountId = transaction.ToAccountId,
-                Note = transaction.Note,
-                FromAmount = transaction.FromAmount,
-                ToAmount = transaction.ToAmount,
-                Date = DateTimeConverter.Convert(transaction.DateTime).Date,
-                Time = DateTimeConverter.Convert(transaction.DateTime),
-            };
+            tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
         }
     }
 }

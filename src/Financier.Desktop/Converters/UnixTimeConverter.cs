@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace Financier.Desktop.Converters
 {
-    public class DateTimeConverter : IValueConverter
+    public class UnixTimeConverter : IValueConverter
     {
         private const string  FORMAT = "yyyy'-'MM'-'dd' 'HH':'mm':'ss";
         private const string  FORMAT_DAY = "yyyy'-'MM'-'dd";

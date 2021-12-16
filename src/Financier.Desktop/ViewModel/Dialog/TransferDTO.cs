@@ -1,4 +1,5 @@
 ﻿using Financier.DataAccess.Data;
+using Financier.Desktop.Converters;
 using System;
 
 namespace Financier.Desktop.ViewModel.Dialog
@@ -8,9 +9,21 @@ namespace Financier.Desktop.ViewModel.Dialog
         private Account fromAccount;
         private int fromAccountId;
         private long fromAmount;
-            private Account toAccount;
+        private Account toAccount;
         private int toAccountId;
         private long toAmount;
+
+        public TransferDTO(Transaction transaction)
+        {
+            Id = transaction.Id;
+            FromAccountId = transaction.FromAccountId;
+            ToAccountId = transaction.ToAccountId;
+            Note = transaction.Note;
+            FromAmount = transaction.FromAmount;
+            ToAmount = transaction.ToAmount;
+            Date = UnixTimeConverter.Convert(transaction.DateTime).Date;
+            Time = UnixTimeConverter.Convert(transaction.DateTime);
+        }
 
         public Account FromAccount
         {

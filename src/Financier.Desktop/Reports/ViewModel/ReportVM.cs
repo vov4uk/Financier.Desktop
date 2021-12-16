@@ -104,8 +104,8 @@ namespace Financier.Desktop.Reports.ViewModel
         internal void RefreshReport(double width)
         {
             currentWidth = width;
-            var fromUnix = DateTimeConverter.ConvertBack(From);
-            var toUnix = DateTimeConverter.ConvertBack(To);
+            var fromUnix = UnixTimeConverter.ConvertBack(From);
+            var toUnix = UnixTimeConverter.ConvertBack(To);
 
             var filteredReportValues = Entities.Where(x => x.datetime >= fromUnix && x.datetime <= toUnix).GroupBy(x => x.Id).Select(x => new ByCategoryReportRow
             {
