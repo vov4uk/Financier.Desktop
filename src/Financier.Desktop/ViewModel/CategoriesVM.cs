@@ -7,16 +7,16 @@ namespace Financier.Desktop.ViewModel
 {
     public class CategoriesVM : EntityBaseVM<Category>
     {
-    public CategoriesVM()
-    {
+        public CategoriesVM()
+        {
             this.PropertyChanged += Entities_PropertyChanged;
             this.Entities.CollectionChanged += Entities_CollectionChanged;
-    }
+        }
 
         private void Entities_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             _nodes.Clear();
-            InitializeNodes(_nodes, Entities.ToList());
+            InitializeNodes(_nodes, Entities.ToList(), 0);
             RaisePropertyChanged(nameof(Nodes));
         }
 
@@ -25,7 +25,7 @@ namespace Financier.Desktop.ViewModel
             if (e.PropertyName == nameof(Entities))
             {
                 _nodes.Clear();
-                InitializeNodes(_nodes, Entities.ToList());
+                InitializeNodes(_nodes, Entities.ToList(), 0);
                 RaisePropertyChanged(nameof(Nodes));
             }
         }
@@ -49,7 +49,7 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private void InitializeNodes(ObservableCollection<Node> nodes, List<Category> categories)
+        private void InitializeNodes(ObservableCollection<Node> nodes, List<Category> categories, int level)
         {
             foreach (var category in categories.OrderBy(x => x.Left))
             {
@@ -58,7 +58,7 @@ namespace Financier.Desktop.ViewModel
                     var subNode = new Node
                     {
                         Id = category.Id,
-                        Title = category.Title,
+                        Title = new string('-', level) + category.Title,
                         Left = category.Left,
                         Right = category.Right,
                         SubCategoties = new ObservableCollection<Node>()
@@ -68,7 +68,7 @@ namespace Financier.Desktop.ViewModel
                     var sub = categories.Where(x => x.Left > category.Left && x.Right < category.Right).ToList();
                     if (sub.Any())
                     {
-                        InitializeNodes(subNode.SubCategoties, sub);
+                        InitializeNodes(subNode.SubCategoties, sub, level + 1);
                     }
                 }
             }

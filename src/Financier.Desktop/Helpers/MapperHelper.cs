@@ -12,11 +12,11 @@ namespace Financier.Desktop.Helpers
             tr.FromAccountId = dto.FromAccountId;
             tr.ToAccountId = dto.ToAccountId;
             tr.Note = dto.Note;
-            tr.FromAmount = dto.FromAmount;
-            tr.ToAmount = dto.ToAmount;
+            tr.FromAmount = System.Math.Abs(dto.FromAmount) * -1;
+            tr.ToAmount = System.Math.Abs(dto.ToAmount);
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.OriginalCurrencyId = dto.FromAccount.CurrencyId;
-            tr.OriginalFromAmount = dto.FromAmount;
+            tr.OriginalFromAmount = System.Math.Abs(dto.FromAmount) * -1;
             tr.CategoryId = 0;
             tr.Category = default;
         }

@@ -476,23 +476,22 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OpenTransactionDialog(int id)
         {
-            TransactionDialogVM dialogVm = new TransactionDialogVM(dialogWrapper);
             Transaction transaction = await db.GetOrCreateTransaction(id);
             IEnumerable<TransactionDTO> subTransactions = (await db.GetSubTransactions(id)).Select(x => new TransactionDTO(x));
             var transactionDto = new TransactionDTO(transaction);
             transactionDto.SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions);
-            dialogVm.Transaction = transactionDto;
 
-            using (var uow = db.CreateUnitOfWork())
-            {
-                dialogVm.Accounts = await uow.GetAllOrderedByDefaultAsync<Account>(x => x.Currency);
-                var allCategories = await uow.GetAllAsync<Category>();
-                dialogVm.Categories = new ObservableCollection<Category>(allCategories.OrderBy(x => x.Left));
-                dialogVm.Payees = await uow.GetAllOrderedByDefaultAsync<Payee>();
-                dialogVm.Currencies = await uow.GetAllAsync<Currency>();
-                dialogVm.Locations = await uow.GetAllOrderedByDefaultAsync<Location>();
-                dialogVm.Projects = await uow.GetAllOrderedByDefaultAsync<Project>();
-            }
+            using var uow = db.CreateUnitOfWork();
+
+            TransactionDialogVM dialogVm = new TransactionDialogVM(
+                transactionDto,
+                dialogWrapper,
+                (await uow.GetAllAsync<Category>()).OrderBy(x => x.Left).ToList(),
+                await uow.GetAllOrderedByDefaultAsync<Project>(),
+                await uow.GetAllOrderedByDefaultAsync<Account>(x => x.Currency),
+                await uow.GetAllAsync<Currency>(),
+                await uow.GetAllOrderedByDefaultAsync<Location>(),
+                await uow.GetAllOrderedByDefaultAsync<Payee>());
 
             var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
 
@@ -527,11 +526,11 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OpenTransferDialog(int id)
         {
-            TransferDialogVM dialogVm = new TransferDialogVM();
             Transaction transfer = await db.GetOrCreateTransaction(id);
-            dialogVm.Transfer = new TransferDTO(transfer);
-            var uow = db.CreateUnitOfWork();
-            dialogVm.Accounts = await uow.GetAllAsync<Account>(x => x.Currency);
+
+            using var uow = db.CreateUnitOfWork();
+            var accounts = await uow.GetAllOrderedByDefaultAsync<Account>(x => x.Currency);
+            TransferDialogVM dialogVm = new TransferDialogVM(new TransferDTO(transfer), accounts);
 
             var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
 
@@ -539,15 +538,20 @@ namespace Financier.Desktop.ViewModel
             {
                 MapperHelper.MapTransfer((result as TransferDialogVM)?.Transfer, transfer);
                 await db.InsertOrUpdate(new[] { transfer });
+
+                await db.RebuildRunningBalanceForAccount(transfer.FromAccountId);
+                await db.RebuildRunningBalanceForAccount(transfer.ToAccountId);
+
                 await RefreshBlotterTransactions();
+                await RefreshEntities<Account>();
             }
         }
 
         private async Task RefreshBlotterTransactions()
         {
             using var uow = db.CreateUnitOfWork();
-            var allTransactions = await uow.GetAllOrderedAsync<BlotterTransactions>(x => x.datetime, null, x => x.from_account_currency, x => x.to_account_currency);
-            AddEntities(allTransactions.ToList(), null, true);
+            var allTransactions = await uow.GetAllAsync<BlotterTransactions>(x => x.from_account_currency, x => x.to_account_currency);
+            AddEntities(allTransactions.OrderByDescending(x => x.datetime).ToList(), null, true);
         }
 
         private async Task RefreshEntities<T>()

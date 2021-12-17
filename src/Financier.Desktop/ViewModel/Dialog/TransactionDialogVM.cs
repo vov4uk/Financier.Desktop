@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Helpers;
@@ -26,18 +26,30 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private readonly IDialogWrapper dialogWrapper;
 
-        public TransactionDialogVM(IDialogWrapper dialogWrapper)
+        public TransactionDialogVM(
+            TransactionDTO transaction,
+            IDialogWrapper dialogWrapper,
+            List<Category> categories,
+            List<Project> projects,
+            List<Account> accounts,
+            List<Currency> currencies,
+            List<Location> locations,
+            List<Payee> payees)
+            :base(transaction, categories, projects)
         {
             this.dialogWrapper = dialogWrapper;
+            Accounts = accounts;
+            Currencies = currencies;
+            Locations = locations;
+            Payees = payees;
         }
+        public List<Account> Accounts { get; }
 
-        public ObservableCollection<Account> Accounts { get; set; }
+        public List<Currency> Currencies { get; }
 
-        public ObservableCollection<Currency> Currencies { get; set; }
+        public List<Location> Locations { get; }
 
-        public ObservableCollection<Location> Locations { get; set; }
-
-        public ObservableCollection<Payee> Payees { get; set; }
+        public List<Payee> Payees { get; }
 
         public DelegateCommand AddSubTransactionCommand
         {
@@ -107,24 +119,27 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private void ShowSubTransactionDialog(TransactionDTO dto, bool isNewItem)
         {
-            var copy = new SubTransactionDailogVM() { Transaction = new TransactionDTO() };
-            CopySubTransaction(copy.Transaction, dto);
-
-            copy.Transaction.IsAmountNegative = dto.FromAmount <= 0;
-            copy.Transaction.FromAmount = Math.Abs(dto.FromAmount);
-            copy.Categories = Categories;
-            copy.Projects = Projects;
-            copy.Transaction.IsSubTransaction = true;
-
             Transaction.RecalculateUnSplitAmount();
-
-            copy.Transaction.ParentTransactionUnSplitAmount = isNewItem ? Transaction.UnsplitAmount : Transaction.UnsplitAmount - Math.Abs(dto.FromAmount);
-
-            var result = dialogWrapper.ShowDialog<SubTransactionControl>(copy, 340, 340, "Sub Transaction");
-
-            if (result is SubTransactionDailogVM)
+            var workingCopy = new TransactionDTO() { IsSubTransaction = true };
+            if (!isNewItem)
             {
-                var modifiedCopy = result as SubTransactionDailogVM;
+                CopySubTransaction(workingCopy, dto);
+                workingCopy.IsAmountNegative = dto.FromAmount <= 0;
+                workingCopy.FromAmount = Math.Abs(dto.FromAmount);
+                workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount - Math.Abs(dto.FromAmount);
+            }
+            else
+            {
+                workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount;
+            }
+
+            var viewModel = new SubTransactionDailogVM(workingCopy, Categories, Projects);
+
+            var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, "Sub Transaction");
+
+            if (dialogResult is SubTransactionDailogVM)
+            {
+                var modifiedCopy = dialogResult as SubTransactionDailogVM;
                 CopySubTransaction(dto, modifiedCopy.Transaction);
 
                 if (isNewItem) Transaction.SubTransactions.Add(dto);
@@ -154,6 +169,11 @@ namespace Financier.Desktop.ViewModel.Dialog
                 Transaction.RecalculateUnSplitAmount();
                 SaveCommand.RaiseCanExecuteChanged();
             }
+        }
+
+        protected override bool CanSaveCommandExecute()
+        {
+            return Transaction.Account != null && Transaction.FromAmount != 0;
         }
     }
 }

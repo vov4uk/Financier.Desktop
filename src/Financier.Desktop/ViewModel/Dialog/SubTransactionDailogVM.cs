@@ -1,11 +1,14 @@
 ﻿using Financier.DataAccess.Data;
 using Prism.Commands;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
     public class SubTransactionDailogVM : DialogBaseVM
     {
+        private readonly string[] TrackingProperies = new string[] { nameof(TransactionDTO.FromAmount), nameof(TransactionDTO.Account) };
+
         private DelegateCommand _changeFromAmountSignCommand;
 
         private DelegateCommand _clearOriginalFromAmountCommand;
@@ -18,33 +21,26 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private DelegateCommand _clearNotesCommand;
 
-        private TransactionDTO transaction;
-
-        public ObservableCollection<Category> Categories { get; set; }
-
-        public ObservableCollection<Project> Projects { get; set; }
-
-        public TransactionDTO Transaction
+        public SubTransactionDailogVM(
+            TransactionDTO transaction,
+            List<Category> categories,
+            List<Project> projects)
         {
-            get => transaction;
-            set
-            {
-                if (transaction != null)
-                {
-                    transaction.PropertyChanged -= Transaction_PropertyChanged;
-                }
-                transaction = value;
-                if (transaction != null)
-                {
-                    transaction.PropertyChanged += Transaction_PropertyChanged;
-                }
-                RaisePropertyChanged(nameof(Transaction));
-            }
+            Categories = categories;
+            Projects = projects;
+            Transaction = transaction;
+            Transaction.PropertyChanged += Transaction_PropertyChanged;
         }
+
+        public List<Category> Categories { get; }
+
+        public List<Project> Projects { get; }
+
+        public TransactionDTO Transaction { get; }
 
         private void Transaction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(TransactionDTO.FromAmount))
+            if (TrackingProperies.Contains(e.PropertyName))
             {
                 SaveCommand.RaiseCanExecuteChanged();
             }

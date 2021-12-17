@@ -1,16 +1,25 @@
 ﻿using Financier.DataAccess.Data;
 using Prism.Commands;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
     public class TransferDialogVM : DialogBaseVM
     {
+        private readonly string[] TrackingProperies = new string[] { nameof(TransferDTO.FromAmount), nameof(TransferDTO.ToAccount), nameof(TransferDTO.FromAccount), };
         private DelegateCommand _clearNotesCommand;
 
-        private TransferDTO _transfer;
+        public TransferDialogVM(TransferDTO transfer, List<Account> accounts)
+        {
+            Accounts = accounts;
+            Transfer = transfer;
+            Transfer.PropertyChanged += TransferPropertyChanged;
+        }
 
-        public ObservableCollection<Account> Accounts { get; set; }
+        public List<Account> Accounts { get; }
+
+        public TransferDTO Transfer { get; }
 
         public DelegateCommand ClearNotesCommand
         {
@@ -20,14 +29,17 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        public TransferDTO Transfer
+        private void TransferPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            get => _transfer;
-            set
+            if (TrackingProperies.Contains(e.PropertyName))
             {
-                _transfer = value;
-                RaisePropertyChanged(nameof(Transfer));
+                SaveCommand.RaiseCanExecuteChanged();
             }
+        }
+
+        protected override bool CanSaveCommandExecute()
+        {
+            return Transfer.FromAccount != null && Transfer.ToAccount != null && Transfer.FromAccountId != Transfer.ToAccountId;
         }
     }
 }
