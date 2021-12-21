@@ -9,9 +9,9 @@ using System.Reflection;
 
 namespace Financier.Adapter
 {
-    public static class EntityReader
+    public class EntityReader : IEntityReader
     {
-        public static (IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder) ParseBackupFile(string fileName)
+        public (IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder) ParseBackupFile(string fileName)
         {
             Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
             BackupVersion BackupVersion = new BackupVersion();
@@ -65,7 +65,7 @@ namespace Financier.Adapter
             return (entities, reader.BackupVersion, EntityColumnsOrder);
         }
 
-        private static IReadOnlyDictionary<string, EntityInfo> GetEntityTypes()
+        private IReadOnlyDictionary<string, EntityInfo> GetEntityTypes()
         {
             Type entityType = typeof(Entity);
             Dictionary<string, EntityInfo> entities = new Dictionary<string, EntityInfo>();

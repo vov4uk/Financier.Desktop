@@ -37,13 +37,13 @@ namespace Financier.Desktop.Helpers
             context.RequestCancel += (_, _) =>
             {
                 dialog.Close();
-                Logger.Info($"{nameof(T)} dialog close");
+                Logger.Info($"{typeof(T).Name} dialog cancel clicked");
             };
             context.RequestSave += (sender, _) =>
             {
                 result = sender;
                 dialog.Close();
-                Logger.Info($"{nameof(T)} dialog save");
+                Logger.Info($"{typeof(T).Name} dialog save clicked");
             };
             dialog.ShowDialog();
             return result;

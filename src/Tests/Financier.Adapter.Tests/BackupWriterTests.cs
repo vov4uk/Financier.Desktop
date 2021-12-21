@@ -1,5 +1,6 @@
 namespace Financier.Adapter.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using Financier.DataAccess.Data;
@@ -17,12 +18,37 @@ namespace Financier.Adapter.Tests
 
             string path = fileName + ".backup";
 
-            BackupWriter writer = new BackupWriter(path, version, entityColumnsOrder);
+            BackupWriter writer = new BackupWriter();
 
-            writer.GenerateBackup(new List<Entity>(transactions));
+            writer.GenerateBackup(new List<Entity>(transactions), path, version, entityColumnsOrder);
 
             Assert.True(File.Exists(path));
             File.Delete(path);
+        }
+
+        [Fact]
+        public void GenerateBackup_ParseBackup_CompareGeneratedFileWithRaw()
+        {
+            var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
+            var expectedTextPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min");
+            var actualPath = Path.Combine(Environment.CurrentDirectory, "Assets", "actual.backup");
+            var fileWithoutExt = Path.GetFileNameWithoutExtension(actualPath);
+
+            var reader = new EntityReader();
+            var (entities, backupVersion, columnsOrder) = reader.ParseBackupFile(backupPath);
+
+            BackupWriter writer = new BackupWriter();
+
+            writer.GenerateBackup(entities, actualPath, backupVersion, columnsOrder, false);
+
+            var actualText = File.ReadAllText(fileWithoutExt);
+            var expectedText = File.ReadAllText(expectedTextPath);
+
+            Assert.True(File.Exists(actualPath));
+            Assert.Equal(actualText, expectedText);
+
+            File.Delete(actualPath);
+            File.Delete(fileWithoutExt);
         }
     }
 }

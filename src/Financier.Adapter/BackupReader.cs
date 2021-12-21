@@ -64,9 +64,9 @@ namespace Financier.Adapter
 
         public void Dispose()
         {
-            _reader.Dispose();
-            _zipStream.Dispose();
-            _file.Dispose();
+            _reader?.Dispose();
+            _zipStream?.Dispose();
+            _file?.Dispose();
         }
     }
 }

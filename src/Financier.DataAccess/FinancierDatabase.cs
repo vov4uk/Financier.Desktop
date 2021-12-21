@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 
 namespace Financier.DataAccess
 {
-    public class FinancierDatabase : IUnitOfWorkFactory
+    public class FinancierDatabase : IFinancierDatabase
     {
         private readonly DbConnection _connection;
 
-        public FinancierDatabase()
+        internal FinancierDatabase()
             : this(
                 new DbContextOptionsBuilder<FinancierDataContext>()
                     .UseSqlite(CreateInMemoryDatabase())
@@ -84,7 +84,7 @@ namespace Financier.DataAccess
             await context.SaveChangesAsync();
         }
 
-        public async Task ImportEntities(IEnumerable<Entity> entities)
+        public async Task ImportEntitiesAsync(IEnumerable<Entity> entities)
         {
             await Seed();
 
@@ -104,11 +104,11 @@ namespace Financier.DataAccess
             var accounts = entities.OfType<Account>().ToList();
             foreach (var item in accounts)
             {
-                await RebuildRunningBalanceForAccount(item.Id);
+                await RebuildAccountBalanceAsync(item.Id);
             }
         }
 
-        public async Task RebuildRunningBalanceForAccount(int accountId)
+        public async Task RebuildAccountBalanceAsync(int accountId)
         {
             await using (var context = new FinancierDataContext(ContextOptions))
             {
@@ -141,8 +141,8 @@ namespace Financier.DataAccess
 
                 var acc = context.Accounts.FirstOrDefault(x => x.Id == accountId);
                 acc.TotalAmount = balance;
-                var lastTransaction = transactions.Last();
-                acc.LastTransactionDate = lastTransaction.datetime;
+                var lastTransaction = transactions.LastOrDefault();
+                acc.LastTransactionDate = lastTransaction?.datetime ?? 0;
                 context.Accounts.Update(acc);
                 await context.SaveChangesAsync();
             }
@@ -161,7 +161,7 @@ namespace Financier.DataAccess
             return new UnitOfWork<FinancierDataContext>(new FinancierDataContext(ContextOptions));
         }
 
-        public async Task<T> GetOrCreate<T>(int id)
+        public async Task<T> GetOrCreateAsync<T>(int id)
             where T : class, IIdentity, new()
         {
             if (id != 0)
@@ -172,7 +172,7 @@ namespace Financier.DataAccess
             return new T { Id = 0 };
         }
 
-        public async Task<Transaction> GetOrCreateTransaction(int id)
+        public async Task<Transaction> GetOrCreateTransactionAsync(int id)
         {
             if (id != 0)
             {
@@ -183,7 +183,7 @@ namespace Financier.DataAccess
             return new Transaction { DateTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds(), Id = 0, CategoryId = 0 };
         }
 
-        public async Task<IEnumerable<Transaction>> GetSubTransactions(int id)
+        public async Task<IEnumerable<Transaction>> GetSubTransactionsAsync(int id)
         {
             if (id != 0)
             {
@@ -194,7 +194,7 @@ namespace Financier.DataAccess
             return Array.Empty<Transaction>();
         }
 
-        public async Task InsertOrUpdate<T>(IEnumerable<T> entities)
+        public async Task InsertOrUpdateAsync<T>(IEnumerable<T> entities)
             where T : Entity, IIdentity
         {
             using var uow = CreateUnitOfWork();

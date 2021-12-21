@@ -26,31 +26,34 @@ namespace Financier.Desktop.ViewModel
     {
         private const string Backup = "backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly IFinancierDatabaseFactory dbFactory;
+        private readonly IDialogWrapper dialogWrapper;
         private readonly List<Entity> keyLessEntities = new();
+        private BackupVersion _backupVersion;
+        private Dictionary<string, List<string>> _entityColumnsOrder;
         private DelegateCommand<Type> _menuNavigateCommand;
         private DelegateCommand _monoCommand;
         private DelegateCommand _openBackupCommand;
-        private DelegateCommand _saveBackupCommand;
-        private BackupVersion _backupVersion;
-        private Dictionary<string, List<string>> _entityColumnsOrder;
-
         private ReadOnlyCollection<BindableBase> _pages;
+        private DelegateCommand _saveBackupCommand;
         private AccountsVM accountsVm;
         private BlotterVM blotter;
-        private LocationsVM locations;
         private BindableBase currentPage;
-        private FinancierDatabase db;
+        private IFinancierDatabase db;
+        private IEntityReader entityReader;
+        private IBackupWriter backupWriter;
+        private LocationsVM locations;
         private string openBackupPath;
 
-        private string saveBackupPath;
-        private ProjectsVM projects;
         private PayeesVM payees;
-
-        private readonly IDialogWrapper dialogWrapper;
-
-        public FinancierVM(IDialogWrapper dialogWrapper)
+        private ProjectsVM projects;
+        public FinancierVM(IDialogWrapper dialogWrapper, IFinancierDatabaseFactory dbFactory, IEntityReader entityReader, IBackupWriter backupWriter)
         {
             this.dialogWrapper = dialogWrapper;
+            this.dbFactory = dbFactory;
+            this.entityReader = entityReader;
+            this.backupWriter = backupWriter;
+            db = dbFactory.CreateDatabase();
             CreatePages();
         }
 
@@ -58,24 +61,6 @@ namespace Financier.Desktop.ViewModel
         {
             get => blotter;
             private set => SetProperty(ref blotter, value);
-        }
-
-        public LocationsVM Locations
-        {
-            get => locations;
-            private set => SetProperty(ref locations, value);
-        }
-
-        public ProjectsVM Projects
-        {
-            get => projects;
-            private set => SetProperty(ref projects, value);
-        }
-
-        public PayeesVM Payees
-        {
-            get => payees;
-            private set => SetProperty(ref payees, value);
         }
 
         public BindableBase CurrentPage
@@ -92,13 +77,20 @@ namespace Financier.Desktop.ViewModel
                 RaisePropertyChanged(nameof(IsPayeePageSelected));
             }
         }
-        public bool IsTransactionPageSelected => currentPage is BlotterVM;
 
         public bool IsLocationPageSelected => currentPage is LocationsVM;
 
+        public bool IsPayeePageSelected => currentPage is PayeesVM;
+
         public bool IsProjectPageSelected => currentPage is ProjectsVM;
 
-        public bool IsPayeePageSelected => currentPage is PayeesVM;
+        public bool IsTransactionPageSelected => currentPage is BlotterVM;
+
+        public LocationsVM Locations
+        {
+            get => locations;
+            private set => SetProperty(ref locations, value);
+        }
 
         public DelegateCommand<Type> MenuNavigateCommand
         {
@@ -112,7 +104,7 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                return _monoCommand ??= new DelegateCommand(OpenMonoWizard);
+                return _monoCommand ??= new DelegateCommand(OpenMonoWizardAsync);
             }
         }
 
@@ -124,46 +116,31 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
+        public string OpenBackupPath
+        {
+            get => openBackupPath;
+            private set => SetProperty(ref openBackupPath, value);
+        }
+
+        public ReadOnlyCollection<BindableBase> Pages => _pages;
+
+        public PayeesVM Payees
+        {
+            get => payees;
+            private set => SetProperty(ref payees, value);
+        }
+
+        public ProjectsVM Projects
+        {
+            get => projects;
+            private set => SetProperty(ref projects, value);
+        }
         public DelegateCommand SaveBackupCommand
         {
             get
             {
                 return _saveBackupCommand ??= new DelegateCommand(SaveBackup_Click);
             }
-        }
-
-        public string OpenBackupPath
-        {
-            get => openBackupPath;
-            set => SetProperty(ref openBackupPath, value);
-        }
-        public ReadOnlyCollection<BindableBase> Pages => _pages;
-
-        public string SaveBackupPath
-        {
-            get => saveBackupPath;
-            set => SetProperty(ref saveBackupPath, value);
-        }
-
-        public async Task ImportMonoTransactions(List<Transaction> transactions)
-        {
-            await db.AddTransactionsAsync(transactions);
-
-            var accountIds = transactions
-                .Where(x => x.ToAccountId > 0)
-                .Select(x => x.ToAccountId).Union(
-                transactions
-                .Where(x => x.FromAccountId > 0)
-                .Select(x => x.FromAccountId))
-                .Distinct();
-
-            foreach (var accId in accountIds)
-            {
-                await db.RebuildRunningBalanceForAccount(accId);
-            }
-
-            await RefreshBlotterTransactions();
-            await RefreshEntities<Account>();
         }
 
         public async Task OpenBackup(string backupPath)
@@ -173,14 +150,14 @@ namespace Financier.Desktop.ViewModel
             var sb = new StringBuilder();
 
             OpenBackupPath = backupPath;
-            var (entities, backupVersion, columnsOrder) = EntityReader.ParseBackupFile(backupPath);
+            var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);
             _backupVersion = backupVersion;
             _entityColumnsOrder = columnsOrder;
 
             db?.Dispose();
 
-            db = new FinancierDatabase();
-            await db.ImportEntities(entities);
+            db = dbFactory.CreateDatabase();
+            await db.ImportEntitiesAsync(entities);
 
             using (var uow = db.CreateUnitOfWork())
             {
@@ -233,7 +210,6 @@ namespace Financier.Desktop.ViewModel
 
         public async Task SaveBackup(string backupPath)
         {
-            SaveBackupPath = backupPath;
             List<Entity> itemsToBackup = new();
             itemsToBackup.AddRange(keyLessEntities);
             using (IUnitOfWork uow = db.CreateUnitOfWork())
@@ -254,8 +230,7 @@ namespace Financier.Desktop.ViewModel
                 await AddBackupEntities<Category>(uow, itemsToBackup, x => x.Id > 0);
             }
 
-            using var bw = new BackupWriter(backupPath, _backupVersion, _entityColumnsOrder);
-            bw.GenerateBackup(itemsToBackup);
+            backupWriter.GenerateBackup(itemsToBackup, backupPath, _backupVersion, _entityColumnsOrder);
         }
 
         private async Task AddBackupEntities<T>(IUnitOfWork uow, List<Entity> itemsToBackup, Func<T, bool> where = null, Func<T, int> orderBy = null)
@@ -295,42 +270,42 @@ namespace Financier.Desktop.ViewModel
             keyLessEntities.AddRange(entities);
         }
 
-        private async void Blotter_AddTransactionRaised(object sender, EventArgs e)
+        private async void Blotter_AddTransactionRaised(object sender, EventArgs eventArgs)
         {
-            await OpenTransactionDialog(0);
+            await OpenTransactionDialogAsync(0);
         }
 
-        private async void Blotter_AddTransferRaised(object sender, EventArgs e)
+        private async void Blotter_AddTransferRaised(object sender, EventArgs eventArgs)
         {
-            await OpenTransferDialog(0);
+            await OpenTransferDialogAsync(0);
         }
 
-        private async void Blotter_DeleteRaised(object sender, TransactionsView e)
+        private async void Blotter_DeleteRaised(object sender, TransactionsView eventArgs)
         {
-            var result = System.Windows.Forms.MessageBox.Show("Are you sure you want to delete transaction?", "Delete", System.Windows.Forms.MessageBoxButtons.YesNo);
-            if (result == System.Windows.Forms.DialogResult.Yes)
+            var result = MessageBox.Show("Are you sure you want to delete transaction?", "Delete", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
             {
                 using (var uow = db.CreateUnitOfWork())
                 {
                     var repo = uow.GetRepository<Transaction>();
-                    var transaction = await repo.FindByAsync(x => x.Id == e._id);
+                    var transaction = await repo.FindByAsync(x => x.Id == eventArgs._id);
 
                     await repo.DeleteAsync(transaction);
                     await uow.SaveChangesAsync();
                 }
-                await RefreshBlotterTransactions();
+                await RefreshBlotterTransactionsAsync();
             }
         }
-        
-        private async void BlotterVM_OpenTransactionRaised(object sender, TransactionsView e)
+
+        private async void BlotterVM_OpenTransactionRaised(object sender, TransactionsView eventArgs)
         {
-            if (e.from_account_id > 0 && e.to_account_id > 0 && e.category_id == 0)
+            if (eventArgs.from_account_id > 0 && eventArgs.to_account_id > 0 && eventArgs.category_id == 0)
             {
-                await OpenTransferDialog(e._id);
+                await OpenTransferDialogAsync(eventArgs._id);
             }
             else
             {
-                await OpenTransactionDialog(e._id);
+                await OpenTransactionDialogAsync(eventArgs._id);
             }
         }
 
@@ -393,39 +368,39 @@ namespace Financier.Desktop.ViewModel
                 }.AsReadOnly();
         }
 
-        private async void Projects_EditRaised(object sender, Project e)
+        private async Task RefreshViewModels(List<Transaction> transactions)
         {
-            await OpenEntityWithTitleDialog<Project>(e.Id);
+            await db.AddTransactionsAsync(transactions);
+
+            var accountIds = transactions
+                .Where(x => x.ToAccountId > 0)
+                .Select(x => x.ToAccountId).Union(
+                transactions
+                .Where(x => x.FromAccountId > 0)
+                .Select(x => x.FromAccountId))
+                .Distinct();
+
+            foreach (var accId in accountIds)
+            {
+                await db.RebuildAccountBalanceAsync(accId);
+            }
+
+            await RefreshBlotterTransactionsAsync();
+            await RefreshEntitiesAsync<Account>();
+        }
+        private void InfoClose(object sender, EventArgs eventArgs)
+        {
+            CurrentPage = accountsVm;
         }
 
-        private async void Projects_AddRaised(object sender, EventArgs e)
+        private async void Locations_AddRaised(object sender, EventArgs eventArgs)
         {
-            await OpenEntityWithTitleDialog<Project>(0);
+            await OpenLocationDialogAsync(0);
         }
 
-        private async void Payees_EditRaised(object sender, Payee e)
+        private async void Locations_EditRaised(object sender, Location eventArgs)
         {
-            await OpenEntityWithTitleDialog<Payee>(e.Id);
-        }
-
-        private async void Payees_AddRaised(object sender, EventArgs e)
-        {
-            await OpenEntityWithTitleDialog<Payee>(0);
-        }
-
-        private async void Locations_EditRaised(object sender, Location e)
-        {
-            await OpenLocationDialog(e.Id);
-        }
-
-        private async void Locations_AddRaised(object sender, EventArgs e)
-        {
-            await OpenLocationDialog(0);
-        }
-
-        private void InfoClose(object sender, EventArgs e)
-        {
-            CurrentPage = Pages.OfType<AccountsVM>().First();
+            await OpenLocationDialogAsync(eventArgs.Id);
         }
 
         private void NavigateToType(Type type)
@@ -433,18 +408,69 @@ namespace Financier.Desktop.ViewModel
             CurrentPage = Pages.FirstOrDefault(x => x.GetType().BaseType.GetGenericArguments().Single() == type);
         }
 
-        private async void OpenMonoWizard()
+        private async void OpenBackup_OnClick()
         {
-            using var openFileDialog = new OpenFileDialog
+            var backupPath = dialogWrapper.OpenFileDialog(Backup);
+            if (!string.IsNullOrEmpty(backupPath))
             {
-                Multiselect = false,
-                Filter = "CSV files (*.csv)|*.csv"
-            };
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                var fileName = openFileDialog.FileName;
+                Logger.Info($"Opened backup : {backupPath}");
+                await OpenBackup(backupPath);
+            }
+        }
 
-                var accounts = Pages.OfType<AccountsVM>().First().Entities.ToList();
+        private async Task OpenEntityWithTitleDialogAsync<T>(int e)
+            where T : Entity, IActive, new()
+        {
+            T selectedEntity = await db.GetOrCreateAsync<T>(e); ;
+            EntityWithTitleVM context = new EntityWithTitleVM(selectedEntity);
+
+            var result = dialogWrapper.ShowDialog<EntityWithTitleControl>(context, 180, 300, typeof(T).Name);
+
+            if (result is EntityWithTitleVM)
+            {
+                var updatedItem = (EntityWithTitleVM)result;
+                selectedEntity.IsActive = updatedItem.IsActive;
+                selectedEntity.Title = updatedItem.Title;
+                selectedEntity.Id = updatedItem.Id;
+
+                await db.InsertOrUpdateAsync(new[] { selectedEntity });
+                await RefreshEntitiesAsync<T>();
+            }
+        }
+
+        private async Task OpenLocationDialogAsync(int id)
+        {
+            Location selectedValue = await db.GetOrCreateAsync<Location>(id);
+            LocationVM locationVm = new LocationVM(selectedValue);
+
+            var result = dialogWrapper.ShowDialog<LocationControl>(locationVm, 240, 300, nameof(Location));
+
+            if (result is LocationVM)
+            {
+                var updatedItem = (LocationVM)result;
+                selectedValue.IsActive = updatedItem.IsActive;
+                selectedValue.Address = updatedItem.Address;
+                selectedValue.Title = updatedItem.Title;
+                selectedValue.Name = updatedItem.Title;
+                selectedValue.Id = updatedItem.Id;
+                if (id == 0)
+                {
+                    selectedValue.Count = 0;
+                }
+
+                await db.InsertOrUpdateAsync(new[] { selectedValue });
+                await RefreshEntitiesAsync<Location>();
+            }
+        }
+
+        private async void OpenMonoWizardAsync()
+        {
+            var fileName = dialogWrapper.OpenFileDialog(".csv");
+
+            if (!string.IsNullOrEmpty(fileName))
+            {
+
+                var accounts = accountsVm.Entities.ToList();
                 var currencies = Pages.OfType<CurrenciesVM>().First().Entities.ToList();
                 var locations = Locations.Entities.ToList();
                 var categories = Pages.OfType<CategoriesVM>().First().Entities.ToList();
@@ -465,7 +491,9 @@ namespace Financier.Desktop.ViewModel
 
                     var duplicatesCount = viewModel.TransactionsToImport.Count - monoToImport.Count;
 
-                    await ImportMonoTransactions(monoToImport);
+                    await db.AddTransactionsAsync(monoToImport);
+                    await RefreshViewModels(monoToImport);
+
                     MessageBox.Show($"Imported {monoToImport.Count} transactions."
                         + ((duplicatesCount > 0) ? $" Skiped {duplicatesCount} duplicates." : string.Empty));
 
@@ -474,10 +502,10 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private async Task OpenTransactionDialog(int id)
+        private async Task OpenTransactionDialogAsync(int id)
         {
-            Transaction transaction = await db.GetOrCreateTransaction(id);
-            IEnumerable<TransactionDTO> subTransactions = (await db.GetSubTransactions(id)).Select(x => new TransactionDTO(x));
+            Transaction transaction = await db.GetOrCreateTransactionAsync(id);
+            IEnumerable<TransactionDTO> subTransactions = (await db.GetSubTransactionsAsync(id)).Select(x => new TransactionDTO(x));
             var transactionDto = new TransactionDTO(transaction);
             transactionDto.SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions);
 
@@ -507,7 +535,7 @@ namespace Financier.Desktop.ViewModel
                 {
                     foreach (var subTransactionDto in resultVm.Transaction.SubTransactions)
                     {
-                        var subTransaction = await db.GetOrCreate<Transaction>(subTransactionDto.Id);
+                        var subTransaction = await db.GetOrCreateAsync<Transaction>(subTransactionDto.Id);
                         subTransactionDto.Date = resultVm.Transaction.Date;
                         subTransactionDto.Time = resultVm.Transaction.Time;
                         MapperHelper.MapTransaction(subTransactionDto, subTransaction);
@@ -519,14 +547,14 @@ namespace Financier.Desktop.ViewModel
                     }
                 }
 
-                await db.InsertOrUpdate(resultTransactions);
-                await RefreshBlotterTransactions();
+                await db.InsertOrUpdateAsync(resultTransactions);
+                await RefreshBlotterTransactionsAsync();
             }
         }
 
-        private async Task OpenTransferDialog(int id)
+        private async Task OpenTransferDialogAsync(int id)
         {
-            Transaction transfer = await db.GetOrCreateTransaction(id);
+            Transaction transfer = await db.GetOrCreateTransactionAsync(id);
 
             using var uow = db.CreateUnitOfWork();
             var accounts = await uow.GetAllOrderedByDefaultAsync<Account>(x => x.Currency);
@@ -537,86 +565,49 @@ namespace Financier.Desktop.ViewModel
             if (result is TransferDialogVM)
             {
                 MapperHelper.MapTransfer((result as TransferDialogVM)?.Transfer, transfer);
-                await db.InsertOrUpdate(new[] { transfer });
+                await db.InsertOrUpdateAsync(new[] { transfer });
 
-                await db.RebuildRunningBalanceForAccount(transfer.FromAccountId);
-                await db.RebuildRunningBalanceForAccount(transfer.ToAccountId);
+                await db.RebuildAccountBalanceAsync(transfer.FromAccountId);
+                await db.RebuildAccountBalanceAsync(transfer.ToAccountId);
 
-                await RefreshBlotterTransactions();
-                await RefreshEntities<Account>();
+                await RefreshBlotterTransactionsAsync();
+                await RefreshEntitiesAsync<Account>();
             }
         }
 
-        private async Task RefreshBlotterTransactions()
+        private async void Payees_AddRaised(object sender, EventArgs eventArgs)
+        {
+            await OpenEntityWithTitleDialogAsync<Payee>(0);
+        }
+
+        private async void Payees_EditRaised(object sender, Payee eventArgs)
+        {
+            await OpenEntityWithTitleDialogAsync<Payee>(eventArgs.Id);
+        }
+
+        private async void Projects_AddRaised(object sender, EventArgs eventArgs)
+        {
+            await OpenEntityWithTitleDialogAsync<Project>(0);
+        }
+
+        private async void Projects_EditRaised(object sender, Project eventArgs)
+        {
+            await OpenEntityWithTitleDialogAsync<Project>(eventArgs.Id);
+        }
+        private async Task RefreshBlotterTransactionsAsync()
         {
             using var uow = db.CreateUnitOfWork();
             var allTransactions = await uow.GetAllAsync<BlotterTransactions>(x => x.from_account_currency, x => x.to_account_currency);
             AddEntities(allTransactions.OrderByDescending(x => x.datetime).ToList(), null, true);
         }
 
-        private async Task RefreshEntities<T>()
+        private async Task RefreshEntitiesAsync<T>()
             where T: Entity, IActive
         {
             using var uow = db.CreateUnitOfWork();
             var entities = await uow.GetAllOrderedByDefaultAsync<T>();
             AddEntities(entities.ToList(), null, true);
         }
-
-        private async Task OpenLocationDialog(int id)
-        {
-            Location selectedValue = await db.GetOrCreate<Location>(id);
-            LocationVM locationVm = new LocationVM(selectedValue);
-
-            var result = dialogWrapper.ShowDialog<LocationControl>(locationVm, 240, 300, nameof(Location));
-
-            if (result is LocationVM)
-            {
-                var updatedItem = (LocationVM)result;
-                selectedValue.IsActive = updatedItem.IsActive;
-                selectedValue.Address = updatedItem.Address;
-                selectedValue.Title = updatedItem.Title;
-                selectedValue.Name = updatedItem.Title;
-                selectedValue.Id = updatedItem.Id;
-                if (id == 0)
-                {
-                    selectedValue.Count = 0;
-                }
-
-                await db.InsertOrUpdate(new[] { selectedValue });
-                await RefreshEntities<Location>();
-            }
-        }
-
-        private async Task OpenEntityWithTitleDialog<T>(int e)
-            where T: Entity, IActive, new()
-        {
-            T selectedEntity = await db.GetOrCreate<T>(e); ;
-            EntityWithTitleVM context = new EntityWithTitleVM(selectedEntity);
-
-            var result = dialogWrapper.ShowDialog<EntityWithTitleControl>(context, 180, 300, typeof(T).Name);
-
-            if (result is EntityWithTitleVM)
-            {
-                var updatedItem = (EntityWithTitleVM)result;
-                selectedEntity.IsActive = updatedItem.IsActive;
-                selectedEntity.Title = updatedItem.Title;
-                selectedEntity.Id = updatedItem.Id;
-
-                await db.InsertOrUpdate(new[] { selectedEntity });
-                await RefreshEntities<T>();
-            }
-        }
-
-        private async void OpenBackup_OnClick()
-        {
-            var backupPath = dialogWrapper.OpenFileDialog(Backup);
-            if (!string.IsNullOrEmpty(backupPath))
-            {
-                Logger.Info($"Opened backup : {backupPath}");
-                await OpenBackup(backupPath);
-            }
-        }
-
         private async void SaveBackup_Click()
         {
             var backupPath = dialogWrapper.SaveFileDialog(Backup, Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName()));

@@ -12,17 +12,16 @@ namespace Financier.Adapter.Tests
         {
             var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
 
-            BackupReader backupReader = new BackupReader(backupPath);
+            using BackupReader backupReader = new BackupReader(backupPath);
 
             var lines = backupReader.GetLines();
 
-            Assert.Equal(333, lines.Count());
+            Assert.Equal(343, lines.Count());
             Assert.Equal(211, backupReader.BackupVersion.DatabaseVersion);
             Assert.Equal("ru.orangesoftware.financisto", backupReader.BackupVersion.Package);
             Assert.Equal(new Version(1, 7, 4), backupReader.BackupVersion.Version);
             Assert.Equal(100, backupReader.BackupVersion.VersionCode);
 
-            backupReader.Dispose();
         }
     }
 }

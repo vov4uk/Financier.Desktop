@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls.Ribbon;
 using DataFormats = System.Windows.DataFormats;
 using Financier.Desktop.Helpers;
+using Financier.DataAccess;
+using Financier.Adapter;
 
 namespace Financier.Desktop
 {
@@ -31,7 +33,7 @@ namespace Financier.Desktop
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new FinancierVM(new DialogHelper());
+            ViewModel = new FinancierVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter());
 
             DataContext = ViewModel;
             Logger.Info("App started");

@@ -14,7 +14,8 @@
         {
             var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
 
-            var (entities, backupVersion, columnsOrder) = EntityReader.ParseBackupFile(backupPath);
+            var reader = new EntityReader();
+            var (entities, backupVersion, columnsOrder) = reader.ParseBackupFile(backupPath);
 
             Assert.Equal(211, backupVersion.DatabaseVersion);
             Assert.Equal("ru.orangesoftware.financisto", backupVersion.Package);

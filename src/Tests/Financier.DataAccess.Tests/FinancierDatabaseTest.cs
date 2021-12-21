@@ -152,7 +152,7 @@
 
             await db.AddTransactionsAsync(transactions);
 
-            await db.RebuildRunningBalanceForAccount(initData.account.Id);
+            await db.RebuildAccountBalanceAsync(initData.account.Id);
 
             using (var uow = db.CreateUnitOfWork())
             {
@@ -208,7 +208,7 @@
                 },
             };
 
-            await db.ImportEntities(entities);
+            await db.ImportEntitiesAsync(entities);
 
             using (var uow = db.CreateUnitOfWork())
             {
@@ -232,7 +232,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            var account = await db.GetOrCreate<Account>(0);
+            var account = await db.GetOrCreateAsync<Account>(0);
 
             Assert.Equal(0, account.Id);
         }
@@ -242,7 +242,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            var account = await db.GetOrCreate<Account>(1);
+            var account = await db.GetOrCreateAsync<Account>(1);
 
             Assert.Null(account);
         }
@@ -254,9 +254,9 @@
             await db.Seed();
             await this.PredefineData(db);
 
-            var account = await db.GetOrCreate<Account>(1);
-            var currency = await db.GetOrCreate<Currency>(1);
-            var category = await db.GetOrCreate<Category>(1);
+            var account = await db.GetOrCreateAsync<Account>(1);
+            var currency = await db.GetOrCreateAsync<Currency>(1);
+            var category = await db.GetOrCreateAsync<Category>(1);
 
             Assert.Equal(1, account.Id);
             Assert.Equal(1, currency.Id);
@@ -268,7 +268,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            var transactions = await db.GetSubTransactions(0);
+            var transactions = await db.GetSubTransactionsAsync(0);
 
             Assert.Empty(transactions);
         }
@@ -278,7 +278,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            var transactions = await db.GetSubTransactions(1);
+            var transactions = await db.GetSubTransactionsAsync(1);
 
             Assert.Empty(transactions);
         }
@@ -325,9 +325,9 @@
                     DateTime = 1639121044000,
                 },
             };
-            await db.ImportEntities(entities);
+            await db.ImportEntitiesAsync(entities);
 
-            var transactions = (await db.GetSubTransactions(1)).ToArray();
+            var transactions = (await db.GetSubTransactionsAsync(1)).ToArray();
 
             Assert.Equal(2, transactions.Count());
             Assert.NotNull(transactions[0].Category);
@@ -340,7 +340,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            var transaction = await db.GetOrCreateTransaction(0);
+            var transaction = await db.GetOrCreateTransactionAsync(0);
 
             Assert.Equal(0, transaction.Id);
             Assert.Equal(0, transaction.CategoryId);
@@ -352,7 +352,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            var transaction = await db.GetOrCreateTransaction(1);
+            var transaction = await db.GetOrCreateTransactionAsync(1);
 
             Assert.Null(transaction);
         }
@@ -377,9 +377,9 @@
                     DateTime = 1639121044000,
                 },
             };
-            await db.ImportEntities(entities);
+            await db.ImportEntitiesAsync(entities);
 
-            var transaction = await db.GetOrCreateTransaction(1);
+            var transaction = await db.GetOrCreateTransactionAsync(1);
 
             Assert.NotNull(transaction.Category);
             Assert.NotNull(transaction.OriginalCurrency);
@@ -391,7 +391,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            await db.InsertOrUpdate(new[] { new Currency() { Id = 0, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." } });
+            await db.InsertOrUpdateAsync(new[] { new Currency() { Id = 0, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." } });
 
             using (var uow = db.CreateUnitOfWork())
             {
@@ -409,7 +409,7 @@
             var initData = await this.PredefineData(db);
 
             initData.currency.Name = "UAH";
-            await db.InsertOrUpdate(new[] { initData.currency });
+            await db.InsertOrUpdateAsync(new[] { initData.currency });
 
             using (var uow = db.CreateUnitOfWork())
             {

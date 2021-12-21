@@ -11,10 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\min" />
     <None Remove="Assets\min.backup" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Assets\min">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\min.backup">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
