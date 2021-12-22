@@ -1,15 +1,18 @@
 ﻿namespace Financier.Desktop.Tests.ViewModel
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Financier.Adapter;
     using Financier.DataAccess.Abstractions;
     using Financier.DataAccess.Data;
     using Financier.DataAccess.View;
     using Financier.Desktop.Helpers;
-    using Financier.Desktop.Reports.ViewModel;
     using Financier.Desktop.ViewModel;
+    using Financier.Desktop.ViewModel.Dialog;
+    using Financier.Desktop.Views.Controls;
     using Financier.Tests.Common;
     using Moq;
     using Xunit;
@@ -66,13 +69,24 @@
             Assert.NotNull(vm.Locations);
             Assert.NotNull(vm.Payees);
             Assert.NotNull(vm.Projects);
-            Assert.Equal(10, vm.Pages.Count);
         }
 
         [Fact]
         public void MenuNavigateCommand_ChangeCurrentPage_PropertiesUpdated()
         {
             var vm = this.GetFinancierVM();
+
+            this.locMock = new Mock<IBaseRepository<Location>>();
+            this.payeeMock = new Mock<IBaseRepository<Payee>>();
+            this.projMock = new Mock<IBaseRepository<Project>>();
+
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.Dispose());
+
+            this.SetupRepo(this.exchangeRatesRepo);
+            this.SetupRepo(this.locMock);
+            this.SetupRepo(this.projMock);
+            this.SetupRepo(this.payeeMock);
 
             vm.MenuNavigateCommand.Execute(typeof(BlotterTransactions));
             Assert.True(vm.IsTransactionPageSelected);
@@ -92,41 +106,22 @@
             string backupPath,
             IEnumerable<Entity> entities,
             BackupVersion backupVersion,
-            Dictionary<string, List<string>> entityColumnsOrder,
-            List<Account> accounts,
-            List<BlotterTransactions> transactions,
-            List<ByCategoryReport> categoryReports,
-            List<Category> categories,
-            List<CurrencyExchangeRate> exchangeRates)
+            Dictionary<string, List<string>> entityColumnsOrder)
         {
             var vm = this.GetFinancierVM();
             this.entityReaderMock.Setup(x => x.ParseBackupFile(backupPath)).Returns((entities, backupVersion, entityColumnsOrder));
 
+            this.dbMock.Setup(x => x.ImportEntitiesAsync(entities)).Returns(Task.CompletedTask).Verifiable();
             this.dbMock.Setup(x => x.Dispose());
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.GetRepository<Account>()).Returns(this.accountsRepo.Object);
-            this.uowMock.Setup(x => x.GetRepository<BlotterTransactions>()).Returns(this.transactionsRepo.Object);
-            this.uowMock.Setup(x => x.GetRepository<ByCategoryReport>()).Returns(this.categoryReportsRepo.Object);
-            this.uowMock.Setup(x => x.GetRepository<Category>()).Returns(this.categoriesRepo.Object);
-            this.uowMock.Setup(x => x.GetRepository<CurrencyExchangeRate>()).Returns(this.exchangeRatesRepo.Object);
-
-            this.dbMock.Setup(x => x.ImportEntitiesAsync(entities)).Returns(Task.CompletedTask).Verifiable();
             this.uowMock.Setup(x => x.Dispose()).Verifiable();
-            this.accountsRepo.Setup(x => x.GetAllAsync(x => x.Currency)).ReturnsAsync(accounts);
-            this.transactionsRepo.Setup(x => x.GetAllAsync(x => x.from_account_currency, x => x.to_account_currency)).ReturnsAsync(transactions);
-            this.categoryReportsRepo.Setup(x => x.GetAllAsync(x => x.from_account_currency, x => x.to_account_currency, x => x.category)).ReturnsAsync(categoryReports);
-            this.categoriesRepo.Setup(x => x.GetAllAsync()).ReturnsAsync(categories);
-            this.exchangeRatesRepo.Setup(x => x.GetAllAsync(x => x.FromCurrency, x => x.ToCurrency)).ReturnsAsync(exchangeRates);
+            this.SetupRepo(this.transactionsRepo);
 
             await vm.OpenBackup(backupPath);
 
             this.dbMock.VerifyAll();
-            this.uowMock.VerifyAll();
-            Assert.Equal(categories.Count, vm.Pages.OfType<CategoriesVM>().First().Entities.Count);
-            Assert.Equal(categoryReports.Count, vm.Pages.OfType<ReportVM>().First().Entities.Count);
-            Assert.Equal(transactions.Count, vm.Blotter.Entities.Count);
-            Assert.Equal(exchangeRates.Count, vm.Pages.OfType<ExchangeRatesVM>().First().Entities.Count);
-            Assert.True(vm.CurrentPage is InfoVM);
+
+            Assert.True(vm.CurrentPage is BlotterVM);
             Assert.Equal(backupPath, vm.OpenBackupPath);
         }
 
@@ -137,7 +132,7 @@
         {
             var vm = this.GetFinancierVM();
             this.backupWriterMock.Setup(x => x.GenerateBackup(It.IsAny<List<Entity>>(), backupPath, It.IsAny<BackupVersion>(), It.IsAny<Dictionary<string, List<string>>>(), true)).Verifiable();
-
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.budgetMock = new Mock<IBaseRepository<Budget>>();
             this.trAMock = new Mock<IBaseRepository<TransactionAttribute>>();
             this.currMock = new Mock<IBaseRepository<Currency>>();
@@ -150,48 +145,20 @@
             this.cccdMock = new Mock<IBaseRepository<CCardClosingDate>>();
             this.smsMock = new Mock<IBaseRepository<SmsTemplate>>();
 
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.GetRepository<Account>()).Returns(this.accountsRepo.Object);
-            this.accountsRepo.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Account>());
-
-            this.uowMock.Setup(x => x.GetRepository<Transaction>()).Returns(this.trMock.Object);
-            this.trMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Transaction>());
-
-            this.uowMock.Setup(x => x.GetRepository<Category>()).Returns(this.categoriesRepo.Object);
-            this.categoriesRepo.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Category>());
-
-            this.uowMock.Setup(x => x.GetRepository<CurrencyExchangeRate>()).Returns(this.exchangeRatesRepo.Object);
-            this.exchangeRatesRepo.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<CurrencyExchangeRate>());
-
-            this.uowMock.Setup(x => x.GetRepository<Budget>()).Returns(this.budgetMock.Object);
-            this.budgetMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Budget>());
-
-            this.uowMock.Setup(x => x.GetRepository<TransactionAttribute>()).Returns(this.trAMock.Object);
-            this.trAMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<TransactionAttribute>());
-
-            this.uowMock.Setup(x => x.GetRepository<Currency>()).Returns(this.currMock.Object);
-            this.currMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Currency>());
-
-            this.uowMock.Setup(x => x.GetRepository<Location>()).Returns(this.locMock.Object);
-            this.locMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Location>());
-
-            this.uowMock.Setup(x => x.GetRepository<Payee>()).Returns(this.payeeMock.Object);
-            this.payeeMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Payee>());
-
-            this.uowMock.Setup(x => x.GetRepository<Project>()).Returns(this.projMock.Object);
-            this.projMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Project>());
-
-            this.uowMock.Setup(x => x.GetRepository<AttributeDefinition>()).Returns(this.adMock.Object);
-            this.adMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<AttributeDefinition>());
-
-            this.uowMock.Setup(x => x.GetRepository<CategoryAttribute>()).Returns(this.caMock.Object);
-            this.caMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<CategoryAttribute>());
-
-            this.uowMock.Setup(x => x.GetRepository<CCardClosingDate>()).Returns(this.cccdMock.Object);
-            this.cccdMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<CCardClosingDate>());
-
-            this.uowMock.Setup(x => x.GetRepository<SmsTemplate>()).Returns(this.smsMock.Object);
-            this.smsMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<SmsTemplate>());
+            this.SetupRepo(this.accountsRepo);
+            this.SetupRepo(this.trMock);
+            this.SetupRepo(this.categoriesRepo);
+            this.SetupRepo(this.exchangeRatesRepo);
+            this.SetupRepo(this.budgetMock);
+            this.SetupRepo(this.trAMock);
+            this.SetupRepo(this.currMock);
+            this.SetupRepo(this.locMock);
+            this.SetupRepo(this.payeeMock);
+            this.SetupRepo(this.projMock);
+            this.SetupRepo(this.adMock);
+            this.SetupRepo(this.caMock);
+            this.SetupRepo(this.cccdMock);
+            this.SetupRepo(this.smsMock);
 
             this.uowMock.Setup(x => x.Dispose()).Verifiable();
 
@@ -202,6 +169,63 @@
             this.entityReaderMock.VerifyAll();
         }
 
+        [Theory]
+        [AutoMoqData]
+        public void Locations_AddRaised_NewItemAdded(LocationVM result)
+        {
+            var location = new Location() { Id = 0 };
+            Location[] actual = null;
+
+            this.dbMock.Setup(x => x.GetOrCreateAsync<Location>(0)).ReturnsAsync(location);
+
+            this.dbMock.Setup(x => x.InsertOrUpdateAsync<Location>(It.IsAny<Location[]>())).Callback<IEnumerable<Location>>((x) => { actual = x.ToArray(); }).Returns(Task.CompletedTask);
+            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationVM>(), 240, 300, nameof(Location))).Returns(result);
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.Dispose()).Verifiable();
+            this.locMock = new Mock<IBaseRepository<Location>>();
+            this.SetupRepo(this.locMock);
+
+            var vm = this.GetFinancierVM();
+            vm.Locations.AddCommand.Execute();
+
+            this.dbMock.VerifyAll();
+            this.dbMock.Verify(x => x.GetOrCreateAsync<Location>(0), Times.Once);
+            this.dbMock.Verify(x => x.InsertOrUpdateAsync<Location>(It.IsAny<Location[]>()), Times.Once);
+            Assert.Equal(result.Address, actual[0].Address);
+            Assert.Equal(result.IsActive, actual[0].IsActive);
+            Assert.Equal(result.Title, actual[0].Title);
+            Assert.Equal(result.Title, actual[0].Name);
+            Assert.Equal(0, actual[0].Id);
+            Assert.Equal(0, actual[0].Count);
+        }
+
+        [Fact]
+        public void Locations_AddRaisedCancelClicked_NoNewItemAdded()
+        {
+            var location = new Location() { Id = 0 };
+
+            this.dbMock.Setup(x => x.GetOrCreateAsync<Location>(0)).ReturnsAsync(location);
+
+            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationVM>(), 240, 300, nameof(Location))).Returns(null);
+
+            this.locMock = new Mock<IBaseRepository<Location>>();
+            this.SetupRepo(this.locMock);
+
+            var vm = this.GetFinancierVM();
+            vm.Locations.AddCommand.Execute();
+
+            this.dbMock.VerifyAll();
+            this.dbMock.Verify(x => x.GetOrCreateAsync<Location>(0), Times.Once);
+            this.dbMock.Verify(x => x.InsertOrUpdateAsync<Location>(It.IsAny<Location[]>()), Times.Never);
+        }
+
         private FinancierVM GetFinancierVM() => new FinancierVM(this.dialogMock.Object, this.dbFactoryMock.Object, this.entityReaderMock.Object, this.backupWriterMock.Object);
+
+        private void SetupRepo<T>(Mock<IBaseRepository<T>> mock)
+            where T : Entity
+        {
+            this.uowMock.Setup(x => x.GetRepository<T>()).Returns(mock.Object);
+            mock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<T, object>>[]>())).ReturnsAsync(new List<T>());
+        }
     }
 }

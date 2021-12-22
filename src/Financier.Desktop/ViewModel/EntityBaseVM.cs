@@ -2,6 +2,7 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Financier.Desktop.ViewModel
@@ -17,15 +18,20 @@ namespace Financier.Desktop.ViewModel
 
         private DelegateCommand _editCommand;
 
-        private RangeObservableCollection<T> _entities;
+        private ObservableCollection<T> _entities;
 
-        public RangeObservableCollection<T> Entities
+        public EntityBaseVM(IEnumerable<T> entities)
+        {
+            _entities = new ObservableCollection<T>(entities);
+        }
+
+        public ObservableCollection<T> Entities
         {
             get
             {
                 if (_entities == null)
                 {
-                    _entities = new RangeObservableCollection<T>();
+                    _entities = new ObservableCollection<T>();
                     RaisePropertyChanged(nameof(Entities));
                 }
 

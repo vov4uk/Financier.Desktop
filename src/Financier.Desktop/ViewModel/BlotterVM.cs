@@ -3,9 +3,12 @@
     using Financier.DataAccess.View;
     using Prism.Commands;
     using System;
+    using System.Collections.Generic;
 
     public class BlotterVM : EntityBaseVM<BlotterTransactions>
     {
+        public BlotterVM(IEnumerable<BlotterTransactions> items) :base(items) { }
+
         //private BlotterTransactions _selectedValue;
 
         private DelegateCommand _addTemplateCommand;

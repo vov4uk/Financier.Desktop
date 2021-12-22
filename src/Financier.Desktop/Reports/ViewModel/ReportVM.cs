@@ -37,12 +37,14 @@ namespace Financier.Desktop.Reports.ViewModel
 
         private DateTime to;
 
-        public ReportVM()
+        public ReportVM(IEnumerable<ByCategoryReport> rows, IEnumerable<Category> categories)
+            :base(rows)
         {
             PeriodType = PeriodType.Today;
             UpdatePeriod(PeriodType);
+            AllCategories = new List<Category>(categories);
         }
-        public List<Category> AllCategories { get; set; }
+        public List<Category> AllCategories { get; }
 
         public DateTime From
         {

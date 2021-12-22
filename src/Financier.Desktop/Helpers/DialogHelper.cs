@@ -16,6 +16,8 @@ namespace Financier.Desktop.Helpers
         string SaveFileDialog(string fileExtention, string defaultPath = "");
 
         bool ShowWizard(WizardBaseVM context);
+
+        bool ShowMessageBox(string text, string caption, bool yesNoButtons = false);
     }
 
     public class DialogHelper : IDialogWrapper
@@ -91,6 +93,20 @@ namespace Financier.Desktop.Helpers
                 return dialog.FileName;
             }
             return string.Empty;
+        }
+
+        public bool ShowMessageBox(string text, string caption, bool yesNoButtons = false)
+        {
+            if (yesNoButtons)
+            {
+                var result = System.Windows.Forms.MessageBox.Show(text, caption, MessageBoxButtons.YesNo);
+                return result == DialogResult.Yes;
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show(text, caption);
+                return true;
+            }
         }
     }
 }

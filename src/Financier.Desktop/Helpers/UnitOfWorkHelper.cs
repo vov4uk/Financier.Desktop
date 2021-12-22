@@ -21,7 +21,7 @@ namespace Financier.Desktop.Helpers
             where T : class, IActive
         {
             var entities = await uow.GetRepository<T>().GetAllAsync(includes);
-            return entities.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id).ToList();
+            return entities.Where(x => x.Id > 0).OrderByDescending(x => x.IsActive).ThenBy(x => x.Id).ToList();
         }
     }
 }

@@ -7,27 +7,10 @@ namespace Financier.Desktop.ViewModel
 {
     public class CategoriesVM : EntityBaseVM<Category>
     {
-        public CategoriesVM()
+        public CategoriesVM(IEnumerable<Category> items) : base(items)
         {
-            this.PropertyChanged += Entities_PropertyChanged;
-            this.Entities.CollectionChanged += Entities_CollectionChanged;
-        }
-
-        private void Entities_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            _nodes.Clear();
             InitializeNodes(_nodes, Entities.ToList(), 0);
             RaisePropertyChanged(nameof(Nodes));
-        }
-
-        private void Entities_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Entities))
-            {
-                _nodes.Clear();
-                InitializeNodes(_nodes, Entities.ToList(), 0);
-                RaisePropertyChanged(nameof(Nodes));
-            }
         }
 
         private ObservableCollection<Node> _nodes = new ObservableCollection<Node>();

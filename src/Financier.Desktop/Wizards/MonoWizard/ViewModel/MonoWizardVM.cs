@@ -22,18 +22,18 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private readonly string csvFilePath;
         private readonly List<MonoTransaction> monoTransactions = new();
 
-        public MonoWizardVM(List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Category> categories,
-            List<Project> projects,
+        public MonoWizardVM(IEnumerable<Account> accounts,
+            IEnumerable<Currency> currencies,
+            IEnumerable<Location> locations,
+            IEnumerable<Category> categories,
+            IEnumerable<Project> projects,
             string csvFilePath)
         {
-            this.accounts = accounts;
-            this.currencies = currencies;
-            this.locations = locations;
-            this.categories = categories;
-            this.projects = projects;
+            this.accounts = new(accounts);
+            this.currencies = new(currencies);
+            this.locations = new(locations);
+            this.categories = new(categories);
+            this.projects = new(projects);
             this.csvFilePath = csvFilePath;
         }
 

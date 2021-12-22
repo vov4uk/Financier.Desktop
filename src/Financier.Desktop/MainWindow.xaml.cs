@@ -8,6 +8,7 @@ using DataFormats = System.Windows.DataFormats;
 using Financier.Desktop.Helpers;
 using Financier.DataAccess;
 using Financier.Adapter;
+using Financier.DataAccess.View;
 
 namespace Financier.Desktop
 {
@@ -46,7 +47,7 @@ namespace Financier.Desktop
             {
                 Logger.Info($"Loaded backup : {backup}");
                 await ViewModel.OpenBackup(backup);
-                ViewModel.CurrentPage = ViewModel.Pages.OfType<BlotterVM>().First();
+                ViewModel.MenuNavigateCommand.Execute(typeof(BlotterTransactions));
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using Financier.DataAccess.Data;
+﻿using System;
+using Financier.DataAccess.Data;
 using Financier.Desktop.Converters;
 using Financier.Desktop.ViewModel.Dialog;
 
@@ -12,11 +13,11 @@ namespace Financier.Desktop.Helpers
             tr.FromAccountId = dto.FromAccountId;
             tr.ToAccountId = dto.ToAccountId;
             tr.Note = dto.Note;
-            tr.FromAmount = System.Math.Abs(dto.FromAmount) * -1;
-            tr.ToAmount = System.Math.Abs(dto.ToAmount);
+            tr.FromAmount = Math.Abs(dto.FromAmount) * -1;
+            tr.ToAmount = Math.Abs(dto.ToAmount == 0 ? dto.FromAmount : dto.ToAmount);
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.OriginalCurrencyId = dto.FromAccount.CurrencyId;
-            tr.OriginalFromAmount = System.Math.Abs(dto.FromAmount) * -1;
+            tr.OriginalFromAmount = Math.Abs(dto.FromAmount) * -1;
             tr.CategoryId = 0;
             tr.Category = default;
         }
