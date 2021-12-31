@@ -5,6 +5,6 @@ namespace Financier.Desktop.ViewModel
 {
     public class CurrenciesVM: EntityBaseVM<Currency>
     {
-        public CurrenciesVM(IEnumerable<Currency> items) : base(items) { }
+        public CurrenciesVM(IEnumerable<Currency> items) : base(items) {}
     }
 }

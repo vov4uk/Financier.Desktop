@@ -7,9 +7,7 @@
 
     public class BlotterVM : EntityBaseVM<BlotterTransactions>
     {
-        public BlotterVM(IEnumerable<BlotterTransactions> items) :base(items) { }
-
-        //private BlotterTransactions _selectedValue;
+        public BlotterVM(IEnumerable<BlotterTransactions> items) : base(items) {}
 
         private DelegateCommand _addTemplateCommand;
 
@@ -58,21 +56,5 @@
                 return _infoCommand ??= new DelegateCommand(() => InfoRaised?.Invoke(this, SelectedValue), () => false);
             }
         }
-
-        // Need for commands not avaliable in base class
-//#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
-//        public BlotterTransactions SelectedValue
-//#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
-//        {
-//            get => _selectedValue;
-//            set
-//            {
-//                SetProperty(ref _selectedValue, value);
-//                EditCommand.RaiseCanExecuteChanged();
-//                DuplicateCommand.RaiseCanExecuteChanged();
-//                DeleteCommand.RaiseCanExecuteChanged();
-//                InfoCommand.RaiseCanExecuteChanged();
-//            }
-//        }
     }
 }

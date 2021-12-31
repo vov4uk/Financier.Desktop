@@ -5,6 +5,6 @@ namespace Financier.Desktop.ViewModel
 {
     public class ExchangeRatesVM : EntityBaseVM<CurrencyExchangeRate>
     {
-        public ExchangeRatesVM(IEnumerable<CurrencyExchangeRate> items) : base(items) { }
+        public ExchangeRatesVM(IEnumerable<CurrencyExchangeRate> items) : base(items) {}
     }
 }

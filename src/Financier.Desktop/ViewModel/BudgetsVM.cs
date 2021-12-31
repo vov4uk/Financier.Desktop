@@ -5,6 +5,6 @@ namespace Financier.Desktop.ViewModel
 {
     public class BudgetsVM : EntityBaseVM<Budget>
     {
-        public BudgetsVM(IEnumerable<Budget> items) : base(items) { }
+        public BudgetsVM(IEnumerable<Budget> items) : base(items) {}
     }
 }

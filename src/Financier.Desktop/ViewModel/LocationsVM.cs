@@ -5,6 +5,6 @@ namespace Financier.Desktop.ViewModel
 {
     public class LocationsVM : EntityBaseVM<Location>
     {
-        public LocationsVM(IEnumerable<Location> items) : base(items) { }
+        public LocationsVM(IEnumerable<Location> items) : base(items) {}
     }
 }

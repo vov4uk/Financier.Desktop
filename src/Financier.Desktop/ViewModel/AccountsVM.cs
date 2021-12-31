@@ -5,8 +5,6 @@ namespace Financier.Desktop.ViewModel
 {
     public class AccountsVM : EntityBaseVM<Account>
     {
-        public AccountsVM(IEnumerable<Account> items) : base(items)
-        {
-        }
+        public AccountsVM(IEnumerable<Account> items) : base(items) {}
     }
 }
