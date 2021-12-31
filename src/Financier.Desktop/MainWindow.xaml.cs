@@ -34,7 +34,7 @@ namespace Financier.Desktop
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new FinancierVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter());
+            ViewModel = new FinancierVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new Helpers.MonoCsvHelper());
 
             DataContext = ViewModel;
             Logger.Info("App started");

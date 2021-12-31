@@ -15,7 +15,7 @@ namespace Financier.Desktop.Helpers
 
         string SaveFileDialog(string fileExtention, string defaultPath = "");
 
-        bool ShowWizard(WizardBaseVM context);
+        object ShowWizard(WizardBaseVM context);
 
         bool ShowMessageBox(string text, string caption, bool yesNoButtons = false);
     }
@@ -51,20 +51,22 @@ namespace Financier.Desktop.Helpers
             return result;
         }
 
-        public bool ShowWizard(WizardBaseVM context)
+        public object ShowWizard(WizardBaseVM context)
         {
-            bool result = false;
+            bool save = false;
+            object result = null;
             WizardWindow dialog = new WizardWindow();
 
-            context.RequestClose += (o, args) =>
+            context.RequestClose += (sender, args) =>
             {
                 dialog.Close();
-                result = args;
+                save = args;
+                result = sender;
             };
             dialog.DataContext = context;
             dialog.ShowDialog();
 
-            return result;
+            return save ? result : null;
         }
 
         public string OpenFileDialog(string fileExtention)

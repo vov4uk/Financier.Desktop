@@ -31,12 +31,12 @@
             accounts.Add(monoAcc);
             var vm = new Page1VM(accounts);
 
-            Assert.Equal(default, vm.MonoAccount);
+            Assert.Equal(accounts[0], vm.MonoAccount);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Constructor_NoMono_MonoAccountNotSelected(List<Account> accounts)
+        public void Constructor_NoMono_FirstAccountSelected(List<Account> accounts)
         {
             foreach (var item in accounts)
             {
@@ -45,7 +45,7 @@
 
             var vm = new Page1VM(accounts);
 
-            Assert.Equal(default, vm.MonoAccount);
+            Assert.NotNull(vm.MonoAccount);
         }
 
         [Fact]

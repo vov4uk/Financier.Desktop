@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Financier.DataAccess.Data;
+    using Financier.DataAccess.Monobank;
     using Financier.Desktop.Wizards.MonoWizard.ViewModel;
     using Financier.Tests.Common;
     using Xunit;
@@ -14,7 +15,8 @@
     {
         [Theory]
         [AutoMoqData]
-        public void Constructor_ReceiveParameters_CurrentPageEmpty(
+        public void Constructor_ReceiveParameters_CurrentPageNotEmpty(
+            List<MonoTransaction> mono,
             List<Account> accounts,
             List<Currency> currencies,
             List<Location> locations,
@@ -22,14 +24,14 @@
             List<Project> projects)
         {
             var vm = new MonoWizardVM(
+                mono,
                 accounts,
                 currencies,
                 locations,
                 categories,
-                projects,
-                string.Empty);
+                projects);
 
-            Assert.Null(vm.CurrentPage);
+            Assert.NotNull(vm.CurrentPage);
         }
 
         [Theory]
@@ -42,14 +44,14 @@
             List<Project> projects)
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
+            var mono = await new Helpers.MonoCsvHelper().ParseCsv(csvPath);
             var vm = new MonoWizardVM(
+                mono,
                 accounts,
                 currencies,
                 locations,
                 categories,
-                projects,
-                csvPath);
-            await vm.LoadTransactions();
+                projects);
 
             Assert.Equal(46, ((Page2VM)vm.Pages[1]).MonoTransactions.Count);
             Assert.NotNull(vm.CurrentPage);
@@ -66,14 +68,14 @@
             List<Project> projects)
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
+            var mono = await new Helpers.MonoCsvHelper().ParseCsv(csvPath);
             var vm = new MonoWizardVM(
+                mono,
                 accounts,
                 currencies,
                 locations,
                 categories,
-                projects,
-                csvPath);
-            await vm.LoadTransactions();
+                projects);
 
             Assert.Single(((Page2VM)vm.Pages[1]).MonoTransactions);
             Assert.NotNull(vm.CurrentPage);
@@ -83,6 +85,8 @@
         [Fact]
         public async Task MoveNextCommand_Execute3Times_TransactionsImpoted()
         {
+            List<Transaction> output = new ();
+
             List<Account> accounts = new List<Account>
             {
                 new Account { Id = 1, Title = "Monobank", TotalAmount = 189671, CurrencyId = 2, IsActive = true },
@@ -102,14 +106,16 @@
             List<Currency> currencies = new List<Currency> { new Currency { Id = 1, Name = "USD" }, new Currency { Id = 2, Name = "UAH" } };
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
+            var mono = await new Helpers.MonoCsvHelper().ParseCsv(csvPath);
             var vm = new MonoWizardVM(
+                mono,
                 accounts,
                 currencies,
                 locations,
                 categories,
-                projects,
-                csvPath);
-            await vm.LoadTransactions();
+                projects);
+
+            vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
 
             Assert.Equal(1, ((Page1VM)vm.CurrentPage).MonoAccount.Id);
             Assert.Equal("Please select account", vm.Title);
@@ -137,10 +143,10 @@
 
             vm.MoveNextCommand.Execute();
 
-            Assert.Equal(45, vm.TransactionsToImport.Count);
+            Assert.Equal(45, output.Count);
 
             // Transfer From Mono
-            var fromMono = vm.TransactionsToImport[1];
+            var fromMono = output[1];
             Assert.Equal(1, fromMono.FromAccountId);
             Assert.Equal(2, fromMono.ToAccountId);
             Assert.Equal(-3000, fromMono.FromAmount);
@@ -148,7 +154,7 @@
             Assert.Equal(new DateTimeOffset(new DateTime(2021, 11, 15, 10, 18, 09)).ToUnixTimeMilliseconds(), fromMono.DateTime);
 
             // Transfer To Mono
-            var toMono = vm.TransactionsToImport[40];
+            var toMono = output[40];
             Assert.Equal(2, toMono.FromAccountId);
             Assert.Equal(1, toMono.ToAccountId);
             Assert.Equal(280000, toMono.ToAmount);
@@ -156,17 +162,17 @@
             Assert.Equal(0, toMono.ProjectId);
 
             // Expanse with project
-            var withProject = vm.TransactionsToImport[6];
+            var withProject = output[6];
             Assert.Equal(1, withProject.ProjectId);
 
-            Assert.Equal(1, vm.TransactionsToImport.Count(x => x.CategoryId == 1));
-            Assert.Equal(2, vm.TransactionsToImport.Count(x => x.LocationId == 200));
-            Assert.Equal(3, vm.TransactionsToImport.Count(x => x.LocationId == 201));
-            Assert.Equal(2, vm.TransactionsToImport.Count(x => x.LocationId == 202));
-            Assert.Equal(1, vm.TransactionsToImport.Count(x => x.LocationId == 203));
-            Assert.Equal(2, vm.TransactionsToImport.Count(x => x.LocationId == 204));
-            Assert.Equal(5, vm.TransactionsToImport.Count(x => x.LocationId == 205));
-            Assert.Equal(2, vm.TransactionsToImport.Count(x => x.OriginalCurrencyId == 1));
+            Assert.Equal(1, output.Count(x => x.CategoryId == 1));
+            Assert.Equal(2, output.Count(x => x.LocationId == 200));
+            Assert.Equal(3, output.Count(x => x.LocationId == 201));
+            Assert.Equal(2, output.Count(x => x.LocationId == 202));
+            Assert.Equal(1, output.Count(x => x.LocationId == 203));
+            Assert.Equal(2, output.Count(x => x.LocationId == 204));
+            Assert.Equal(5, output.Count(x => x.LocationId == 205));
+            Assert.Equal(2, output.Count(x => x.OriginalCurrencyId == 1));
         }
     }
 }

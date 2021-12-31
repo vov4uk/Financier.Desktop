@@ -1,5 +1,4 @@
-﻿using Financier.DataAccess;
-using Financier.DataAccess.Abstractions;
+﻿using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.View;
 using Financier.Desktop.Views;
@@ -16,7 +15,6 @@ using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Views.Controls;
 using Financier.Desktop.Reports.ViewModel;
 using Financier.Desktop.Helpers;
-using System.Windows.Forms;
 using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using System.IO;
 using System.Collections.Concurrent;
@@ -30,6 +28,7 @@ namespace Financier.Desktop.ViewModel
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly IFinancierDatabaseFactory dbFactory;
         private readonly IDialogWrapper dialogWrapper;
+        private readonly ICsvHelper csvHelper;
         private readonly List<Entity> keyLessEntities = new();
         private BackupVersion _backupVersion;
         private Dictionary<string, List<string>> _entityColumnsOrder;
@@ -49,13 +48,14 @@ namespace Financier.Desktop.ViewModel
         private string openBackupPath;
         private ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
 
-        public FinancierVM(IDialogWrapper dialogWrapper, IFinancierDatabaseFactory dbFactory, IEntityReader entityReader, IBackupWriter backupWriter)
+        public FinancierVM(IDialogWrapper dialogWrapper, IFinancierDatabaseFactory dbFactory, IEntityReader entityReader, IBackupWriter backupWriter, ICsvHelper csvHelper)
         {
             this.dialogWrapper = dialogWrapper;
             this.dbFactory = dbFactory;
             this.entityReader = entityReader;
             this.backupWriter = backupWriter;
-            db = dbFactory.CreateDatabase();
+            this.csvHelper = csvHelper;
+            this.db = dbFactory.CreateDatabase();
 
             CreatePages();
         }
@@ -167,6 +167,7 @@ namespace Financier.Desktop.ViewModel
 
             var duration = DateTime.Now - start;
             Logger.Info($"Duration : {duration}");
+            dialogWrapper.ShowMessageBox($"Imported {entities.Count()} entities. Duration : {duration}","Success");
             NavigateToType(typeof(BlotterTransactions));
         }
 
@@ -302,7 +303,6 @@ namespace Financier.Desktop.ViewModel
 
         private async Task RefreshAccountsAndTransactionsViewModels(List<Transaction> transactions)
         {
-            await db.AddTransactionsAsync(transactions);
 
             var accountIds = transactions
                 .Where(x => x.ToAccountId > 0)
@@ -462,7 +462,6 @@ namespace Financier.Desktop.ViewModel
                 var updatedItem = (EntityWithTitleVM)result;
                 selectedEntity.IsActive = updatedItem.IsActive;
                 selectedEntity.Title = updatedItem.Title;
-                selectedEntity.Id = updatedItem.Id;
 
                 await db.InsertOrUpdateAsync(new[] { selectedEntity });
                 await RefreshEntitiesAsync<T>();
@@ -495,33 +494,41 @@ namespace Financier.Desktop.ViewModel
 
         private async void OpenMonoWizardAsync()
         {
-            var fileName = dialogWrapper.OpenFileDialog(".csv");
-
+            var fileName = dialogWrapper.OpenFileDialog("csv");
+            Logger.Info($"csv fileName -> {fileName}");
             if (!string.IsNullOrEmpty(fileName))
             {
                 using var uow = db.CreateUnitOfWork();
-                var accounts = await uow.GetAllAsync<Account>();
+                var accounts = await uow.GetAllOrderedByDefaultAsync<Account>();
                 var currencies = await uow.GetAllAsync<Currency>();
-                var locations = await uow.GetAllAsync<Location>();
+                var locations = await uow.GetAllOrderedByDefaultAsync<Location>();
                 var categories = await uow.GetAllAsync<Category>();
-                var projects = await uow.GetAllAsync<Project>();
+                var projects = await uow.GetAllOrderedByDefaultAsync<Project>();
 
-                var viewModel = new MonoWizardVM(accounts, currencies, locations, categories, projects, fileName);
-                await viewModel.LoadTransactions();
+                var csvTransactions = await csvHelper.ParseCsv(fileName);
 
-                var save = dialogWrapper.ShowWizard(viewModel);
+                var vm = new MonoWizardVM(csvTransactions, accounts, currencies, locations, categories.OrderBy(x => x.Left), projects);
 
-                if (save)
+                var output = dialogWrapper.ShowWizard(vm);
+
+                if (output is List<Transaction>)
                 {
-                    var monoToImport = viewModel.TransactionsToImport.Where(item =>
-                    !Blotter.Entities.Any(x =>
-                    x.from_account_id == item.FromAccountId &&
-                    x.datetime == item.DateTime &&
-                    x.from_amount == item.FromAmount)).ToList();
+                    var outputTransactions = output as List<Transaction>;
+                    using var blotter = db.CreateUnitOfWork();
+                    var times = outputTransactions.Select(x => x.DateTime).Distinct().ToArray();
+                    var transactionRepo = blotter.GetRepository<Transaction>();
+                    List<Transaction> accTransactions = await transactionRepo.FindManyAsync(predicate: x => times.Contains(x.DateTime));
 
-                    var duplicatesCount = viewModel.TransactionsToImport.Count - monoToImport.Count;
+                    List<Transaction> monoToImport = outputTransactions.Where(item =>
+                    !accTransactions.Any(x =>
+                    x.FromAccountId == item.FromAccountId &&
+                    x.DateTime == item.DateTime &&
+                    x.FromAmount == item.FromAmount)).ToList();
+
+                    var duplicatesCount = outputTransactions.Count - monoToImport.Count;
 
                     await db.AddTransactionsAsync(monoToImport);
+
                     await RefreshAccountsAndTransactionsViewModels(monoToImport);
 
                     this.dialogWrapper.ShowMessageBox(
@@ -537,7 +544,7 @@ namespace Financier.Desktop.ViewModel
         private async Task OpenTransactionDialogAsync(int id)
         {
             Transaction transaction = await db.GetOrCreateTransactionAsync(id);
-            IEnumerable<TransactionDTO> subTransactions = (await db.GetSubTransactionsAsync(id)).Select(x => new TransactionDTO(x));
+            var subTransactions = (await db.GetSubTransactionsAsync(id)).Select(x => new TransactionDTO(x));
             var transactionDto = new TransactionDTO(transaction);
             transactionDto.SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions);
 
@@ -553,6 +560,7 @@ namespace Financier.Desktop.ViewModel
                 await uow.GetAllOrderedByDefaultAsync<Location>(),
                 await uow.GetAllOrderedByDefaultAsync<Payee>());
 
+            // TODO : return resultVm.Transaction only, not whole VM
             var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
 
             if (result is TransactionDialogVM)
@@ -580,6 +588,7 @@ namespace Financier.Desktop.ViewModel
                 }
 
                 await db.InsertOrUpdateAsync(resultTransactions);
+                await db.RebuildAccountBalanceAsync(transaction.FromAccountId);
                 await RefreshBlotterTransactionsAsync();
             }
         }

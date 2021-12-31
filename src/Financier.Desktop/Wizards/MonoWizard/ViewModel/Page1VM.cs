@@ -15,7 +15,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         public Page1VM(List<Account> records)
         {
             Accounts = new ObservableCollection<Account>(records);
-            MonoAccount = Accounts.FirstOrDefault(x => x.IsActive && x.Title.Contains("mono", System.StringComparison.OrdinalIgnoreCase));
+            MonoAccount = Accounts.FirstOrDefault(x => x.IsActive && x.Title.Contains("mono", System.StringComparison.OrdinalIgnoreCase)) ?? Accounts.FirstOrDefault();
         }
         public ObservableCollection<Account> Accounts
         {

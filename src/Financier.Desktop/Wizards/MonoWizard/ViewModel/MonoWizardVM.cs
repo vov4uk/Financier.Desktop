@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using CsvHelper;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
 
@@ -19,22 +14,25 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private readonly List<Location> locations;
         private readonly List<Category> categories;
         private readonly List<Project> projects;
-        private readonly string csvFilePath;
         private readonly List<MonoTransaction> monoTransactions = new();
 
-        public MonoWizardVM(IEnumerable<Account> accounts,
+        public MonoWizardVM(
+            IEnumerable<MonoTransaction> monoTransactions,
+            IEnumerable<Account> accounts,
             IEnumerable<Currency> currencies,
             IEnumerable<Location> locations,
             IEnumerable<Category> categories,
-            IEnumerable<Project> projects,
-            string csvFilePath)
+            IEnumerable<Project> projects)
         {
+            this.monoTransactions = new(monoTransactions);
             this.accounts = new(accounts);
             this.currencies = new(currencies);
             this.locations = new(locations);
             this.categories = new(categories);
             this.projects = new(projects);
-            this.csvFilePath = csvFilePath;
+
+            CreatePages();
+            CurrentPage = Pages[0];
         }
 
         public override void AfterCurrentPageUpdated(WizardPageBaseVM currentPage)
@@ -67,24 +65,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
+        //TODO - remove
         public Account MonoBankAccount { get; set; }
-
-        public List<Transaction> TransactionsToImport { get; set; }
-
-        public async Task LoadTransactions()
-        {
-            if (File.Exists(csvFilePath))
-            {
-                Logger.Info($"csvFilePath -> {csvFilePath}");
-                await using FileStream file = File.OpenRead(csvFilePath);
-                using StreamReader streamReader = new StreamReader(file, Encoding.UTF8);
-                using var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture);
-                var records = await csv.GetRecordsAsync<MonoTransaction>().ToListAsync();
-                monoTransactions.AddRange(records);
-                CreatePages();
-                CurrentPage = Pages[0];
-            }
-        }
 
         public override void CreatePages()
         {
@@ -97,16 +79,17 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         }
 
 
-        public override void OnRequestClose(bool save)
+        public override object OnRequestClose(bool save)
         {
             if (save)
             {
-                TransactionsToImport = _pages.OfType<Page3VM>()
+                return _pages.OfType<Page3VM>()
                     .Single()
                     .FinancierTransactions
                     .Select(TransformMonoTransaction)
                     .ToList();
             }
+            return null;
         }
 
         private Transaction TransformMonoTransaction(FinancierTransactionVM x)

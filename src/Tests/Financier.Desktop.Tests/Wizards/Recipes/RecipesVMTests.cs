@@ -35,8 +35,7 @@
             {
                 if (args)
                 {
-                    var vm = o as RecipesVM;
-                    actual = vm.TransactionsToImport;
+                    actual = o as List<TransactionDTO>;
                 }
             };
 
@@ -63,6 +62,7 @@ Discount -0.5 A";
         [Fact]
         public void CancelCommand_Execute_TransactionsEmpty()
         {
+            List<TransactionDTO> output = new ();
             double total = -100.0;
             List<TransactionDTO> actual = default;
             bool save = true;
@@ -70,6 +70,7 @@ Discount -0.5 A";
             vm.RequestClose += (o, args) =>
             {
                 save = args;
+                output = o as List<TransactionDTO>;
             };
 
             var page1 = vm.CurrentPage as Page1VM;
@@ -80,7 +81,7 @@ Discount -0.5 A";
 
             vm.CancelCommand.Execute();
 
-            Assert.Equal(vm.TransactionsToImport, actual, new Comparer());
+            Assert.Equal(output, actual, new Comparer());
         }
 
         [Fact]

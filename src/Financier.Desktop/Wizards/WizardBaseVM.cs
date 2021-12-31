@@ -28,7 +28,7 @@ namespace Financier.Desktop.Wizards
         public abstract void BeforeCurrentPageUpdated(WizardPageBaseVM old, WizardPageBaseVM newValue);
         public abstract void AfterCurrentPageUpdated(WizardPageBaseVM newValue);
         public abstract void CreatePages();
-        public abstract void OnRequestClose(bool save);
+        public abstract object OnRequestClose(bool save);
 
         public WizardPageBaseVM CurrentPage
         {
@@ -108,8 +108,8 @@ namespace Financier.Desktop.Wizards
 
         void OnClose(bool save)
         {
-            OnRequestClose(save);
-            RequestClose?.Invoke(this, save);
+            var output = OnRequestClose(save);
+            RequestClose?.Invoke(output, save);
         }
     }
 }

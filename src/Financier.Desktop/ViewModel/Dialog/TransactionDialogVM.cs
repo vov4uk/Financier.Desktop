@@ -120,7 +120,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private void ShowSubTransactionDialog(TransactionDTO dto, bool isNewItem)
         {
             Transaction.RecalculateUnSplitAmount();
-            var workingCopy = new TransactionDTO() { IsSubTransaction = true };
+            var workingCopy = new TransactionDTO() { IsSubTransaction = true, IsAmountNegative = true };
             if (!isNewItem)
             {
                 CopySubTransaction(workingCopy, dto);
@@ -130,6 +130,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
             else
             {
+                workingCopy.FromAmount = Math.Abs(Transaction.UnsplitAmount);
                 workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount;
             }
 
@@ -152,16 +153,17 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             var dialog = new WizardWindow();
 
-            var viewModel = new RecipesVM(
+            var vm = new RecipesVM(
                 Transaction.RealFromAmount / 100.0,
                 Categories.Where(x => x.Id > 0).ToList(),
                 Projects.ToList());
 
-            var save = dialogWrapper.ShowWizard(viewModel);
+            var output = dialogWrapper.ShowWizard(vm);
 
-            if (save)
+            if (output is List<TransactionDTO>)
             {
-                foreach (var item in viewModel.TransactionsToImport)
+                var outputTransactions = output as List<TransactionDTO>;
+                foreach (var item in outputTransactions)
                 {
                     item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
                     Transaction.SubTransactions.Add(item);

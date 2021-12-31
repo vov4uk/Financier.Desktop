@@ -23,7 +23,6 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             get;
             private set;
         }
-        public List<TransactionDTO> TransactionsToImport { get; private set; }
 
         public override void AfterCurrentPageUpdated(WizardPageBaseVM newValue)
         {
@@ -49,16 +48,17 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
             CurrentPage = Pages[0];
         }
-        public override void OnRequestClose(bool save)
+        public override object OnRequestClose(bool save)
         {
             if (save)
             {
-                TransactionsToImport = _pages.OfType<Page2VM>()
+                return _pages.OfType<Page2VM>()
                     .Single()
                     .FinancierTransactions
                     .Select(TransformMonoTransaction)
                     .ToList();
             }
+            return null;
         }
 
         private TransactionDTO TransformMonoTransaction(FinancierTransactionVM x)
