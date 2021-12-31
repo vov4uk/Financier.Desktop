@@ -1,4 +1,5 @@
 ﻿using Financier.DataAccess.Data;
+using Financier.Desktop.Data;
 using Prism.Commands;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +88,11 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             if (Transaction.IsSplitCategory) return Transaction.UnsplitAmount == 0;
             return true;
+        }
+
+        public override object OnRequestSave()
+        {
+            return Transaction;
         }
     }
 }

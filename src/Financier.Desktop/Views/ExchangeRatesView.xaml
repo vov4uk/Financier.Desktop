@@ -1,10 +1,14 @@
-﻿<UserControl x:Class="Financier.Desktop.Views.Currencies"
+﻿<UserControl x:Class="Financier.Desktop.Views.ExchangeRatesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:convert="clr-namespace:Financier.Desktop.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <convert:UnixTimeConverter x:Key="DatetimeConverter"/>
+    </UserControl.Resources>
     <Grid>
         <DataGrid Margin="5"
                   ItemsSource="{Binding Path=Entities}"
@@ -13,10 +17,10 @@
                   FontSize="14"
                   IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Symbol" Binding="{Binding Path=Symbol}"></DataGridTextColumn>
-                <DataGridTextColumn Header="IsDefault" Binding="{Binding Path=IsDefault}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, Converter= {StaticResource DatetimeConverter}}"/>
+                <DataGridTextColumn Header="From" Binding="{Binding Path=FromCurrency.Name}"/>
+                <DataGridTextColumn Header="To" Binding="{Binding Path=ToCurrency.Name}"/>
+                <DataGridTextColumn Header="Rate" Binding="{Binding Path=Rate}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

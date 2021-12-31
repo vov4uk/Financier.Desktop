@@ -102,7 +102,7 @@ namespace Financier.Desktop.Reports.ViewModel
             }
         }
 
-
+        // TODO - convert all transactions to home currency
         internal void RefreshReport(double width)
         {
             currentWidth = width;

@@ -5,9 +5,9 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Financier.Desktop.ViewModel.Dialog
+namespace Financier.Desktop.Data
 {
-    public class TransactionDTO : BaseDTO
+    public class TransactionDTO : BaseTransactionDTO
     {
         private Account account;
         private int accountId;
@@ -27,7 +27,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         public TransactionDTO() { }
 
-        public TransactionDTO(FinancierTransactionVM x)
+        public TransactionDTO(FinancierTransactionDTO x)
         {
             Id = 0;
             FromAmount = x.FromAmount;

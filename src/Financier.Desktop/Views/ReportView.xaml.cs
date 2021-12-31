@@ -7,10 +7,10 @@ namespace Financier.Desktop.Views
     /// <summary>
     /// Interaction logic for Report.xaml
     /// </summary>
-    public partial class Report : UserControl
+    public partial class ReportView : UserControl
     {
 
-        public Report()
+        public ReportView()
         {
             InitializeComponent();
             Loaded += RefreshReport;

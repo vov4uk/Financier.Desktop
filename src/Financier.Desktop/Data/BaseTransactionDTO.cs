@@ -1,9 +1,9 @@
 ﻿using Prism.Mvvm;
 using System;
 
-namespace Financier.Desktop.ViewModel.Dialog
+namespace Financier.Desktop.Data
 {
-    public class BaseDTO : BindableBase
+    public class BaseTransactionDTO : BindableBase
     {
         private DateTime date;
         private DateTime time;

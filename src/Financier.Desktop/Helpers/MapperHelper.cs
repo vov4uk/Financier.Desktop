@@ -1,7 +1,7 @@
 ﻿using System;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Converters;
-using Financier.Desktop.ViewModel.Dialog;
+using Financier.Desktop.Data;
 
 namespace Financier.Desktop.Helpers
 {

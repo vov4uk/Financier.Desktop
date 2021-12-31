@@ -2,9 +2,9 @@
 using Financier.Desktop.Converters;
 using System;
 
-namespace Financier.Desktop.ViewModel.Dialog
+namespace Financier.Desktop.Data
 {
-    public class TransferDTO : BaseDTO
+    public class TransferDTO : BaseTransactionDTO
     {
         private Account fromAccount;
         private int fromAccountId;

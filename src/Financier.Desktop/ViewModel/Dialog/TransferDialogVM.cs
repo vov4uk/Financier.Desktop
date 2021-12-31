@@ -1,4 +1,5 @@
 ﻿using Financier.DataAccess.Data;
+using Financier.Desktop.Data;
 using Prism.Commands;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,11 @@ namespace Financier.Desktop.ViewModel.Dialog
         protected override bool CanSaveCommandExecute()
         {
             return Transfer.FromAccount != null && Transfer.ToAccount != null && Transfer.FromAccountId != Transfer.ToAccountId;
+        }
+
+        public override object OnRequestSave()
+        {
+            return Transfer;
         }
     }
 }

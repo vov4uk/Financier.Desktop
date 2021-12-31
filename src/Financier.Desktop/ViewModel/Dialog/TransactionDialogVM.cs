@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Financier.DataAccess.Data;
+using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Views;
 using Financier.Desktop.Wizards;
@@ -120,7 +121,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private void ShowSubTransactionDialog(TransactionDTO dto, bool isNewItem)
         {
             Transaction.RecalculateUnSplitAmount();
-            var workingCopy = new TransactionDTO() { IsSubTransaction = true, IsAmountNegative = true };
+            var workingCopy = new TransactionDTO { IsSubTransaction = true, IsAmountNegative = true };
             if (!isNewItem)
             {
                 CopySubTransaction(workingCopy, dto);
@@ -138,10 +139,10 @@ namespace Financier.Desktop.ViewModel.Dialog
 
             var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, "Sub Transaction");
 
-            if (dialogResult is SubTransactionDailogVM)
+            if (dialogResult is TransactionDTO)
             {
-                var modifiedCopy = dialogResult as SubTransactionDailogVM;
-                CopySubTransaction(dto, modifiedCopy.Transaction);
+                var modifiedCopy = dialogResult as TransactionDTO;
+                CopySubTransaction(dto, modifiedCopy);
 
                 if (isNewItem) Transaction.SubTransactions.Add(dto);
                 Transaction.RecalculateUnSplitAmount();

@@ -15,7 +15,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         private DelegateCommand<RichTextBox> _highlightCommand;
 
         public override bool IsValid() => true;
-        public List<FinancierTransactionVM> Amounts { get; } = new List<FinancierTransactionVM>();
+        public List<FinancierTransactionDTO> Amounts { get; } = new List<FinancierTransactionDTO>();
         public string Text
         {
             get => this.text;
@@ -65,7 +65,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                         if (amount != 0.0)
                         {
                             var note = line.Replace(res.Value, string.Empty);
-                            Amounts.Add(new FinancierTransactionVM
+                            Amounts.Add(new FinancierTransactionDTO
                             {
                                 FromAmount = Convert.ToInt64(amount * -100.0),
                                 Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),

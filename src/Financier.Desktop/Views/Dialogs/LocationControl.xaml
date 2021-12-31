@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:LocationVM}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:LocationDialogVM}, IsDesignTimeCreatable=True}"
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="400">
@@ -42,7 +42,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="24" />
             </Grid.ColumnDefinitions>
-            <TextBlock          Grid.Column="0"
+            <TextBlock      Grid.Column="0"
                             Grid.Row="0"
                             Grid.ColumnSpan="2"
                             Text="Title"
@@ -50,12 +50,12 @@
             <TextBox Grid.Column="0"
                  Grid.Row="1"
                  x:Name="Amount"
-                 Text="{Binding Title}" />
-            <xctk:IconButton   Grid.Column="1"
-                           Grid.Row="1"
-                           Height="24"
-                           Width="24"
-                           Command="{Binding ClearTitleCommand}" >
+                 Text="{Binding Entity.Title}" />
+            <xctk:IconButton Grid.Column="1"
+                             Grid.Row="1"
+                             Height="24"
+                             Width="24"
+                             Command="{Binding ClearTitleCommand}" >
                 <xctk:IconButton.Icon>
                     <Image Source="{StaticResource ic_action_cancel}" />
                 </xctk:IconButton.Icon>
@@ -69,7 +69,7 @@
             <TextBox Grid.Column="0"
                  Grid.Row="3"
                  x:Name="OrigAmount"
-                 Text="{Binding Address}" />
+                 Text="{Binding Entity.Address}" />
 
             <xctk:IconButton   Grid.Column="1" Grid.Row="3"
                            Height="24"
@@ -83,7 +83,7 @@
             <CheckBox   Grid.Column="0"
                     Grid.Row="4"
                     Grid.ColumnSpan="2"
-                    IsChecked="{Binding IsActive}" >Is Active</CheckBox>
+                    IsChecked="{Binding Entity.IsActive}" >Is Active</CheckBox>
 
             <Grid Grid.Row="5"
               Margin="0 24 0 0"

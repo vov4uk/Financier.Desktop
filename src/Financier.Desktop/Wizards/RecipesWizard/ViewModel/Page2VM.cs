@@ -23,14 +23,14 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             financierTransactions = new();
         }
 
-        private ObservableCollection<FinancierTransactionVM> financierTransactions;
-        private DelegateCommand<FinancierTransactionVM> _deleteCommand;
+        private ObservableCollection<FinancierTransactionDTO> financierTransactions;
+        private DelegateCommand<FinancierTransactionDTO> _deleteCommand;
         private DelegateCommand _addRowCommand;
         private DelegateCommand _totalCommand;
 
-        public void SetTransactions(List<FinancierTransactionVM> list)
+        public void SetTransactions(List<FinancierTransactionDTO> list)
         {
-            FinancierTransactions = new ObservableCollection<FinancierTransactionVM>(list);
+            FinancierTransactions = new ObservableCollection<FinancierTransactionDTO>(list);
             CalculateFromAmounts();
         }
 
@@ -40,11 +40,11 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 FinancierTransactions.Sum(x => x.FromAmount) / 100.0;
         }
 
-        public DelegateCommand<FinancierTransactionVM> DeleteCommand
+        public DelegateCommand<FinancierTransactionDTO> DeleteCommand
         {
             get
             {
-                return _deleteCommand ??= new DelegateCommand<FinancierTransactionVM>(tr =>
+                return _deleteCommand ??= new DelegateCommand<FinancierTransactionDTO>(tr =>
                 {
                     financierTransactions.Remove(tr);
                     for (int i = 0; i < financierTransactions.Count; i++)
@@ -59,7 +59,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             get
             {
-                return _addRowCommand ??= new DelegateCommand(() => { financierTransactions.Add(new FinancierTransactionVM() { Order = financierTransactions.Count + 1}); });
+                return _addRowCommand ??= new DelegateCommand(() => { financierTransactions.Add(new FinancierTransactionDTO() { Order = financierTransactions.Count + 1}); });
             }
         }
 
@@ -71,7 +71,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        public ObservableCollection<FinancierTransactionVM> FinancierTransactions
+        public ObservableCollection<FinancierTransactionDTO> FinancierTransactions
         {
             get => financierTransactions;
             private set

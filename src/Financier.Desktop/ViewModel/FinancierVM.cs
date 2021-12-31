@@ -19,6 +19,7 @@ using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using System.IO;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
+using Financier.Desktop.Data;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -453,13 +454,13 @@ namespace Financier.Desktop.ViewModel
             where T : Entity, IActive, new()
         {
             T selectedEntity = await db.GetOrCreateAsync<T>(e);
-            EntityWithTitleVM context = new EntityWithTitleVM(selectedEntity);
+            EntityWithTitleVM context = new EntityWithTitleVM(new EntityWithTitleDTO(selectedEntity));
 
             var result = dialogWrapper.ShowDialog<EntityWithTitleControl>(context, 180, 300, typeof(T).Name);
 
-            if (result is EntityWithTitleVM)
+            if (result is EntityWithTitleDTO)
             {
-                var updatedItem = (EntityWithTitleVM)result;
+                var updatedItem = (EntityWithTitleDTO)result;
                 selectedEntity.IsActive = updatedItem.IsActive;
                 selectedEntity.Title = updatedItem.Title;
 
@@ -471,13 +472,13 @@ namespace Financier.Desktop.ViewModel
         private async Task OpenLocationDialogAsync(int id)
         {
             Location selectedValue = await db.GetOrCreateAsync<Location>(id);
-            LocationVM locationVm = new LocationVM(selectedValue);
+            LocationDialogVM locationVm = new LocationDialogVM(new LocationDTO(selectedValue));
 
             var result = dialogWrapper.ShowDialog<LocationControl>(locationVm, 240, 300, nameof(Location));
 
-            if (result is LocationVM)
+            if (result is LocationDTO)
             {
-                var updatedItem = (LocationVM)result;
+                var updatedItem = (LocationDTO)result;
                 selectedValue.IsActive = updatedItem.IsActive;
                 selectedValue.Address = updatedItem.Address;
                 selectedValue.Title = updatedItem.Title;
@@ -488,6 +489,8 @@ namespace Financier.Desktop.ViewModel
                 }
 
                 await db.InsertOrUpdateAsync(new[] { selectedValue });
+
+                // TODO : позбутись використання даних з таблиць, перейти на DTO
                 await RefreshEntitiesAsync<Location>();
             }
         }
@@ -563,21 +566,21 @@ namespace Financier.Desktop.ViewModel
             // TODO : return resultVm.Transaction only, not whole VM
             var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
 
-            if (result is TransactionDialogVM)
+            if (result is TransactionDTO)
             {
-                var resultVm = result as TransactionDialogVM;
+                var resultVm = result as TransactionDTO;
                 var resultTransactions = new List<Transaction>();
 
-                MapperHelper.MapTransaction(resultVm.Transaction, transaction);
+                MapperHelper.MapTransaction(resultVm, transaction);
 
                 resultTransactions.Add(transaction);
-                if (resultVm.Transaction?.SubTransactions?.Any() == true)
+                if (resultVm?.SubTransactions?.Any() == true)
                 {
-                    foreach (var subTransactionDto in resultVm.Transaction.SubTransactions)
+                    foreach (var subTransactionDto in resultVm.SubTransactions)
                     {
                         var subTransaction = await db.GetOrCreateAsync<Transaction>(subTransactionDto.Id);
-                        subTransactionDto.Date = resultVm.Transaction.Date;
-                        subTransactionDto.Time = resultVm.Transaction.Time;
+                        subTransactionDto.Date = resultVm.Date;
+                        subTransactionDto.Time = resultVm.Time;
                         MapperHelper.MapTransaction(subTransactionDto, subTransaction);
                         subTransaction.Parent = transaction;
                         subTransaction.FromAccountId = transaction.FromAccountId;
@@ -603,9 +606,9 @@ namespace Financier.Desktop.ViewModel
 
             var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
 
-            if (result is TransferDialogVM)
+            if (result is TransferDTO)
             {
-                MapperHelper.MapTransfer((result as TransferDialogVM)?.Transfer, transfer);
+                MapperHelper.MapTransfer(result as TransferDTO, transfer);
                 await db.InsertOrUpdateAsync(new[] { transfer });
 
                 await db.RebuildAccountBalanceAsync(transfer.FromAccountId);

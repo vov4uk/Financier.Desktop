@@ -3,11 +3,11 @@
 namespace Financier.Desktop.Views
 {
     /// <summary>
-    /// Interaction logic for Projects.xaml
+    /// Interaction logic for ExchangeRates.xaml
     /// </summary>
-    public partial class Projects : UserControl
+    public partial class ExchangeRatesView : UserControl
     {
-        public Projects()
+        public ExchangeRatesView()
         {
             InitializeComponent();
         }

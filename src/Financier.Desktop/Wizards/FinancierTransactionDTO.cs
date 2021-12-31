@@ -2,7 +2,7 @@
 
 namespace Financier.Desktop.Wizards
 {
-    public class FinancierTransactionVM : BindableBase
+    public class FinancierTransactionDTO : BindableBase
     {
         private int toAccountId;
         private int categoryId;

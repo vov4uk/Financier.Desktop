@@ -30,7 +30,7 @@
         {
             var vm = new Page2VM(categories, projects, -100.0);
 
-            var transactions = new List<FinancierTransactionVM>
+            var transactions = new List<FinancierTransactionDTO>
             {
             new () { FromAmount = -5000, Note = Guid.NewGuid().ToString(), Order = 1 },
             new () { FromAmount = -2500, Note = Guid.NewGuid().ToString(), Order = 2 },
@@ -77,8 +77,8 @@
             var vm = new Page2VM(categories, projects, -100);
 
             Assert.Equal(0, vm.CalculatedAmount);
-            FinancierTransactionVM toDelete = new () { FromAmount = -10000, Order = 2 };
-            FinancierTransactionVM lastOne = new () { FromAmount = -10000, Order = 3 };
+            FinancierTransactionDTO toDelete = new () { FromAmount = -10000, Order = 2 };
+            FinancierTransactionDTO lastOne = new () { FromAmount = -10000, Order = 3 };
 
             vm.FinancierTransactions.Add(new () { FromAmount = -10000, Order = 1 });
             vm.FinancierTransactions.Add(toDelete);

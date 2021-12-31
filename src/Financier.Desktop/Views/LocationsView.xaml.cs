@@ -3,11 +3,11 @@
 namespace Financier.Desktop.Views
 {
     /// <summary>
-    /// Interaction logic for Accounts.xaml
+    /// Interaction logic for Locations.xaml
     /// </summary>
-    public partial class Accounts : UserControl
+    public partial class LocationsView : UserControl
     {
-        public Accounts()
+        public LocationsView()
         {
             InitializeComponent();
         }

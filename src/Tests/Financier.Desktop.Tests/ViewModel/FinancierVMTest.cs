@@ -12,6 +12,7 @@
     using Financier.DataAccess.Data;
     using Financier.DataAccess.Monobank;
     using Financier.DataAccess.View;
+    using Financier.Desktop.Data;
     using Financier.Desktop.Helpers;
     using Financier.Desktop.ViewModel;
     using Financier.Desktop.ViewModel.Dialog;
@@ -179,7 +180,7 @@
 
         [Theory]
         [AutoMoqData]
-        public void Locations_AddRaised_NewItemAdded(LocationVM result)
+        public void Locations_AddRaised_NewItemAdded(LocationDTO result)
         {
             var location = new Location() { Id = 0 };
             Location[] actual = null;
@@ -187,7 +188,7 @@
             this.dbMock.Setup(x => x.GetOrCreateAsync<Location>(0)).ReturnsAsync(location);
 
             this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Location[]>())).Callback<IEnumerable<Location>>((x) => { actual = x.ToArray(); }).Returns(Task.CompletedTask);
-            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationVM>(), 240, 300, nameof(Location))).Returns(result);
+            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationDialogVM>(), 240, 300, nameof(Location))).Returns(result);
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose()).Verifiable();
             this.locMock = new Mock<IBaseRepository<Location>>();
@@ -214,7 +215,7 @@
 
             this.dbMock.Setup(x => x.GetOrCreateAsync<Location>(0)).ReturnsAsync(location);
 
-            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationVM>(), 240, 300, nameof(Location))).Returns(null);
+            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationDialogVM>(), 240, 300, nameof(Location))).Returns(null);
 
             this.locMock = new Mock<IBaseRepository<Location>>();
             this.SetupRepo(this.locMock);
@@ -229,7 +230,7 @@
 
         [Theory]
         [AutoMoqData]
-        public void Projects_AddRaised_NewItemAdded(EntityWithTitleVM result)
+        public void Projects_AddRaised_NewItemAdded(EntityWithTitleDTO result)
         {
             var location = new Project() { Id = 0 };
             Project[] actual = null;
@@ -376,11 +377,11 @@
         public void OpenTransaction_ExistingTransaction_UpdateTransaction(
             BlotterTransactions eventArgs,
             Transaction transaction,
-            TransactionDialogVM dialogVM,
+            TransactionDTO output,
             ObservableCollection<TransactionDTO> transactionDTOs)
         {
             eventArgs.category_id = -1;
-            dialogVM.Transaction.SubTransactions = transactionDTOs;
+            output.SubTransactions = transactionDTOs;
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
@@ -395,7 +396,7 @@
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
             this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionDialogVM>(), 640, 340, nameof(Transaction)))
-                .Returns(dialogVM);
+                .Returns(output);
 
             var vm = this.GetFinancierVM();
             vm.Blotter.SelectedValue = eventArgs;
@@ -411,7 +412,7 @@
         public void OpenTransaction_NoSubTransaction_UpdateTransaction(
             BlotterTransactions eventArgs,
             Transaction transaction,
-            TransactionDialogVM dialogVM)
+            TransactionDTO output)
         {
             eventArgs.category_id = -1;
 
@@ -428,7 +429,7 @@
             this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
             this.uowMock.Setup(x => x.Dispose());
             this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionDialogVM>(), 640, 340, nameof(Transaction)))
-                .Returns(dialogVM);
+                .Returns(output);
 
             var vm = this.GetFinancierVM();
             vm.Blotter.SelectedValue = eventArgs;
@@ -442,7 +443,7 @@
         [AutoMoqData]
         public void AddTransaction_NewItem_AddedToRepo(
             Transaction transaction,
-            TransactionDialogVM dialogVM)
+            TransactionDTO output)
         {
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
@@ -457,7 +458,7 @@
             this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
             this.uowMock.Setup(x => x.Dispose());
             this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionDialogVM>(), 640, 340, nameof(Transaction)))
-                .Returns(dialogVM);
+                .Returns(output);
 
             var vm = this.GetFinancierVM();
             vm.Blotter.AddCommand.Execute();
@@ -496,7 +497,7 @@
         public void OpenTransfer_ExistingTransaction_UpdateTransaction(
             BlotterTransactions eventArgs,
             Transaction transaction,
-            TransferDialogVM dialogVM)
+            TransferDTO output)
         {
             eventArgs.from_account_id = 1;
             eventArgs.to_account_id = 2;
@@ -514,7 +515,7 @@
             this.uowMock.Setup(x => x.Dispose());
 
             this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferDialogVM>(), 385, 340, "Transfer"))
-                .Returns(dialogVM);
+                .Returns(output);
 
             var vm = this.GetFinancierVM();
             vm.Blotter.SelectedValue = eventArgs;
@@ -529,7 +530,7 @@
         [AutoMoqData]
         public void AddTransfer_NewTransfer_AddedToDb(
             Transaction transaction,
-            TransferDialogVM dialogVM)
+            TransferDTO output)
         {
             this.SetupRepo(new Mock<IBaseRepository<Account>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
@@ -541,7 +542,7 @@
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
             this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferDialogVM>(), 385, 340, "Transfer"))
-                .Returns(dialogVM);
+                .Returns(output);
 
             var vm = this.GetFinancierVM();
             vm.Blotter.AddTransferCommand.Execute();

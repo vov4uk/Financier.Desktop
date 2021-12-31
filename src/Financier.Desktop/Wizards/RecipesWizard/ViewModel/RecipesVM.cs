@@ -1,4 +1,5 @@
 ﻿using Financier.DataAccess.Data;
+using Financier.Desktop.Data;
 using Financier.Desktop.ViewModel.Dialog;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             return null;
         }
 
-        private TransactionDTO TransformMonoTransaction(FinancierTransactionVM x)
+        private TransactionDTO TransformMonoTransaction(FinancierTransactionDTO x)
         {
             var result = new TransactionDTO
             {

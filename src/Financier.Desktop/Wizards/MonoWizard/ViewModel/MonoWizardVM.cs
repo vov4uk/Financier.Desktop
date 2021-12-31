@@ -92,7 +92,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             return null;
         }
 
-        private Transaction TransformMonoTransaction(FinancierTransactionVM x)
+        private Transaction TransformMonoTransaction(FinancierTransactionDTO x)
         {
             var result = new Transaction
             {

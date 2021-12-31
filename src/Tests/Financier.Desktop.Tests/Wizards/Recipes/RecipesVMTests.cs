@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using Financier.DataAccess.Data;
-    using Financier.Desktop.ViewModel.Dialog;
+    using Financier.Desktop.Data;
     using Financier.Desktop.Wizards.RecipesWizard.ViewModel;
     using Xunit;
 
