@@ -263,7 +263,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid.InputBindings>
                                         <MouseBinding MouseAction="LeftDoubleClick"
-                                                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.OpenSubTransactionDialogCommand}"
+                                                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.EditSubTransactionCommand}"
                                                           CommandParameter="{Binding}" />
                                     </Grid.InputBindings>
                                     <Grid.Style>

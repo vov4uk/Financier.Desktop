@@ -5,7 +5,6 @@ using Financier.DataAccess.Data;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Views;
-using Financier.Desktop.Wizards;
 using Financier.Desktop.Wizards.RecipesWizard.ViewModel;
 using Prism.Commands;
 
@@ -58,12 +57,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             {
                 return _addSubTransactionCommand ??= new DelegateCommand(() =>
                 {
-                    var transaction = new TransactionDTO
-                    {
-                        FromAmount = Transaction.UnsplitAmount,
-                        IsAmountNegative = Transaction.UnsplitAmount < 0
-                    };
-                    ShowSubTransactionDialog(transaction, true);
+                    ShowSubTransactionDialog(new TransactionDTO(), true);
                 });
             }
         }
@@ -90,7 +84,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        public DelegateCommand<TransactionDTO> OpenSubTransactionDialogCommand
+        public DelegateCommand<TransactionDTO> EditSubTransactionCommand
         {
             get
             {
@@ -118,21 +112,22 @@ namespace Financier.Desktop.ViewModel.Dialog
             original.ProjectId = modifiedCopy.ProjectId;
         }
 
-        private void ShowSubTransactionDialog(TransactionDTO dto, bool isNewItem)
+        private void ShowSubTransactionDialog(TransactionDTO original, bool isNewItem)
         {
             Transaction.RecalculateUnSplitAmount();
-            var workingCopy = new TransactionDTO { IsSubTransaction = true, IsAmountNegative = true };
-            if (!isNewItem)
+            var workingCopy = new TransactionDTO { IsSubTransaction = true };
+            if (isNewItem)
             {
-                CopySubTransaction(workingCopy, dto);
-                workingCopy.IsAmountNegative = dto.FromAmount <= 0;
-                workingCopy.FromAmount = Math.Abs(dto.FromAmount);
-                workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount - Math.Abs(dto.FromAmount);
+                workingCopy.IsAmountNegative = Transaction.UnsplitAmount < 0;
+                workingCopy.FromAmount = Math.Abs(Transaction.UnsplitAmount);
+                workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount;
             }
             else
             {
-                workingCopy.FromAmount = Math.Abs(Transaction.UnsplitAmount);
-                workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount;
+                CopySubTransaction(workingCopy, original);
+                workingCopy.IsAmountNegative = original.RealFromAmount <= 0;
+                workingCopy.FromAmount = Math.Abs(original.FromAmount);
+                workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount - Math.Abs(original.FromAmount);
             }
 
             var viewModel = new SubTransactionDailogVM(workingCopy, Categories, Projects);
@@ -142,9 +137,9 @@ namespace Financier.Desktop.ViewModel.Dialog
             if (dialogResult is TransactionDTO)
             {
                 var modifiedCopy = dialogResult as TransactionDTO;
-                CopySubTransaction(dto, modifiedCopy);
+                CopySubTransaction(original, modifiedCopy);
 
-                if (isNewItem) Transaction.SubTransactions.Add(dto);
+                if (isNewItem) Transaction.SubTransactions.Add(original);
                 Transaction.RecalculateUnSplitAmount();
                 SaveCommand.RaiseCanExecuteChanged();
             }
@@ -152,8 +147,6 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private void ShowRecepiesDialog()
         {
-            var dialog = new WizardWindow();
-
             var vm = new RecipesVM(
                 Transaction.RealFromAmount / 100.0,
                 Categories.Where(x => x.Id > 0).ToList(),

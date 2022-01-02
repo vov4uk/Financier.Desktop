@@ -377,11 +377,10 @@
         public void OpenTransaction_ExistingTransaction_UpdateTransaction(
             BlotterTransactions eventArgs,
             Transaction transaction,
-            TransactionDTO output,
-            ObservableCollection<TransactionDTO> transactionDTOs)
+            IEnumerable<Transaction> subTransactions)
         {
             eventArgs.category_id = -1;
-            output.SubTransactions = transactionDTOs;
+            var output = new TransactionDTO(transaction, subTransactions);
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
@@ -404,7 +403,7 @@
 
             this.trMock.VerifyAll();
             this.dbMock.VerifyAll();
-            this.dbMock.Verify(x => x.GetOrCreateAsync<Transaction>(It.IsAny<int>()), Times.Exactly(transactionDTOs.Count));
+            this.dbMock.Verify(x => x.GetOrCreateAsync<Transaction>(It.IsAny<int>()), Times.Exactly(subTransactions.Count()));
         }
 
         [Theory]

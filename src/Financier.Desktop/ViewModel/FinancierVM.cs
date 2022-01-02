@@ -547,9 +547,8 @@ namespace Financier.Desktop.ViewModel
         private async Task OpenTransactionDialogAsync(int id)
         {
             Transaction transaction = await db.GetOrCreateTransactionAsync(id);
-            var subTransactions = (await db.GetSubTransactionsAsync(id)).Select(x => new TransactionDTO(x));
-            var transactionDto = new TransactionDTO(transaction);
-            transactionDto.SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions);
+            IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(id);
+            var transactionDto = new TransactionDTO(transaction, subTransactions);
 
             using var uow = db.CreateUnitOfWork();
 
@@ -563,7 +562,6 @@ namespace Financier.Desktop.ViewModel
                 await uow.GetAllOrderedByDefaultAsync<Location>(),
                 await uow.GetAllOrderedByDefaultAsync<Payee>());
 
-            // TODO : return resultVm.Transaction only, not whole VM
             var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
 
             if (result is TransactionDTO)

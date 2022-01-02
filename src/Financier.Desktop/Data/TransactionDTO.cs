@@ -2,6 +2,7 @@
 using Financier.Desktop.Converters;
 using Financier.Desktop.Wizards;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -39,6 +40,12 @@ namespace Financier.Desktop.Data
             ProjectId = x.ProjectId;
             CategoryId = x.CategoryId;
             Category = default;
+        }
+
+        public TransactionDTO(Transaction transaction, IEnumerable<Transaction> subTransactions)
+            : this(transaction)
+        {
+            SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions.Select(x => new TransactionDTO(x)));
         }
 
         public TransactionDTO(Transaction transaction)
@@ -231,7 +238,7 @@ namespace Financier.Desktop.Data
         public ObservableCollection<TransactionDTO> SubTransactions
         {
             get => subTransactions;
-            set
+            private set
             {
                 subTransactions = value;
                 RaisePropertyChanged(nameof(SubTransactions));
@@ -242,7 +249,7 @@ namespace Financier.Desktop.Data
         public long UnsplitAmount
         {
             get => unSplitAmount;
-            set
+            private set
             {
                 unSplitAmount = value;
                 RaisePropertyChanged(nameof(UnsplitAmount));
