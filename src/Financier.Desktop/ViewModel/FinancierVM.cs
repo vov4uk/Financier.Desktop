@@ -3,13 +3,11 @@ using Financier.DataAccess.Data;
 using Financier.DataAccess.View;
 using Financier.Desktop.Views;
 using Financier.Adapter;
-using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Views.Controls;
@@ -20,6 +18,7 @@ using System.IO;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using Financier.Desktop.Data;
+using Mvvm.Async;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -27,17 +26,17 @@ namespace Financier.Desktop.ViewModel
     {
         private const string Backup = "backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
         private readonly ICsvHelper csvHelper;
         private readonly IFinancierDatabaseFactory dbFactory;
         private readonly IDialogWrapper dialogWrapper;
         private readonly List<Entity> keyLessEntities = new();
         private BackupVersion _backupVersion;
         private Dictionary<string, List<string>> _entityColumnsOrder;
-        private DelegateCommand<Type> _menuNavigateCommand;
-        private DelegateCommand _monoCommand;
-        private DelegateCommand _openBackupCommand;
-        private ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
-        private DelegateCommand _saveBackupCommand;
+        private IAsyncCommand<Type> _menuNavigateCommand;
+        private IAsyncCommand _monoCommand;
+        private IAsyncCommand _openBackupCommand;
+        private IAsyncCommand _saveBackupCommand;
         private AccountsVM accountsVM;
         private IBackupWriter backupWriter;
         private BlotterVM blotter;
@@ -48,7 +47,12 @@ namespace Financier.Desktop.ViewModel
         private string openBackupPath;
         private PayeesVM payees;
         private ProjectsVM projects;
-        public FinancierVM(IDialogWrapper dialogWrapper, IFinancierDatabaseFactory dbFactory, IEntityReader entityReader, IBackupWriter backupWriter, ICsvHelper csvHelper)
+
+        public FinancierVM(IDialogWrapper dialogWrapper,
+            IFinancierDatabaseFactory dbFactory,
+            IEntityReader entityReader,
+            IBackupWriter backupWriter,
+            ICsvHelper csvHelper)
         {
             this.dialogWrapper = dialogWrapper;
             this.dbFactory = dbFactory;
@@ -95,27 +99,27 @@ namespace Financier.Desktop.ViewModel
             private set => SetProperty(ref locations, value);
         }
 
-        public DelegateCommand<Type> MenuNavigateCommand
+        public IAsyncCommand<Type> MenuNavigateCommand
         {
             get
             {
-                return _menuNavigateCommand ??= new DelegateCommand<Type>(NavigateToType);
+                return _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
             }
         }
 
-        public DelegateCommand MonoCommand
+        public IAsyncCommand MonoCommand
         {
             get
             {
-                return _monoCommand ??= new DelegateCommand(OpenMonoWizardAsync);
+                return _monoCommand ??= new AsyncCommand(OpenMonoWizardAsync);
             }
         }
 
-        public DelegateCommand OpenBackupCommand
+        public IAsyncCommand OpenBackupCommand
         {
             get
             {
-                return _openBackupCommand ??= new DelegateCommand(OpenBackup_OnClick);
+                return _openBackupCommand ??= new AsyncCommand(OpenBackup_OnClickAsync);
             }
         }
 
@@ -136,11 +140,11 @@ namespace Financier.Desktop.ViewModel
             get => projects;
             private set => SetProperty(ref projects, value);
         }
-        public DelegateCommand SaveBackupCommand
+        public IAsyncCommand SaveBackupCommand
         {
             get
             {
-                return _saveBackupCommand ??= new DelegateCommand(SaveBackup_Click);
+                return _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
             }
         }
 
@@ -168,7 +172,7 @@ namespace Financier.Desktop.ViewModel
             var duration = DateTime.Now - start;
             Logger.Info($"Duration : {duration}");
             dialogWrapper.ShowMessageBox($"Imported {entities.Count()} entities. Duration : {duration}","Success");
-            NavigateToType(typeof(BlotterTransactions));
+            await NavigateToType(typeof(BlotterTransactions));
         }
 
         public async Task SaveBackup(string backupPath)
@@ -413,12 +417,12 @@ namespace Financier.Desktop.ViewModel
             await OpenLocationDialogAsync(eventArgs.Id);
         }
 
-        private async void NavigateToType(Type type)
+        private async Task NavigateToType(Type type)
         {
             CurrentPage = await GetOrCreatePage(type);
         }
 
-        private async void OpenBackup_OnClick()
+        private async Task OpenBackup_OnClickAsync()
         {
             var backupPath = dialogWrapper.OpenFileDialog(Backup);
             if (!string.IsNullOrEmpty(backupPath))
@@ -473,7 +477,7 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private async void OpenMonoWizardAsync()
+        private async Task OpenMonoWizardAsync()
         {
             var fileName = dialogWrapper.OpenFileDialog("csv");
             Logger.Info($"csv fileName -> {fileName}");
@@ -653,7 +657,7 @@ namespace Financier.Desktop.ViewModel
                 vm.Entities = new ObservableCollection<T>(entities);
             }
         }
-        private async void SaveBackup_Click()
+        private async Task SaveBackup_Click()
         {
             var backupPath = dialogWrapper.SaveFileDialog(Backup, Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName()));
             if (!string.IsNullOrEmpty(backupPath))

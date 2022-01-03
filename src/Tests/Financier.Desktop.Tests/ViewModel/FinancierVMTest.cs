@@ -80,7 +80,7 @@
         }
 
         [Fact]
-        public void MenuNavigateCommand_ChangeCurrentPage_PropertiesUpdated()
+        public async Task MenuNavigateCommand_ChangeCurrentPage_PropertiesUpdated()
         {
             var vm = this.GetFinancierVM();
 
@@ -96,15 +96,15 @@
             this.SetupRepo(this.projMock);
             this.SetupRepo(this.payeeMock);
 
-            vm.MenuNavigateCommand.Execute(typeof(BlotterTransactions));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(BlotterTransactions));
             Assert.True(vm.IsTransactionPageSelected);
-            vm.MenuNavigateCommand.Execute(typeof(Location));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(Location));
             Assert.True(vm.IsLocationPageSelected);
-            vm.MenuNavigateCommand.Execute(typeof(Project));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(Project));
             Assert.True(vm.IsProjectPageSelected);
-            vm.MenuNavigateCommand.Execute(typeof(Payee));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(Payee));
             Assert.True(vm.IsPayeePageSelected);
-            vm.MenuNavigateCommand.Execute(typeof(CurrencyExchangeRate));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(CurrencyExchangeRate));
             Assert.True(vm.CurrentPage is ExchangeRatesVM);
         }
 
@@ -276,7 +276,7 @@
         }
 
         [Fact]
-        public void MonoCommand_OpenWizard_AddNewTransaction()
+        public async Task MonoCommand_OpenWizard_AddNewTransaction()
         {
             var output = new List<Transaction>()
                 {
@@ -309,14 +309,14 @@
             this.csvMock.Setup(x => x.ParseCsv(csvPath)).ReturnsAsync(Array.Empty<MonoTransaction>());
 
             var vm = this.GetFinancierVM();
-            vm.MonoCommand.Execute();
+            await vm.MonoCommand.ExecuteAsync();
 
             this.trMock.VerifyAll();
             this.dbMock.VerifyAll();
         }
 
         [Fact]
-        public void MonoCommand_DuplicatesFound_NoTransactionsAdded()
+        public async Task MonoCommand_DuplicatesFound_NoTransactionsAdded()
         {
             var outputTransaction = new Transaction()
             {
@@ -346,14 +346,14 @@
             this.csvMock.Setup(x => x.ParseCsv(csvPath)).ReturnsAsync(Array.Empty<MonoTransaction>());
 
             var vm = this.GetFinancierVM();
-            vm.MonoCommand.Execute();
+            await vm.MonoCommand.ExecuteAsync();
 
             this.trMock.VerifyAll();
             this.dbMock.VerifyAll();
         }
 
         [Fact]
-        public void MonoCommand_Cancel_NoTransactionsAdded()
+        public async Task MonoCommand_Cancel_NoTransactionsAdded()
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
@@ -367,7 +367,7 @@
             this.csvMock.Setup(x => x.ParseCsv(csvPath)).ReturnsAsync(Array.Empty<MonoTransaction>());
 
             var vm = this.GetFinancierVM();
-            vm.MonoCommand.Execute();
+            await vm.MonoCommand.ExecuteAsync();
 
             this.dbMock.VerifyAll();
         }

@@ -45,7 +45,7 @@ namespace Financier.Desktop
             {
                 Logger.Info($"Loaded backup : {backup}");
                 await ViewModel.OpenBackup(backup);
-                ViewModel.MenuNavigateCommand.Execute(typeof(BlotterTransactions));
+                await ViewModel.MenuNavigateCommand.ExecuteAsync(typeof(BlotterTransactions));
             }
         }
 
