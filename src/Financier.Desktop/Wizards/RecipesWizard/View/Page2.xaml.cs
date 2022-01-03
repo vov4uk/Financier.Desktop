@@ -2,9 +2,7 @@
 
 namespace Financier.Desktop.Wizards.RecipesWizard.View
 {
-    /// <summary>
-    /// Interaction logic for Page2.xaml
-    /// </summary>
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class Page2 : UserControl
     {
         public Page2()

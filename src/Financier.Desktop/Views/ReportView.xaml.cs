@@ -1,12 +1,11 @@
 ﻿using Financier.Desktop.Reports.ViewModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Financier.Desktop.Views
 {
-    /// <summary>
-    /// Interaction logic for Report.xaml
-    /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class ReportView : UserControl
     {
 

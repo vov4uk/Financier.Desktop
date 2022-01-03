@@ -12,9 +12,7 @@ using Financier.DataAccess.View;
 
 namespace Financier.Desktop
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class MainWindow : RibbonWindow
     {
         private const string BackupFormat = "*.backup";

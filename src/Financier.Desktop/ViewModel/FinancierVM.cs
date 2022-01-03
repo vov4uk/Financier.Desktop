@@ -552,6 +552,7 @@ namespace Financier.Desktop.ViewModel
                 resultTransactions.Add(transaction);
                 if (resultVm?.SubTransactions?.Any() == true)
                 {
+                    // TODO : Add Unit Test gor code below
                     foreach (var subTransactionDto in resultVm.SubTransactions)
                     {
                         var subTransaction = await db.GetOrCreateAsync<Transaction>(subTransactionDto.Id);

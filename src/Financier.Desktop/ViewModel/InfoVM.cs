@@ -1,9 +1,11 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Desktop.ViewModel
 {
+    [ExcludeFromCodeCoverage]
     public class InfoVM : BindableBase
     {
         private DelegateCommand _exitCommand;

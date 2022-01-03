@@ -5,9 +5,7 @@ using System.Windows;
 
 namespace Financier.Desktop
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class App : Application
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();

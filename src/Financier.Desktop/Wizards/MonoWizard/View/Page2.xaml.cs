@@ -1,10 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows.Controls;
 
 namespace Financier.Desktop.MonoWizard.View
 {
-    /// <summary>
-    /// Interaction logic for Page2.xaml
-    /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class Page2 : UserControl
     {
         public Page2()

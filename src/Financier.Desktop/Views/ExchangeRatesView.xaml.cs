@@ -1,10 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows.Controls;
 
 namespace Financier.Desktop.Views
 {
-    /// <summary>
-    /// Interaction logic for ExchangeRates.xaml
-    /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class ExchangeRatesView : UserControl
     {
         public ExchangeRatesView()

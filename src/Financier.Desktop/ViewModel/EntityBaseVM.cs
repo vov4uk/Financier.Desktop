@@ -4,9 +4,11 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Desktop.ViewModel
 {
+    [ExcludeFromCodeCoverage]
     public abstract class EntityBaseVM<T> : BindableBase
     where T : Entity
     {
