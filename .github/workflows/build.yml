@@ -42,4 +42,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\sonarcloud.ps1 -sonarSecret ${{ secrets.SONAR_TOKEN }}
+          .\.github\workflows\sonarcloud.ps1 -sonarSecret ${{ secrets.SONAR_TOKEN }}
