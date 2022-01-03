@@ -10,12 +10,11 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
     public class MonoWizardVM : WizardBaseVM
     {
         private readonly List<Account> accounts;
+        private readonly List<Category> categories;
         private readonly List<Currency> currencies;
         private readonly List<Location> locations;
-        private readonly List<Category> categories;
-        private readonly List<Project> projects;
         private readonly List<MonoTransaction> monoTransactions = new();
-
+        private readonly List<Project> projects;
         public MonoWizardVM(
             IEnumerable<MonoTransaction> monoTransactions,
             IEnumerable<Account> accounts,
@@ -34,6 +33,9 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             CreatePages();
             CurrentPage = Pages[0];
         }
+
+        //TODO - remove
+        public Account MonoBankAccount { get; set; }
 
         public override void AfterCurrentPageUpdated(WizardPageBaseVM currentPage)
         {
@@ -64,10 +66,6 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 Logger.Info($"MonoTransactions count -> {page2.MonoTransactions.Count}");
             }
         }
-
-        //TODO - remove
-        public Account MonoBankAccount { get; set; }
-
         public override void CreatePages()
         {
             _pages = new List<WizardPageBaseVM>

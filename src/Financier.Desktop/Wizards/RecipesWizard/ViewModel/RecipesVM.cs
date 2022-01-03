@@ -1,6 +1,5 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.Desktop.Data;
-using Financier.Desktop.ViewModel.Dialog;
 using System.Collections.Generic;
 using System.Linq;
 

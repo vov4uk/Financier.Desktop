@@ -10,16 +10,25 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page2VM : WizardPageBaseVM
     {
+        private DelegateCommand<MonoTransaction> _deleteCommand;
         private Account _monoAccount;
 
         private MonoTransaction _startTransaction;
 
         private ObservableCollection<MonoTransaction> allTransactions;
-        private DelegateCommand<MonoTransaction> _deleteCommand;
-
         public Page2VM(List<MonoTransaction> records)
         {
             AllTransactions = new ObservableCollection<MonoTransaction>(records);
+        }
+
+        public ObservableCollection<MonoTransaction> AllTransactions
+        {
+            get => allTransactions;
+            private set
+            {
+                allTransactions = value;
+                RaisePropertyChanged(nameof(AllTransactions));
+            }
         }
 
         public DelegateCommand<MonoTransaction> DeleteCommand
@@ -42,6 +51,15 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
+        public List<MonoTransaction> MonoTransactions
+        {
+            get
+            {
+                var startDate = _startTransaction?.Date ?? new DateTime(2017, 11, 17); // Monobank launched
+                return allTransactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
+            }
+        }
+
         public MonoTransaction StartTransaction
         {
             get => _startTransaction;
@@ -53,26 +71,6 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         }
 
         public override string Title => "Please select transaction";
-
-        public ObservableCollection<MonoTransaction> AllTransactions
-        {
-            get => allTransactions;
-            private set
-            {
-                allTransactions = value;
-                RaisePropertyChanged(nameof(AllTransactions));
-            }
-        }
-
-        public List<MonoTransaction> MonoTransactions
-        {
-            get
-            {
-                var startDate = _startTransaction?.Date ?? new DateTime(2017, 11, 17); // Monobank launched
-                return allTransactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
-            }
-        }
-
         public override bool IsValid()
         {
             return true;

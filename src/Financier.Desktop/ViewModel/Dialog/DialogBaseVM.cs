@@ -14,8 +14,6 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         public event EventHandler RequestSave;
 
-        public abstract object OnRequestSave();
-
         public DelegateCommand CancelCommand
         {
             get { return _cancelCommand ??= new DelegateCommand(() => RequestCancel?.Invoke(this, EventArgs.Empty)); }
@@ -29,6 +27,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
+        public abstract object OnRequestSave();
         protected virtual bool CanSaveCommandExecute()
         {
             return true;

@@ -15,6 +15,8 @@
             }
         }
 
+        public double Diff => TotalAmount - CalculatedAmount;
+
         public double TotalAmount
         {
             get => totalAmount;
@@ -25,7 +27,5 @@
                 this.RaisePropertyChanged(nameof(this.Diff));
             }
         }
-
-        public double Diff => TotalAmount - CalculatedAmount;
     }
 }

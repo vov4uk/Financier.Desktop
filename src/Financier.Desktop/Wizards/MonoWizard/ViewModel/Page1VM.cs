@@ -1,6 +1,5 @@
 ﻿using Financier.DataAccess.Data;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
@@ -8,16 +7,16 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
     public class Page1VM : WizardPageBaseVM
     {
 
-        private ObservableCollection<Account> _accounts;
+        private List<Account> _accounts;
 
         private Account _monoAccount;
 
-        public Page1VM(List<Account> records)
+        public Page1VM(List<Account> accounts)
         {
-            Accounts = new ObservableCollection<Account>(records);
+            Accounts = accounts;
             MonoAccount = Accounts.FirstOrDefault(x => x.IsActive && x.Title.Contains("mono", System.StringComparison.OrdinalIgnoreCase)) ?? Accounts.FirstOrDefault();
         }
-        public ObservableCollection<Account> Accounts
+        public List<Account> Accounts
         {
             get => _accounts;
             private set

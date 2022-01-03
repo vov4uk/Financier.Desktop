@@ -10,12 +10,22 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
     public class Page1VM : RecipesWizardPageVMBase
     {
-        public override string Title => "Paste text";
-        private string text;
         private DelegateCommand<RichTextBox> _highlightCommand;
+        private string text;
+        public Page1VM(double totalAmount)
+        {
+            TotalAmount = totalAmount;
+        }
 
-        public override bool IsValid() => true;
         public List<FinancierTransactionDTO> Amounts { get; } = new List<FinancierTransactionDTO>();
+        public DelegateCommand<RichTextBox> HighlightCommand
+        {
+            get
+            {
+                return _highlightCommand ??= new DelegateCommand<RichTextBox>(HighLight, (_) => true);
+            }
+        }
+
         public string Text
         {
             get => this.text;
@@ -26,26 +36,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        public Page1VM(double totalAmount)
-        {
-            TotalAmount = totalAmount;
-        }
-
-        public DelegateCommand<RichTextBox> HighlightCommand
-        {
-            get
-            {
-                return _highlightCommand ??= new DelegateCommand<RichTextBox>(HighLight, (_) => true);
-            }
-        }
-
-        private void HighLight(RichTextBox textBox)
-        {
-            textBox.BeginInit();
-            textBox.EndInit();
-            CalculateCurrentAmount();
-        }
-
+        public override string Title => "Paste text";
         public void CalculateCurrentAmount()
         {
             double tmp = 0.0;
@@ -79,6 +70,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             CalculatedAmount = Math.Abs(tmp) * -1.0;
         }
 
+        public override bool IsValid() => true;
         private static double GetDouble(string value, double defaultValue = 0.0)
         {
             double result;
@@ -93,6 +85,13 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 result = defaultValue;
             }
             return result;
+        }
+
+        private void HighLight(RichTextBox textBox)
+        {
+            textBox.BeginInit();
+            textBox.EndInit();
+            CalculateCurrentAmount();
         }
     }
 }

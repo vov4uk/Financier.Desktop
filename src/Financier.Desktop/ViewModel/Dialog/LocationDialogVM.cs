@@ -7,8 +7,6 @@ namespace Financier.Desktop.ViewModel.Dialog
     {
         private DelegateCommand _clearAddressCommand;
 
-        public new LocationDTO Entity { get; }
-
         public LocationDialogVM(LocationDTO location) : base(location)
         {
             Entity = location;
@@ -18,5 +16,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             get { return _clearAddressCommand ??= new DelegateCommand(() => { Entity.Address = default; }); }
         }
+
+        public new LocationDTO Entity { get; }
     }
 }

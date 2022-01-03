@@ -4,12 +4,49 @@ namespace Financier.Desktop.Wizards
 {
     public class FinancierTransactionDTO : BindableBase
     {
-        private int toAccountId;
         private int categoryId;
         private int locationId;
-        private int projectId;
         private string note;
         private int order;
+        private int projectId;
+        private int toAccountId;
+        public int CategoryId
+        {
+            get => categoryId;
+            set
+            {
+                categoryId = value;
+                RaisePropertyChanged(nameof(CategoryId));
+            }
+        }
+
+        public long DateTime { get; set; }
+
+        public int FromAccountId { get; set; }
+
+        public long FromAmount { get; set; }
+
+        public int LocationId
+        {
+            get => locationId;
+            set
+            {
+                locationId = value;
+                RaisePropertyChanged(nameof(LocationId));
+            }
+        }
+
+        public int MonoAccountId { get; set; }
+
+        public string Note
+        {
+            get => note;
+            set
+            {
+                note = value;
+                RaisePropertyChanged(nameof(Note));
+            }
+        }
 
         public int Order
         {
@@ -20,9 +57,19 @@ namespace Financier.Desktop.Wizards
                 RaisePropertyChanged(nameof(Order));
             }
         }
-        public int FromAccountId { get; set; }
-        public int MonoAccountId { get; set; }
-        public long FromAmount { get; set; }
+        public int OriginalCurrencyId { get; set; }
+
+        public long? OriginalFromAmount { get; set; }
+
+        public int ProjectId
+        {
+            get => projectId;
+            set
+            {
+                projectId = value;
+                RaisePropertyChanged(nameof(ProjectId));
+            }
+        }
 
         public int ToAccountId
         {
@@ -35,49 +82,5 @@ namespace Financier.Desktop.Wizards
         }
 
         public long ToAmount { get; set; }
-        public long? OriginalFromAmount { get; set; }
-        public int OriginalCurrencyId { get; set; }
-
-        public int CategoryId
-        {
-            get => categoryId;
-            set
-            {
-                categoryId = value;
-                RaisePropertyChanged(nameof(CategoryId));
-            }
-        }
-
-        public int LocationId
-        {
-            get => locationId;
-            set
-            {
-                locationId = value;
-                RaisePropertyChanged(nameof(LocationId));
-            }
-        }
-
-        public int ProjectId
-        {
-            get => projectId;
-            set
-            {
-                projectId = value;
-                RaisePropertyChanged(nameof(ProjectId));
-            }
-        }
-
-        public string Note
-        {
-            get => note;
-            set
-            {
-                note = value;
-                RaisePropertyChanged(nameof(Note));
-            }
-        }
-
-        public long DateTime { get; set; }
     }
 }

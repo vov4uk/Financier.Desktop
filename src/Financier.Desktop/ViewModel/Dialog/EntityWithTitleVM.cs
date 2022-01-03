@@ -7,8 +7,6 @@ namespace Financier.Desktop.ViewModel.Dialog
     {
         private DelegateCommand _clearTitleCommand;
 
-        public EntityWithTitleDTO Entity { get; }
-
         public EntityWithTitleVM(EntityWithTitleDTO entity)
         {
             this.Entity = entity;
@@ -19,6 +17,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return _clearTitleCommand ??= new DelegateCommand(() => { Entity.Title = default; }); }
         }
 
+        public EntityWithTitleDTO Entity { get; }
         public override object OnRequestSave()
         {
             return Entity;

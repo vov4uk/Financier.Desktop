@@ -27,28 +27,27 @@ namespace Financier.Desktop.ViewModel
     {
         private const string Backup = "backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly ICsvHelper csvHelper;
         private readonly IFinancierDatabaseFactory dbFactory;
         private readonly IDialogWrapper dialogWrapper;
-        private readonly ICsvHelper csvHelper;
         private readonly List<Entity> keyLessEntities = new();
         private BackupVersion _backupVersion;
         private Dictionary<string, List<string>> _entityColumnsOrder;
         private DelegateCommand<Type> _menuNavigateCommand;
         private DelegateCommand _monoCommand;
         private DelegateCommand _openBackupCommand;
+        private ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
         private DelegateCommand _saveBackupCommand;
+        private AccountsVM accountsVM;
+        private IBackupWriter backupWriter;
         private BlotterVM blotter;
         private BindableBase currentPage;
         private IFinancierDatabase db;
         private IEntityReader entityReader;
-        private IBackupWriter backupWriter;
         private LocationsVM locations;
-        private AccountsVM accountsVM;
+        private string openBackupPath;
         private PayeesVM payees;
         private ProjectsVM projects;
-        private string openBackupPath;
-        private ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
-
         public FinancierVM(IDialogWrapper dialogWrapper, IFinancierDatabaseFactory dbFactory, IEntityReader entityReader, IBackupWriter backupWriter, ICsvHelper csvHelper)
         {
             this.dialogWrapper = dialogWrapper;
@@ -243,29 +242,6 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private void CreatePages()
-        {
-            accountsVM = new AccountsVM(Array.Empty<Account>());
-
-            Blotter = new BlotterVM(Array.Empty<BlotterTransactions>());
-            Blotter.EditRaised += BlotterVM_OpenTransactionRaised;
-            Blotter.AddRaised += Blotter_AddTransactionRaised;
-            Blotter.AddTransferRaised += Blotter_AddTransferRaised;
-            Blotter.DeleteRaised += Blotter_DeleteRaised;
-
-            Locations = new LocationsVM(Array.Empty<Location>());
-            Locations.AddRaised += Locations_AddRaised;
-            Locations.EditRaised += Locations_EditRaised;
-
-            Payees = new PayeesVM(Array.Empty<Payee>());
-            Payees.AddRaised += Payees_AddRaised;
-            Payees.EditRaised += Payees_EditRaised;
-
-            Projects = new ProjectsVM(Array.Empty<Project>());
-            Projects.AddRaised += Projects_AddRaised;
-            Projects.EditRaised += Projects_EditRaised;
-        }
-
         private void ClearPages()
         {
             _pages?.Clear();
@@ -302,41 +278,28 @@ namespace Financier.Desktop.ViewModel
             Projects = null;
         }
 
-        private async Task RefreshAccountsAndTransactionsViewModels(List<Transaction> transactions)
+        private void CreatePages()
         {
+            accountsVM = new AccountsVM(Array.Empty<Account>());
 
-            var accountIds = transactions
-                .Where(x => x.ToAccountId > 0)
-                .Select(x => x.ToAccountId).Union(
-                transactions
-                .Where(x => x.FromAccountId > 0)
-                .Select(x => x.FromAccountId))
-                .Distinct();
+            Blotter = new BlotterVM(Array.Empty<BlotterTransactions>());
+            Blotter.EditRaised += BlotterVM_OpenTransactionRaised;
+            Blotter.AddRaised += Blotter_AddTransactionRaised;
+            Blotter.AddTransferRaised += Blotter_AddTransferRaised;
+            Blotter.DeleteRaised += Blotter_DeleteRaised;
 
-            foreach (var accId in accountIds)
-            {
-                await db.RebuildAccountBalanceAsync(accId);
-            }
+            Locations = new LocationsVM(Array.Empty<Location>());
+            Locations.AddRaised += Locations_AddRaised;
+            Locations.EditRaised += Locations_EditRaised;
 
-            await RefreshBlotterTransactionsAsync();
-            await RefreshEntitiesAsync<Account>();
+            Payees = new PayeesVM(Array.Empty<Payee>());
+            Payees.AddRaised += Payees_AddRaised;
+            Payees.EditRaised += Payees_EditRaised;
+
+            Projects = new ProjectsVM(Array.Empty<Project>());
+            Projects.AddRaised += Projects_AddRaised;
+            Projects.EditRaised += Projects_EditRaised;
         }
-
-        private async void Locations_AddRaised(object sender, EventArgs eventArgs)
-        {
-            await OpenLocationDialogAsync(0);
-        }
-
-        private async void Locations_EditRaised(object sender, Location eventArgs)
-        {
-            await OpenLocationDialogAsync(eventArgs.Id);
-        }
-
-        private async void NavigateToType(Type type)
-        {
-            CurrentPage = await GetOrCreatePage(type);
-        }
-
         private async Task<BindableBase> GetOrCreatePage(Type type)
         {
 
@@ -438,6 +401,21 @@ namespace Financier.Desktop.ViewModel
                 _pages.TryAdd(type, vm);
             }
             return (VMType)_pages[type];
+        }
+
+        private async void Locations_AddRaised(object sender, EventArgs eventArgs)
+        {
+            await OpenLocationDialogAsync(0);
+        }
+
+        private async void Locations_EditRaised(object sender, Location eventArgs)
+        {
+            await OpenLocationDialogAsync(eventArgs.Id);
+        }
+
+        private async void NavigateToType(Type type)
+        {
+            CurrentPage = await GetOrCreatePage(type);
         }
 
         private async void OpenBackup_OnClick()
@@ -635,6 +613,26 @@ namespace Financier.Desktop.ViewModel
         private async void Projects_EditRaised(object sender, Project eventArgs)
         {
             await OpenEntityWithTitleDialogAsync<Project>(eventArgs.Id);
+        }
+
+        private async Task RefreshAccountsAndTransactionsViewModels(List<Transaction> transactions)
+        {
+
+            var accountIds = transactions
+                .Where(x => x.ToAccountId > 0)
+                .Select(x => x.ToAccountId).Union(
+                transactions
+                .Where(x => x.FromAccountId > 0)
+                .Select(x => x.FromAccountId))
+                .Distinct();
+
+            foreach (var accId in accountIds)
+            {
+                await db.RebuildAccountBalanceAsync(accId);
+            }
+
+            await RefreshBlotterTransactionsAsync();
+            await RefreshEntitiesAsync<Account>();
         }
         private async Task RefreshBlotterTransactionsAsync()
         {

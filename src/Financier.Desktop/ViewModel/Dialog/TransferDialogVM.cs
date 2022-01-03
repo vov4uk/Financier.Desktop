@@ -20,8 +20,6 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         public List<Account> Accounts { get; }
 
-        public TransferDTO Transfer { get; }
-
         public DelegateCommand ClearNotesCommand
         {
             get
@@ -30,12 +28,10 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        private void TransferPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        public TransferDTO Transfer { get; }
+        public override object OnRequestSave()
         {
-            if (TrackingProperies.Contains(e.PropertyName))
-            {
-                SaveCommand.RaiseCanExecuteChanged();
-            }
+            return Transfer;
         }
 
         protected override bool CanSaveCommandExecute()
@@ -43,9 +39,12 @@ namespace Financier.Desktop.ViewModel.Dialog
             return Transfer.FromAccount != null && Transfer.ToAccount != null && Transfer.FromAccountId != Transfer.ToAccountId;
         }
 
-        public override object OnRequestSave()
+        private void TransferPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            return Transfer;
+            if (TrackingProperies.Contains(e.PropertyName))
+            {
+                SaveCommand.RaiseCanExecuteChanged();
+            }
         }
     }
 }

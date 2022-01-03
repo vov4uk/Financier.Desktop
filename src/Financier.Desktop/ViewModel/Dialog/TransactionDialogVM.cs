@@ -12,6 +12,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 {
     public class TransactionDialogVM : SubTransactionDailogVM
     {
+        private readonly IDialogWrapper dialogWrapper;
         private DelegateCommand _addSubTransactionCommand;
 
         private DelegateCommand _clearLocationCommand;
@@ -20,12 +21,8 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private DelegateCommand<TransactionDTO> _deleteSubTransactionCommand;
 
-        private DelegateCommand<TransactionDTO> _openSubTransactionDialogCommand;
-
         private DelegateCommand _openRecipesDialogCommand;
-
-        private readonly IDialogWrapper dialogWrapper;
-
+        private DelegateCommand<TransactionDTO> _openSubTransactionDialogCommand;
         public TransactionDialogVM(
             TransactionDTO transaction,
             IDialogWrapper dialogWrapper,
@@ -44,12 +41,6 @@ namespace Financier.Desktop.ViewModel.Dialog
             Payees = payees;
         }
         public List<Account> Accounts { get; }
-
-        public List<Currency> Currencies { get; }
-
-        public List<Location> Locations { get; }
-
-        public List<Payee> Payees { get; }
 
         public DelegateCommand AddSubTransactionCommand
         {
@@ -72,6 +63,8 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return _clearPayeeCommand ??= new DelegateCommand(() => { Transaction.PayeeId = default; }); }
         }
 
+        public List<Currency> Currencies { get; }
+
         public DelegateCommand<TransactionDTO> DeleteSubTransactionCommand
         {
             get
@@ -93,6 +86,8 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
+        public List<Location> Locations { get; }
+
         public DelegateCommand OpenRecipesDialogCommand
         {
             get
@@ -100,6 +95,12 @@ namespace Financier.Desktop.ViewModel.Dialog
                 return _openRecipesDialogCommand ??=
                     new DelegateCommand(ShowRecepiesDialog);
             }
+        }
+
+        public List<Payee> Payees { get; }
+        protected override bool CanSaveCommandExecute()
+        {
+            return Transaction.Account != null && Transaction.FromAmount != 0;
         }
 
         private void CopySubTransaction(TransactionDTO original, TransactionDTO modifiedCopy)
@@ -110,6 +111,28 @@ namespace Financier.Desktop.ViewModel.Dialog
             original.IsAmountNegative = modifiedCopy.IsAmountNegative;
             original.Note = modifiedCopy.Note;
             original.ProjectId = modifiedCopy.ProjectId;
+        }
+
+        private void ShowRecepiesDialog()
+        {
+            var vm = new RecipesVM(
+                Transaction.RealFromAmount / 100.0,
+                Categories.Where(x => x.Id > 0).ToList(),
+                Projects.ToList());
+
+            var output = dialogWrapper.ShowWizard(vm);
+
+            if (output is List<TransactionDTO>)
+            {
+                var outputTransactions = output as List<TransactionDTO>;
+                foreach (var item in outputTransactions)
+                {
+                    item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
+                    Transaction.SubTransactions.Add(item);
+                }
+                Transaction.RecalculateUnSplitAmount();
+                SaveCommand.RaiseCanExecuteChanged();
+            }
         }
 
         private void ShowSubTransactionDialog(TransactionDTO original, bool isNewItem)
@@ -143,33 +166,6 @@ namespace Financier.Desktop.ViewModel.Dialog
                 Transaction.RecalculateUnSplitAmount();
                 SaveCommand.RaiseCanExecuteChanged();
             }
-        }
-
-        private void ShowRecepiesDialog()
-        {
-            var vm = new RecipesVM(
-                Transaction.RealFromAmount / 100.0,
-                Categories.Where(x => x.Id > 0).ToList(),
-                Projects.ToList());
-
-            var output = dialogWrapper.ShowWizard(vm);
-
-            if (output is List<TransactionDTO>)
-            {
-                var outputTransactions = output as List<TransactionDTO>;
-                foreach (var item in outputTransactions)
-                {
-                    item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
-                    Transaction.SubTransactions.Add(item);
-                }
-                Transaction.RecalculateUnSplitAmount();
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        protected override bool CanSaveCommandExecute()
-        {
-            return Transaction.Account != null && Transaction.FromAmount != 0;
         }
     }
 }

@@ -10,38 +10,14 @@ namespace Financier.Desktop.ViewModel
     public abstract class EntityBaseVM<T> : BindableBase
     where T : Entity
     {
-        private T _selectedValue;
-
         private DelegateCommand _addCommand;
-
         private DelegateCommand _deleteCommand;
-
         private DelegateCommand _editCommand;
-
         private ObservableCollection<T> _entities;
-
+        private T _selectedValue;
         public EntityBaseVM(IEnumerable<T> entities)
         {
             _entities = new ObservableCollection<T>(entities);
-        }
-
-        public ObservableCollection<T> Entities
-        {
-            get
-            {
-                if (_entities == null)
-                {
-                    _entities = new ObservableCollection<T>();
-                    RaisePropertyChanged(nameof(Entities));
-                }
-
-                return _entities;
-            }
-            set
-            {
-                _entities = value;
-                RaisePropertyChanged(nameof(Entities));
-            }
         }
 
         public event EventHandler AddRaised;
@@ -74,6 +50,24 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
+        public ObservableCollection<T> Entities
+        {
+            get
+            {
+                if (_entities == null)
+                {
+                    _entities = new ObservableCollection<T>();
+                    RaisePropertyChanged(nameof(Entities));
+                }
+
+                return _entities;
+            }
+            set
+            {
+                _entities = value;
+                RaisePropertyChanged(nameof(Entities));
+            }
+        }
         public T SelectedValue
         {
             get => _selectedValue;

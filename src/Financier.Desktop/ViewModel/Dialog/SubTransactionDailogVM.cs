@@ -11,17 +11,11 @@ namespace Financier.Desktop.ViewModel.Dialog
         private readonly string[] TrackingProperies = new string[] { nameof(TransactionDTO.FromAmount), nameof(TransactionDTO.Account) };
 
         private DelegateCommand _changeFromAmountSignCommand;
-
-        private DelegateCommand _clearOriginalFromAmountCommand;
-
-        private DelegateCommand _clearFromAmountCommand;
-
         private DelegateCommand<int?> _clearCategoryCommand;
-
-        private DelegateCommand _clearProjectCommand;
-
+        private DelegateCommand _clearFromAmountCommand;
         private DelegateCommand _clearNotesCommand;
-
+        private DelegateCommand _clearOriginalFromAmountCommand;
+        private DelegateCommand _clearProjectCommand;
         public SubTransactionDailogVM(
             TransactionDTO transaction,
             List<Category> categories,
@@ -34,18 +28,6 @@ namespace Financier.Desktop.ViewModel.Dialog
         }
 
         public List<Category> Categories { get; }
-
-        public List<Project> Projects { get; }
-
-        public TransactionDTO Transaction { get; }
-
-        private void Transaction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (TrackingProperies.Contains(e.PropertyName))
-            {
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
 
         public DelegateCommand ChangeFromAmountSignCommand
         {
@@ -60,7 +42,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             get
             {
-                return _clearCategoryCommand ??= new DelegateCommand<int?>( i => { Transaction.CategoryId = i; });
+                return _clearCategoryCommand ??= new DelegateCommand<int?>(i => { Transaction.CategoryId = i; });
             }
         }
 
@@ -84,15 +66,27 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return _clearProjectCommand ??= new DelegateCommand(() => { Transaction.ProjectId = default; }); }
         }
 
+        public List<Project> Projects { get; }
+
+        public TransactionDTO Transaction { get; }
+
+        public override object OnRequestSave()
+        {
+            return Transaction;
+        }
+
         protected override bool CanSaveCommandExecute()
         {
             if (Transaction.IsSplitCategory) return Transaction.UnsplitAmount == 0;
             return true;
         }
 
-        public override object OnRequestSave()
+        private void Transaction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            return Transaction;
+            if (TrackingProperies.Contains(e.PropertyName))
+            {
+                SaveCommand.RaiseCanExecuteChanged();
+            }
         }
     }
 }
