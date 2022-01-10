@@ -2,40 +2,24 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Desktop.ViewModel
 {
+    [ExcludeFromCodeCoverage]
     public abstract class EntityBaseVM<T> : BindableBase
     where T : Entity
     {
-        private T _selectedValue;
-
         private DelegateCommand _addCommand;
-
         private DelegateCommand _deleteCommand;
-
         private DelegateCommand _editCommand;
-
-        private RangeObservableCollection<T> _entities;
-
-        public RangeObservableCollection<T> Entities
+        private ObservableCollection<T> _entities;
+        private T _selectedValue;
+        public EntityBaseVM(IEnumerable<T> entities)
         {
-            get
-            {
-                if (_entities == null)
-                {
-                    _entities = new RangeObservableCollection<T>();
-                    RaisePropertyChanged(nameof(Entities));
-                }
-
-                return _entities;
-            }
-            set
-            {
-                _entities = value;
-                RaisePropertyChanged(nameof(Entities));
-            }
+            _entities = new ObservableCollection<T>(entities);
         }
 
         public event EventHandler AddRaised;
@@ -68,6 +52,24 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
+        public ObservableCollection<T> Entities
+        {
+            get
+            {
+                if (_entities == null)
+                {
+                    _entities = new ObservableCollection<T>();
+                    RaisePropertyChanged(nameof(Entities));
+                }
+
+                return _entities;
+            }
+            set
+            {
+                _entities = value;
+                RaisePropertyChanged(nameof(Entities));
+            }
+        }
         public T SelectedValue
         {
             get => _selectedValue;

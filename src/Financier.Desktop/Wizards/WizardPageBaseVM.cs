@@ -1,6 +1,6 @@
 ﻿using Prism.Mvvm;
 
-namespace Financier.Desktop.MonoWizard.ViewModel
+namespace Financier.Desktop.Wizards
 {
     public abstract class WizardPageBaseVM : BindableBase
     {

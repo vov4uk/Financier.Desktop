@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using Financier.DataAccess.Data;
+using Financier.Desktop.Data;
+using Financier.Desktop.Helpers;
 using Financier.Desktop.Views;
-using Financier.Desktop.Wizards;
 using Financier.Desktop.Wizards.RecipesWizard.ViewModel;
 using Prism.Commands;
 
@@ -13,6 +12,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 {
     public class TransactionDialogVM : SubTransactionDailogVM
     {
+        private readonly IDialogWrapper dialogWrapper;
         private DelegateCommand _addSubTransactionCommand;
 
         private DelegateCommand _clearLocationCommand;
@@ -21,17 +21,26 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private DelegateCommand<TransactionDTO> _deleteSubTransactionCommand;
 
-        private DelegateCommand<TransactionDTO> _openSubTransactionDialogCommand;
-
         private DelegateCommand _openRecipesDialogCommand;
-
-        public ObservableCollection<Account> Accounts { get; set; }
-
-        public ObservableCollection<Currency> Currencies { get; set; }
-
-        public ObservableCollection<Location> Locations { get; set; }
-
-        public ObservableCollection<Payee> Payees { get; set; }
+        private DelegateCommand<TransactionDTO> _openSubTransactionDialogCommand;
+        public TransactionDialogVM(
+            TransactionDTO transaction,
+            IDialogWrapper dialogWrapper,
+            List<Category> categories,
+            List<Project> projects,
+            List<Account> accounts,
+            List<Currency> currencies,
+            List<Location> locations,
+            List<Payee> payees)
+            :base(transaction, categories, projects)
+        {
+            this.dialogWrapper = dialogWrapper;
+            Accounts = accounts;
+            Currencies = currencies;
+            Locations = locations;
+            Payees = payees;
+        }
+        public List<Account> Accounts { get; }
 
         public DelegateCommand AddSubTransactionCommand
         {
@@ -39,12 +48,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             {
                 return _addSubTransactionCommand ??= new DelegateCommand(() =>
                 {
-                    var transaction = new TransactionDTO
-                    {
-                        FromAmount = Transaction.UnsplitAmount,
-                        IsAmountNegative = Transaction.UnsplitAmount < 0
-                    };
-                    ShowSubTransactionDialog(transaction, true);
+                    ShowSubTransactionDialog(new TransactionDTO(), true);
                 });
             }
         }
@@ -59,6 +63,8 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return _clearPayeeCommand ??= new DelegateCommand(() => { Transaction.PayeeId = default; }); }
         }
 
+        public List<Currency> Currencies { get; }
+
         public DelegateCommand<TransactionDTO> DeleteSubTransactionCommand
         {
             get
@@ -71,7 +77,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        public DelegateCommand<TransactionDTO> OpenSubTransactionDialogCommand
+        public DelegateCommand<TransactionDTO> EditSubTransactionCommand
         {
             get
             {
@@ -79,6 +85,8 @@ namespace Financier.Desktop.ViewModel.Dialog
                     new DelegateCommand<TransactionDTO>(tr => ShowSubTransactionDialog(tr, false));
             }
         }
+
+        public List<Location> Locations { get; }
 
         public DelegateCommand OpenRecipesDialogCommand
         {
@@ -89,73 +97,75 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        private void CopySubTransaction(TransactionDTO tr, TransactionDTO modifiedCopy)
+        public List<Payee> Payees { get; }
+        protected override bool CanSaveCommandExecute()
         {
-            tr.CategoryId = modifiedCopy.CategoryId;
-            tr.Category = Categories.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
-            tr.FromAmount = modifiedCopy.RealFromAmount;
-            tr.Note = modifiedCopy.Note;
-            tr.ProjectId = modifiedCopy.ProjectId;
+            return Transaction.Account != null && Transaction.FromAmount != 0;
         }
 
-        private void ShowSubTransactionDialog(TransactionDTO tr, bool isNewItem)
+        private void CopySubTransaction(TransactionDTO original, TransactionDTO modifiedCopy)
         {
-            var copy = new SubTransactionDailogVM() { Transaction = new TransactionDTO() };
-            CopySubTransaction(copy.Transaction, tr);
-
-            copy.Transaction.IsAmountNegative = tr.FromAmount <= 0;
-            copy.Transaction.FromAmount = Math.Abs(tr.FromAmount);
-            copy.Categories = Categories;
-            copy.Projects = Projects;
-            copy.Transaction.IsSubTransaction = true;
-            Transaction.RecalculateUnSplitAmount();
-            copy.Transaction.ParentTransactionUnSplitAmount = isNewItem ? Transaction.UnsplitAmount : Transaction.UnsplitAmount - Math.Abs(tr.FromAmount);
-            var dialog = new Window
-            {
-                ResizeMode = ResizeMode.NoResize,
-                Height = 340,
-                Width = 340,
-                ShowInTaskbar = Debugger.IsAttached
-            };
-
-            copy.RequestCancel += (_, _) => { dialog.Close(); };
-            copy.RequestSave += (sender, _) =>
-            {
-                dialog.Close();
-                var modifiedCopy = sender as SubTransactionDailogVM;
-                CopySubTransaction(tr, modifiedCopy.Transaction);
-
-                if (isNewItem) Transaction.SubTransactions.Add(tr);
-                Transaction.RecalculateUnSplitAmount();
-                SaveCommand.RaiseCanExecuteChanged();
-            };
-            dialog.Content = new SubTransactionControl { DataContext = copy };
-            dialog.ShowDialog();
+            original.CategoryId = modifiedCopy.CategoryId;
+            original.Category = Categories.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
+            original.FromAmount = modifiedCopy.RealFromAmount;
+            original.IsAmountNegative = modifiedCopy.IsAmountNegative;
+            original.Note = modifiedCopy.Note;
+            original.ProjectId = modifiedCopy.ProjectId;
         }
 
         private void ShowRecepiesDialog()
         {
-            var dialog = new WizardWindow();
+            var vm = new RecipesVM(
+                Transaction.RealFromAmount / 100.0,
+                Categories.Where(x => x.Id > 0).ToList(),
+                Projects.ToList());
 
-            var viewModel = new RecipesVM(Categories.ToList(), Projects.ToList()) { TotalAmount = Transaction.FromAmount / 100.0 };
-            viewModel.CreatePages();
-            viewModel.RequestClose += (o, args) =>
+            var output = dialogWrapper.ShowWizard(vm);
+
+            if (output is List<TransactionDTO>)
             {
-                dialog.Close();
-                if (args)
+                var outputTransactions = output as List<TransactionDTO>;
+                foreach (var item in outputTransactions)
                 {
-                    var vm = o as RecipesVM;
-                    foreach (var item in vm.TransactionsToImport)
-                    {
-                        item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
-                        Transaction.SubTransactions.Add(item);
-                    }
-                    Transaction.RecalculateUnSplitAmount();
-                    SaveCommand.RaiseCanExecuteChanged();
+                    item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
+                    Transaction.SubTransactions.Add(item);
                 }
-            };
-            dialog.DataContext = viewModel;
-            dialog.ShowDialog();
+                Transaction.RecalculateUnSplitAmount();
+                SaveCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        private void ShowSubTransactionDialog(TransactionDTO original, bool isNewItem)
+        {
+            Transaction.RecalculateUnSplitAmount();
+            var workingCopy = new TransactionDTO { IsSubTransaction = true };
+            if (isNewItem)
+            {
+                workingCopy.IsAmountNegative = Transaction.UnsplitAmount < 0;
+                workingCopy.FromAmount = Math.Abs(Transaction.UnsplitAmount);
+                workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount;
+            }
+            else
+            {
+                CopySubTransaction(workingCopy, original);
+                workingCopy.IsAmountNegative = original.RealFromAmount <= 0;
+                workingCopy.FromAmount = Math.Abs(original.FromAmount);
+                workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount - Math.Abs(original.FromAmount);
+            }
+
+            var viewModel = new SubTransactionDailogVM(workingCopy, Categories, Projects);
+
+            var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, "Sub Transaction");
+
+            if (dialogResult is TransactionDTO)
+            {
+                var modifiedCopy = dialogResult as TransactionDTO;
+                CopySubTransaction(original, modifiedCopy);
+
+                if (isNewItem) Transaction.SubTransactions.Add(original);
+                Transaction.RecalculateUnSplitAmount();
+                SaveCommand.RaiseCanExecuteChanged();
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Financier.Desktop.MonoWizard.ViewModel;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
@@ -9,13 +8,11 @@ namespace Financier.Desktop.Wizards
     public abstract class WizardBaseVM : BindableBase
     {
         protected static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        protected WizardPageBaseVM _currentPage;
+        protected ReadOnlyCollection<WizardPageBaseVM> _pages;
         private DelegateCommand _cancelCommand;
         private DelegateCommand _moveNextCommand;
         private DelegateCommand _movePreviousCommand;
-
-        protected  WizardPageBaseVM _currentPage;
-        protected ReadOnlyCollection<WizardPageBaseVM> _pages;
-
         public event EventHandler<bool> RequestClose;
 
         public DelegateCommand CancelCommand
@@ -25,11 +22,6 @@ namespace Financier.Desktop.Wizards
                 return _cancelCommand ??= new DelegateCommand(() => OnClose(false));
             }
         }
-
-        public abstract void BeforeCurrentPageUpdated(WizardPageBaseVM old, WizardPageBaseVM newValue);
-        public abstract void AfterCurrentPageUpdated(WizardPageBaseVM newValue);
-        public abstract void CreatePages();
-        public abstract void OnRequestClose(bool save);
 
         public WizardPageBaseVM CurrentPage
         {
@@ -91,6 +83,11 @@ namespace Financier.Desktop.Wizards
             }
         }
 
+        public abstract void AfterCurrentPageUpdated(WizardPageBaseVM newValue);
+
+        public abstract void BeforeCurrentPageUpdated(WizardPageBaseVM old, WizardPageBaseVM newValue);
+        public abstract void CreatePages();
+        public abstract object OnRequestClose(bool save);
         void MoveToNextPage()
         {
             if (CanMoveToNextPage)
@@ -109,8 +106,8 @@ namespace Financier.Desktop.Wizards
 
         void OnClose(bool save)
         {
-            OnRequestClose(save);
-            RequestClose?.Invoke(this, save);
+            var output = OnRequestClose(save);
+            RequestClose?.Invoke(output, save);
         }
     }
 }

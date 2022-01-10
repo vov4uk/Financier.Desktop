@@ -1,10 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows.Controls;
 
 namespace Financier.Desktop.Views.Controls
 {
-    /// <summary>
-    /// Interaction logic for TitleEntityControl.xaml
-    /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class EntityWithTitleControl : UserControl
     {
         public EntityWithTitleControl()

@@ -11,12 +11,17 @@
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
-        <BitmapImage x:Key="IcActionCancel"   UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
-        <BitmapImage x:Key="IcActionAdd"      UriSource="pack://application:,,,/Images/ic_action_add.png" />
-        <BitmapImage x:Key="IcActionMinus"    UriSource="pack://application:,,,/Images/ic_action_minus.png" />
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <converters:AmountConverter x:Key="AmountConverter" />
-        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BitmapImage x:Key="IcActionCancel"   UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
+            <BitmapImage x:Key="IcActionAdd"      UriSource="pack://application:,,,/Images/ic_action_add.png" />
+            <BitmapImage x:Key="IcActionMinus"    UriSource="pack://application:,,,/Images/ic_action_minus.png" />
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+            <converters:AmountConverter x:Key="AmountConverter" />
+            <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
               Header="Transfer details"
@@ -86,7 +91,7 @@
                     <xctk:TimePicker Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="1"
                                      Margin="2"
                                      HorizontalAlignment="Stretch"
-                                     Value="{Binding Transfer.Date}" />
+                                     Value="{Binding Transfer.Time}" />
                 </Grid>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
@@ -96,7 +101,8 @@
                            SelectedItem="{Binding Transfer.FromAccount}"
                            SelectedValuePath="Id"
                            SelectedValue="{Binding Transfer.FromAccountId}"
-                           DisplayMemberPath="Title" />
+                           TextSearch.TextPath="Title"
+                           ItemTemplate="{StaticResource ResourceKey=IActive}"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" 
                            Text="To Account"/>
@@ -105,13 +111,15 @@
                            SelectedItem="{Binding Transfer.ToAccount}"
                            SelectedValuePath="Id"
                            SelectedValue="{Binding Transfer.ToAccountId}"
-                           DisplayMemberPath="Title" />
+                           TextSearch.TextPath="Title"
+                           ItemTemplate="{StaticResource ResourceKey=IActive}" />
 
                 <TextBlock  Grid.Column="0" Grid.Row="5"
                             Grid.ColumnSpan="3"
                             x:Name="FromAmountBlock"
                             Text="{Binding Path=Transfer.FromAccount.Currency.Name, StringFormat={}Amount Out ({0}), TargetNullValue=Amount}" />
                 <xctk:IconButton    Grid.Column="0" Grid.Row="6"
+                                    IsEnabled="False"
                                     Height="24"
                                     Width="24">
                     <xctk:IconButton.Icon>
@@ -145,7 +153,8 @@
                                     ShowButtonSpinner="True" />
 
                 <TextBlock Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="3"
-                           Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">Rate</TextBlock>
+                           Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                           Text="Rate"/>
                 <xctk:DecimalUpDown Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3"
                                     Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                                     Value="{Binding Transfer.Rate}"

@@ -1,26 +1,25 @@
 ﻿using Financier.DataAccess.Data;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Financier.Desktop.MonoWizard.ViewModel
+namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page1VM : WizardPageBaseVM
     {
 
-        private ObservableCollection<Account> _accounts;
+        private List<Account> _accounts;
 
         private Account _monoAccount;
 
-        public Page1VM(List<Account> records)
+        public Page1VM(List<Account> accounts)
         {
-            _accounts = new ObservableCollection<Account>(records);
-            _monoAccount = _accounts?.FirstOrDefault(x => x.IsActive && x.Title.Contains("mono", System.StringComparison.OrdinalIgnoreCase));
+            Accounts = accounts;
+            MonoAccount = Accounts.FirstOrDefault(x => x.IsActive && x.Title.Contains("mono", System.StringComparison.OrdinalIgnoreCase)) ?? Accounts.FirstOrDefault();
         }
-        public ObservableCollection<Account> Accounts
+        public List<Account> Accounts
         {
             get => _accounts;
-            set
+            private set
             {
                 _accounts = value;
                 RaisePropertyChanged(nameof(Accounts));
@@ -40,7 +39,7 @@ namespace Financier.Desktop.MonoWizard.ViewModel
 
         public override bool IsValid()
         {
-            return true;
+            return MonoAccount != null;
         }
     }
 }

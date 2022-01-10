@@ -1,77 +1,79 @@
-﻿using Financier.DataAccess;
-using Financier.DataAccess.Abstractions;
+﻿using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.View;
-using Financier.Desktop.Converters;
 using Financier.Desktop.Views;
 using Financier.Adapter;
-using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Views.Controls;
 using Financier.Desktop.Reports.ViewModel;
+using Financier.Desktop.Helpers;
+using Financier.Desktop.Wizards.MonoWizard.ViewModel;
+using System.IO;
+using System.Collections.Concurrent;
+using System.Linq.Expressions;
+using Financier.Desktop.Data;
+using Mvvm.Async;
 
 namespace Financier.Desktop.ViewModel
 {
     public class FinancierVM : BindableBase
     {
+        private const string Backup = "backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
+        private readonly ICsvHelper csvHelper;
+        private readonly IFinancierDatabaseFactory dbFactory;
+        private readonly IDialogWrapper dialogWrapper;
         private readonly List<Entity> keyLessEntities = new();
-        private DelegateCommand<Type> _menuNavigateCommand;
-
-        private ReadOnlyCollection<BindableBase> _pages;
-        private AccountsVM accountsVm;
+        private BackupVersion _backupVersion;
+        private Dictionary<string, List<string>> _entityColumnsOrder;
+        private IAsyncCommand<Type> _menuNavigateCommand;
+        private IAsyncCommand _monoCommand;
+        private IAsyncCommand _openBackupCommand;
+        private IAsyncCommand _saveBackupCommand;
+        private AccountsVM accountsVM;
+        private IBackupWriter backupWriter;
         private BlotterVM blotter;
-        private LocationsVM locations;
         private BindableBase currentPage;
-        private FinancierDatabase db;
+        private IFinancierDatabase db;
+        private IEntityReader entityReader;
+        private LocationsVM locations;
         private string openBackupPath;
-
-        private string saveBackupPath;
-        private ProjectsVM projects;
         private PayeesVM payees;
+        private ProjectsVM projects;
 
-        public FinancierVM()
+        public FinancierVM(IDialogWrapper dialogWrapper,
+            IFinancierDatabaseFactory dbFactory,
+            IEntityReader entityReader,
+            IBackupWriter backupWriter,
+            ICsvHelper csvHelper)
         {
+            this.dialogWrapper = dialogWrapper;
+            this.dbFactory = dbFactory;
+            this.entityReader = entityReader;
+            this.backupWriter = backupWriter;
+            this.csvHelper = csvHelper;
+            this.db = dbFactory.CreateDatabase();
+
             CreatePages();
         }
 
         public BlotterVM Blotter
         {
             get => blotter;
-            set => SetProperty(ref blotter, value);
-        }
-
-        public LocationsVM Locations
-        {
-            get => locations;
-            set => SetProperty(ref locations, value);
-        }
-
-        public ProjectsVM Projects
-        {
-            get => projects;
-            set => SetProperty(ref projects, value);
-        }
-
-        public PayeesVM Payees
-        {
-            get => payees;
-            set => SetProperty(ref payees, value);
+            private set => SetProperty(ref blotter, value);
         }
 
         public BindableBase CurrentPage
         {
             get => currentPage;
-            set
+            private set
             {
                 SetProperty(ref currentPage, value);
                 Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
@@ -82,741 +84,589 @@ namespace Financier.Desktop.ViewModel
                 RaisePropertyChanged(nameof(IsPayeePageSelected));
             }
         }
-        public bool IsTransactionPageSelected => currentPage is BlotterVM;
 
         public bool IsLocationPageSelected => currentPage is LocationsVM;
 
-        public bool IsProjectPageSelected => currentPage is ProjectsVM;
-
         public bool IsPayeePageSelected => currentPage is PayeesVM;
 
-        public DelegateCommand<Type> MenuNavigateCommand
+        public bool IsProjectPageSelected => currentPage is ProjectsVM;
+
+        public bool IsTransactionPageSelected => currentPage is BlotterVM;
+
+        public LocationsVM Locations
+        {
+            get => locations;
+            private set => SetProperty(ref locations, value);
+        }
+
+        public IAsyncCommand<Type> MenuNavigateCommand
         {
             get
             {
-                return _menuNavigateCommand ??= new DelegateCommand<Type>(NavigateToType);
+                return _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
+            }
+        }
+
+        public IAsyncCommand MonoCommand
+        {
+            get
+            {
+                return _monoCommand ??= new AsyncCommand(OpenMonoWizardAsync);
+            }
+        }
+
+        public IAsyncCommand OpenBackupCommand
+        {
+            get
+            {
+                return _openBackupCommand ??= new AsyncCommand(OpenBackup_OnClickAsync);
             }
         }
 
         public string OpenBackupPath
         {
             get => openBackupPath;
-            set => SetProperty(ref openBackupPath, value);
-        }
-        public ReadOnlyCollection<BindableBase> Pages => _pages;
-
-        public string SaveBackupPath
-        {
-            get => saveBackupPath;
-            set => SetProperty(ref saveBackupPath, value);
+            private set => SetProperty(ref openBackupPath, value);
         }
 
-        public async Task ImportMonoTransactions(List<Transaction> transactions)
+        public PayeesVM Payees
         {
-            await db.ImportMonoTransactions(transactions);
+            get => payees;
+            private set => SetProperty(ref payees, value);
+        }
 
-            foreach (var accId in transactions
-                .Where(x => x.ToAccountId > 0)
-                .Select(x => x.ToAccountId)
-                .Distinct())
+        public ProjectsVM Projects
+        {
+            get => projects;
+            private set => SetProperty(ref projects, value);
+        }
+        public IAsyncCommand SaveBackupCommand
+        {
+            get
             {
-                await db.RebuildRunningBalanceForAccount(accId);
+                return _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
             }
-            await db.RebuildRunningBalanceForAccount(transactions.Select(x => x.FromAccountId).FirstOrDefault());
-            await RefreshBlotterTransactions();
         }
 
         public async Task OpenBackup(string backupPath)
         {
             var start = DateTime.Now;
-            CreatePages();
-            var sb = new StringBuilder();
+            ClearPages();
 
             OpenBackupPath = backupPath;
-            var entities = EntityReader.ParseBackupFile(backupPath).ToList();
+            var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);
+            _backupVersion = backupVersion;
+            _entityColumnsOrder = columnsOrder;
 
-            db = new FinancierDatabase();
-            await db.Import(entities);
+            db?.Dispose();
 
-            using (var uow = db.CreateUnitOfWork())
-            {
-                var allAccounts = await uow.GetRepository<Account>()
-                    .GetAllAsync(x => x.Currency);
-
-                var allTransactions = await uow.GetRepository<BlotterTransactions>()
-                    .GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
-
-                var byCategoryReport = await uow.GetRepository<ByCategoryReport>()
-                    .GetAllAsync(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
-
-                var allCategories = await uow.GetRepository<Category>().GetAllAsync();
-
-                var allRates = await uow.GetRepository<CurrencyExchangeRate>()
-                    .GetAllAsync(x => x.FromCurrency, x => x.ToCurrency);
-
-                AddEntities(allAccounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList(), sb);
-                AddEntities(allTransactions.OrderByDescending(x => x.datetime).ToList(), sb, true);
-                AddEntities(allCategories.Where(x => x.Id > 0).ToList(), sb);
-                AddEntities(allRates.ToList(), sb);
-
-                sb?.AppendLine($"Imported {typeof(ReportVM).Name}");
-                var vm = _pages.OfType<ReportVM>().First();
-                vm.Entities = new RangeObservableCollection<ByCategoryReport>(byCategoryReport.ToList());
-                vm.AllCategories = allCategories.Where(x => x.Id > 0).ToList();
-            }
-
-            AddEntities(entities.OfType<Project>().Where(x => x.Id > 0).OrderBy(x => x.Id).ToList(), sb);
-            AddEntities(entities.OfType<Payee>().Where(x => x.Id > 0).OrderBy(x => x.Id).ToList(), sb);
-            AddEntities(entities.OfType<Location>().Where(x => x.Id > 0).OrderBy(x => x.Id).ToList(), sb);
-            AddEntities(entities.OfType<Currency>().ToList(), sb);
-            AddEntities(entities.OfType<Budget>().ToList(), sb);
+            db = dbFactory.CreateDatabase();
+            await db.ImportEntitiesAsync(entities);
 
             keyLessEntities.Clear();
 
-            AddKeylessEntities(entities.OfType<CCardClosingDate>().ToList(), sb);
-            AddKeylessEntities(entities.OfType<CategoryAttribute>().ToList(), sb);
-            AddKeylessEntities(entities.OfType<TransactionAttribute>().ToList(), sb);
+            AddKeylessEntities(entities.OfType<CCardClosingDate>());
+            AddKeylessEntities(entities.OfType<CategoryAttribute>());
+            AddKeylessEntities(entities.OfType<TransactionAttribute>());
 
             var duration = DateTime.Now - start;
-            sb.AppendLine($"Duration : {duration}");
-            var info = new InfoVM { Text = sb.ToString() };
-            info.RequestClose += InfoClose;
-            CurrentPage = info;
-            Logger.Info(info.Text);
+            Logger.Info($"Duration : {duration}");
+            dialogWrapper.ShowMessageBox($"Imported {entities.Count()} entities. Duration : {duration}","Success");
+            await NavigateToType(typeof(BlotterTransactions));
         }
 
         public async Task SaveBackup(string backupPath)
         {
-            SaveBackupPath = backupPath;
             List<Entity> itemsToBackup = new();
             itemsToBackup.AddRange(keyLessEntities);
             using (IUnitOfWork uow = db.CreateUnitOfWork())
             {
-                await AddBackupEntities<Budget>(uow, itemsToBackup);
-                await AddBackupEntities<TransactionAttribute>(uow, itemsToBackup);
-                await AddBackupEntities<CurrencyExchangeRate>(uow, itemsToBackup);
-                await AddBackupEntities<Currency>(uow, itemsToBackup);
-                await AddBackupEntities<Location>(uow, itemsToBackup, x => x.Id > 0);
-                await AddBackupEntities<Payee>(uow, itemsToBackup);
-                await AddBackupEntities<Project>(uow, itemsToBackup);
-                await AddBackupEntities<Transaction>(uow, itemsToBackup);
-                await AddBackupEntities<Account>(uow, itemsToBackup, keySelector: x => x.Id);
-                await AddBackupEntities<AttributeDefinition>(uow, itemsToBackup, x => x.Id > 0);
-                await AddBackupEntities<CategoryAttribute>(uow, itemsToBackup);
-                await AddBackupEntities<CCardClosingDate>(uow, itemsToBackup);
-                await AddBackupEntities<SmsTemplate>(uow, itemsToBackup);
-                await AddBackupEntities<Category>(uow, itemsToBackup, x => x.Id > 0);
+                itemsToBackup.AddRange(await uow.GetAllAsync<Budget>());
+                itemsToBackup.AddRange(await uow.GetAllAsync<TransactionAttribute>());
+                itemsToBackup.AddRange(await uow.GetAllAsync<CurrencyExchangeRate>());
+                itemsToBackup.AddRange(await uow.GetAllAsync<Currency>());
+                itemsToBackup.AddRange((await uow.GetAllAsync<Location>()).Where(x => x.Id > 0));
+                itemsToBackup.AddRange(await uow.GetAllAsync<Payee>());
+                itemsToBackup.AddRange((await uow.GetAllAsync<Project>()).Where(x => x.Id > 0));
+                itemsToBackup.AddRange(await uow.GetAllAsync<Transaction>());
+                itemsToBackup.AddRange((await uow.GetAllAsync<Account>()).OrderBy(x => x.Id));
+                itemsToBackup.AddRange((await uow.GetAllAsync<AttributeDefinition>()).Where(x => x.Id > 0));
+                itemsToBackup.AddRange(await uow.GetAllAsync<CategoryAttribute>());
+                itemsToBackup.AddRange(await uow.GetAllAsync<CCardClosingDate>());
+                itemsToBackup.AddRange(await uow.GetAllAsync<SmsTemplate>());
+                itemsToBackup.AddRange((await uow.GetAllAsync<Category>()).Where(x => x.Id > 0));
             }
 
-            using var bw = new BackupWriter(backupPath, EntityReader.BackupVersion);
-            bw.GenerateBackup(itemsToBackup);
+            backupWriter.GenerateBackup(itemsToBackup, backupPath, _backupVersion, _entityColumnsOrder);
         }
 
-        private async Task AddBackupEntities<T>(IUnitOfWork uow, List<Entity> itemsToBackup, Func<T, bool> predicate = null, Func<T, int> keySelector = null)
+        private void AddKeylessEntities<T>(IEnumerable<T> entities)
         where T : Entity
         {
-            var allItems = await uow.GetRepository<T>().GetAllAsync();
-            if (predicate != null)
-            {
-                allItems = allItems.Where(predicate).ToList();
-            }
-            if (keySelector != null)
-            {
-                allItems = allItems.OrderBy(keySelector).ToList();
-            }
-            itemsToBackup.AddRange(allItems);
-        }
-
-        private void AddEntities<T>(List<T> entities, StringBuilder sb, bool replace = false)
-        where T : Entity
-        {
-            sb?.AppendLine($"Imported {typeof(T).Name} {entities.Count}");
-            var vm = _pages.FirstOrDefault(x => x.GetType().BaseType.GetGenericArguments().Single() == typeof(T)) as EntityBaseVM<T>;
-            if (replace)
-            {
-                vm.Entities = new RangeObservableCollection<T>(entities);
-            }
-            else
-            {
-                vm.Entities.AddRange(entities);
-            }
-        }
-
-        private void AddKeylessEntities<T>(List<T> entities, StringBuilder sb)
-        where T : Entity
-        {
-            sb?.AppendLine($"Imported {typeof(T).Name} {entities.Count}");
+            Logger.Info($"Imported {typeof(T).Name} {entities.Count()}");
             keyLessEntities.AddRange(entities);
         }
 
-        private async void Blotter_AddTransactionRaised(object sender, EventArgs e)
+        private async void Blotter_AddTransactionRaised(object sender, EventArgs eventArgs)
         {
-            await OpenTransactionDialog(0);
+            await OpenTransactionDialogAsync(0);
         }
 
-        private async void Blotter_AddTransferRaised(object sender, EventArgs e)
+        private async void Blotter_AddTransferRaised(object sender, EventArgs eventArgs)
         {
-            await OpenTransferDialog(0);
+            await OpenTransferDialogAsync(0);
         }
 
-        private async void Blotter_DeleteRaised(object sender, TransactionsView e)
+        private async void Blotter_DeleteRaised(object sender, TransactionsView eventArgs)
         {
-            var result = System.Windows.Forms.MessageBox.Show("Are you sure you want to delete transaction?", "Delete", System.Windows.Forms.MessageBoxButtons.YesNo);
-            if (result == System.Windows.Forms.DialogResult.Yes)
+
+            if (dialogWrapper.ShowMessageBox("Are you sure you want to delete transaction?", "Delete", true))
             {
                 using (var uow = db.CreateUnitOfWork())
                 {
                     var repo = uow.GetRepository<Transaction>();
-                    var transaction = await repo.FindByAsync(x => x.Id == e._id);
+                    var transaction = await repo.FindByAsync(x => x.Id == eventArgs._id);
 
                     await repo.DeleteAsync(transaction);
                     await uow.SaveChangesAsync();
                 }
-                await RefreshBlotterTransactions();
+                await RefreshBlotterTransactionsAsync();
             }
         }
 
-        private void Blotter_DuplicateRaised(object sender, TransactionsView e)
+        private async void BlotterVM_OpenTransactionRaised(object sender, TransactionsView eventArgs)
         {
-            throw new NotImplementedException();
-        }
-
-        private async void BlotterVM_OpenTransactionRaised(object sender, TransactionsView e)
-        {
-            if (e.from_account_id > 0 && e.to_account_id > 0 && e.category_id == 0)
+            if (eventArgs.from_account_id > 0 && eventArgs.to_account_id > 0 && eventArgs.category_id == 0)
             {
-                await OpenTransferDialog(e._id);
+                await OpenTransferDialogAsync(eventArgs._id);
             }
             else
             {
-                await OpenTransactionDialog(e._id);
+                await OpenTransactionDialogAsync(eventArgs._id);
             }
         }
 
-        private TransactionDTO ConvertTransaction(Transaction transaction)
+        private void ClearPages()
         {
-            return new()
-            {
-                Id = transaction.Id,
-                AccountId = transaction.FromAccountId,
-                CategoryId = transaction.CategoryId,
-                Category = transaction.Category,
-                PayeeId = transaction.PayeeId,
-                OriginalCurrencyId = transaction.OriginalCurrencyId,
-                OriginalCurrency = transaction.OriginalCurrency,
-                LocationId = transaction.LocationId,
-                ProjectId = transaction.ProjectId,
-                Note = transaction.Note,
-                FromAmount = transaction.FromAmount,
-                OriginalFromAmount = transaction.OriginalFromAmount,
-                IsAmountNegative = transaction.FromAmount <= 0,
-                Date = DateTimeConverter.Convert(transaction.DateTime),
-            };
-        }
-
-        private TransferDTO ConvertTransfer(Transaction transaction)
-        {
-            return new()
-            {
-                Id = transaction.Id,
-                FromAccountId = transaction.FromAccountId,
-                ToAccountId = transaction.ToAccountId,
-                Note = transaction.Note,
-                FromAmount = transaction.FromAmount,
-                ToAmount = transaction.ToAmount,
-                Date = DateTimeConverter.Convert(transaction.DateTime),
-            };
-        }
-
-        private void CreatePages()
-        {
-            accountsVm = new AccountsVM();
+            _pages?.Clear();
+            accountsVM = null;
             if (Blotter != null)
             {
                 Blotter.EditRaised -= BlotterVM_OpenTransactionRaised;
                 Blotter.AddRaised -= Blotter_AddTransactionRaised;
                 Blotter.AddTransferRaised -= Blotter_AddTransferRaised;
                 Blotter.DeleteRaised -= Blotter_DeleteRaised;
-                Blotter.DuplicateRaised -= Blotter_DuplicateRaised;
             }
 
-            Blotter = new BlotterVM();
-            Blotter.EditRaised += BlotterVM_OpenTransactionRaised;
-            Blotter.AddRaised += Blotter_AddTransactionRaised;
-            Blotter.AddTransferRaised += Blotter_AddTransferRaised;
-            Blotter.DeleteRaised += Blotter_DeleteRaised;
-            Blotter.DuplicateRaised += Blotter_DuplicateRaised;
+            Blotter = null;
 
             if (Locations != null)
             {
                 Locations.AddRaised -= Locations_AddRaised;
                 Locations.EditRaised -= Locations_EditRaised;
-                Locations.DeleteRaised -= Locations_DeleteRaised;
             }
-            Locations = new LocationsVM();
-            Locations.AddRaised += Locations_AddRaised;
-            Locations.EditRaised += Locations_EditRaised;
-            Locations.DeleteRaised += Locations_DeleteRaised;
+            Locations = null;
 
             if (Payees != null)
             {
                 Payees.AddRaised -= Payees_AddRaised;
                 Payees.EditRaised -= Payees_EditRaised;
-                Payees.DeleteRaised -= Payees_DeleteRaised;
             }
-            Payees = new PayeesVM();
-            Payees.AddRaised += Payees_AddRaised; ;
-            Payees.EditRaised += Payees_EditRaised; ;
-            Payees.DeleteRaised += Payees_DeleteRaised;
+            Payees = null;
 
             if (Projects != null)
             {
                 Projects.AddRaised -= Projects_AddRaised;
                 Projects.EditRaised -= Projects_EditRaised;
-                Projects.DeleteRaised -= Projects_DeleteRaised;
             }
-            Projects = new ProjectsVM();
+            Projects = null;
+        }
+
+        private void CreatePages()
+        {
+            accountsVM = new AccountsVM(Array.Empty<Account>());
+
+            Blotter = new BlotterVM(Array.Empty<BlotterTransactions>());
+            Blotter.EditRaised += BlotterVM_OpenTransactionRaised;
+            Blotter.AddRaised += Blotter_AddTransactionRaised;
+            Blotter.AddTransferRaised += Blotter_AddTransferRaised;
+            Blotter.DeleteRaised += Blotter_DeleteRaised;
+
+            Locations = new LocationsVM(Array.Empty<Location>());
+            Locations.AddRaised += Locations_AddRaised;
+            Locations.EditRaised += Locations_EditRaised;
+
+            Payees = new PayeesVM(Array.Empty<Payee>());
+            Payees.AddRaised += Payees_AddRaised;
+            Payees.EditRaised += Payees_EditRaised;
+
+            Projects = new ProjectsVM(Array.Empty<Project>());
             Projects.AddRaised += Projects_AddRaised;
             Projects.EditRaised += Projects_EditRaised;
-            Projects.DeleteRaised += Projects_DeleteRaised;
-
-            _pages = new List<BindableBase>
-                {
-                    accountsVm,
-                    Blotter,
-                    new BudgetsVM(),
-                    new CategoriesVM(),
-                    new CurrenciesVM(),
-                    new ExchangeRatesVM(),
-                    Locations,
-                    Payees,
-                    Projects,
-                    new ReportVM()
-                }.AsReadOnly();
         }
-
-        private void Projects_DeleteRaised(object sender, Project e)
+        private async Task<BindableBase> GetOrCreatePage(Type type)
         {
-            throw new NotImplementedException();
-        }
 
-        private async void Projects_EditRaised(object sender, Project e)
-        {
-            await OpenProjectDialog(e.Id);
-        }
-
-        private async void Projects_AddRaised(object sender, EventArgs e)
-        {
-            await OpenProjectDialog(0);
-        }
-
-        private void Payees_DeleteRaised(object sender, Payee e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private async void Payees_EditRaised(object sender, Payee e)
-        {
-            await OpenPayeeDialog(e.Id);
-        }
-
-        private async void Payees_AddRaised(object sender, EventArgs e)
-        {
-            await OpenPayeeDialog(0);
-        }
-
-        private void Locations_DeleteRaised(object sender, Location e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private async void Locations_EditRaised(object sender, Location e)
-        {
-            await OpenLocationDialog(e.Id);
-        }
-
-        private async void Locations_AddRaised(object sender, EventArgs e)
-        {
-            await OpenLocationDialog(0);
-        }
-
-        private void InfoClose(object sender, EventArgs e)
-        {
-            CurrentPage = Pages.OfType<AccountsVM>().First();
-        }
-
-        private async Task InsertOrUpdate<T>(IEnumerable<T> entities)
-            where T: Entity, IIdentity
-        {
-            using var uow = db.CreateUnitOfWork();
-            var trRepo = uow.GetRepository<T>();
-            foreach (var item in entities)
+            switch (type.Name)
             {
-                item.UpdatedOn = DateTimeConverter.ConvertBack(DateTime.Now);
-                if (item.Id == 0)
-                {
-                    await trRepo.AddAsync(item);
-                }
-                else
-                {
-                    await trRepo.UpdateAsync(item);
-                }
-            }
-            await uow.SaveChangesAsync();
-        }
-
-        private void MapTransaction(TransactionDTO vm, Transaction tr)
-        {
-            tr.Id = vm.Id;
-            tr.FromAccountId = vm.AccountId;
-            tr.FromAmount = vm.RealFromAmount;
-            tr.OriginalFromAmount = vm.OriginalFromAmount ?? 0;
-            tr.OriginalCurrencyId = vm.OriginalCurrencyId ?? 0;
-            tr.CategoryId = vm.CategoryId ?? 0;
-            tr.Category = default;
-            tr.PayeeId = vm.PayeeId ?? 0;
-            tr.LocationId = vm.LocationId ?? 0;
-            tr.ProjectId = vm.CategoryId == Category.Split.Id ? 0 : (vm.ProjectId ?? 0);
-            tr.Note = vm.Note;
-            tr.DateTime = DateTimeConverter.ConvertBack(vm.Date);
-        }
-
-        private void MapTransfer(TransferDTO vm, Transaction tr)
-        {
-            tr.Id = vm.Id;
-            tr.FromAccountId = vm.FromAccountId;
-            tr.ToAccountId = vm.ToAccountId;
-            tr.Note = vm.Note;
-            tr.FromAmount = vm.FromAmount;
-            tr.ToAmount = vm.ToAmount;
-            tr.DateTime = DateTimeConverter.ConvertBack(vm.Date);
-            tr.OriginalCurrencyId = vm.FromAccount.CurrencyId;
-            tr.OriginalFromAmount = vm.FromAmount;
-            tr.CategoryId = 0;
-        }
-
-        private void NavigateToType(Type type)
-        {
-            CurrentPage = Pages.FirstOrDefault(x => x.GetType().BaseType.GetGenericArguments().Single() == type);
-        }
-
-        private async Task OpenTransactionDialog(int e)
-        {
-            TransactionDialogVM context = new TransactionDialogVM();
-            Transaction transaction;
-            using (var uow = db.CreateUnitOfWork())
-            {
-                if (e > 0)
-                {
-                    Logger.Info($"Edit Transaction {e}");
-                    var transactions = await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == e || x.Id == e, o => o.OriginalCurrency, c => c.Category);
-                    transaction = transactions.First(x => x.Id == e);
-                    var transactionVm = ConvertTransaction(transaction);
-                    if (transactions.Any(x => x.ParentId == e))
+                case nameof(Account):
+                    accountsVM = await GetOrCreatePage<Account, AccountsVM>(
+                            transform: (a) => a.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList(),
+                            includes: x => x.Currency);
+                    return accountsVM;
+                case nameof(Budget):
+                    return await GetOrCreatePage<Budget, BudgetsVM>();
+                case nameof(Currency):
+                    return await GetOrCreatePage<Currency, CurrenciesVM>();
+                case nameof(Project):
+                    Projects = await GetOrCreatePage<Project, ProjectsVM>(transform: x => x.DefaultOrder(),
+                        addAction: Projects_AddRaised,
+                        editAction: Projects_EditRaised);
+                    return Projects;
+                case nameof(Location):
+                    Locations = await GetOrCreatePage<Location, LocationsVM>(transform: x => x.DefaultOrder(),
+                    addAction: Locations_AddRaised,
+                    editAction: Locations_EditRaised);
+                    return Locations;
+                case nameof(Payee):
+                    Payees = await GetOrCreatePage<Payee, PayeesVM>(transform: x => x.DefaultOrder(),
+                        addAction: Payees_AddRaised,
+                        editAction: Payees_EditRaised);
+                    return Payees;
+                case nameof(BlotterTransactions):
                     {
-                        IEnumerable<TransactionDTO> subTransactions = transactions.Where(x => x.ParentId == e).Select(ConvertTransaction);
-                        transactionVm.SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions);
+                        if (Blotter == null)
+                        {
+                            Blotter = await GetOrCreatePage<BlotterTransactions, BlotterVM>(
+                                transform: x => x.OrderByDescending(x => x.datetime),
+                                addAction: Blotter_AddTransactionRaised,
+                                deleteAction: Blotter_DeleteRaised,
+                                editAction: BlotterVM_OpenTransactionRaised,
+                                x => x.from_account_currency, x => x.to_account_currency);
+                        }
+                        return Blotter;
                     }
-                    context.Transaction = transactionVm;
-                }
-                else
-                {
-                    Logger.Info("Create Transaction");
-                    transaction = new Transaction { DateTime = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0 };
-                    context.Transaction = ConvertTransaction(transaction);
-                }
+                case nameof(Category):
+                    return await GetOrCreatePage<Category, CategoriesVM>(transform: x => x.Where(x => x.Id > 0).OrderBy(x => x.Left));
 
-                var allAccounts = await uow.GetRepository<Account>().GetAllAsync(x => x.Currency);
-                var allCategories = await uow.GetRepository<Category>().GetAllAsync();
-                var allPayees = await uow.GetRepository<Payee>().GetAllAsync();
-                var currencies = await uow.GetRepository<Currency>().GetAllAsync();
-                var locations = await uow.GetRepository<Location>().GetAllAsync();
-                var projects = await uow.GetRepository<Project>().GetAllAsync();
-                context.Accounts = new ObservableCollection<Account>(allAccounts);
-                context.Categories = new ObservableCollection<Category>(allCategories);
-                context.Payees = new ObservableCollection<Payee>(allPayees);
-                context.Currencies = new ObservableCollection<Currency>(currencies);
-                context.Locations = new ObservableCollection<Location>(locations);
-                context.Projects = new ObservableCollection<Project>(projects);
-            }
-
-            var dialog = new Window
-            {
-                Content = new TransactionControl { DataContext = context },
-                ResizeMode = ResizeMode.NoResize,
-                Height = 640,
-                Width = 340,
-                ShowInTaskbar = Debugger.IsAttached
-            };
-            context.RequestCancel += (_, _) =>
-            {
-                dialog.Close();
-                Logger.Info("Transaction close");
-            };
-            context.RequestSave += async (sender, _) =>
-            {
-                dialog.Close();
-                Logger.Info("Transaction save");
-                try
-                {
-                    using var uow = db.CreateUnitOfWork();
-                    var trRepo = uow.GetRepository<Transaction>();
-                    var vm = sender as TransactionDialogVM;
-                    var transactions = new List<Transaction>();
-
-                    MapTransaction(vm.Transaction, transaction);
-
-                    transactions.Add(transaction);
-                    if (vm.Transaction?.SubTransactions?.Any() == true)
+                case nameof(ByCategoryReport):
                     {
-                        foreach (var item in vm.Transaction.SubTransactions)
-                        {
-                            var tr = item.Id == 0 ? new Transaction() : await trRepo.FindByAsync(x => x.Id == item.Id);
-                            item.Date = vm.Transaction.Date;
-                            MapTransaction(item, tr);
-                            tr.Parent = transaction;
-                            tr.FromAccountId = transaction.FromAccountId;
-                            tr.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
-                            tr.OriginalFromAmount = item.OriginalFromAmount;
-                            tr.DateTime = transaction.DateTime;
-                            tr.Category = default;
-                            transactions.Add(tr);
-                        }
+                        using var uow = db.CreateUnitOfWork();
+                        var allCategories = await uow.GetAllAsync<Category>();
+                        var orderedCategories = allCategories.Where(x => x.Id > 0).OrderBy(x => x.Left).ToList();
+                        var byCategoryReport = await uow.GetAllAsync<ByCategoryReport>(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
+                        return new ReportVM(byCategoryReport, orderedCategories);
                     }
+                case nameof(CurrencyExchangeRate):
+                    return await GetOrCreatePage<CurrencyExchangeRate, ExchangeRatesVM>(transform: null,
+                        addAction: null,
+                        deleteAction: null,
+                        editAction: null,
+                        x => x.FromCurrency, x => x.ToCurrency);
 
-                    foreach (var entity in transactions)
-                    {
-                        if (entity.Id > 0)
-                        {
-                            await trRepo.UpdateAsync(entity);
-                        }
-                        else
-                        {
-                            await trRepo.AddAsync(entity);
-                        }
-                    }
-                    await uow.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex);
-                }
-
-                await RefreshBlotterTransactions();
-            };
-            dialog.ShowDialog();
-        }
-
-        private async Task OpenTransferDialog(int e)
-        {
-            TransferDialogVM context = new TransferDialogVM();
-            Transaction transaction;
-
-            using (var uow = db.CreateUnitOfWork())
-            {
-                if (e != 0)
-                {
-                    Logger.Info($"Edit transfer {e}");
-                    transaction = await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == e, o => o.OriginalCurrency, c => c.Category);
-                }
-                else
-                {
-                    Logger.Info("Create transfer");
-                    transaction = new Transaction { DateTime = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0, CategoryId = 0 };
-                }
-
-                context.Transfer = ConvertTransfer(transaction);
-
-                var allAccounts = await uow.GetRepository<Account>().GetAllAsync(x => x.Currency);
-                context.Accounts = new ObservableCollection<Account>(allAccounts);
+                default: throw new NotSupportedException($"{type.FullName} not suported");
             }
-
-            var dialog = new Window
-            {
-                Content = new TransferControl() { DataContext = context },
-                ResizeMode = ResizeMode.NoResize,
-                Height = 385,
-                Width = 340,
-                ShowInTaskbar = Debugger.IsAttached
-            };
-            context.RequestCancel += (_, _) =>
-            {
-                dialog.Close();
-                Logger.Info("Transfer close");
-            };
-            context.RequestSave += async (sender, _) =>
-            {
-                dialog.Close();
-                Logger.Info("Transfer save");
-                MapTransfer((sender as TransferDialogVM)?.Transfer, transaction);
-                await InsertOrUpdate(new[] { transaction });
-                await RefreshBlotterTransactions();
-            };
-            dialog.ShowDialog();
         }
 
-        private async Task RefreshBlotterTransactions()
+        private async Task<VMType> GetOrCreatePage<TEntity, VMType>(
+            Func<IEnumerable<TEntity>, IEnumerable<TEntity>> transform = null,
+            EventHandler addAction = null,
+            EventHandler<TEntity> deleteAction = null,
+            EventHandler<TEntity> editAction = null,
+            params Expression<Func<TEntity, object>>[] includes)
+            where VMType : EntityBaseVM<TEntity>
+            where TEntity : Entity
         {
-            using var uow = db.CreateUnitOfWork();
-            var allTransactions = await uow.GetRepository<BlotterTransactions>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
-            AddEntities(allTransactions.OrderByDescending(x => x.datetime).ToList(), null, true);
-        }
-
-        private async Task RefreshEntities<T>()
-            where T: Entity, IIdentity
-        {
-            using var uow = db.CreateUnitOfWork();
-            var locations = await uow.GetRepository<T>().GetAllAsync();
-            AddEntities(locations.Where(x => x.Id > 0).OrderBy(x => x.Id).ToList(), null, true);
-        }
-
-        private async Task OpenLocationDialog(int e)
-        {
-            LocationVM context;
-            Location selectedValue;
-
-            using (var uow = db.CreateUnitOfWork())
+            var type = typeof(TEntity);
+            if (!_pages.ContainsKey(type))
             {
-                if (e != 0)
+                using var uow = db.CreateUnitOfWork();
+                IEnumerable<TEntity> items = await uow.GetAllAsync(includes);
+
+                if (transform != null)
                 {
-                    Logger.Info($"Edit location {e}");
-                    selectedValue = await uow.GetRepository<Location>().FindByAsync(x => x.Id == e);
-                }
-                else
-                {
-                    Logger.Info("Create location");
-                    selectedValue = new Location { Date = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0 };
+                    items = transform(items);
                 }
 
-                context = new LocationVM(selectedValue);
+                var vm = Activator.CreateInstance(typeof(VMType), items) as VMType;
+
+                if (addAction != null)
+                {
+                    vm.AddRaised += addAction;
+                }
+                if (deleteAction != null)
+                {
+                    vm.DeleteRaised += deleteAction;
+                }
+                if (editAction != null)
+                {
+                    vm.EditRaised += editAction;
+                }
+                _pages.TryAdd(type, vm);
             }
+            return (VMType)_pages[type];
+        }
 
-            var dialog = new Window
+        private async void Locations_AddRaised(object sender, EventArgs eventArgs)
+        {
+            await OpenLocationDialogAsync(0);
+        }
+
+        private async void Locations_EditRaised(object sender, Location eventArgs)
+        {
+            await OpenLocationDialogAsync(eventArgs.Id);
+        }
+
+        private async Task NavigateToType(Type type)
+        {
+            CurrentPage = await GetOrCreatePage(type);
+        }
+
+        private async Task OpenBackup_OnClickAsync()
+        {
+            var backupPath = dialogWrapper.OpenFileDialog(Backup);
+            if (!string.IsNullOrEmpty(backupPath))
             {
-                Content = new LocationControl() { DataContext = context },
-                ResizeMode = ResizeMode.NoResize,
-                Height = 240,
-                Width = 300,
-                ShowInTaskbar = Debugger.IsAttached
-            };
-            context.RequestCancel += (_, _) =>
+                Logger.Info($"Opened backup : {backupPath}");
+                await OpenBackup(backupPath);
+            }
+        }
+
+        private async Task OpenEntityWithTitleDialogAsync<T>(int e)
+            where T : Entity, IActive, new()
+        {
+            T selectedEntity = await db.GetOrCreateAsync<T>(e);
+            EntityWithTitleVM context = new EntityWithTitleVM(new EntityWithTitleDTO(selectedEntity));
+
+            var result = dialogWrapper.ShowDialog<EntityWithTitleControl>(context, 180, 300, typeof(T).Name);
+
+            if (result is EntityWithTitleDTO)
             {
-                dialog.Close();
-                Logger.Info("Location dialog close");
-            };
-            context.RequestSave += async (sender, _) =>
+                var updatedItem = (EntityWithTitleDTO)result;
+                selectedEntity.IsActive = updatedItem.IsActive;
+                selectedEntity.Title = updatedItem.Title;
+
+                await db.InsertOrUpdateAsync(new[] { selectedEntity });
+                await RefreshEntitiesAsync<T>();
+            }
+        }
+
+        private async Task OpenLocationDialogAsync(int id)
+        {
+            Location selectedValue = await db.GetOrCreateAsync<Location>(id);
+            LocationDialogVM locationVm = new LocationDialogVM(new LocationDTO(selectedValue));
+
+            var result = dialogWrapper.ShowDialog<LocationControl>(locationVm, 240, 300, nameof(Location));
+
+            if (result is LocationDTO)
             {
-                dialog.Close();
-                Logger.Info("Location dialog save");
-                var updatedItem = sender as LocationVM;
+                var updatedItem = (LocationDTO)result;
                 selectedValue.IsActive = updatedItem.IsActive;
                 selectedValue.Address = updatedItem.Address;
                 selectedValue.Title = updatedItem.Title;
                 selectedValue.Name = updatedItem.Title;
-                selectedValue.Id = updatedItem.Id;
+                if (id == 0)
+                {
+                    selectedValue.Count = 0;
+                }
 
-                await InsertOrUpdate(new[] { selectedValue });
-                await RefreshEntities<Location>();
-            };
-            dialog.ShowDialog();
+                await db.InsertOrUpdateAsync(new[] { selectedValue });
+
+                // TODO : позбутись використання даних з таблиць, перейти на DTO
+                await RefreshEntitiesAsync<Location>();
+            }
         }
 
-        private async Task OpenProjectDialog(int e)
+        private async Task OpenMonoWizardAsync()
         {
-            EntityWithTitleVM context;
-            Project selectedValue;
-
-            using (var uow = db.CreateUnitOfWork())
+            var fileName = dialogWrapper.OpenFileDialog("csv");
+            Logger.Info($"csv fileName -> {fileName}");
+            if (!string.IsNullOrEmpty(fileName))
             {
-                if (e != 0)
-                {
-                    Logger.Info($"Edit Project {e}");
-                    selectedValue = await uow.GetRepository<Project>().FindByAsync(x => x.Id == e);
-                }
-                else
-                {
-                    Logger.Info("Create Project");
-                    selectedValue = new Project { Id = 0 };
-                }
+                using var uow = db.CreateUnitOfWork();
+                var accounts = await uow.GetAllOrderedByDefaultAsync<Account>();
+                var currencies = await uow.GetAllAsync<Currency>();
+                var locations = await uow.GetAllOrderedByDefaultAsync<Location>();
+                var categories = await uow.GetAllAsync<Category>();
+                var projects = await uow.GetAllOrderedByDefaultAsync<Project>();
 
-                context = new EntityWithTitleVM(selectedValue);
+                var csvTransactions = await csvHelper.ParseCsv(fileName);
+
+                var vm = new MonoWizardVM(csvTransactions, accounts, currencies, locations, categories.OrderBy(x => x.Left), projects);
+
+                var output = dialogWrapper.ShowWizard(vm);
+
+                if (output is List<Transaction>)
+                {
+                    var outputTransactions = output as List<Transaction>;
+                    using var blotter = db.CreateUnitOfWork();
+                    var times = outputTransactions.Select(x => x.DateTime).Distinct().ToArray();
+                    var transactionRepo = blotter.GetRepository<Transaction>();
+                    List<Transaction> accTransactions = await transactionRepo.FindManyAsync(predicate: x => times.Contains(x.DateTime));
+
+                    List<Transaction> monoToImport = outputTransactions.Where(item =>
+                    !accTransactions.Any(x =>
+                    x.FromAccountId == item.FromAccountId &&
+                    x.DateTime == item.DateTime &&
+                    x.FromAmount == item.FromAmount)).ToList();
+
+                    var duplicatesCount = outputTransactions.Count - monoToImport.Count;
+
+                    await db.AddTransactionsAsync(monoToImport);
+
+                    await RefreshAccountsAndTransactionsViewModels(monoToImport);
+
+                    this.dialogWrapper.ShowMessageBox(
+                        $"Imported {monoToImport.Count} transactions."
+                        + ((duplicatesCount > 0) ? $" Skiped {duplicatesCount} duplicates." : string.Empty),
+                        "Monobank CSV Import");
+
+                    Logger.Info($"Imported {monoToImport.Count} transactions. Found duplicates : {duplicatesCount}");
+                }
             }
-
-            var dialog = new Window
-            {
-                Content = new EntityWithTitleControl() { DataContext = context },
-                ResizeMode = ResizeMode.NoResize,
-                Height = 180,
-                Width = 300,
-                ShowInTaskbar = Debugger.IsAttached
-            };
-            context.RequestCancel += (_, _) =>
-            {
-                dialog.Close();
-                Logger.Info("Project dialog close");
-            };
-            context.RequestSave += async (sender, _) =>
-            {
-                dialog.Close();
-                Logger.Info("Project dialog save");
-                var updatedItem = sender as EntityWithTitleVM;
-                selectedValue.IsActive = updatedItem.IsActive;
-                selectedValue.Title = updatedItem.Title;
-                selectedValue.Id = updatedItem.Id;
-
-                await InsertOrUpdate(new[] { selectedValue });
-                await RefreshEntities<Project>();
-            };
-            dialog.ShowDialog();
         }
 
-        private async Task OpenPayeeDialog(int e)
+        private async Task OpenTransactionDialogAsync(int id)
         {
-            EntityWithTitleVM context;
-            Payee selectedValue;
+            Transaction transaction = await db.GetOrCreateTransactionAsync(id);
+            IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(id);
+            var transactionDto = new TransactionDTO(transaction, subTransactions);
 
-            using (var uow = db.CreateUnitOfWork())
+            using var uow = db.CreateUnitOfWork();
+
+            TransactionDialogVM dialogVm = new TransactionDialogVM(
+                transactionDto,
+                dialogWrapper,
+                (await uow.GetAllAsync<Category>()).OrderBy(x => x.Left).ToList(),
+                await uow.GetAllOrderedByDefaultAsync<Project>(),
+                await uow.GetAllOrderedByDefaultAsync<Account>(x => x.Currency),
+                await uow.GetAllAsync<Currency>(),
+                await uow.GetAllOrderedByDefaultAsync<Location>(),
+                await uow.GetAllOrderedByDefaultAsync<Payee>());
+
+            var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
+
+            if (result is TransactionDTO)
             {
-                if (e != 0)
+                var resultVm = result as TransactionDTO;
+                var resultTransactions = new List<Transaction>();
+
+                MapperHelper.MapTransaction(resultVm, transaction);
+
+                resultTransactions.Add(transaction);
+                if (resultVm?.SubTransactions?.Any() == true)
                 {
-                    Logger.Info($"Edit Payee {e}");
-                    selectedValue = await uow.GetRepository<Payee>().FindByAsync(x => x.Id == e);
-                }
-                else
-                {
-                    Logger.Info("Create Payee");
-                    selectedValue = new Payee { Id = 0 };
+                    // TODO : Add Unit Test gor code below
+                    foreach (var subTransactionDto in resultVm.SubTransactions)
+                    {
+                        var subTransaction = await db.GetOrCreateAsync<Transaction>(subTransactionDto.Id);
+                        subTransactionDto.Date = resultVm.Date;
+                        subTransactionDto.Time = resultVm.Time;
+                        MapperHelper.MapTransaction(subTransactionDto, subTransaction);
+                        subTransaction.Parent = transaction;
+                        subTransaction.FromAccountId = transaction.FromAccountId;
+                        subTransaction.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
+                        subTransaction.Category = default;
+                        resultTransactions.Add(subTransaction);
+                    }
                 }
 
-                context = new EntityWithTitleVM(selectedValue);
+                await db.InsertOrUpdateAsync(resultTransactions);
+                await db.RebuildAccountBalanceAsync(transaction.FromAccountId);
+                await RefreshBlotterTransactionsAsync();
+            }
+        }
+
+        private async Task OpenTransferDialogAsync(int id)
+        {
+            Transaction transfer = await db.GetOrCreateTransactionAsync(id);
+
+            using var uow = db.CreateUnitOfWork();
+            var accounts = await uow.GetAllOrderedByDefaultAsync<Account>(x => x.Currency);
+            TransferDialogVM dialogVm = new TransferDialogVM(new TransferDTO(transfer), accounts);
+
+            var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
+
+            if (result is TransferDTO)
+            {
+                MapperHelper.MapTransfer(result as TransferDTO, transfer);
+                await db.InsertOrUpdateAsync(new[] { transfer });
+
+                await db.RebuildAccountBalanceAsync(transfer.FromAccountId);
+                await db.RebuildAccountBalanceAsync(transfer.ToAccountId);
+
+                await RefreshBlotterTransactionsAsync();
+                await RefreshEntitiesAsync<Account>();
+            }
+        }
+
+        private async void Payees_AddRaised(object sender, EventArgs eventArgs)
+        {
+            await OpenEntityWithTitleDialogAsync<Payee>(0);
+        }
+
+        private async void Payees_EditRaised(object sender, Payee eventArgs)
+        {
+            await OpenEntityWithTitleDialogAsync<Payee>(eventArgs.Id);
+        }
+
+        private async void Projects_AddRaised(object sender, EventArgs eventArgs)
+        {
+            await OpenEntityWithTitleDialogAsync<Project>(0);
+        }
+
+        private async void Projects_EditRaised(object sender, Project eventArgs)
+        {
+            await OpenEntityWithTitleDialogAsync<Project>(eventArgs.Id);
+        }
+
+        private async Task RefreshAccountsAndTransactionsViewModels(List<Transaction> transactions)
+        {
+
+            var accountIds = transactions
+                .Where(x => x.ToAccountId > 0)
+                .Select(x => x.ToAccountId).Union(
+                transactions
+                .Where(x => x.FromAccountId > 0)
+                .Select(x => x.FromAccountId))
+                .Distinct();
+
+            foreach (var accId in accountIds)
+            {
+                await db.RebuildAccountBalanceAsync(accId);
             }
 
-            var dialog = new Window
-            {
-                Content = new EntityWithTitleControl() { DataContext = context },
-                ResizeMode = ResizeMode.NoResize,
-                Height = 180,
-                Width = 300,
-                ShowInTaskbar = Debugger.IsAttached
-            };
-            context.RequestCancel += (_, _) =>
-            {
-                dialog.Close();
-                Logger.Info("Project dialog close");
-            };
-            context.RequestSave += async (sender, _) =>
-            {
-                dialog.Close();
-                Logger.Info("Project dialog save");
-                var updatedItem = sender as EntityWithTitleVM;
-                selectedValue.IsActive = updatedItem.IsActive;
-                selectedValue.Title = updatedItem.Title;
-                selectedValue.Id = updatedItem.Id;
+            await RefreshBlotterTransactionsAsync();
+            await RefreshEntitiesAsync<Account>();
+        }
+        private async Task RefreshBlotterTransactionsAsync()
+        {
+            using var uow = db.CreateUnitOfWork();
+            var allTransactions = await uow.GetAllAsync<BlotterTransactions>(x => x.from_account_currency, x => x.to_account_currency);
+            blotter.Entities = new ObservableCollection<BlotterTransactions>(allTransactions.OrderByDescending(x => x.datetime));
+        }
 
-                await InsertOrUpdate(new[] { selectedValue });
-                await RefreshEntities<Payee>();
-            };
-            dialog.ShowDialog();
+        private async Task RefreshEntitiesAsync<T>()
+            where T: Entity, IActive
+        {
+            using var uow = db.CreateUnitOfWork();
+            var entities = await uow.GetAllOrderedByDefaultAsync<T>();
+            if (_pages.TryGetValue(typeof(T), out var val))
+            {
+                var vm = val as EntityBaseVM<T>;
+                vm.Entities = new ObservableCollection<T>(entities);
+            }
+        }
+        private async Task SaveBackup_Click()
+        {
+            var backupPath = dialogWrapper.SaveFileDialog(Backup, Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName()));
+            if (!string.IsNullOrEmpty(backupPath))
+            {
+                await SaveBackup(backupPath);
+
+                dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
+                Logger.Info($"Backup done. Saved {backupPath}");
+            }
         }
     }
 }

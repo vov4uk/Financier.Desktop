@@ -11,7 +11,7 @@ namespace Financier.Adapter
 {
     public static class EntityExtensions
     {
-        public static string ToBackupLines(this Entity entity)
+        public static string ToBackupLines(this Entity entity, Dictionary<string, List<string>> entityColumnsOrder)
         {
             var sb = new StringBuilder();
 
@@ -25,7 +25,7 @@ namespace Financier.Adapter
             sb.AppendLine($"{Entity.ENTITY}:{classArttr.Name}");
 
             var dict = new List<KeyValuePair<int, string>>();
-            List<string> columnsOrder = EntityReader.EntityColumnsOrder[classArttr.Name];
+            List<string> columnsOrder = entityColumnsOrder[classArttr.Name];
             foreach (var propertyInfo in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
                 ColumnAttribute pattr = (ColumnAttribute)propertyInfo.GetCustomAttribute(typeof(ColumnAttribute));

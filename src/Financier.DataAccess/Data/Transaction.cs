@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 
 namespace Financier.DataAccess.Data
 {
     [Table(Backup.TRANSACTION_TABLE)]
+    [DebuggerDisplay("{Id}-FromAccountId:{FromAccountId} - ToAccountId:{ToAccountId} - FromAmount:{FromAmount}")]
     public class Transaction : Entity, IIdentity
     {
         [Column(IdColumn)]

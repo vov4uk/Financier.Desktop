@@ -1,6 +1,4 @@
-﻿using Financier.Desktop.MonoWizard.ViewModel;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
-using Financier.Desktop.Wizards.RecipesWizard.View;
+﻿using Financier.Desktop.Wizards.RecipesWizard.View;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -10,16 +8,24 @@ using Xceed.Wpf.Toolkit;
 
 namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
-    public class Page1VM : WizardPageBaseVM
+    public class Page1VM : RecipesWizardPageVMBase
     {
-        public override string Title => "Paste text";
-        private string text;
         private DelegateCommand<RichTextBox> _highlightCommand;
-        private double calculatedAmount;
-        private double totalAmount;
+        private string text;
+        public Page1VM(double totalAmount)
+        {
+            TotalAmount = totalAmount;
+        }
 
-        public override bool IsValid() => true;
-        public List<FinancierTransactionVM> Amounts { get; } = new List<FinancierTransactionVM>();
+        public List<FinancierTransactionDTO> Amounts { get; } = new List<FinancierTransactionDTO>();
+        public DelegateCommand<RichTextBox> HighlightCommand
+        {
+            get
+            {
+                return _highlightCommand ??= new DelegateCommand<RichTextBox>(HighLight, (_) => true);
+            }
+        }
+
         public string Text
         {
             get => this.text;
@@ -30,45 +36,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        public double TotalAmount
-        {
-            get => totalAmount;
-            set
-            {
-                totalAmount = value;
-                this.RaisePropertyChanged(nameof(this.TotalAmount));
-                this.RaisePropertyChanged(nameof(this.Diff));
-            }
-        }
-
-        public double CalculatedAmount
-        {
-            get => calculatedAmount;
-            set
-            {
-                calculatedAmount = value;
-                this.RaisePropertyChanged(nameof(this.CalculatedAmount));
-                this.RaisePropertyChanged(nameof(this.Diff));
-            }
-        }
-
-        public double Diff => TotalAmount - CalculatedAmount;
-
-        public DelegateCommand<RichTextBox> HighlightCommand
-        {
-            get
-            {
-                return _highlightCommand ??= new DelegateCommand<RichTextBox>(HighLight, (_) => true);
-            }
-        }
-
-        private void HighLight(RichTextBox textBox)
-        {
-            textBox.BeginInit();
-            textBox.EndInit();
-            CalculateCurrentAmount();
-        }
-
+        public override string Title => "Paste text";
         public void CalculateCurrentAmount()
         {
             double tmp = 0.0;
@@ -79,19 +47,19 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    var res = Regex.Match(line, MyFormatter.Pattern, RegexOptions.IgnoreCase);
+                    var res = Regex.Match(line, RecipesFormatter.Pattern, RegexOptions.IgnoreCase);
                     if (res.Success)
                     {
                         var number = res.Value.Substring(0, res.Value.Length - 2);
-                        var amount = GetDouble(number);
+                        var amount = GetDouble(number.Replace(",", ".").Trim());
                         tmp += amount;
                         if (amount != 0.0)
                         {
                             var note = line.Replace(res.Value, string.Empty);
-                            Amounts.Add(new FinancierTransactionVM
+                            Amounts.Add(new FinancierTransactionDTO
                             {
                                 FromAmount = Convert.ToInt64(amount * -100.0),
-                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note,
+                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
                                 Order = order++
                             });
                         }
@@ -102,7 +70,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             CalculatedAmount = Math.Abs(tmp) * -1.0;
         }
 
-        public static double GetDouble(string value, double defaultValue = 0.0)
+        public override bool IsValid() => true;
+        private static double GetDouble(string value, double defaultValue = 0.0)
         {
             double result;
 
@@ -116,6 +85,13 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 result = defaultValue;
             }
             return result;
+        }
+
+        private void HighLight(RichTextBox textBox)
+        {
+            textBox.BeginInit();
+            textBox.EndInit();
+            CalculateCurrentAmount();
         }
     }
 }

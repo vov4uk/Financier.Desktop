@@ -134,6 +134,6 @@ namespace Financier.DataAccess.View
         }
 
         [NotMapped]
-        public bool HasNoCategory => Type == "Expense" && category_id == 0;
+        public bool HasNoCategory => Type != "Transfer" && category_id == 0;
     }
 }

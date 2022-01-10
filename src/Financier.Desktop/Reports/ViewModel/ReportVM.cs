@@ -37,12 +37,14 @@ namespace Financier.Desktop.Reports.ViewModel
 
         private DateTime to;
 
-        public ReportVM()
+        public ReportVM(IEnumerable<ByCategoryReport> rows, IEnumerable<Category> categories)
+            :base(rows)
         {
             PeriodType = PeriodType.Today;
             UpdatePeriod(PeriodType);
+            AllCategories = new List<Category>(categories);
         }
-        public List<Category> AllCategories { get; set; }
+        public List<Category> AllCategories { get; }
 
         public DateTime From
         {
@@ -100,12 +102,12 @@ namespace Financier.Desktop.Reports.ViewModel
             }
         }
 
-
+        // TODO - convert all transactions to home currency
         internal void RefreshReport(double width)
         {
             currentWidth = width;
-            var fromUnix = DateTimeConverter.ConvertBack(From);
-            var toUnix = DateTimeConverter.ConvertBack(To);
+            var fromUnix = UnixTimeConverter.ConvertBack(From);
+            var toUnix = UnixTimeConverter.ConvertBack(To);
 
             var filteredReportValues = Entities.Where(x => x.datetime >= fromUnix && x.datetime <= toUnix).GroupBy(x => x.Id).Select(x => new ByCategoryReportRow
             {

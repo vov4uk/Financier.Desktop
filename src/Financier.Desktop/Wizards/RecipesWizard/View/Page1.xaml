@@ -56,7 +56,7 @@
                           Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnSourceUpdated=True}"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">
             <xctk:RichTextBox.TextFormatter>
-                <local:MyFormatter />
+                <local:RecipesFormatter />
             </xctk:RichTextBox.TextFormatter>
         </xctk:RichTextBox>
     </Grid>

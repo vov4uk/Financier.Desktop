@@ -1,42 +1,90 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Financier.Desktop.MonoWizard.ViewModel
+namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page3VM : WizardPageBaseVM
     {
-        private Account _monoAccount;
-        private ObservableCollection<Account> accounts;
         private readonly List<Account> originalAccounts;
-        private ObservableCollection<Currency> currencies;
-        private ObservableCollection<Location> locations;
-        private ObservableCollection<Category> categories;
-        private ObservableCollection<Project> projects;
-        private ObservableCollection<FinancierTransactionVM> financierTransactions;
-        private DelegateCommand<FinancierTransactionVM> _deleteCommand;
-
+        private DelegateCommand<FinancierTransactionDTO> _deleteCommand;
+        private Account _monoAccount;
+        private List<Account> accounts;
+        private List<Category> categories;
+        private List<Currency> currencies;
+        private ObservableCollection<FinancierTransactionDTO> financierTransactions;
+        private List<Location> locations;
+        private List<Project> projects;
         public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, List<Project> projects)
         {
-            this.accounts = new RangeObservableCollection<Account>(accounts);
-            this.originalAccounts = new List<Account>(accounts);
-            this.currencies = new RangeObservableCollection<Currency>(currencies);
-            this.locations = new RangeObservableCollection<Location>(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
-            this.categories = new RangeObservableCollection<Category>(categories);
-            this.projects = new RangeObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
-            this.categories.Insert(0, Category.None);
+            Accounts = accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList();
+            originalAccounts = new List<Account>(accounts);
+            Currencies = currencies;
+            Locations = locations.DefaultOrder().ToList();
+            Categories = categories;
+            Projects = projects.DefaultOrder().ToList();
+            Categories.Insert(0, Category.None);
         }
 
-        public DelegateCommand<FinancierTransactionVM> DeleteCommand
+        public List<Account> Accounts
+        {
+            get => accounts;
+            private set
+            {
+                accounts = value;
+                RaisePropertyChanged(nameof(Accounts));
+            }
+        }
+
+        public List<Category> Categories
+        {
+            get => categories;
+            private set
+            {
+                categories = value;
+                RaisePropertyChanged(nameof(Categories));
+            }
+        }
+
+        public List<Currency> Currencies
+        {
+            get => currencies;
+            private set
+            {
+                currencies = value;
+                RaisePropertyChanged(nameof(Currencies));
+            }
+        }
+
+        public DelegateCommand<FinancierTransactionDTO> DeleteCommand
         {
             get
             {
-                return _deleteCommand ??= new DelegateCommand<FinancierTransactionVM>(tr => { financierTransactions.Remove(tr); });
+                return _deleteCommand ??= new DelegateCommand<FinancierTransactionDTO>(tr => { financierTransactions.Remove(tr); });
+            }
+        }
+
+        public ObservableCollection<FinancierTransactionDTO> FinancierTransactions
+        {
+            get => financierTransactions;
+            private set
+            {
+                financierTransactions = value;
+                RaisePropertyChanged(nameof(FinancierTransactions));
+            }
+        }
+
+        public List<Location> Locations
+        {
+            get => locations;
+            private set
+            {
+                locations = value;
+                RaisePropertyChanged(nameof(Locations));
             }
         }
 
@@ -49,83 +97,37 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 RaisePropertyChanged(nameof(MonoAccount));
                 if (_monoAccount != null)
                 {
-                    Accounts = new RangeObservableCollection<Account>(
+                    Accounts = new List<Account>(
                         originalAccounts.Where(x => x.Id != _monoAccount.Id).OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
                 }
             }
         }
 
-        public override string Title => "Please select categories";
-
-        public ObservableCollection<FinancierTransactionVM> FinancierTransactions
-        {
-            get => financierTransactions;
-            set
-            {
-                financierTransactions = value;
-                RaisePropertyChanged(nameof(FinancierTransactions));
-            }
-        }
-
-        public ObservableCollection<Account> Accounts
-        {
-            get => accounts;
-            set
-            {
-                accounts = value;
-                RaisePropertyChanged(nameof(Accounts));
-            }
-        }
-
-        public ObservableCollection<Currency> Currencies
-        {
-            get => currencies;
-            set
-            {
-                currencies = value;
-                RaisePropertyChanged(nameof(Currencies));
-            }
-        }
-
-        public ObservableCollection<Category> Categories
-        {
-            get => categories;
-            set
-            {
-                categories = value;
-                RaisePropertyChanged(nameof(Categories));
-            }
-        }
-
-        public ObservableCollection<Location> Locations
-        {
-            get => locations;
-            set
-            {
-                locations = value;
-                RaisePropertyChanged(nameof(Locations));
-            }
-        }
-
-        public ObservableCollection<Project> Projects
+        public List<Project> Projects
         {
             get => projects;
-            set
+            private set
             {
                 projects = value;
                 RaisePropertyChanged(nameof(Projects));
             }
         }
 
+        public override string Title => "Please select categories";
+        public override bool IsValid()
+        {
+            return true;
+        }
+
         public void SetMonoTransactions(List<MonoTransaction> transactions)
         {
-            List<FinancierTransactionVM> transToAdd = new List<FinancierTransactionVM>();
+            List<FinancierTransactionDTO> transToAdd = new List<FinancierTransactionDTO>();
             foreach (var x in transactions)
             {
-                var locationId = locations.FirstOrDefault(l => (!string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))
-                                                            || (!string.IsNullOrEmpty(l.Address) && l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase)))?.Id ??  0;
+                var locationId = locations.FirstOrDefault(l => !string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
+                                                            || !string.IsNullOrEmpty(l.Address) && l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var categoryId = categories.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
-                var newTr = new FinancierTransactionVM
+                var newTr = new FinancierTransactionDTO
                 {
                     MonoAccountId = MonoAccount.Id,
                     FromAmount = Convert.ToInt64(x.CardCurrencyAmount * 100.0),
@@ -135,18 +137,13 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                     ToAccountId = 0,
                     FromAccountId = 0,
                     LocationId = locationId,
-                    Note = (locationId > 0 || categoryId > 0) ? null : x.Description,
+                    Note = locationId > 0 || categoryId > 0 ? null : x.Description,
                     DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
                 };
                 transToAdd.Add(newTr);
             }
 
-            FinancierTransactions = new RangeObservableCollection<FinancierTransactionVM>(transToAdd);
-        }
-
-        public override bool IsValid()
-        {
-            return true;
+            FinancierTransactions = new ObservableCollection<FinancierTransactionDTO>(transToAdd);
         }
     }
 }

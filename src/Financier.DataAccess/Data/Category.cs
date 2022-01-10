@@ -14,7 +14,7 @@ namespace Financier.DataAccess.Data
         public string Title { get; set; }
 
         [Column(IsActiveColumn)]
-        public bool? IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = true;
 
         [Column("left")]
         public int Left { get; set; } = 1;
@@ -33,6 +33,9 @@ namespace Financier.DataAccess.Data
 
         [Column(UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
+
+        [Column(SortOrderColumn)]
+        public int SortOrder { get; set; }
 
         [NotMapped]
         public static Category None = new Category()

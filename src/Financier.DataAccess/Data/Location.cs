@@ -41,7 +41,7 @@ namespace Financier.DataAccess.Data
         public string Address { get; set; }
 
         [Column("count")]
-        public int? Count { get; set; }
+        public int Count { get; set; }
 
         [Column(UpdatedOnColumn)]
         public long UpdatedOn { get; set; }

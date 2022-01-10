@@ -5,9 +5,7 @@ using System.Windows.Media;
 
 namespace Financier.Desktop.Reports
 {
-    /// <summary>
-    /// Interaction logic for BarChartItem.xaml
-    /// </summary>
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class BarChartItem : UserControl
     {
         public BarChartItem(double coef, ReportRow row)

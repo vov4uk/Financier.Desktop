@@ -7,8 +7,6 @@ namespace Financier.Adapter
 {
     public class EntityPropertyInfo
     {
-        private delegate void SetValueDelegate(object entity, object value);
-
         private readonly SetValueDelegate _delegate;
 
         public EntityPropertyInfo(PropertyInfo info)
@@ -18,6 +16,8 @@ namespace Financier.Adapter
             _delegate = info.SetValue;
         }
 
+        private delegate void SetValueDelegate(object entity, object value);
+        public IPropertyConverter Converter { get; set; }
         public string PropertyName { get; private set; }
 
         public Type PropertyType { get; private set; }
@@ -27,7 +27,5 @@ namespace Financier.Adapter
             object v = Converter.Convert(value);
             _delegate(entity, v);
         }
-
-        public IPropertyConverter Converter { get; set; }
     }
 }

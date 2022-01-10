@@ -1,7 +1,5 @@
 ﻿using Financier.DataAccess.Data;
-using Financier.Desktop.MonoWizard.ViewModel;
-using Financier.Desktop.ViewModel.Dialog;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
+using Financier.Desktop.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,18 +10,19 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         private readonly List<Category> categories;
         private readonly List<Project> projects;
 
-        public RecipesVM(List<Category> categories, List<Project> projects)
+        public RecipesVM(double totalAmount, List<Category> categories, List<Project> projects)
         {
             this.categories = categories;
             this.projects = projects;
+            TotalAmount = totalAmount;
+            CreatePages();
         }
 
         public double TotalAmount
         {
             get;
-            set;
+            private set;
         }
-        public List<TransactionDTO> TransactionsToImport { get; private set; }
 
         public override void AfterCurrentPageUpdated(WizardPageBaseVM newValue)
         {
@@ -34,7 +33,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             if (old is Page1VM page1 && newValue is Page2VM)
             {
                 page1.CalculateCurrentAmount();
-                ((Page2VM)newValue).SetMonoTransactions(page1.Amounts);
+                ((Page2VM)newValue).SetTransactions(page1.Amounts);
                 Logger.Info($"MonoTransactions count -> {page1.Amounts.Count}");
             }
         }
@@ -43,25 +42,26 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             _pages = new List<WizardPageBaseVM>()
             {
-                new Page1VM(){ TotalAmount = this.TotalAmount},
-                new Page2VM(categories, projects) { TotalAmount = this.TotalAmount},
+                new Page1VM(this.TotalAmount),
+                new Page2VM(categories, projects, this.TotalAmount),
             }.AsReadOnly();
 
             CurrentPage = Pages[0];
         }
-        public override void OnRequestClose(bool save)
+        public override object OnRequestClose(bool save)
         {
             if (save)
             {
-                TransactionsToImport = _pages.OfType<Page2VM>()
+                return _pages.OfType<Page2VM>()
                     .Single()
                     .FinancierTransactions
                     .Select(TransformMonoTransaction)
                     .ToList();
             }
+            return null;
         }
 
-        private TransactionDTO TransformMonoTransaction(FinancierTransactionVM x)
+        private TransactionDTO TransformMonoTransaction(FinancierTransactionDTO x)
         {
             var result = new TransactionDTO
             {

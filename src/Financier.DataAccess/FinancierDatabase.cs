@@ -1,7 +1,6 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.DataBase.Scripts;
-using Financier.DataAccess.Monobank;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -16,11 +15,11 @@ using System.Threading.Tasks;
 
 namespace Financier.DataAccess
 {
-    public class FinancierDatabase : IUnitOfWorkFactory
+    public class FinancierDatabase : IFinancierDatabase
     {
         private readonly DbConnection _connection;
 
-        public FinancierDatabase()
+        internal FinancierDatabase()
             : this(
                 new DbContextOptionsBuilder<FinancierDataContext>()
                     .UseSqlite(CreateInMemoryDatabase())
@@ -29,9 +28,17 @@ namespace Financier.DataAccess
             _connection = RelationalOptionsExtension.Extract(ContextOptions).Connection;
         }
 
+        protected FinancierDatabase(DbContextOptions<FinancierDataContext> contextOptions)
+        {
+            ContextOptions = contextOptions;
+
+            //Seed();
+        }
+
         private static DbConnection CreateInMemoryDatabase()
         {
             var connection = new SqliteConnection("Filename=:memory:");
+            //var connection = new SqliteConnection("Filename=test.db");
 
             connection.Open();
 
@@ -40,31 +47,19 @@ namespace Financier.DataAccess
 
         public void Dispose() => _connection.Dispose();
 
-        protected FinancierDatabase(DbContextOptions<FinancierDataContext> contextOptions)
-        {
-            ContextOptions = contextOptions;
-
-            //Seed();
-        }
-
         protected DbContextOptions<FinancierDataContext> ContextOptions { get; }
 
-        private void Seed()
+        internal async Task Seed()
         {
             using var context = new FinancierDataContext(ContextOptions);
             //context.Database.EnsureDeleted();
-            // context.Database.EnsureCreated();
-
-            List<Task> createTasks = new List<Task>();
+            //context.Database.EnsureCreated();
 
             ResourceSet create = SQL_create_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
             foreach (DictionaryEntry entry in create)
             {
-                string resourceKey = entry.Key.ToString();
-                object resource = entry.Value;
-                createTasks.Add(context.Database.ExecuteSqlRawAsync(Convert.ToString(resource)));
+                await context.Database.ExecuteSqlRawAsync(Convert.ToString(entry.Value));
             }
-            Task.WaitAll(createTasks.ToArray());
 
             var alter = SQL_alter_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)
                 .Cast<DictionaryEntry>()
@@ -73,7 +68,7 @@ namespace Financier.DataAccess
                 .ToList();
             foreach (var entry in alter)
             {
-                context.Database.ExecuteSqlRaw(entry.Value);
+                await context.Database.ExecuteSqlRawAsync(entry.Value);
             }
 
             var view = SQL_views_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)
@@ -83,15 +78,15 @@ namespace Financier.DataAccess
                 .ToList();
             foreach (var entry in view)
             {
-                context.Database.ExecuteSqlRaw(entry.Value);
+                await context.Database.ExecuteSqlRawAsync(entry.Value);
             }
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public async Task Import(List<Entity> entities)
+        public async Task ImportEntitiesAsync(IEnumerable<Entity> entities)
         {
-            Seed();
+            await Seed();
 
             await using (var context = new FinancierDataContext(ContextOptions))
             {
@@ -109,36 +104,33 @@ namespace Financier.DataAccess
             var accounts = entities.OfType<Account>().ToList();
             foreach (var item in accounts)
             {
-                await RebuildRunningBalanceForAccount(item.Id);
+                await RebuildAccountBalanceAsync(item.Id);
             }
         }
 
-        public async Task RebuildRunningBalanceForAccount(int accountId)
+        public async Task RebuildAccountBalanceAsync(int accountId)
         {
             await using (var context = new FinancierDataContext(ContextOptions))
             {
                 await context.Database.ExecuteSqlRawAsync($"delete from running_balance where account_id={accountId}");
                 await context.SaveChangesAsync();
 
-                var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.from_account_id == accountId).OrderBy(x => x.datetime).ThenBy(x => x._id).ToListAsync();
+                var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.from_account_id == accountId).OrderBy(x => x.datetime).ToListAsync();
                 long balance = 0;
 
                 foreach (var transaction in transactions)
                 {
-                    var parentId = transaction.parent_id;
-                    var isTransfer = transaction.is_transfer;
-                    if (parentId > 0)
+                    if (transaction.parent_id > 0)
                     {
-                        if (isTransfer >= 0)
+                        if (transaction.is_transfer >= 0)
                         {
                             // we only interested in the second part of the transfer-split
                             // which is marked with is_transfer=-1 (see v_blotter_for_account_with_splits)
                             continue;
                         }
                     }
-                    var fromAccountId = transaction.from_account_id;
                     var toAccountId = transaction.to_account_id;
-                    if (toAccountId > 0 && toAccountId == fromAccountId)
+                    if (toAccountId > 0 && toAccountId == transaction.from_account_id)
                     {
                         // weird bug when a transfer is done from an account to the same account
                         continue;
@@ -147,20 +139,79 @@ namespace Financier.DataAccess
                     await context.RunningBalance.AddAsync(new RunningBalance { Balance = (int)balance, AccountId = accountId, TransactionId = transaction._id });
                 }
 
+                var acc = context.Accounts.FirstOrDefault(x => x.Id == accountId);
+                acc.TotalAmount = balance;
+                var lastTransaction = transactions.LastOrDefault();
+                acc.LastTransactionDate = lastTransaction?.datetime ?? 0;
+                context.Accounts.Update(acc);
                 await context.SaveChangesAsync();
             }
         }
 
-        public async Task ImportMonoTransactions(List<Transaction> transactions)
+        public async Task AddTransactionsAsync(IEnumerable<Transaction> transactions)
         {
-            using var uow = CreateUnitOfWork();
-            await uow.GetRepository<Transaction>().AddRangeAsync(transactions);
-            await uow.SaveChangesAsync();
+                using var uow = CreateUnitOfWork();
+                await uow.GetRepository<Transaction>().AddRangeAsync(transactions);
+
+                await uow.SaveChangesAsync();
         }
 
         public IUnitOfWork CreateUnitOfWork()
         {
             return new UnitOfWork<FinancierDataContext>(new FinancierDataContext(ContextOptions));
+        }
+
+        public async Task<T> GetOrCreateAsync<T>(int id)
+            where T : class, IIdentity, new()
+        {
+            if (id != 0)
+            {
+                using var uow = CreateUnitOfWork();
+                return await uow.GetRepository<T>().FindByAsync(x => x.Id == id);
+            }
+            return new T { Id = 0 };
+        }
+
+        public async Task<Transaction> GetOrCreateTransactionAsync(int id)
+        {
+            if (id != 0)
+            {
+                using var uow = CreateUnitOfWork();
+                return await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == id, o => o.OriginalCurrency, c => c.Category);
+            }
+
+            return new Transaction { DateTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds(), Id = 0, CategoryId = 0 };
+        }
+
+        public async Task<IEnumerable<Transaction>> GetSubTransactionsAsync(int id)
+        {
+            if (id != 0)
+            {
+                using var uow = CreateUnitOfWork();
+                return (await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == id, o => o.OriginalCurrency, c => c.Category)) ?? Array.Empty<Transaction>().ToList();
+            }
+
+            return Array.Empty<Transaction>();
+        }
+
+        public async Task InsertOrUpdateAsync<T>(IEnumerable<T> entities)
+            where T : Entity, IIdentity
+        {
+            using var uow = CreateUnitOfWork();
+            var trRepo = uow.GetRepository<T>();
+            foreach (var item in entities)
+            {
+                item.UpdatedOn = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+                if (item.Id == 0)
+                {
+                    await trRepo.AddAsync(item);
+                }
+                else
+                {
+                    await trRepo.UpdateAsync(item);
+                }
+            }
+            await uow.SaveChangesAsync();
         }
     }
 }

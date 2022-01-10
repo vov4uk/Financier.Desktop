@@ -7,22 +7,27 @@
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              xmlns:converters="clr-namespace:Financier.Desktop.Converters"
              xmlns:entities="clr-namespace:Financier.Desktop.Views"
-             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
+             xmlns:viewmodel="clr-namespace:Financier.Desktop.Data"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionDialogVM}, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
-        <BitmapImage x:Key="IcActionCancel"   UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
-        <BitmapImage x:Key="IcActionAdd"      UriSource="pack://application:,,,/Images/ic_action_add.png" />
-        <BitmapImage x:Key="IcActionMinus"    UriSource="pack://application:,,,/Images/ic_action_minus.png" />
-        <BitmapImage x:Key="IcActionTransfer" UriSource="pack://application:,,,/Images/ic_action_transfer.png" />
-        <BitmapImage x:Key="IcActionShare"    UriSource="pack://application:,,,/Images/ic_action_share.png" />
-        <BitmapImage x:Key="IcActionCopy"     UriSource="pack://application:,,,/Images/ic_action_copy.png" />
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <converters:AmountConverter x:Key="AmountConverter" />
-        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BitmapImage x:Key="IcActionCancel"   UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
+            <BitmapImage x:Key="IcActionAdd"      UriSource="pack://application:,,,/Images/ic_action_add.png" />
+            <BitmapImage x:Key="IcActionMinus"    UriSource="pack://application:,,,/Images/ic_action_minus.png" />
+            <BitmapImage x:Key="IcActionTransfer" UriSource="pack://application:,,,/Images/ic_action_transfer.png" />
+            <BitmapImage x:Key="IcActionShare"    UriSource="pack://application:,,,/Images/ic_action_share.png" />
+            <BitmapImage x:Key="IcActionCopy"     UriSource="pack://application:,,,/Images/ic_action_copy.png" />
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+            <converters:AmountConverter x:Key="AmountConverter" />
+            <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
               Header="Transaction details"
@@ -96,29 +101,34 @@
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
                         <DatePicker      Grid.Row="0" Grid.Column="1"
-                             Margin="2"
-                             SelectedDate="{Binding Transaction.Date}" />
+                                         Margin="2"
+                                         SelectedDate="{Binding Transaction.Date}" />
                         <xctk:TimePicker Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2"
-                             Margin="2"
-                             HorizontalAlignment="Stretch"
-                             Value="{Binding Transaction.Date}" />
+                                         Margin="2"
+                                         HorizontalAlignment="Stretch"
+                                         Value="{Binding Transaction.Time}" />
                     </Grid>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" >Account</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                               Text="Account"/>
                     <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                ItemsSource="{Binding Accounts}"
                                SelectedItem="{Binding Transaction.Account}"
                                SelectedValuePath="Id"
                                SelectedValue="{Binding Transaction.AccountId}"
-                               DisplayMemberPath="Title" />
+                               TextSearch.TextPath="Title"
+                               ItemTemplate="{StaticResource ResourceKey=IActive}"/>
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">Payee</TextBlock>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                               Text="Payee"/>
                     <xctk:WatermarkComboBox  Grid.Row="4" Grid.Column="0"
-                                 IsEditable="True"
-                                 ItemsSource="{Binding Payees}"
-                                 SelectedValuePath="Id"
-                                 SelectedValue="{Binding Transaction.PayeeId}"
-                                 DisplayMemberPath="Title" />
+                                             IsEditable="True"
+                                             ItemsSource="{Binding Payees}"
+                                             SelectedValuePath="Id"
+                                             TextSearch.TextPath="Title"
+                                             SelectedValue="{Binding Transaction.PayeeId}"
+                                             ItemTemplate="{StaticResource ResourceKey=IActive}"
+                                             />
                     <xctk:IconButton Grid.Row="4" Grid.Column="1"
                                      Command="{Binding ClearPayeeCommand}">
                         <xctk:IconButton.Icon>
@@ -126,7 +136,8 @@
                         </xctk:IconButton.Icon>
                     </xctk:IconButton>
 
-                    <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" >Category</TextBlock>
+                    <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+                               Text="Category"/>
 
                     <Grid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
                         <Grid.ColumnDefinitions>
@@ -138,13 +149,9 @@
                                                  IsEditable="True"
                                                  ItemsSource="{Binding Categories}"
                                                  SelectedValuePath="Id"
-                                                 DisplayMemberPath="Title"
+                                                 TextSearch.TextPath="Title"
+                                                 ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"
                                                  SelectedValue="{Binding Transaction.CategoryId}">
-                            <!--<xctk:WatermarkComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <emoji:TextBlock Text="{Binding Title}" />
-                                </DataTemplate>
-                            </xctk:WatermarkComboBox.ItemTemplate>-->
                         </xctk:WatermarkComboBox>
                         <xctk:IconButton   Grid.Column="1"
                                            Command="{Binding ClearCategoryCommand}">
@@ -166,7 +173,8 @@
                         </xctk:IconButton>
                     </Grid>
 
-                    <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" >Currency</TextBlock>
+                    <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
+                               Text="Currency"/>
                     <xctk:WatermarkComboBox  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
                                              ItemsSource="{Binding Currencies}"
                                              SelectedItem="{Binding Transaction.OriginalCurrency}"
@@ -255,18 +263,18 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid.InputBindings>
                                         <MouseBinding MouseAction="LeftDoubleClick"
-                                                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.OpenSubTransactionDialogCommand}"
+                                                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.EditSubTransactionCommand}"
                                                           CommandParameter="{Binding}" />
                                     </Grid.InputBindings>
                                     <Grid.Style>
                                         <Style TargetType="{x:Type Grid}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsAmountNegative}" Value="true">
+                                                <DataTrigger Binding="{Binding IsAmountNegative, UpdateSourceTrigger=PropertyChanged}" Value="true">
                                                     <DataTrigger.Setters>
                                                         <Setter Property="Background" Value="LightPink"/>
                                                     </DataTrigger.Setters>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsAmountNegative}" Value="false">
+                                                <DataTrigger Binding="{Binding IsAmountNegative, UpdateSourceTrigger=PropertyChanged}" Value="false">
                                                     <DataTrigger.Setters>
                                                         <Setter Property="Background" Value="YellowGreen"/>
                                                     </DataTrigger.Setters>
@@ -300,11 +308,12 @@
                                Grid.ColumnSpan="2"
                                Text="Location"/>
                     <xctk:WatermarkComboBox   Grid.Row="14" Grid.Column="0"
-                                  IsEditable="True"
-                                  ItemsSource="{Binding Locations}"
-                                  SelectedValue="{Binding Transaction.LocationId}"
-                                  SelectedValuePath="Id"
-                                  DisplayMemberPath="Title" />
+                                              IsEditable="True"
+                                              ItemsSource="{Binding Locations}"
+                                              SelectedValue="{Binding Transaction.LocationId}"
+                                              SelectedValuePath="Id"
+                                              TextSearch.TextPath="Title"
+                                              ItemTemplate="{StaticResource ResourceKey=IActive}" />
                     <xctk:IconButton Grid.Row="14" Grid.Column="1"
                                      Command="{Binding ClearLocationCommand}">
                         <xctk:IconButton.Icon>
@@ -335,7 +344,8 @@
                                              ItemsSource="{Binding Projects}"
                                              SelectedValue="{Binding Transaction.ProjectId}"
                                              SelectedValuePath="Id"
-                                             DisplayMemberPath="Title" >
+                                             TextSearch.TextPath="Title"
+                                             ItemTemplate="{StaticResource ResourceKey=IActive}" >
                         <xctk:WatermarkComboBox.Style>
                             <Style TargetType="xctk:WatermarkComboBox">
                                 <Setter Property="Visibility" Value="Visible"/>

@@ -9,7 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <convert:AmountConverter x:Key="AmountConverter"/>
-        <convert:DateTimeConverter x:Key="DatetimeConverter" />
+        <convert:UnixTimeConverter x:Key="DatetimeConverter" />
         <Style TargetType="DataGridCell">
             <Setter Property="TextBlock.TextAlignment" Value="Right" />
         </Style>
@@ -29,7 +29,8 @@
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
-        <TextBlock Grid.Row="1" FontSize="12">Please select transaction with same balance as selected account, otherwise all transactions will be imported</TextBlock>
+        <TextBlock Grid.Row="1" FontSize="12"
+                   Text="Please select transaction with same balance as selected account, otherwise all transactions will be imported"/>
         <DataGrid Grid.Row="2"
                   ItemsSource="{Binding Path=AllTransactions}"
                   AutoGenerateColumns="False"

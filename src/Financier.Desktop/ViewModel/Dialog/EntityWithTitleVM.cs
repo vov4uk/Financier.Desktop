@@ -1,4 +1,4 @@
-﻿using Financier.DataAccess.Data;
+﻿using Financier.Desktop.Data;
 using Prism.Commands;
 
 namespace Financier.Desktop.ViewModel.Dialog
@@ -7,61 +7,20 @@ namespace Financier.Desktop.ViewModel.Dialog
     {
         private DelegateCommand _clearTitleCommand;
 
-        private int id;
-        private bool isActive;
-        private string title;
-
-        public EntityWithTitleVM(Project proj)
+        public EntityWithTitleVM(EntityWithTitleDTO entity)
         {
-            Id = proj.Id;
-            Title = proj.Title;
-            IsActive = proj.IsActive == true;
-        }
-
-        public EntityWithTitleVM(Payee payee)
-        {
-            Id = payee.Id;
-            Title = payee.Title;
-            IsActive = payee.IsActive == true;
-        }
-
-        public EntityWithTitleVM()
-        {
+            this.Entity = entity;
         }
 
         public DelegateCommand ClearTitleCommand
         {
-            get { return _clearTitleCommand ??= new DelegateCommand(() => { Title = default; }); }
+            get { return _clearTitleCommand ??= new DelegateCommand(() => { Entity.Title = default; }); }
         }
 
-        public int Id
+        public EntityWithTitleDTO Entity { get; }
+        public override object OnRequestSave()
         {
-            get => id;
-            set
-            {
-                id = value;
-                RaisePropertyChanged(nameof(Id));
-            }
-        }
-
-        public string Title
-        {
-            get => title;
-            set
-            {
-                title = value;
-                RaisePropertyChanged(nameof(Title));
-            }
-        }
-
-        public bool IsActive
-        {
-            get => isActive;
-            set
-            {
-                isActive = value;
-                RaisePropertyChanged(nameof(IsActive));
-            }
+            return Entity;
         }
     }
 }

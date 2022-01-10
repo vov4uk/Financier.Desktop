@@ -1,43 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using CsvHelper;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.Monobank;
-using Financier.Desktop.Wizards;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 
-namespace Financier.Desktop.MonoWizard.ViewModel
+namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class MonoWizardVM : WizardBaseVM
     {
         private readonly List<Account> accounts;
+        private readonly List<Category> categories;
         private readonly List<Currency> currencies;
         private readonly List<Location> locations;
-        private readonly List<Category> categories;
-        private readonly List<Project> projects;
-        private readonly string csvFilePath;
         private readonly List<MonoTransaction> monoTransactions = new();
-
-        public MonoWizardVM(List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Category> categories,
-            List<Project> projects,
-            string csvFilePath)
+        private readonly List<Project> projects;
+        public MonoWizardVM(
+            IEnumerable<MonoTransaction> monoTransactions,
+            IEnumerable<Account> accounts,
+            IEnumerable<Currency> currencies,
+            IEnumerable<Location> locations,
+            IEnumerable<Category> categories,
+            IEnumerable<Project> projects)
         {
-            this.accounts = accounts;
-            this.currencies = currencies;
-            this.locations = locations;
-            this.categories = categories;
-            this.projects = projects;
-            this.csvFilePath = csvFilePath;
+            this.monoTransactions = new(monoTransactions);
+            this.accounts = new(accounts);
+            this.currencies = new(currencies);
+            this.locations = new(locations);
+            this.categories = new(categories);
+            this.projects = new(projects);
+
+            CreatePages();
+            CurrentPage = Pages[0];
         }
+
+        //TODO - remove
+        public Account MonoBankAccount { get; set; }
 
         public override void AfterCurrentPageUpdated(WizardPageBaseVM currentPage)
         {
@@ -68,26 +66,6 @@ namespace Financier.Desktop.MonoWizard.ViewModel
                 Logger.Info($"MonoTransactions count -> {page2.MonoTransactions.Count}");
             }
         }
-
-        public Account MonoBankAccount { get; set; }
-
-        public List<Transaction> TransactionsToImport { get; set; }
-
-        public async Task LoadTransactions()
-        {
-            if (File.Exists(csvFilePath))
-            {
-                Logger.Info($"csvFilePath -> {csvFilePath}");
-                await using FileStream file = File.OpenRead(csvFilePath);
-                using StreamReader streamReader = new StreamReader(file, Encoding.UTF8);
-                using var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture);
-                var records = await csv.GetRecordsAsync<MonoTransaction>().ToListAsync();
-                monoTransactions.AddRange(records);
-                this.CreatePages();
-                CurrentPage = Pages[0];
-            }
-        }
-
         public override void CreatePages()
         {
             _pages = new List<WizardPageBaseVM>
@@ -99,19 +77,20 @@ namespace Financier.Desktop.MonoWizard.ViewModel
         }
 
 
-       public override void OnRequestClose(bool save)
+        public override object OnRequestClose(bool save)
         {
             if (save)
             {
-                TransactionsToImport = _pages.OfType<Page3VM>()
+                return _pages.OfType<Page3VM>()
                     .Single()
                     .FinancierTransactions
                     .Select(TransformMonoTransaction)
                     .ToList();
             }
+            return null;
         }
 
-        private Transaction TransformMonoTransaction(FinancierTransactionVM x)
+        private Transaction TransformMonoTransaction(FinancierTransactionDTO x)
         {
             var result = new Transaction
             {

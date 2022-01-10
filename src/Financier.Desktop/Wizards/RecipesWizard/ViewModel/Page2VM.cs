@@ -1,6 +1,4 @@
 ﻿using Financier.DataAccess.Data;
-using Financier.Desktop.MonoWizard.ViewModel;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using Prism.Commands;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,69 +6,45 @@ using System.Linq;
 
 namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
-    public class Page2VM : WizardPageBaseVM
+    public class Page2VM : RecipesWizardPageVMBase
     {
-        public override string Title => "Transactions";
-
-        public override bool IsValid() => true;
-
-        private ObservableCollection<Category> categories;
-        private ObservableCollection<Project> projects;
-
-        public Page2VM(List<Category> categories, List<Project> projects)
-        {
-            this.categories = new ObservableCollection<Category>(categories);
-            this.projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
-        }
-
-        private ObservableCollection<FinancierTransactionVM> financierTransactions;
-        private DelegateCommand<FinancierTransactionVM> _deleteCommand;
         private DelegateCommand _addRowCommand;
+        private DelegateCommand<FinancierTransactionDTO> _deleteCommand;
         private DelegateCommand _totalCommand;
-        private double calculatedAmount;
-        private double totalAmount;
-
-        public void SetMonoTransactions(List<FinancierTransactionVM> list)
+        private ObservableCollection<Category> categories;
+        private ObservableCollection<FinancierTransactionDTO> financierTransactions;
+        private ObservableCollection<Project> projects;
+        public Page2VM(List<Category> categories, List<Project> projects, double totalAmount)
         {
-            FinancierTransactions = new ObservableCollection<FinancierTransactionVM>(list);
-            CalculateFromAmounts();
+            Categories = new ObservableCollection<Category>(categories);
+            Projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            TotalAmount = totalAmount;
+            financierTransactions = new();
         }
 
-        private void CalculateFromAmounts()
-        {
-            this.CalculatedAmount =
-                FinancierTransactions.Sum(x => x.FromAmount) / 100.0;
-        }
-
-        public double TotalAmount
-        {
-            get => totalAmount;
-            set
-            {
-                totalAmount = value;
-                this.RaisePropertyChanged(nameof(this.TotalAmount));
-                this.RaisePropertyChanged(nameof(this.Diff));
-            }
-        }
-
-        public double CalculatedAmount
-        {
-            get => calculatedAmount;
-            set
-            {
-                calculatedAmount = value;
-                this.RaisePropertyChanged(nameof(this.CalculatedAmount));
-                this.RaisePropertyChanged(nameof(this.Diff));
-            }
-        }
-
-        public double Diff => TotalAmount - CalculatedAmount;
-
-        public DelegateCommand<FinancierTransactionVM> DeleteCommand
+        public DelegateCommand AddRowCommand
         {
             get
             {
-                return _deleteCommand ??= new DelegateCommand<FinancierTransactionVM>(tr =>
+                return _addRowCommand ??= new DelegateCommand(() => { financierTransactions.Add(new FinancierTransactionDTO() { Order = financierTransactions.Count + 1 }); });
+            }
+        }
+
+        public ObservableCollection<Category> Categories
+        {
+            get => categories;
+            private set
+            {
+                categories = value;
+                RaisePropertyChanged(nameof(Categories));
+            }
+        }
+
+        public DelegateCommand<FinancierTransactionDTO> DeleteCommand
+        {
+            get
+            {
+                return _deleteCommand ??= new DelegateCommand<FinancierTransactionDTO>(tr =>
                 {
                     financierTransactions.Remove(tr);
                     for (int i = 0; i < financierTransactions.Count; i++)
@@ -81,13 +55,27 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        public DelegateCommand AddRowCommand
+        public ObservableCollection<FinancierTransactionDTO> FinancierTransactions
         {
-            get
+            get => financierTransactions;
+            private set
             {
-                return _addRowCommand ??= new DelegateCommand(() => { financierTransactions.Add(new FinancierTransactionVM() { Order = financierTransactions.Count + 1}); });
+                financierTransactions = value;
+                RaisePropertyChanged(nameof(FinancierTransactions));
             }
         }
+
+        public ObservableCollection<Project> Projects
+        {
+            get => projects;
+            private set
+            {
+                projects = value;
+                RaisePropertyChanged(nameof(Projects));
+            }
+        }
+
+        public override string Title => "Transactions";
 
         public DelegateCommand TotalCommand
         {
@@ -97,34 +85,17 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        public ObservableCollection<FinancierTransactionVM> FinancierTransactions
+        public override bool IsValid() => true;
+        public void SetTransactions(List<FinancierTransactionDTO> list)
         {
-            get => financierTransactions;
-            set
-            {
-                financierTransactions = value;
-                RaisePropertyChanged(nameof(FinancierTransactions));
-            }
+            FinancierTransactions = new ObservableCollection<FinancierTransactionDTO>(list);
+            CalculateFromAmounts();
         }
 
-        public ObservableCollection<Category> Categories
+        private void CalculateFromAmounts()
         {
-            get => categories;
-            set
-            {
-                categories = value;
-                RaisePropertyChanged(nameof(Categories));
-            }
-        }
-
-        public ObservableCollection<Project> Projects
-        {
-            get => projects;
-            set
-            {
-                projects = value;
-                RaisePropertyChanged(nameof(Projects));
-            }
+            base.CalculatedAmount =
+                FinancierTransactions.Sum(x => x.FromAmount) / 100.0;
         }
     }
 }

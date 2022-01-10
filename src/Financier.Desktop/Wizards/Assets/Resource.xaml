@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:MonoViewModel="clr-namespace:Financier.Desktop.MonoWizard.ViewModel" 
+                    xmlns:MonoViewModel="clr-namespace:Financier.Desktop.Wizards.MonoWizard.ViewModel" 
                     xmlns:MonoView="clr-namespace:Financier.Desktop.MonoWizard.View"
                     xmlns:RecipesViewModel="clr-namespace:Financier.Desktop.Wizards.RecipesWizard.ViewModel" 
                     xmlns:RecipesView="clr-namespace:Financier.Desktop.Wizards.RecipesWizard.View"

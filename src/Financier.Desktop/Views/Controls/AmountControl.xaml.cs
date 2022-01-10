@@ -1,10 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows.Controls;
 
 namespace Financier.Desktop.Views
 {
-    /// <summary>
-    /// Interaction logic for AmountControl.xaml
-    /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class AmountControl : UserControl
     {
         public AmountControl()

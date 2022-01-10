@@ -5,9 +5,7 @@ using System.Windows.Controls;
 
 namespace Financier.Desktop.Reports
 {
-    /// <summary>
-    /// Logique d'interaction pour BarChart.xaml
-    /// </summary>
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public partial class BarChart : UserControl
     {
         public BarChart(List<ReportRow> values, double maxWidth)
@@ -20,7 +18,7 @@ namespace Financier.Desktop.Reports
         {
             double maxValue = values.Select(x => x.GetAbsoluteMax()).Max();
             double coef = maxWidth / maxValue;
-            List<double> widths = new List<double>();
+            List<double> widths = new ();
 
             ChartPresenter.Children.Clear();
             long totalPositive = 0;

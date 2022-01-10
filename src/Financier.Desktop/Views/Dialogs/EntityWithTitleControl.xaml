@@ -46,9 +46,9 @@
                             Text="Title"
                             />
             <TextBox Grid.Column="0"
-                 Grid.Row="1"
-                 x:Name="Amount"
-                 Text="{Binding Title}" />
+                     Grid.Row="1"
+                     x:Name="Amount"
+                     Text="{Binding Entity.Title}" />
             <xctk:IconButton   Grid.Column="1"
                            Grid.Row="1"
                            Height="24"
@@ -62,7 +62,7 @@
             <CheckBox   Grid.Column="0"
                     Grid.Row="2"
                     Grid.ColumnSpan="2"
-                    IsChecked="{Binding IsActive}" >Is Active</CheckBox>
+                    IsChecked="{Binding Entity.IsActive}" >Is Active</CheckBox>
 
             <Grid Grid.Row="3"
               Margin="0 24 0 0"

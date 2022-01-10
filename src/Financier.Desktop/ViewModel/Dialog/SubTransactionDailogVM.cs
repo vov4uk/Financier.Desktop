@@ -1,54 +1,33 @@
 ﻿using Financier.DataAccess.Data;
+using Financier.Desktop.Data;
 using Prism.Commands;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
     public class SubTransactionDailogVM : DialogBaseVM
     {
+        private readonly string[] TrackingProperies = new string[] { nameof(TransactionDTO.FromAmount), nameof(TransactionDTO.Account) };
+
         private DelegateCommand _changeFromAmountSignCommand;
-
-        private DelegateCommand _clearOriginalFromAmountCommand;
-
-        private DelegateCommand _clearFromAmountCommand;
-
         private DelegateCommand<int?> _clearCategoryCommand;
-
-        private DelegateCommand _clearProjectCommand;
-
+        private DelegateCommand _clearFromAmountCommand;
         private DelegateCommand _clearNotesCommand;
-
-        private TransactionDTO transaction;
-
-        public ObservableCollection<Category> Categories { get; set; }
-
-        public ObservableCollection<Project> Projects { get; set; }
-
-        public TransactionDTO Transaction
+        private DelegateCommand _clearOriginalFromAmountCommand;
+        private DelegateCommand _clearProjectCommand;
+        public SubTransactionDailogVM(
+            TransactionDTO transaction,
+            List<Category> categories,
+            List<Project> projects)
         {
-            get => transaction;
-            set
-            {
-                if (transaction != null)
-                {
-                    transaction.PropertyChanged -= Transaction_PropertyChanged;
-                }
-                transaction = value;
-                if (transaction != null)
-                {
-                    transaction.PropertyChanged += Transaction_PropertyChanged;
-                }
-                RaisePropertyChanged(nameof(Transaction));
-            }
+            Categories = categories;
+            Projects = projects;
+            Transaction = transaction;
+            Transaction.PropertyChanged += Transaction_PropertyChanged;
         }
 
-        private void Transaction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(TransactionDTO.FromAmount))
-            {
-                SaveCommand.RaiseCanExecuteChanged();
-            }
-        }
+        public List<Category> Categories { get; }
 
         public DelegateCommand ChangeFromAmountSignCommand
         {
@@ -63,7 +42,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             get
             {
-                return _clearCategoryCommand ??= new DelegateCommand<int?>( i => { Transaction.CategoryId = i; });
+                return _clearCategoryCommand ??= new DelegateCommand<int?>(i => { Transaction.CategoryId = i; });
             }
         }
 
@@ -87,10 +66,27 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return _clearProjectCommand ??= new DelegateCommand(() => { Transaction.ProjectId = default; }); }
         }
 
+        public List<Project> Projects { get; }
+
+        public TransactionDTO Transaction { get; }
+
+        public override object OnRequestSave()
+        {
+            return Transaction;
+        }
+
         protected override bool CanSaveCommandExecute()
         {
             if (Transaction.IsSplitCategory) return Transaction.UnsplitAmount == 0;
             return true;
+        }
+
+        private void Transaction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (TrackingProperies.Contains(e.PropertyName))
+            {
+                SaveCommand.RaiseCanExecuteChanged();
+            }
         }
     }
 }

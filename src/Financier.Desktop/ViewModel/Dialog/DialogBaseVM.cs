@@ -4,7 +4,7 @@ using System;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class DialogBaseVM : BindableBase
+    public abstract class DialogBaseVM : BindableBase
     {
         private DelegateCommand _cancelCommand;
 
@@ -23,13 +23,20 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             get
             {
-                return _saveCommand ??= new DelegateCommand(() => RequestSave?.Invoke(this, EventArgs.Empty), CanSaveCommandExecute);
+                return _saveCommand ??= new DelegateCommand(OnSave, CanSaveCommandExecute);
             }
         }
 
+        public abstract object OnRequestSave();
         protected virtual bool CanSaveCommandExecute()
         {
             return true;
+        }
+
+        void OnSave()
+        {
+            var output = OnRequestSave();
+            RequestSave?.Invoke(output, EventArgs.Empty);
         }
     }
 }

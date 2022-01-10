@@ -5,37 +5,37 @@
                     xmlns:View="clr-namespace:Financier.Desktop.Views">
 
     <DataTemplate DataType="{x:Type ViewModel:AccountsVM}">
-        <View:Accounts/>
+        <View:AccountsView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModel:BlotterVM}">
-        <View:Blotter/>
+        <View:BlotterView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModel:BudgetsVM}">
-        <View:Budgets/>
+        <View:BudgetsView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModel:CategoriesVM}">
-        <View:Categories/>
+        <View:CategoriesView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModel:CurrenciesVM}">
-        <View:Currencies/>
+        <View:CurrenciesView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModel:ExchangeRatesVM}">
-        <View:ExchangeRates/>
+        <View:ExchangeRatesView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModel:LocationsVM}">
-        <View:Locations/>
+        <View:LocationsView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModel:PayeesVM}">
-        <View:Payees/>
+        <View:EntityWithTitleView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModel:ProjectsVM}">
-        <View:Projects/>
+        <View:EntityWithTitleView/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type ViewModel:InfoVM}">
         <View:InfoControl/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type Report:ReportVM}">
-        <View:Report/>
+        <View:ReportView/>
     </DataTemplate>
 
 </ResourceDictionary>
