@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
+using System.Windows.Media;
 using Xceed.Wpf.Toolkit;
 
 namespace Financier.Desktop.Wizards.RecipesWizard.View
@@ -8,6 +10,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
     public class RecipesFormatter : ITextFormatter
     {
         public const string Pattern = @"((\+|\-)?)\d+(?:(\.|\,)?\d+)(\s+)(A|a|а|А)";
+        private const string NumbersRegex = @"\d+";
+        private const string Space = " ";
 
         public string GetText(FlowDocument document)
         {
@@ -16,72 +20,53 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
 
         public void SetText(FlowDocument document, string text)
         {
-            string reg = @"\d+";
-
             Paragraph p = new Paragraph();
 
-            var lines = text.Split(Environment.NewLine);
+            var lines = text.Split(Environment.NewLine).Where(x => !string.IsNullOrWhiteSpace(x));
             foreach (var line in lines)
             {
-                if (!string.IsNullOrWhiteSpace(line))
+                if (Regex.IsMatch(line, Pattern, RegexOptions.IgnoreCase))
                 {
-                    if (Regex.IsMatch(line, Pattern, RegexOptions.IgnoreCase))
-                    {
-                        var words = line.Split(" ");
-                        foreach (var word in words)
-                        {
-                            if (Regex.IsMatch(word, reg, RegexOptions.IgnoreCase))
-                            {
-                                p.Inlines.Add(new Run
-                                {
-                                    Text = word + " ",
-                                    Foreground = System.Windows.Media.Brushes.DarkRed,
-                                    Background = System.Windows.Media.Brushes.Yellow
-                                });
-                            }
-                            else
-                            {
-                                p.Inlines.Add(new Run
-                                {
-                                    Text = word + " "
-                                });
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var words = line.Split(" ");
-                        foreach (var word in words)
-                        {
-                            if (Regex.IsMatch(word, @"\d+", RegexOptions.IgnoreCase))
-                            {
-                                p.Inlines.Add(new Run
-                                {
-                                    Text = word + " ",
-                                    Foreground = System.Windows.Media.Brushes.DarkViolet,
-                                    Background = System.Windows.Media.Brushes.LightGreen
-                                });
-                            }
-                            else
-                            {
-                                p.Inlines.Add(new Run
-                                {
-                                    Text = word + " "
-                                });
-                            }
-                        }
-                    }
-
-                    p.Inlines.Add(new Run
-                    {
-                        Text = Environment.NewLine
-                    });
+                    p.Inlines.AddRange(line.Split(Space).Select(word => GetRun(word, Brushes.DarkRed, Brushes.Yellow)));
                 }
+                else
+                {
+                    p.Inlines.AddRange(line.Split(Space).Select(word => GetRun(word, Brushes.DarkViolet, Brushes.LightGreen)));
+                }
+
+                p.Inlines.Add(GetDefaultRun(Environment.NewLine));
             }
 
             document.Blocks.Clear();
             document.PageWidth = 2500;
             document.Blocks.Add(p);
+        }
+
+        private static Run GetRun(string word, Brush foreground, Brush background)
+        {
+            if (Regex.IsMatch(word, NumbersRegex, RegexOptions.IgnoreCase))
+            {
+                return GetHiglightedRun(word, foreground, background);
+            }
+            return GetDefaultRun(word);
+        }
+
+        private static Run GetHiglightedRun(string word, Brush foreground, Brush background)
+        {
+            return new Run
+            {
+                Text = word + Space,
+                Foreground = foreground,
+                Background = background
+            };
+        }
+
+        private static Run GetDefaultRun(string word)
+        {
+            return new Run
+            {
+                Text = word + Space
+            };
         }
     }
 }

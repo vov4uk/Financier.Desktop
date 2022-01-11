@@ -6,7 +6,7 @@ namespace Financier.Desktop.Reports.Model
     [DebuggerDisplay("{Title} : {TotalNegativeAmount} : {TotalPositiveAmount}")]
     public class ReportRow
     {
-        public int Id;
+        public int Id { get; set; }
 
         public string Title { get; set; }
 

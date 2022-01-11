@@ -62,10 +62,11 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             if (currentPage is Page2VM page2 && value is Page3VM)
             {
                 ((Page3VM)value).MonoAccount = MonoBankAccount;
-                ((Page3VM)value).SetMonoTransactions(page2.MonoTransactions);
-                Logger.Info($"MonoTransactions count -> {page2.MonoTransactions.Count}");
+                ((Page3VM)value).SetMonoTransactions(page2.GetMonoTransactions());
+                Logger.Info($"MonoTransactions count -> {page2.GetMonoTransactions().Count}");
             }
         }
+
         public override void CreatePages()
         {
             _pages = new List<WizardPageBaseVM>
@@ -113,8 +114,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 result.ToAccountId = x.ToAccountId;
                 result.ToAmount = Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
             }
-            else
-            if (x.FromAccountId > 0) // Transfer To Mono
+            else if (x.FromAccountId > 0) // Transfer To Mono
             {
                 result.FromAccountId = x.FromAccountId;
                 result.ToAccountId = x.MonoAccountId;

@@ -65,7 +65,7 @@
 
             var vm = new Page2VM(transactions);
 
-            Assert.Single(vm.MonoTransactions);
+            Assert.Single(vm.GetMonoTransactions());
         }
 
         [Fact]
@@ -86,7 +86,7 @@
             var vm = new Page2VM(transactions);
             vm.StartTransaction = startTr;
 
-            Assert.Equal(3, vm.MonoTransactions.Count);
+            Assert.Equal(3, vm.GetMonoTransactions().Count);
         }
 
         [Theory]

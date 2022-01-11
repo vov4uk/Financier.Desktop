@@ -51,13 +51,10 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public List<MonoTransaction> MonoTransactions
+        public List<MonoTransaction> GetMonoTransactions()
         {
-            get
-            {
-                var startDate = _startTransaction?.Date ?? new DateTime(2017, 11, 17); // Monobank launched
-                return allTransactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
-            }
+            var startDate = _startTransaction?.Date ?? new DateTime(2017, 11, 17); // Monobank launched
+            return allTransactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
         }
 
         public MonoTransaction StartTransaction

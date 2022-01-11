@@ -1,6 +1,6 @@
 ﻿namespace Financier.DataAccess.Data
 {
-    public class Backup
+    public static class Backup
     {
         public const string TRANSACTION_TABLE = "transactions";
         public const string ACCOUNT_TABLE = "account";
@@ -23,7 +23,9 @@
         public const string START = "#START";
         public const string END = "#END";
 
-        public static string[] RESTORE_SCRIPTS = {
+        public static string[] RESTORE_SCRIPTS => restore_scripts;
+
+        private static readonly string[] restore_scripts = {
             "_20100114_1158_alter_accounts_types",
             "_20110903_0129_alter_template_splits",
             "_20171230_1852_alter_electronic_account_type"};

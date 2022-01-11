@@ -24,14 +24,18 @@ namespace Financier.Adapter
             EntityInfo entityInfo = null;
             string prevField = string.Empty;
             string entityType = string.Empty;
-            foreach (Line line in reader.GetLines().Select(s => new Line(s)))
+
+            var lines = reader.GetLines().Select(s => new Line(s));
+            foreach (Line line in lines)
             {
                 if (line.Key == Entity.ENTITY)
                 {
                     prevField = string.Empty;
                     entityType = line.Value;
                     if (!string.IsNullOrEmpty(line.Value) && entityTypes.TryGetValue(line.Value, out entityInfo))
+                    {
                         entity = (Entity)Activator.CreateInstance(entityInfo.EntityType);
+                    }
                     if (!EntityColumnsOrder.ContainsKey(entityType))
                     {
                         EntityColumnsOrder.Add(entityType, new List<string>());
@@ -58,8 +62,6 @@ namespace Financier.Adapter
                     }
                     prevField = line.Key;
                 }
-
-                BackupVersion = reader.BackupVersion;
             }
 
             return (entities, reader.BackupVersion, EntityColumnsOrder);

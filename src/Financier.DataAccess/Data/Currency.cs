@@ -41,7 +41,7 @@ namespace Financier.DataAccess.Data
         public long UpdatedOn { get; set; }
 
         [NotMapped]
-        public static Currency Empty = new Currency
+        public static Currency Empty => new Currency
         {
             Id = 0,
             Name = "",

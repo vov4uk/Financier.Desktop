@@ -38,7 +38,7 @@ namespace Financier.DataAccess.Data
         public int SortOrder { get; set; }
 
         [NotMapped]
-        public static Category None = new Category()
+        public static Category None => new Category()
         {
             Id = 0,
             Left = 1,
@@ -47,7 +47,7 @@ namespace Financier.DataAccess.Data
         };
 
         [NotMapped]
-        public static Category Split = new Category()
+        public static Category Split => new Category()
         {
             Id = -1,
             Left = 0,

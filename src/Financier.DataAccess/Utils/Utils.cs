@@ -6,8 +6,8 @@ namespace Financier.DataAccess.Utils
 {
     public static class Utils
     {
-        public static decimal HUNDRED = new decimal(100);
-        public static string TRANSFER_DELIMITER = " \u00BB ";
+        internal const decimal HUNDRED = 100m;
+        internal const string TRANSFER_DELIMITER = " \u00BB ";
 
         public static string SetAmountText(Currency c, long amount, bool addPlus)
         {
@@ -55,12 +55,9 @@ namespace Financier.DataAccess.Utils
 
         public static StringBuilder AmountToString(StringBuilder sb, Currency c, decimal amount, bool addPlus)
         {
-            if (amount.CompareTo(decimal.Zero) > 0)
+            if (amount.CompareTo(decimal.Zero) > 0 && addPlus)
             {
-                if (addPlus)
-                {
-                    sb.Append("+");
-                }
+                sb.Append("+");
             }
             if (c == null)
             {
