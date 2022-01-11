@@ -16,7 +16,7 @@ namespace Financier.DataAccess.Utils
            
         }
 
-        public static string SetAmountText(Currency originalCurrency, long originalAmount, Currency currency, long amount, bool addPlus)
+        internal static string SetAmountText(Currency originalCurrency, long originalAmount, Currency currency, long amount, bool addPlus)
         {
             StringBuilder sb = new StringBuilder();
             AmountToString(sb, originalCurrency, originalAmount, addPlus);
@@ -26,34 +26,17 @@ namespace Financier.DataAccess.Utils
             return sb.ToString();
         }
 
-        public static string AmountToString(Currency c, long amount)
-        {
-            return AmountToString(c, amount, false);
-        }
-
-        public static string AmountToString(Currency c, decimal amount)
-        {
-            StringBuilder sb = new StringBuilder();
-            return AmountToString(sb, c, amount, false).ToString();
-        }
-
-        public static StringBuilder AmountToString(StringBuilder sb, Currency c, long amount)
+        private static StringBuilder AmountToString(StringBuilder sb, Currency c, long amount)
         {
             return AmountToString(sb, c, amount, false);
         }
 
-        public static string AmountToString(Currency c, long amount, bool addPlus)
-        {
-            StringBuilder sb = new StringBuilder();
-            return AmountToString(sb, c, amount, addPlus).ToString();
-        }
-
-        public static StringBuilder AmountToString(StringBuilder sb, Currency c, long amount, bool addPlus)
+        private static StringBuilder AmountToString(StringBuilder sb, Currency c, long amount, bool addPlus)
         {
             return AmountToString(sb, c, new decimal(amount), addPlus);
         }
 
-        public static StringBuilder AmountToString(StringBuilder sb, Currency c, decimal amount, bool addPlus)
+        private static StringBuilder AmountToString(StringBuilder sb, Currency c, decimal amount, bool addPlus)
         {
             if (amount.CompareTo(decimal.Zero) > 0 && addPlus)
             {
@@ -76,7 +59,7 @@ namespace Financier.DataAccess.Utils
             return sb;
         }
 
-        public static string GetTransferAmountText(Currency fromCurrency, long fromAmount, Currency toCurrency, long toAmount)
+        internal static string GetTransferAmountText(Currency fromCurrency, long fromAmount, Currency toCurrency, long toAmount)
         {
             var sb = new StringBuilder();
             if (SameCurrency(fromCurrency, toCurrency))
@@ -91,12 +74,12 @@ namespace Financier.DataAccess.Utils
             return sb.ToString();
         }
 
-        public static bool SameCurrency(Currency fromCurrency, Currency toCurrency)
+        private static bool SameCurrency(Currency fromCurrency, Currency toCurrency)
         {
             return fromCurrency.Id == toCurrency.Id;
         }
 
-        public static string SetTransferBalanceText(Currency fromCurrency, int? fromBalance, Currency toCurrency, int? toBalance)
+        internal static string SetTransferBalanceText(Currency fromCurrency, int? fromBalance, Currency toCurrency, int? toBalance)
         {
             var sb = new StringBuilder();
             Utils.AmountToString(sb, fromCurrency, fromBalance ?? 0, false).Append(TRANSFER_DELIMITER);

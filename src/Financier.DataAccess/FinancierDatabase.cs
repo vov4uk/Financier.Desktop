@@ -36,7 +36,7 @@ namespace Financier.DataAccess
 
         private static DbConnection CreateInMemoryDatabase()
         {
-            var connection = new SqliteConnection("Filename=:memory:"); // SqliteConnection("Filename=test.db");
+            var connection = new SqliteConnection("Filename=:memory:"); // "Filename=test.db"
 
             connection.Open();
 

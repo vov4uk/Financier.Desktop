@@ -129,9 +129,9 @@
                 },
             };
             var monoAccount = accounts.FirstOrDefault();
-            var expected = new ObservableCollection<FinancierTransactionDTO>()
+            var expected = new ObservableCollection<FinancierTransactionDto>()
             {
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,
@@ -144,7 +144,7 @@
                     Note = null,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 04)).ToUnixTimeMilliseconds(),
                 },
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,
@@ -157,7 +157,7 @@
                     Note = null,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 03)).ToUnixTimeMilliseconds(),
                 },
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,
@@ -170,7 +170,7 @@
                     Note = null,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 02)).ToUnixTimeMilliseconds(),
                 },
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,
@@ -183,7 +183,7 @@
                     Note = "Unknown place",
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 01)).ToUnixTimeMilliseconds(),
                 },
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,

@@ -9,10 +9,10 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
     public class Page2VM : RecipesWizardPageVMBase
     {
         private DelegateCommand _addRowCommand;
-        private DelegateCommand<FinancierTransactionDTO> _deleteCommand;
+        private DelegateCommand<FinancierTransactionDto> _deleteCommand;
         private DelegateCommand _totalCommand;
         private ObservableCollection<Category> categories;
-        private ObservableCollection<FinancierTransactionDTO> financierTransactions;
+        private ObservableCollection<FinancierTransactionDto> financierTransactions;
         private ObservableCollection<Project> projects;
         public Page2VM(List<Category> categories, List<Project> projects, double totalAmount)
         {
@@ -26,7 +26,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             get
             {
-                return _addRowCommand ??= new DelegateCommand(() => { financierTransactions.Add(new FinancierTransactionDTO() { Order = financierTransactions.Count + 1 }); });
+                return _addRowCommand ??= new DelegateCommand(() => { financierTransactions.Add(new FinancierTransactionDto() { Order = financierTransactions.Count + 1 }); });
             }
         }
 
@@ -40,11 +40,11 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        public DelegateCommand<FinancierTransactionDTO> DeleteCommand
+        public DelegateCommand<FinancierTransactionDto> DeleteCommand
         {
             get
             {
-                return _deleteCommand ??= new DelegateCommand<FinancierTransactionDTO>(tr =>
+                return _deleteCommand ??= new DelegateCommand<FinancierTransactionDto>(tr =>
                 {
                     financierTransactions.Remove(tr);
                     for (int i = 0; i < financierTransactions.Count; i++)
@@ -55,7 +55,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        public ObservableCollection<FinancierTransactionDTO> FinancierTransactions
+        public ObservableCollection<FinancierTransactionDto> FinancierTransactions
         {
             get => financierTransactions;
             private set
@@ -86,9 +86,9 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         }
 
         public override bool IsValid() => true;
-        public void SetTransactions(List<FinancierTransactionDTO> list)
+        public void SetTransactions(List<FinancierTransactionDto> list)
         {
-            FinancierTransactions = new ObservableCollection<FinancierTransactionDTO>(list);
+            FinancierTransactions = new ObservableCollection<FinancierTransactionDto>(list);
             CalculateFromAmounts();
         }
 

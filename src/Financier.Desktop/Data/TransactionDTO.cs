@@ -28,7 +28,7 @@ namespace Financier.Desktop.Data
 
         public TransactionDto() { }
 
-        public TransactionDto(FinancierTransactionDTO x)
+        public TransactionDto(FinancierTransactionDto x)
         {
             Id = 0;
             FromAmount = x.FromAmount;
