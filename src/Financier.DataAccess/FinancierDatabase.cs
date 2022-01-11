@@ -149,10 +149,10 @@ namespace Financier.DataAccess
 
         public async Task AddTransactionsAsync(IEnumerable<Transaction> transactions)
         {
-                using var uow = CreateUnitOfWork();
-                await uow.GetRepository<Transaction>().AddRangeAsync(transactions);
+            using var uow = CreateUnitOfWork();
+            await uow.GetRepository<Transaction>().AddRangeAsync(transactions);
 
-                await uow.SaveChangesAsync();
+            await uow.SaveChangesAsync();
         }
 
         public IUnitOfWork CreateUnitOfWork()
@@ -213,19 +213,19 @@ namespace Financier.DataAccess
             await uow.SaveChangesAsync();
         }
 
-protected virtual void Dispose(bool disposing)
-{
-    if (this.isDisposed)
-    {
-        return;
-    }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.isDisposed)
+            {
+                return;
+            }
 
-    if (disposing)
-    {
-        _connection.Dispose();
-    }
+            if (disposing)
+            {
+                _connection.Dispose();
+            }
 
-    this.isDisposed = true;
-}
+            this.isDisposed = true;
+        }
     }
 }
