@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class TransactionDTO : BaseDTO
+    public class TransactionDto : BaseTransactionDto
     {
         private Account account;
         private int accountId;
@@ -20,9 +20,14 @@ namespace Financier.Desktop.ViewModel.Dialog
         private long parentTransactionSplitAmount;
         private int? payeeId;
         private int? projectId;
-        private ObservableCollection<TransactionDTO> subTransactions = new ObservableCollection<TransactionDTO>();
+        private ObservableCollection<TransactionDto> subTransactions = new ObservableCollection<TransactionDto>();
         private long unSplitAmount;
 
+        public TransactionDto() { }
+        public TransactionDto(FinancierTransactionDTO x)
+        public TransactionDto(Transaction transaction, IEnumerable<Transaction> subTransactions)
+            SubTransactions = new ObservableCollection<TransactionDto>(subTransactions.Select(x => new TransactionDto(x)));
+        public TransactionDto(Transaction transaction)
         public Account Account
         {
             get => account;
@@ -191,7 +196,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return subTransactions?.Sum(x => x.fromAmount) ?? 0; }
         }
 
-        public ObservableCollection<TransactionDTO> SubTransactions
+        public ObservableCollection<TransactionDto> SubTransactions
         {
             get => subTransactions;
             set

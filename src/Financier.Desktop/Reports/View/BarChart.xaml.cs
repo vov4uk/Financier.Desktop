@@ -20,7 +20,6 @@ namespace Financier.Desktop.Reports
         {
             double maxValue = values.Select(x => x.GetAbsoluteMax()).Max();
             double coef = maxWidth / maxValue;
-            List<double> widths = new List<double>();
 
             ChartPresenter.Children.Clear();
             long totalPositive = 0;

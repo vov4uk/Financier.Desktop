@@ -6,9 +6,10 @@ namespace Financier.Desktop.ViewModel.Dialog
 {
     public class TransferDialogVM : DialogBaseVM
     {
+        private readonly string[] TrackingProperies = new string[] { nameof(TransferDto.FromAmount), nameof(TransferDto.ToAccount), nameof(TransferDto.FromAccount), };
         private DelegateCommand _clearNotesCommand;
 
-        private TransferDTO _transfer;
+        public TransferDialogVM(TransferDto transfer, List<Account> accounts)
 
         public ObservableCollection<Account> Accounts { get; set; }
 
@@ -20,7 +21,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        public TransferDTO Transfer
+        public TransferDto Transfer { get; }
         {
             get => _transfer;
             set

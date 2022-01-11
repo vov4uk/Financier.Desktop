@@ -7,7 +7,7 @@ namespace Financier.Desktop.ViewModel.Dialog
     {
         private DelegateCommand _clearTitleCommand;
 
-        private int id;
+        public EntityWithTitleVM(EntityWithTitleDto entity)
         private bool isActive;
         private string title;
 
@@ -34,7 +34,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return _clearTitleCommand ??= new DelegateCommand(() => { Title = default; }); }
         }
 
-        public int Id
+        public EntityWithTitleDto Entity { get; }
         {
             get => id;
             set

@@ -19,6 +19,7 @@ namespace Financier.DataAccess
     public class FinancierDatabase : IUnitOfWorkFactory
     {
         private readonly DbConnection _connection;
+        private bool isDisposed;
 
         public FinancierDatabase()
             : this(
@@ -31,14 +32,18 @@ namespace Financier.DataAccess
 
         private static DbConnection CreateInMemoryDatabase()
         {
-            var connection = new SqliteConnection("Filename=:memory:");
+            var connection = new SqliteConnection("Filename=:memory:"); // SqliteConnection("Filename=test.db");
 
             connection.Open();
 
             return connection;
         }
 
-        public void Dispose() => _connection.Dispose();
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         protected FinancierDatabase(DbContextOptions<FinancierDataContext> contextOptions)
         {
@@ -52,7 +57,6 @@ namespace Financier.DataAccess
         private void Seed()
         {
             using var context = new FinancierDataContext(ContextOptions);
-            //context.Database.EnsureDeleted();
             // context.Database.EnsureCreated();
 
             List<Task> createTasks = new List<Task>();
@@ -125,16 +129,13 @@ namespace Financier.DataAccess
 
                 foreach (var transaction in transactions)
                 {
-                    var parentId = transaction.parent_id;
+                    if (transaction.parent_id > 0 && transaction.is_transfer >= 0)
                     var isTransfer = transaction.is_transfer;
                     if (parentId > 0)
                     {
-                        if (isTransfer >= 0)
-                        {
-                            // we only interested in the second part of the transfer-split
-                            // which is marked with is_transfer=-1 (see v_blotter_for_account_with_splits)
-                            continue;
-                        }
+                        // we only interested in the second part of the transfer-split
+                        // which is marked with is_transfer=-1 (see v_blotter_for_account_with_splits)
+                        continue;
                     }
                     var fromAccountId = transaction.from_account_id;
                     var toAccountId = transaction.to_account_id;
@@ -162,5 +163,20 @@ namespace Financier.DataAccess
         {
             return new UnitOfWork<FinancierDataContext>(new FinancierDataContext(ContextOptions));
         }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.isDisposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _connection.Dispose();
+            }
+
+            this.isDisposed = true;
     }
 }

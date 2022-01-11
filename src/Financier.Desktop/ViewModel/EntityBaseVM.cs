@@ -18,7 +18,7 @@ namespace Financier.Desktop.ViewModel
         private DelegateCommand _editCommand;
 
         private RangeObservableCollection<T> _entities;
-
+        protected EntityBaseVM(IEnumerable<T> entities)
         public RangeObservableCollection<T> Entities
         {
             get

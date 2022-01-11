@@ -6,6 +6,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 {
     public class SubTransactionDailogVM : DialogBaseVM
     {
+        private readonly string[] TrackingProperies = new string[] { nameof(TransactionDto.FromAmount), nameof(TransactionDto.Account) };
         private DelegateCommand _changeFromAmountSignCommand;
 
         private DelegateCommand _clearOriginalFromAmountCommand;
@@ -16,7 +17,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private DelegateCommand _clearProjectCommand;
 
-        private DelegateCommand _clearNotesCommand;
+            TransactionDto transaction,
 
         private TransactionDTO transaction;
 
@@ -87,6 +88,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return _clearProjectCommand ??= new DelegateCommand(() => { Transaction.ProjectId = default; }); }
         }
 
+        public TransactionDto Transaction { get; }
         protected override bool CanSaveCommandExecute()
         {
             if (Transaction.IsSplitCategory) return Transaction.UnsplitAmount == 0;

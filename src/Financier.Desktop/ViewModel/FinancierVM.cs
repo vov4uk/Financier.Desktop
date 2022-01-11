@@ -24,19 +24,21 @@ namespace Financier.Desktop.ViewModel
     public class FinancierVM : BindableBase
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
         private readonly List<Entity> keyLessEntities = new();
         private DelegateCommand<Type> _menuNavigateCommand;
 
         private ReadOnlyCollection<BindableBase> _pages;
         private AccountsVM accountsVm;
-        private BlotterVM blotter;
-        private LocationsVM locations;
+        private readonly IBackupWriter backupWriter;
+        private BlotterVM blotterVm;
+        private readonly IEntityReader entityReader;
+        private LocationsVM locationsVm;
         private BindableBase currentPage;
         private FinancierDatabase db;
         private string openBackupPath;
-
-        private string saveBackupPath;
-        private ProjectsVM projects;
+        private PayeesVM payeesVm;
+        private ProjectsVM projectsVm;
         private PayeesVM payees;
 
         public FinancierVM()
@@ -46,8 +48,8 @@ namespace Financier.Desktop.ViewModel
 
         public BlotterVM Blotter
         {
-            get => blotter;
-            set => SetProperty(ref blotter, value);
+            get => blotterVm;
+            private set => SetProperty(ref blotterVm, value);
         }
 
         public LocationsVM Locations
@@ -92,6 +94,8 @@ namespace Financier.Desktop.ViewModel
 
         public DelegateCommand<Type> MenuNavigateCommand
         {
+            get => locationsVm;
+            private set => SetProperty(ref locationsVm, value);
             get
             {
                 return _menuNavigateCommand ??= new DelegateCommand<Type>(NavigateToType);
@@ -107,14 +111,14 @@ namespace Financier.Desktop.ViewModel
 
         public string SaveBackupPath
         {
-            get => saveBackupPath;
-            set => SetProperty(ref saveBackupPath, value);
+            get => payeesVm;
+            private set => SetProperty(ref payeesVm, value);
         }
 
         public async Task ImportMonoTransactions(List<Transaction> transactions)
         {
-            await db.ImportMonoTransactions(transactions);
-
+            get => projectsVm;
+            private set => SetProperty(ref projectsVm, value);
             foreach (var accId in transactions
                 .Where(x => x.ToAccountId > 0)
                 .Select(x => x.ToAccountId)
@@ -296,7 +300,7 @@ namespace Financier.Desktop.ViewModel
         private TransactionDTO ConvertTransaction(Transaction transaction)
         {
             return new()
-            {
+
                 Id = transaction.Id,
                 AccountId = transaction.FromAccountId,
                 CategoryId = transaction.CategoryId,
@@ -380,13 +384,13 @@ namespace Financier.Desktop.ViewModel
             Projects.EditRaised += Projects_EditRaised;
             Projects.DeleteRaised += Projects_DeleteRaised;
 
+
             _pages = new List<BindableBase>
                 {
                     accountsVm,
-                    Blotter,
+                    return await GetOrCreatePage<Account, AccountsVM>(
                     new BudgetsVM(),
                     new CategoriesVM(),
-                    new CurrenciesVM(),
                     new ExchangeRatesVM(),
                     Locations,
                     Payees,
@@ -509,12 +513,13 @@ namespace Financier.Desktop.ViewModel
                 if (e > 0)
                 {
                     Logger.Info($"Edit Transaction {e}");
-                    var transactions = await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == e || x.Id == e, o => o.OriginalCurrency, c => c.Category);
+            EntityWithTitleVM context = new EntityWithTitleVM(new EntityWithTitleDto(selectedEntity));
                     transaction = transactions.First(x => x.Id == e);
                     var transactionVm = ConvertTransaction(transaction);
                     if (transactions.Any(x => x.ParentId == e))
+            var updatedItem = result as EntityWithTitleDto;
+            if (updatedItem != null)
                     {
-                        IEnumerable<TransactionDTO> subTransactions = transactions.Where(x => x.ParentId == e).Select(ConvertTransaction);
                         transactionVm.SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions);
                     }
                     context.Transaction = transactionVm;
@@ -522,7 +527,7 @@ namespace Financier.Desktop.ViewModel
                 else
                 {
                     Logger.Info("Create Transaction");
-                    transaction = new Transaction { DateTime = DateTimeConverter.ConvertBack(DateTime.Now), Id = 0 };
+            LocationDialogVM locationVm = new LocationDialogVM(new LocationDto(selectedValue));
                     context.Transaction = ConvertTransaction(transaction);
                 }
 
@@ -540,9 +545,9 @@ namespace Financier.Desktop.ViewModel
                 context.Projects = new ObservableCollection<Project>(projects);
             }
 
-            var dialog = new Window
+            var updatedItem = result as LocationDto;
+            if (updatedItem != null)
             {
-                Content = new TransactionControl { DataContext = context },
                 ResizeMode = ResizeMode.NoResize,
                 Height = 640,
                 Width = 340,
@@ -591,8 +596,9 @@ namespace Financier.Desktop.ViewModel
                             await trRepo.UpdateAsync(entity);
                         }
                         else
-                        {
-                            await trRepo.AddAsync(entity);
+                var outputTransactions = output as List<Transaction>;
+                if (outputTransactions != null)
+                {
                         }
                     }
                     await uow.SaveChangesAsync();
@@ -601,20 +607,21 @@ namespace Financier.Desktop.ViewModel
                 {
                     Logger.Error(ex);
                 }
+            var transactionDto = new TransactionDto(transaction, subTransactions);
 
                 await RefreshBlotterTransactions();
             };
             dialog.ShowDialog();
         }
 
-        private async Task OpenTransferDialog(int e)
+            var resultVm = result as TransactionDto;
+            if (resultVm != null)
         {
-            TransferDialogVM context = new TransferDialogVM();
             Transaction transaction;
 
             using (var uow = db.CreateUnitOfWork())
             {
-                if (e != 0)
+                    // TODO : Add Unit Test the code below
                 {
                     Logger.Info($"Edit transfer {e}");
                     transaction = await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == e, o => o.OriginalCurrency, c => c.Category);
@@ -659,13 +666,13 @@ namespace Financier.Desktop.ViewModel
         {
             using var uow = db.CreateUnitOfWork();
             var allTransactions = await uow.GetRepository<BlotterTransactions>().GetAllAsync(x => x.from_account_currency, x => x.to_account_currency);
-            AddEntities(allTransactions.OrderByDescending(x => x.datetime).ToList(), null, true);
+            TransferDialogVM dialogVm = new TransferDialogVM(new TransferDto(transfer), accounts);
         }
 
-        private async Task RefreshEntities<T>()
-            where T: Entity, IIdentity
+            var output = result as TransferDto;
+            if (output != null)
         {
-            using var uow = db.CreateUnitOfWork();
+                MapperHelper.MapTransfer(output, transfer);
             var locations = await uow.GetRepository<T>().GetAllAsync();
             AddEntities(locations.Where(x => x.Id > 0).OrderBy(x => x.Id).ToList(), null, true);
         }
@@ -774,6 +781,7 @@ namespace Financier.Desktop.ViewModel
         {
             EntityWithTitleVM context;
             Payee selectedValue;
+            blotterVm.Entities = new ObservableCollection<BlotterTransactions>(allTransactions.OrderByDescending(x => x.datetime));
 
             using (var uow = db.CreateUnitOfWork())
             {

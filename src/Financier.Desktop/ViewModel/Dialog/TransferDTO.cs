@@ -3,7 +3,7 @@ using System;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class TransferDTO : BaseDTO
+    public class TransferDto : BaseTransactionDto
     {
         private Account fromAccount;
         private int fromAccountId;
@@ -12,6 +12,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private int toAccountId;
         private long toAmount;
 
+        public TransferDto(Transaction transaction)
         public Account FromAccount
         {
             get => fromAccount;

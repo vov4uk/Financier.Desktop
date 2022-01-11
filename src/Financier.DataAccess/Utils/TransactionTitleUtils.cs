@@ -19,11 +19,11 @@ namespace Financier.DataAccess.Utils
         private static string GenerateTransactionTitleForRegular(int? categoryId, string payee, string note,
             string location, string category, int? toAccount)
         {
-            StringBuilder sb = new StringBuilder();
-            var secondPart = JoinAdditionalFields(sb, payee, note, location);
+            var secondPart = JoinAdditionalFields(payee, note, location);
             if (!string.IsNullOrEmpty(category))
             {
-                var cat = categoryId > 0 ? category : toAccount > 0 ? "Transfer" : "<NO CATEGORY>";
+                StringBuilder sb = new StringBuilder();
+                var cat = categoryId > 0 ? category : NoCategory(toAccount);
                 sb.Append(cat);
                 if (!string.IsNullOrEmpty(secondPart))
                 {
@@ -33,17 +33,22 @@ namespace Financier.DataAccess.Utils
                 return sb.ToString();
             }
             return secondPart;
+
+            static string NoCategory(int? toAccount)
+            {
+                return toAccount > 0 ? "Transfer" : "<NO CATEGORY>";
+            }
         }
 
-        private static string JoinAdditionalFields(StringBuilder sb, string payee, string note, string location)
+        private static string JoinAdditionalFields(string payee, string note, string location)
         {
-            sb.Clear();
+            StringBuilder sb = new StringBuilder();
+
             Append(sb, payee);
             Append(sb, location);
             Append(sb, note);
-            var secondPart = sb.ToString();
-            sb.Clear();
-            return secondPart;
+
+            return sb.ToString();
         }
 
         private static string GenerateTransactionTitleForSplit(string payee, string note, string location)

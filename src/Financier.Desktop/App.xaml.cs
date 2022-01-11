@@ -37,7 +37,7 @@ namespace Financier.Desktop
             };
         }
 
-        private void LogUnhandledException(Exception exception)
+        private static void LogUnhandledException(Exception exception)
         {
             MessageBox.Show(exception.Message);
             _logger.Error(exception);

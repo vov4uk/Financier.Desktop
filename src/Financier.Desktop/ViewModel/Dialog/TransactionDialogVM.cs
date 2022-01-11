@@ -19,11 +19,11 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private DelegateCommand _clearPayeeCommand;
 
-        private DelegateCommand<TransactionDTO> _deleteSubTransactionCommand;
+        private DelegateCommand<TransactionDto> _deleteSubTransactionCommand;
 
-        private DelegateCommand<TransactionDTO> _openSubTransactionDialogCommand;
+        private DelegateCommand<TransactionDto> _openSubTransactionDialogCommand;
 
-        private DelegateCommand _openRecipesDialogCommand;
+            TransactionDto transaction,
 
         public ObservableCollection<Account> Accounts { get; set; }
 
@@ -39,7 +39,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             {
                 return _addSubTransactionCommand ??= new DelegateCommand(() =>
                 {
-                    var transaction = new TransactionDTO
+                    ShowSubTransactionDialog(new TransactionDto(), true);
                     {
                         FromAmount = Transaction.UnsplitAmount,
                         IsAmountNegative = Transaction.UnsplitAmount < 0
@@ -59,11 +59,11 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return _clearPayeeCommand ??= new DelegateCommand(() => { Transaction.PayeeId = default; }); }
         }
 
-        public DelegateCommand<TransactionDTO> DeleteSubTransactionCommand
+        public DelegateCommand<TransactionDto> DeleteSubTransactionCommand
         {
             get
             {
-                return _deleteSubTransactionCommand ??= new DelegateCommand<TransactionDTO>(tr =>
+                return _deleteSubTransactionCommand ??= new DelegateCommand<TransactionDto>(tr =>
                 {
                     Transaction.SubTransactions.Remove(tr);
                     Transaction.RecalculateUnSplitAmount();
@@ -71,12 +71,12 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        public DelegateCommand<TransactionDTO> OpenSubTransactionDialogCommand
+        public DelegateCommand<TransactionDto> EditSubTransactionCommand
         {
             get
             {
                 return _openSubTransactionDialogCommand ??=
-                    new DelegateCommand<TransactionDTO>(tr => ShowSubTransactionDialog(tr, false));
+                    new DelegateCommand<TransactionDto>(tr => ShowSubTransactionDialog(tr, false));
             }
         }
 
@@ -98,7 +98,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             tr.ProjectId = modifiedCopy.ProjectId;
         }
 
-        private void ShowSubTransactionDialog(TransactionDTO tr, bool isNewItem)
+        private void CopySubTransaction(TransactionDto original, TransactionDto modifiedCopy)
         {
             var copy = new SubTransactionDailogVM() { Transaction = new TransactionDTO() };
             CopySubTransaction(copy.Transaction, tr);
@@ -118,8 +118,9 @@ namespace Financier.Desktop.ViewModel.Dialog
                 ShowInTaskbar = Debugger.IsAttached
             };
 
-            copy.RequestCancel += (_, _) => { dialog.Close(); };
+            if (output is List<TransactionDto>)
             copy.RequestSave += (sender, _) =>
+                var outputTransactions = output as List<TransactionDto>;
             {
                 dialog.Close();
                 var modifiedCopy = sender as SubTransactionDailogVM;
@@ -133,10 +134,10 @@ namespace Financier.Desktop.ViewModel.Dialog
             dialog.ShowDialog();
         }
 
-        private void ShowRecepiesDialog()
+        private void ShowSubTransactionDialog(TransactionDto original, bool isNewItem)
         {
             var dialog = new WizardWindow();
-
+            var workingCopy = new TransactionDto { IsSubTransaction = true };
             var viewModel = new RecipesVM(Categories.ToList(), Projects.ToList()) { TotalAmount = Transaction.FromAmount / 100.0 };
             viewModel.CreatePages();
             viewModel.RequestClose += (o, args) =>
@@ -146,8 +147,9 @@ namespace Financier.Desktop.ViewModel.Dialog
                 {
                     var vm = o as RecipesVM;
                     foreach (var item in vm.TransactionsToImport)
+            if (dialogResult is TransactionDto)
                     {
-                        item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
+                var modifiedCopy = dialogResult as TransactionDto;
                         Transaction.SubTransactions.Add(item);
                     }
                     Transaction.RecalculateUnSplitAmount();

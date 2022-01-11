@@ -3,7 +3,7 @@ using System;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class BaseDTO : BindableBase
+    public class BaseTransactionDto : BindableBase
     {
         private DateTime date;
         private int id;
