@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Financier.Desktop.Data
 {
-    public class TransactionDTO : BaseTransactionDTO
+    public class TransactionDto : BaseTransactionDto
     {
         private Account account;
         private int accountId;
@@ -23,12 +23,12 @@ namespace Financier.Desktop.Data
         private long parentTransactionSplitAmount;
         private int? payeeId;
         private int? projectId;
-        private ObservableCollection<TransactionDTO> subTransactions = new ObservableCollection<TransactionDTO>();
+        private ObservableCollection<TransactionDto> subTransactions = new ObservableCollection<TransactionDto>();
         private long unSplitAmount;
 
-        public TransactionDTO() { }
+        public TransactionDto() { }
 
-        public TransactionDTO(FinancierTransactionDTO x)
+        public TransactionDto(FinancierTransactionDto x)
         {
             Id = 0;
             FromAmount = x.FromAmount;
@@ -42,13 +42,13 @@ namespace Financier.Desktop.Data
             Category = default;
         }
 
-        public TransactionDTO(Transaction transaction, IEnumerable<Transaction> subTransactions)
+        public TransactionDto(Transaction transaction, IEnumerable<Transaction> subTransactions)
             : this(transaction)
         {
-            SubTransactions = new ObservableCollection<TransactionDTO>(subTransactions.Select(x => new TransactionDTO(x)));
+            SubTransactions = new ObservableCollection<TransactionDto>(subTransactions.Select(x => new TransactionDto(x)));
         }
 
-        public TransactionDTO(Transaction transaction)
+        public TransactionDto(Transaction transaction)
         {
             Id = transaction.Id;
             AccountId = transaction.FromAccountId;
@@ -235,7 +235,7 @@ namespace Financier.Desktop.Data
             get { return subTransactions?.Sum(x => x.fromAmount) ?? 0; }
         }
 
-        public ObservableCollection<TransactionDTO> SubTransactions
+        public ObservableCollection<TransactionDto> SubTransactions
         {
             get => subTransactions;
             private set

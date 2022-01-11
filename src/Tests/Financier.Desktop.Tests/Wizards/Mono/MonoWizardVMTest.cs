@@ -53,7 +53,7 @@
                 categories,
                 projects);
 
-            Assert.Equal(46, ((Page2VM)vm.Pages[1]).MonoTransactions.Count);
+            Assert.Equal(46, ((Page2VM)vm.Pages[1]).GetMonoTransactions().Count);
             Assert.NotNull(vm.CurrentPage);
             Assert.Equal(3, vm.Pages.Count);
         }
@@ -77,7 +77,7 @@
                 categories,
                 projects);
 
-            Assert.Single(((Page2VM)vm.Pages[1]).MonoTransactions);
+            Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
             Assert.NotNull(vm.CurrentPage);
             Assert.Equal(3, vm.Pages.Count);
         }

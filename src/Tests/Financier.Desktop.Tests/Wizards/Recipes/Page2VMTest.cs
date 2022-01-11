@@ -20,8 +20,8 @@
             Assert.Equal(totalAmount, vm.TotalAmount);
             Assert.Equal("Transactions", vm.Title);
             Assert.True(vm.IsValid());
-            vm.Categories.SequenceEqual(categories);
-            vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            Assert.True(vm.Categories.SequenceEqual(categories));
+            Assert.True(vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id)));
         }
 
         [Theory]
@@ -30,7 +30,7 @@
         {
             var vm = new Page2VM(categories, projects, -100.0);
 
-            var transactions = new List<FinancierTransactionDTO>
+            var transactions = new List<FinancierTransactionDto>
             {
             new () { FromAmount = -5000, Note = Guid.NewGuid().ToString(), Order = 1 },
             new () { FromAmount = -2500, Note = Guid.NewGuid().ToString(), Order = 2 },
@@ -42,7 +42,7 @@
 
             Assert.Equal(-100.0, vm.TotalAmount);
             Assert.Equal(-100.0, vm.CalculatedAmount);
-            vm.FinancierTransactions.SequenceEqual(transactions);
+            Assert.True(vm.FinancierTransactions.SequenceEqual(transactions));
         }
 
         [Theory]
@@ -77,8 +77,8 @@
             var vm = new Page2VM(categories, projects, -100);
 
             Assert.Equal(0, vm.CalculatedAmount);
-            FinancierTransactionDTO toDelete = new () { FromAmount = -10000, Order = 2 };
-            FinancierTransactionDTO lastOne = new () { FromAmount = -10000, Order = 3 };
+            FinancierTransactionDto toDelete = new () { FromAmount = -10000, Order = 2 };
+            FinancierTransactionDto lastOne = new () { FromAmount = -10000, Order = 3 };
 
             vm.FinancierTransactions.Add(new () { FromAmount = -10000, Order = 1 });
             vm.FinancierTransactions.Add(toDelete);

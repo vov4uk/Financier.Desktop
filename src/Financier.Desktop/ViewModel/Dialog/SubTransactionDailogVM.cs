@@ -8,7 +8,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 {
     public class SubTransactionDailogVM : DialogBaseVM
     {
-        private readonly string[] TrackingProperies = new string[] { nameof(TransactionDTO.FromAmount), nameof(TransactionDTO.Account) };
+        private readonly string[] TrackingProperies = new string[] { nameof(TransactionDto.FromAmount), nameof(TransactionDto.Account) };
 
         private DelegateCommand _changeFromAmountSignCommand;
         private DelegateCommand<int?> _clearCategoryCommand;
@@ -17,7 +17,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private DelegateCommand _clearOriginalFromAmountCommand;
         private DelegateCommand _clearProjectCommand;
         public SubTransactionDailogVM(
-            TransactionDTO transaction,
+            TransactionDto transaction,
             List<Category> categories,
             List<Project> projects)
         {
@@ -68,7 +68,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         public List<Project> Projects { get; }
 
-        public TransactionDTO Transaction { get; }
+        public TransactionDto Transaction { get; }
 
         public override object OnRequestSave()
         {

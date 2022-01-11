@@ -18,6 +18,7 @@ namespace Financier.DataAccess
     public class FinancierDatabase : IFinancierDatabase
     {
         private readonly DbConnection _connection;
+        private bool isDisposed;
 
         internal FinancierDatabase()
             : this(
@@ -31,29 +32,28 @@ namespace Financier.DataAccess
         protected FinancierDatabase(DbContextOptions<FinancierDataContext> contextOptions)
         {
             ContextOptions = contextOptions;
-
-            //Seed();
         }
 
         private static DbConnection CreateInMemoryDatabase()
         {
-            var connection = new SqliteConnection("Filename=:memory:");
-            //var connection = new SqliteConnection("Filename=test.db");
+            var connection = new SqliteConnection("Filename=:memory:"); // "Filename=test.db"
 
             connection.Open();
 
             return connection;
         }
 
-        public void Dispose() => _connection.Dispose();
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         protected DbContextOptions<FinancierDataContext> ContextOptions { get; }
 
         internal async Task Seed()
         {
             using var context = new FinancierDataContext(ContextOptions);
-            //context.Database.EnsureDeleted();
-            //context.Database.EnsureCreated();
 
             ResourceSet create = SQL_create_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
             foreach (DictionaryEntry entry in create)
@@ -120,14 +120,11 @@ namespace Financier.DataAccess
 
                 foreach (var transaction in transactions)
                 {
-                    if (transaction.parent_id > 0)
+                    if (transaction.parent_id > 0 && transaction.is_transfer >= 0)
                     {
-                        if (transaction.is_transfer >= 0)
-                        {
-                            // we only interested in the second part of the transfer-split
-                            // which is marked with is_transfer=-1 (see v_blotter_for_account_with_splits)
-                            continue;
-                        }
+                        // we only interested in the second part of the transfer-split
+                        // which is marked with is_transfer=-1 (see v_blotter_for_account_with_splits)
+                        continue;
                     }
                     var toAccountId = transaction.to_account_id;
                     if (toAccountId > 0 && toAccountId == transaction.from_account_id)
@@ -150,10 +147,10 @@ namespace Financier.DataAccess
 
         public async Task AddTransactionsAsync(IEnumerable<Transaction> transactions)
         {
-                using var uow = CreateUnitOfWork();
-                await uow.GetRepository<Transaction>().AddRangeAsync(transactions);
+            using var uow = CreateUnitOfWork();
+            await uow.GetRepository<Transaction>().AddRangeAsync(transactions);
 
-                await uow.SaveChangesAsync();
+            await uow.SaveChangesAsync();
         }
 
         public IUnitOfWork CreateUnitOfWork()
@@ -212,6 +209,21 @@ namespace Financier.DataAccess
                 }
             }
             await uow.SaveChangesAsync();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.isDisposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _connection.Dispose();
+            }
+
+            this.isDisposed = true;
         }
     }
 }

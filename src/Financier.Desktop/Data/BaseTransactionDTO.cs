@@ -3,7 +3,7 @@ using System;
 
 namespace Financier.Desktop.Data
 {
-    public class BaseTransactionDTO : BindableBase
+    public class BaseTransactionDto : BindableBase
     {
         private DateTime date;
         private DateTime time;

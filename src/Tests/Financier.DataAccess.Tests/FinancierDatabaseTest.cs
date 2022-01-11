@@ -42,7 +42,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            await this.PredefineData(db);
+            await PredefineData(db);
             List<Transaction> transactions = new List<Transaction>()
             {
                 new Transaction()
@@ -62,7 +62,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            var initData = await this.PredefineData(db);
+            var initData = await PredefineData(db);
 
             List<Transaction> transactions = new List<Transaction>()
             {
@@ -114,7 +114,7 @@
             var db = new FinancierDatabase();
             await db.Seed();
 
-            var initData = await this.PredefineData(db);
+            var initData = await PredefineData(db);
 
             List<Transaction> transactions = new List<Transaction>()
             {
@@ -252,7 +252,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            await this.PredefineData(db);
+            await PredefineData(db);
 
             var account = await db.GetOrCreateAsync<Account>(1);
             var currency = await db.GetOrCreateAsync<Currency>(1);
@@ -329,7 +329,7 @@
 
             var transactions = (await db.GetSubTransactionsAsync(1)).ToArray();
 
-            Assert.Equal(2, transactions.Count());
+            Assert.Equal(2, transactions.Length);
             Assert.NotNull(transactions[0].Category);
             Assert.NotNull(transactions[0].OriginalCurrency);
             Assert.Equal(2, transactions[0].Id);
@@ -406,7 +406,7 @@
         {
             var db = new FinancierDatabase();
             await db.Seed();
-            var initData = await this.PredefineData(db);
+            var initData = await PredefineData(db);
 
             initData.currency.Name = "UAH";
             await db.InsertOrUpdateAsync(new[] { initData.currency });
@@ -428,7 +428,7 @@
             Assert.True(uow is UnitOfWork<FinancierDataContext>);
         }
 
-        private async Task<(Account account, Currency currency, Category category)> PredefineData(FinancierDatabase db)
+        private static async Task<(Account account, Currency currency, Category category)> PredefineData(FinancierDatabase db)
         {
             using (var uow = db.CreateUnitOfWork())
             {

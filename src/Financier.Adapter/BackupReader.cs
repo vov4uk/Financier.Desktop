@@ -10,10 +10,11 @@ namespace Financier.Adapter
     {
         private readonly FileStream _file;
         private readonly GZipStream _zipStream;
+        private readonly BackupVersion backupVersion = new BackupVersion();
         private TextReader _reader;
+        private bool isDisposed;
 
-        public BackupVersion BackupVersion { get; } = new BackupVersion();
-
+        public BackupVersion BackupVersion => backupVersion;
         public BackupReader(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentException("File name cannot be null or empty.", "fileName");
@@ -64,9 +65,25 @@ namespace Financier.Adapter
 
         public void Dispose()
         {
-            _reader?.Dispose();
-            _zipStream?.Dispose();
-            _file?.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.isDisposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _reader?.Dispose();
+                _zipStream?.Dispose();
+                _file?.Dispose();
+            }
+
+            this.isDisposed = true;
         }
     }
 }

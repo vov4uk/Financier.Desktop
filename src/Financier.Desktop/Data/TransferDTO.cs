@@ -4,7 +4,7 @@ using System;
 
 namespace Financier.Desktop.Data
 {
-    public class TransferDTO : BaseTransactionDTO
+    public class TransferDto : BaseTransactionDto
     {
         private Account fromAccount;
         private int fromAccountId;
@@ -13,7 +13,7 @@ namespace Financier.Desktop.Data
         private int toAccountId;
         private long toAmount;
 
-        public TransferDTO(Transaction transaction)
+        public TransferDto(Transaction transaction)
         {
             Id = transaction.Id;
             FromAccountId = transaction.FromAccountId;

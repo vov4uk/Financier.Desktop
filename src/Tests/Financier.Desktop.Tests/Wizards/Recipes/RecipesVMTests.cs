@@ -13,13 +13,13 @@
         public void MoveNextCommand_Executed2Times_ReceiveParsedTransactions()
         {
             double total = -100.0;
-            List<TransactionDTO> actual = default;
-            List<TransactionDTO> expected = new List<TransactionDTO>
+            List<TransactionDto> actual = default;
+            List<TransactionDto> expected = new List<TransactionDto>
             {
-                new TransactionDTO { FromAmount = -5000, IsAmountNegative = true,  Note = "Beer Baltyka 0" },
-                new TransactionDTO { FromAmount = -2500, IsAmountNegative = true,  Note = "Milk Molokia 2.5%" },
-                new TransactionDTO { FromAmount = -2550, IsAmountNegative = true,  Note = string.Empty },
-                new TransactionDTO { FromAmount = 50,    IsAmountNegative = false, Note = "Discount" },
+                new TransactionDto { FromAmount = -5000, IsAmountNegative = true,  Note = "Beer Baltyka 0" },
+                new TransactionDto { FromAmount = -2500, IsAmountNegative = true,  Note = "Milk Molokia 2.5%" },
+                new TransactionDto { FromAmount = -2550, IsAmountNegative = true,  Note = string.Empty },
+                new TransactionDto { FromAmount = 50,    IsAmountNegative = false, Note = "Discount" },
             };
             foreach (var item in expected)
             {
@@ -35,7 +35,7 @@
             {
                 if (args)
                 {
-                    actual = o as List<TransactionDTO>;
+                    actual = o as List<TransactionDto>;
                 }
             };
 
@@ -62,15 +62,15 @@ Discount -0.5 A";
         [Fact]
         public void CancelCommand_Execute_TransactionsEmpty()
         {
-            List<TransactionDTO> output = new ();
+            List<TransactionDto> output = new ();
             double total = -100.0;
-            List<TransactionDTO> actual = default;
+            List<TransactionDto> actual = default;
             bool save = true;
             var vm = new RecipesVM(total, new List<Category>(), new List<Project>());
             vm.RequestClose += (o, args) =>
             {
                 save = args;
-                output = o as List<TransactionDTO>;
+                output = o as List<TransactionDto>;
             };
 
             var page1 = vm.CurrentPage as Page1VM;
@@ -104,9 +104,9 @@ Milk Molokia 2.5% 25.0 A
             Assert.Equal(total, page2.TotalAmount);
         }
 
-        private class Comparer : IEqualityComparer<TransactionDTO>
+        private class Comparer : IEqualityComparer<TransactionDto>
         {
-            public bool Equals(TransactionDTO x, TransactionDTO y)
+            public bool Equals(TransactionDto x, TransactionDto y)
             {
                 var res = x.Category == y.Category
                    && x.CategoryId == y.CategoryId
@@ -124,7 +124,7 @@ Milk Molokia 2.5% 25.0 A
                 return res;
             }
 
-            public int GetHashCode([DisallowNull] TransactionDTO obj)
+            public int GetHashCode([DisallowNull] TransactionDto obj)
             {
                 return obj.Id.GetHashCode();
             }

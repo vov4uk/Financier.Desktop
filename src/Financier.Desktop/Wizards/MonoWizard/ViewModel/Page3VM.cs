@@ -11,12 +11,12 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
     public class Page3VM : WizardPageBaseVM
     {
         private readonly List<Account> originalAccounts;
-        private DelegateCommand<FinancierTransactionDTO> _deleteCommand;
+        private DelegateCommand<FinancierTransactionDto> _deleteCommand;
         private Account _monoAccount;
         private List<Account> accounts;
         private List<Category> categories;
         private List<Currency> currencies;
-        private ObservableCollection<FinancierTransactionDTO> financierTransactions;
+        private ObservableCollection<FinancierTransactionDto> financierTransactions;
         private List<Location> locations;
         private List<Project> projects;
         public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, List<Project> projects)
@@ -60,15 +60,15 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public DelegateCommand<FinancierTransactionDTO> DeleteCommand
+        public DelegateCommand<FinancierTransactionDto> DeleteCommand
         {
             get
             {
-                return _deleteCommand ??= new DelegateCommand<FinancierTransactionDTO>(tr => { financierTransactions.Remove(tr); });
+                return _deleteCommand ??= new DelegateCommand<FinancierTransactionDto>(tr => { financierTransactions.Remove(tr); });
             }
         }
 
-        public ObservableCollection<FinancierTransactionDTO> FinancierTransactions
+        public ObservableCollection<FinancierTransactionDto> FinancierTransactions
         {
             get => financierTransactions;
             private set
@@ -121,13 +121,13 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
         public void SetMonoTransactions(List<MonoTransaction> transactions)
         {
-            List<FinancierTransactionDTO> transToAdd = new List<FinancierTransactionDTO>();
+            List<FinancierTransactionDto> transToAdd = new List<FinancierTransactionDto>();
             foreach (var x in transactions)
             {
                 var locationId = locations.FirstOrDefault(l => !string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
                                                             || !string.IsNullOrEmpty(l.Address) && l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var categoryId = categories.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
-                var newTr = new FinancierTransactionDTO
+                var newTr = new FinancierTransactionDto
                 {
                     MonoAccountId = MonoAccount.Id,
                     FromAmount = Convert.ToInt64(x.CardCurrencyAmount * 100.0),
@@ -143,7 +143,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 transToAdd.Add(newTr);
             }
 
-            FinancierTransactions = new ObservableCollection<FinancierTransactionDTO>(transToAdd);
+            FinancierTransactions = new ObservableCollection<FinancierTransactionDto>(transToAdd);
         }
     }
 }

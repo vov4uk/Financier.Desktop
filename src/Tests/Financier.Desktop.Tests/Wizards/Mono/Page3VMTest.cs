@@ -28,9 +28,9 @@
             Assert.True(vm.Currencies.All(x => currencies.Contains(x)));
             Assert.True(vm.Categories.All(x => categories.Contains(x)));
 
-            vm.Accounts.SequenceEqual(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
-            vm.Locations.SequenceEqual(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
-            vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            Assert.True(vm.Accounts.SequenceEqual(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder)));
+            Assert.True(vm.Locations.SequenceEqual(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id)));
+            Assert.True(vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id)));
             Assert.Equal("Please select categories", vm.Title);
             Assert.True(vm.IsValid());
         }
@@ -51,7 +51,7 @@
             vm.MonoAccount = monoAccount;
 
             accounts.Remove(monoAccount);
-            vm.Accounts.SequenceEqual(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
+            Assert.True(vm.Accounts.SequenceEqual(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder)));
         }
 
         [Theory]
@@ -129,9 +129,9 @@
                 },
             };
             var monoAccount = accounts.FirstOrDefault();
-            var expected = new ObservableCollection<FinancierTransactionDTO>()
+            var expected = new ObservableCollection<FinancierTransactionDto>()
             {
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,
@@ -144,7 +144,7 @@
                     Note = null,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 04)).ToUnixTimeMilliseconds(),
                 },
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,
@@ -157,7 +157,7 @@
                     Note = null,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 03)).ToUnixTimeMilliseconds(),
                 },
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,
@@ -170,7 +170,7 @@
                     Note = null,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 02)).ToUnixTimeMilliseconds(),
                 },
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,
@@ -183,7 +183,7 @@
                     Note = "Unknown place",
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 01)).ToUnixTimeMilliseconds(),
                 },
-                new FinancierTransactionDTO
+                new FinancierTransactionDto
                 {
                     MonoAccountId = monoAccount.Id,
                     FromAmount = 10000,

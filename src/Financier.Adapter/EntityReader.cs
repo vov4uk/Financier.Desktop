@@ -14,7 +14,6 @@ namespace Financier.Adapter
         public (IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder) ParseBackupFile(string fileName)
         {
             Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
-            BackupVersion BackupVersion = new BackupVersion();
 
             using var reader = new BackupReader(fileName);
             List<Entity> entities = new List<Entity>();
@@ -24,14 +23,19 @@ namespace Financier.Adapter
             EntityInfo entityInfo = null;
             string prevField = string.Empty;
             string entityType = string.Empty;
-            foreach (Line line in reader.GetLines().Select(s => new Line(s)))
+
+            var lines = reader.GetLines().Select(s => new Line(s));
+            foreach (Line line in lines)
             {
                 if (line.Key == Entity.ENTITY)
                 {
                     prevField = string.Empty;
                     entityType = line.Value;
                     if (!string.IsNullOrEmpty(line.Value) && entityTypes.TryGetValue(line.Value, out entityInfo))
+                    {
                         entity = (Entity)Activator.CreateInstance(entityInfo.EntityType);
+                    }
+
                     if (!EntityColumnsOrder.ContainsKey(entityType))
                     {
                         EntityColumnsOrder.Add(entityType, new List<string>());
@@ -45,7 +49,7 @@ namespace Financier.Adapter
                 }
                 else if (entity != null && line.Value != null)
                 {
-                    if (entityInfo != null && entityInfo.Properties.TryGetValue(line.Key, out var property))
+                    if (entityInfo.Properties.TryGetValue(line.Key, out var property))
                     {
                         property.SetValue(entity, line.Value);
                     }
@@ -58,8 +62,6 @@ namespace Financier.Adapter
                     }
                     prevField = line.Key;
                 }
-
-                BackupVersion = reader.BackupVersion;
             }
 
             return (entities, reader.BackupVersion, EntityColumnsOrder);

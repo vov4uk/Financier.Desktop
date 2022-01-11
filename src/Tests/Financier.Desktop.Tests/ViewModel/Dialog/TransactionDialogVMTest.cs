@@ -25,7 +25,7 @@
         [Theory]
         [AutoMoqData]
         public void Constructor_WithParameters_CollectionsHaveValues(
-            TransactionDTO transaction,
+            TransactionDto transaction,
             List<Category> categories,
             List<Project> projects,
             List<Account> accounts,
@@ -54,8 +54,8 @@
         [Theory]
         [AutoMoqData]
         public void AddSubTransactionCommand_Execute_TransactionAdded(
-            TransactionDTO transaction,
-            TransactionDTO subTransaction,
+            TransactionDto transaction,
+            TransactionDto subTransaction,
             List<Category> categories,
             List<Project> projects,
             List<Account> accounts,
@@ -63,7 +63,7 @@
             List<Location> locations,
             List<Payee> payees)
         {
-            TransactionDTO workingCopy = default;
+            TransactionDto workingCopy = default;
             transaction.SubTransactions.Clear();
             subTransaction.FromAmount = 100;
             transaction.FromAmount = 100;
@@ -98,8 +98,8 @@
         [Theory]
         [AutoMoqData]
         public void OpenSubTransactionDialogCommand_Execute_TransactionUpdated(
-            TransactionDTO transaction,
-            TransactionDTO subTransaction,
+            TransactionDto transaction,
+            TransactionDto subTransaction,
             List<Category> categories,
             List<Project> projects,
             List<Account> accounts,
@@ -107,7 +107,7 @@
             List<Location> locations,
             List<Payee> payees)
         {
-            TransactionDTO workingCopy = default;
+            TransactionDto workingCopy = default;
             transaction.SubTransactions.Clear();
             transaction.FromAmount = 100;
             transaction.IsAmountNegative = true;
@@ -140,8 +140,8 @@
         [Theory]
         [AutoMoqData]
         public void OpenRecipesDialogCommand_Execute_TransactionsAdded(
-            TransactionDTO transaction,
-            List<TransactionDTO> outputTransactions,
+            TransactionDto transaction,
+            List<TransactionDto> outputTransactions,
             List<Category> categories,
             List<Project> projects,
             List<Account> accounts,
@@ -177,7 +177,7 @@
         [Theory]
         [AutoMoqData]
         public void ClearCommand_Execute_SetDefaultValues(
-            TransactionDTO transaction,
+            TransactionDto transaction,
             List<Category> categories,
             List<Project> projects,
             List<Account> accounts,

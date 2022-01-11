@@ -16,14 +16,26 @@ namespace Financier.DataAccess.Utils
             }
         }
 
-        private static string GenerateTransactionTitleForRegular(int? categoryId, string payee, string note,
-            string location, string category, int? toAccount)
+        private static void Append(StringBuilder sb, string s)
         {
-            StringBuilder sb = new StringBuilder();
-            var secondPart = JoinAdditionalFields(sb, payee, note, location);
+            if (!string.IsNullOrEmpty(s))
+            {
+                if (sb.Length > 0)
+                {
+                    sb.Append(": ");
+                }
+                sb.Append(s);
+            }
+        }
+
+        private static string GenerateTransactionTitleForRegular(int? categoryId, string payee, string note,
+                    string location, string category, int? toAccount)
+        {
+            var secondPart = JoinAdditionalFields(payee, note, location);
             if (!string.IsNullOrEmpty(category))
             {
-                var cat = categoryId > 0 ? category : toAccount > 0 ? "Transfer" : "<NO CATEGORY>";
+                StringBuilder sb = new StringBuilder();
+                var cat = categoryId > 0 ? category : NoCategory(toAccount);
                 sb.Append(cat);
                 if (!string.IsNullOrEmpty(secondPart))
                 {
@@ -33,17 +45,11 @@ namespace Financier.DataAccess.Utils
                 return sb.ToString();
             }
             return secondPart;
-        }
 
-        private static string JoinAdditionalFields(StringBuilder sb, string payee, string note, string location)
-        {
-            sb.Clear();
-            Append(sb, payee);
-            Append(sb, location);
-            Append(sb, note);
-            var secondPart = sb.ToString();
-            sb.Clear();
-            return secondPart;
+            static string NoCategory(int? toAccount)
+            {
+                return toAccount > 0 ? "Transfer" : "<NO CATEGORY>";
+            }
         }
 
         private static string GenerateTransactionTitleForSplit(string payee, string note, string location)
@@ -68,6 +74,16 @@ namespace Financier.DataAccess.Utils
             return "[...]";
         }
 
+        private static string JoinAdditionalFields(string payee, string note, string location)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            Append(sb, payee);
+            Append(sb, location);
+            Append(sb, note);
+
+            return sb.ToString();
+        }
         private static string JoinAdditionalFields(StringBuilder sb, string note, string location)
         {
             sb.Clear();
@@ -76,18 +92,6 @@ namespace Financier.DataAccess.Utils
             var secondPart = sb.ToString();
             sb.Clear();
             return secondPart;
-        }
-
-        private static void Append(StringBuilder sb, string s)
-        {
-            if (!string.IsNullOrEmpty(s))
-            {
-                if (sb.Length > 0)
-                {
-                    sb.Append(": ");
-                }
-                sb.Append(s);
-            }
         }
     }
 }

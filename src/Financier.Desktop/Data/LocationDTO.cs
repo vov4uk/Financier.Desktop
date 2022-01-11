@@ -2,16 +2,16 @@
 
 namespace Financier.Desktop.Data
 {
-    public class LocationDTO : EntityWithTitleDTO
+    public class LocationDto : EntityWithTitleDto
     {
         private string address;
 
-        public LocationDTO(Location location) : base(location)
+        public LocationDto(Location location) : base(location)
         {
             Address = location.Address;
         }
 
-        public LocationDTO(string title, bool isActive, string address)
+        public LocationDto(string title, bool isActive, string address)
             : base(title, isActive)
         {
             this.Address = address;
