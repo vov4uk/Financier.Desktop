@@ -14,7 +14,6 @@ namespace Financier.Adapter
         public (IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder) ParseBackupFile(string fileName)
         {
             Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
-            BackupVersion BackupVersion = new BackupVersion();
 
             using var reader = new BackupReader(fileName);
             List<Entity> entities = new List<Entity>();
@@ -49,7 +48,7 @@ namespace Financier.Adapter
                 }
                 else if (entity != null && line.Value != null)
                 {
-                    if (entityInfo != null && entityInfo.Properties.TryGetValue(line.Key, out var property))
+                    if (entityInfo.Properties.TryGetValue(line.Key, out var property))
                     {
                         property.SetValue(entity, line.Value);
                     }
