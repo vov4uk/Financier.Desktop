@@ -6,6 +6,7 @@ using Financier.Desktop.ViewModel;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Financier.Desktop.Reports.ViewModel
@@ -23,6 +24,7 @@ namespace Financier.Desktop.Reports.ViewModel
         Custom,
     }
 
+    [ExcludeFromCodeCoverage]
     public class ReportVM : EntityBaseVM<ByCategoryReport>
     {
         private DelegateCommand _refreshCommand;

@@ -1,10 +1,9 @@
-﻿using System.Windows;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 
 namespace Financier.Desktop.Wizards
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class WizardWindow : Window
     {
         public WizardWindow()
