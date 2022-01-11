@@ -32,8 +32,6 @@ namespace Financier.DataAccess
         protected FinancierDatabase(DbContextOptions<FinancierDataContext> contextOptions)
         {
             ContextOptions = contextOptions;
-
-            //Seed();
         }
 
         private static DbConnection CreateInMemoryDatabase()

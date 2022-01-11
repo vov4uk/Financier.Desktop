@@ -17,7 +17,7 @@ namespace Financier.Desktop.ViewModel
         private DelegateCommand _editCommand;
         private ObservableCollection<T> _entities;
         private T _selectedValue;
-        public EntityBaseVM(IEnumerable<T> entities)
+        protected EntityBaseVM(IEnumerable<T> entities)
         {
             _entities = new ObservableCollection<T>(entities);
         }

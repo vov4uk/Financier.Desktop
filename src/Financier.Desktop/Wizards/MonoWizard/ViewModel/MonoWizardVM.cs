@@ -13,7 +13,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private readonly List<Category> categories;
         private readonly List<Currency> currencies;
         private readonly List<Location> locations;
-        private readonly List<MonoTransaction> monoTransactions = new();
+        private readonly List<MonoTransaction> monoTransactions;
         private readonly List<Project> projects;
         public MonoWizardVM(
             IEnumerable<MonoTransaction> monoTransactions,
@@ -37,32 +37,32 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         //TODO - remove
         public Account MonoBankAccount { get; set; }
 
-        public override void AfterCurrentPageUpdated(WizardPageBaseVM currentPage)
+        public override void AfterCurrentPageUpdated(WizardPageBaseVM newValue)
         {
-            if (currentPage != null)
+            if (newValue != null)
             {
-                currentPage.IsCurrentPage = true;
+                newValue.IsCurrentPage = true;
                 Logger.Info($"Current page -> {_currentPage.GetType().FullName}");
             }
         }
 
-        public override void BeforeCurrentPageUpdated(WizardPageBaseVM currentPage, WizardPageBaseVM value)
+        public override void BeforeCurrentPageUpdated(WizardPageBaseVM old, WizardPageBaseVM newValue)
         {
-            if (currentPage != null)
-                currentPage.IsCurrentPage = false;
+            if (old != null)
+                old.IsCurrentPage = false;
 
-            if (currentPage is Page1VM page1 && value is Page2VM)
+            if (old is Page1VM page1 && newValue is Page2VM)
             {
                 var monoAccount = page1.MonoAccount;
-                ((Page2VM)value).MonoAccount = monoAccount;
+                ((Page2VM)newValue).MonoAccount = monoAccount;
                 MonoBankAccount = monoAccount;
                 Logger.Info($"MonoBankAccount -> {JsonSerializer.Serialize(monoAccount)}");
             }
 
-            if (currentPage is Page2VM page2 && value is Page3VM)
+            if (old is Page2VM page2 && newValue is Page3VM)
             {
-                ((Page3VM)value).MonoAccount = MonoBankAccount;
-                ((Page3VM)value).SetMonoTransactions(page2.GetMonoTransactions());
+                ((Page3VM)newValue).MonoAccount = MonoBankAccount;
+                ((Page3VM)newValue).SetMonoTransactions(page2.GetMonoTransactions());
                 Logger.Info($"MonoTransactions count -> {page2.GetMonoTransactions().Count}");
             }
         }

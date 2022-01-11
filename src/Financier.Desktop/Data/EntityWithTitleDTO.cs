@@ -3,18 +3,18 @@ using Prism.Mvvm;
 
 namespace Financier.Desktop.Data
 {
-    public class EntityWithTitleDTO : BindableBase
+    public class EntityWithTitleDto : BindableBase
     {
         private bool isActive;
         private string title;
 
-        public EntityWithTitleDTO(IActive proj)
+        public EntityWithTitleDto(IActive proj)
         {
             this.Title = proj.Title;
-            this.IsActive = proj.IsActive == true;
+            this.IsActive = proj.IsActive;
         }
 
-        public EntityWithTitleDTO(string title, bool isActive)
+        public EntityWithTitleDto(string title, bool isActive)
         {
             this.Title = title;
             this.IsActive = isActive;

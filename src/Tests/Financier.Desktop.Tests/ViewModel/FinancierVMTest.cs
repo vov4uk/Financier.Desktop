@@ -180,7 +180,7 @@
 
         [Theory]
         [AutoMoqData]
-        public void Locations_AddRaised_NewItemAdded(LocationDTO result)
+        public void Locations_AddRaised_NewItemAdded(LocationDto result)
         {
             var location = new Location() { Id = 0 };
             Location[] actual = null;
@@ -230,7 +230,7 @@
 
         [Theory]
         [AutoMoqData]
-        public void Projects_AddRaised_NewItemAdded(EntityWithTitleDTO result)
+        public void Projects_AddRaised_NewItemAdded(EntityWithTitleDto result)
         {
             var location = new Project() { Id = 0 };
             Project[] actual = null;
@@ -380,7 +380,7 @@
             IEnumerable<Transaction> subTransactions)
         {
             eventArgs.category_id = -1;
-            var output = new TransactionDTO(transaction, subTransactions);
+            var output = new TransactionDto(transaction, subTransactions);
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
@@ -411,7 +411,7 @@
         public void OpenTransaction_NoSubTransaction_UpdateTransaction(
             BlotterTransactions eventArgs,
             Transaction transaction,
-            TransactionDTO output)
+            TransactionDto output)
         {
             eventArgs.category_id = -1;
 
@@ -442,7 +442,7 @@
         [AutoMoqData]
         public void AddTransaction_NewItem_AddedToRepo(
             Transaction transaction,
-            TransactionDTO output)
+            TransactionDto output)
         {
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
@@ -496,7 +496,7 @@
         public void OpenTransfer_ExistingTransaction_UpdateTransaction(
             BlotterTransactions eventArgs,
             Transaction transaction,
-            TransferDTO output)
+            TransferDto output)
         {
             eventArgs.from_account_id = 1;
             eventArgs.to_account_id = 2;
@@ -529,7 +529,7 @@
         [AutoMoqData]
         public void AddTransfer_NewTransfer_AddedToDb(
             Transaction transaction,
-            TransferDTO output)
+            TransferDto output)
         {
             this.SetupRepo(new Mock<IBaseRepository<Account>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());

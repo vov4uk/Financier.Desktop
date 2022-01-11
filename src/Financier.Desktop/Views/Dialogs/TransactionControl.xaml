@@ -254,7 +254,7 @@
                             </Style>
                         </ListBox.Style>
                         <ListBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type viewmodel:TransactionDTO}">
+                            <DataTemplate DataType="{x:Type viewmodel:TransactionDto}">
                                 <Grid HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />

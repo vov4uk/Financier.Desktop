@@ -61,9 +61,9 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             return null;
         }
 
-        private TransactionDTO TransformMonoTransaction(FinancierTransactionDTO x)
+        private TransactionDto TransformMonoTransaction(FinancierTransactionDTO x)
         {
-            var result = new TransactionDTO
+            var result = new TransactionDto
             {
                 Id = 0,
                 FromAmount = x.FromAmount,

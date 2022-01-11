@@ -26,7 +26,7 @@ namespace Financier.Desktop.ViewModel
     {
         private const string Backup = "backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        private ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
+        private readonly ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
         private readonly ICsvHelper csvHelper;
         private readonly IFinancierDatabaseFactory dbFactory;
         private readonly IDialogWrapper dialogWrapper;
@@ -37,16 +37,15 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _monoCommand;
         private IAsyncCommand _openBackupCommand;
         private IAsyncCommand _saveBackupCommand;
-        private AccountsVM accountsVM;
-        private IBackupWriter backupWriter;
-        private BlotterVM blotter;
+        private readonly IBackupWriter backupWriter;
+        private BlotterVM blotterVm;
         private BindableBase currentPage;
         private IFinancierDatabase db;
-        private IEntityReader entityReader;
-        private LocationsVM locations;
+        private readonly IEntityReader entityReader;
+        private LocationsVM locationsVm;
         private string openBackupPath;
-        private PayeesVM payees;
-        private ProjectsVM projects;
+        private PayeesVM payeesVm;
+        private ProjectsVM projectsVm;
 
         public FinancierVM(IDialogWrapper dialogWrapper,
             IFinancierDatabaseFactory dbFactory,
@@ -66,8 +65,8 @@ namespace Financier.Desktop.ViewModel
 
         public BlotterVM Blotter
         {
-            get => blotter;
-            private set => SetProperty(ref blotter, value);
+            get => blotterVm;
+            private set => SetProperty(ref blotterVm, value);
         }
 
         public BindableBase CurrentPage
@@ -95,8 +94,8 @@ namespace Financier.Desktop.ViewModel
 
         public LocationsVM Locations
         {
-            get => locations;
-            private set => SetProperty(ref locations, value);
+            get => locationsVm;
+            private set => SetProperty(ref locationsVm, value);
         }
 
         public IAsyncCommand<Type> MenuNavigateCommand
@@ -131,14 +130,14 @@ namespace Financier.Desktop.ViewModel
 
         public PayeesVM Payees
         {
-            get => payees;
-            private set => SetProperty(ref payees, value);
+            get => payeesVm;
+            private set => SetProperty(ref payeesVm, value);
         }
 
         public ProjectsVM Projects
         {
-            get => projects;
-            private set => SetProperty(ref projects, value);
+            get => projectsVm;
+            private set => SetProperty(ref projectsVm, value);
         }
         public IAsyncCommand SaveBackupCommand
         {
@@ -249,7 +248,6 @@ namespace Financier.Desktop.ViewModel
         private void ClearPages()
         {
             _pages?.Clear();
-            accountsVM = null;
             if (Blotter != null)
             {
                 Blotter.EditRaised -= BlotterVM_OpenTransactionRaised;
@@ -284,8 +282,6 @@ namespace Financier.Desktop.ViewModel
 
         private void CreatePages()
         {
-            accountsVM = new AccountsVM(Array.Empty<Account>());
-
             Blotter = new BlotterVM(Array.Empty<BlotterTransactions>());
             Blotter.EditRaised += BlotterVM_OpenTransactionRaised;
             Blotter.AddRaised += Blotter_AddTransactionRaised;
@@ -310,10 +306,9 @@ namespace Financier.Desktop.ViewModel
             switch (type.Name)
             {
                 case nameof(Account):
-                    accountsVM = await GetOrCreatePage<Account, AccountsVM>(
+                    return await GetOrCreatePage<Account, AccountsVM>(
                             transform: (a) => a.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList(),
                             includes: x => x.Currency);
-                    return accountsVM;
                 case nameof(Budget):
                     return await GetOrCreatePage<Budget, BudgetsVM>();
                 case nameof(Currency):
@@ -436,13 +431,13 @@ namespace Financier.Desktop.ViewModel
             where T : Entity, IActive, new()
         {
             T selectedEntity = await db.GetOrCreateAsync<T>(e);
-            EntityWithTitleVM context = new EntityWithTitleVM(new EntityWithTitleDTO(selectedEntity));
+            EntityWithTitleVM context = new EntityWithTitleVM(new EntityWithTitleDto(selectedEntity));
 
             var result = dialogWrapper.ShowDialog<EntityWithTitleControl>(context, 180, 300, typeof(T).Name);
 
-            if (result is EntityWithTitleDTO)
+            var updatedItem = result as EntityWithTitleDto;
+            if (updatedItem != null)
             {
-                var updatedItem = (EntityWithTitleDTO)result;
                 selectedEntity.IsActive = updatedItem.IsActive;
                 selectedEntity.Title = updatedItem.Title;
 
@@ -454,13 +449,13 @@ namespace Financier.Desktop.ViewModel
         private async Task OpenLocationDialogAsync(int id)
         {
             Location selectedValue = await db.GetOrCreateAsync<Location>(id);
-            LocationDialogVM locationVm = new LocationDialogVM(new LocationDTO(selectedValue));
+            LocationDialogVM locationVm = new LocationDialogVM(new LocationDto(selectedValue));
 
             var result = dialogWrapper.ShowDialog<LocationControl>(locationVm, 240, 300, nameof(Location));
 
-            if (result is LocationDTO)
+            var updatedItem = result as LocationDto;
+            if (updatedItem != null)
             {
-                var updatedItem = (LocationDTO)result;
                 selectedValue.IsActive = updatedItem.IsActive;
                 selectedValue.Address = updatedItem.Address;
                 selectedValue.Title = updatedItem.Title;
@@ -496,9 +491,9 @@ namespace Financier.Desktop.ViewModel
 
                 var output = dialogWrapper.ShowWizard(vm);
 
-                if (output is List<Transaction>)
+                var outputTransactions = output as List<Transaction>;
+                if (outputTransactions != null)
                 {
-                    var outputTransactions = output as List<Transaction>;
                     using var blotter = db.CreateUnitOfWork();
                     var times = outputTransactions.Select(x => x.DateTime).Distinct().ToArray();
                     var transactionRepo = blotter.GetRepository<Transaction>();
@@ -530,7 +525,7 @@ namespace Financier.Desktop.ViewModel
         {
             Transaction transaction = await db.GetOrCreateTransactionAsync(id);
             IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(id);
-            var transactionDto = new TransactionDTO(transaction, subTransactions);
+            var transactionDto = new TransactionDto(transaction, subTransactions);
 
             using var uow = db.CreateUnitOfWork();
 
@@ -546,9 +541,9 @@ namespace Financier.Desktop.ViewModel
 
             var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
 
-            if (result is TransactionDTO)
+            var resultVm = result as TransactionDto;
+            if (resultVm != null)
             {
-                var resultVm = result as TransactionDTO;
                 var resultTransactions = new List<Transaction>();
 
                 MapperHelper.MapTransaction(resultVm, transaction);
@@ -583,13 +578,14 @@ namespace Financier.Desktop.ViewModel
 
             using var uow = db.CreateUnitOfWork();
             var accounts = await uow.GetAllOrderedByDefaultAsync<Account>(x => x.Currency);
-            TransferDialogVM dialogVm = new TransferDialogVM(new TransferDTO(transfer), accounts);
+            TransferDialogVM dialogVm = new TransferDialogVM(new TransferDto(transfer), accounts);
 
             var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
 
-            if (result is TransferDTO)
+            var output = result as TransferDto;
+            if (output != null)
             {
-                MapperHelper.MapTransfer(result as TransferDTO, transfer);
+                MapperHelper.MapTransfer(result as TransferDto, transfer);
                 await db.InsertOrUpdateAsync(new[] { transfer });
 
                 await db.RebuildAccountBalanceAsync(transfer.FromAccountId);
@@ -643,7 +639,7 @@ namespace Financier.Desktop.ViewModel
         {
             using var uow = db.CreateUnitOfWork();
             var allTransactions = await uow.GetAllAsync<BlotterTransactions>(x => x.from_account_currency, x => x.to_account_currency);
-            blotter.Entities = new ObservableCollection<BlotterTransactions>(allTransactions.OrderByDescending(x => x.datetime));
+            blotterVm.Entities = new ObservableCollection<BlotterTransactions>(allTransactions.OrderByDescending(x => x.datetime));
         }
 
         private async Task RefreshEntitiesAsync<T>()

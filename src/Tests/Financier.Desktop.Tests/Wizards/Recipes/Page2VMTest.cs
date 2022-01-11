@@ -20,8 +20,8 @@
             Assert.Equal(totalAmount, vm.TotalAmount);
             Assert.Equal("Transactions", vm.Title);
             Assert.True(vm.IsValid());
-            vm.Categories.SequenceEqual(categories);
-            vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
+            Assert.True(vm.Categories.SequenceEqual(categories));
+            Assert.True(vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id)));
         }
 
         [Theory]
@@ -42,7 +42,7 @@
 
             Assert.Equal(-100.0, vm.TotalAmount);
             Assert.Equal(-100.0, vm.CalculatedAmount);
-            vm.FinancierTransactions.SequenceEqual(transactions);
+            Assert.True(vm.FinancierTransactions.SequenceEqual(transactions));
         }
 
         [Theory]

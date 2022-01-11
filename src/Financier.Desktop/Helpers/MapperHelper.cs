@@ -7,9 +7,8 @@ namespace Financier.Desktop.Helpers
 {
     public static class MapperHelper
     {
-        public static void MapTransfer(TransferDTO dto, Transaction tr)
+        public static void MapTransfer(TransferDto dto, Transaction tr)
         {
-            //tr.Id = dto.Id;
             tr.FromAccountId = dto.FromAccountId;
             tr.ToAccountId = dto.ToAccountId;
             tr.Note = dto.Note;
@@ -23,9 +22,8 @@ namespace Financier.Desktop.Helpers
             tr.Category = default;
         }
 
-        public static void MapTransaction(TransactionDTO dto, Transaction tr)
+        public static void MapTransaction(TransactionDto dto, Transaction tr)
         {
-            //tr.Id = dto.Id;
             tr.FromAccountId = dto.AccountId;
             tr.FromAmount = dto.RealFromAmount;
             tr.OriginalFromAmount = dto.OriginalFromAmount ?? 0;

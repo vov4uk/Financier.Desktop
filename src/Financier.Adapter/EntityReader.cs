@@ -35,6 +35,7 @@ namespace Financier.Adapter
                     {
                         entity = (Entity)Activator.CreateInstance(entityInfo.EntityType);
                     }
+
                     if (!EntityColumnsOrder.ContainsKey(entityType))
                     {
                         EntityColumnsOrder.Add(entityType, new List<string>());
