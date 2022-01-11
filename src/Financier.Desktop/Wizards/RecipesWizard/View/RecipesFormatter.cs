@@ -7,6 +7,7 @@ using Xceed.Wpf.Toolkit;
 
 namespace Financier.Desktop.Wizards.RecipesWizard.View
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class RecipesFormatter : ITextFormatter
     {
         public const string Pattern = @"((\+|\-)?)\d+(?:(\.|\,)?\d+)(\s+)(A|a|а|А)";

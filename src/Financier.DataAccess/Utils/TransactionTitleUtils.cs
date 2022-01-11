@@ -16,8 +16,20 @@ namespace Financier.DataAccess.Utils
             }
         }
 
+        private static void Append(StringBuilder sb, string s)
+        {
+            if (!string.IsNullOrEmpty(s))
+            {
+                if (sb.Length > 0)
+                {
+                    sb.Append(": ");
+                }
+                sb.Append(s);
+            }
+        }
+
         private static string GenerateTransactionTitleForRegular(int? categoryId, string payee, string note,
-            string location, string category, int? toAccount)
+                    string location, string category, int? toAccount)
         {
             var secondPart = JoinAdditionalFields(payee, note, location);
             if (!string.IsNullOrEmpty(category))
@@ -38,17 +50,6 @@ namespace Financier.DataAccess.Utils
             {
                 return toAccount > 0 ? "Transfer" : "<NO CATEGORY>";
             }
-        }
-
-        private static string JoinAdditionalFields(string payee, string note, string location)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            Append(sb, payee);
-            Append(sb, location);
-            Append(sb, note);
-
-            return sb.ToString();
         }
 
         private static string GenerateTransactionTitleForSplit(string payee, string note, string location)
@@ -73,6 +74,16 @@ namespace Financier.DataAccess.Utils
             return "[...]";
         }
 
+        private static string JoinAdditionalFields(string payee, string note, string location)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            Append(sb, payee);
+            Append(sb, location);
+            Append(sb, note);
+
+            return sb.ToString();
+        }
         private static string JoinAdditionalFields(StringBuilder sb, string note, string location)
         {
             sb.Clear();
@@ -81,18 +92,6 @@ namespace Financier.DataAccess.Utils
             var secondPart = sb.ToString();
             sb.Clear();
             return secondPart;
-        }
-
-        private static void Append(StringBuilder sb, string s)
-        {
-            if (!string.IsNullOrEmpty(s))
-            {
-                if (sb.Length > 0)
-                {
-                    sb.Append(": ");
-                }
-                sb.Append(s);
-            }
         }
     }
 }
