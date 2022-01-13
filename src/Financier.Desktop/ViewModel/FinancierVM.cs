@@ -344,12 +344,12 @@ namespace Financier.Desktop.ViewModel
                 case nameof(Category):
                     return await GetOrCreatePage<Category, CategoriesVM>(transform: x => x.Where(x => x.Id > 0).OrderBy(x => x.Left));
 
-                case nameof(ByCategoryReport):
+                case nameof(ByCategoryReportV2):
                     {
                         using var uow = db.CreateUnitOfWork();
                         var allCategories = await uow.GetAllAsync<Category>();
                         var orderedCategories = allCategories.Where(x => x.Id > 0).OrderBy(x => x.Left).ToList();
-                        var byCategoryReport = await uow.GetAllAsync<ByCategoryReport>(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
+                        var byCategoryReport = await uow.GetAllAsync<ByCategoryReportV2>(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
                         return new ReportVM(byCategoryReport, orderedCategories);
                     }
                 case nameof(CurrencyExchangeRate):

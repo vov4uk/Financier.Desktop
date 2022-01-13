@@ -20,7 +20,7 @@ namespace Financier.DataAccess
             modelBuilder.Entity<CategoryAttribute>().HasNoKey();
             modelBuilder.Entity<AllTransactions>().ToView("v_all_transactions").HasKey(x => x._id);
             modelBuilder.Entity<BlotterTransactions>().ToView("v_blotter").HasKey(x => x._id);
-            modelBuilder.Entity<ByCategoryReport>().ToView("v_report_category").HasKey(x => x.Id);
+            modelBuilder.Entity<ByCategoryReportV2>().ToView("v_report_category_v2").HasKey(x => x.Id);
             modelBuilder.Entity<BlotterTransactionsForAccountWithSplits>().ToView("v_blotter_for_account_with_splits").HasKey(x => x._id);
         }
 

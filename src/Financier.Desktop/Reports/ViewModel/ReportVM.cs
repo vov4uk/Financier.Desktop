@@ -11,21 +11,9 @@ using System.Linq;
 
 namespace Financier.Desktop.Reports.ViewModel
 {
-    public enum PeriodType
-    {
-        Today,
-        Yesterday,
-        CurrentWeek,
-        CurrentMonth,
-        PreviousWeek,
-        PreviousMonth,
-        PreviousAndCurrentWeek,
-        PreviousAndCurrentMonth,
-        Custom,
-    }
 
     [ExcludeFromCodeCoverage]
-    public class ReportVM : EntityBaseVM<ByCategoryReport>
+    public class ReportVM : EntityBaseVM<ByCategoryReportV2>
     {
         private DelegateCommand _refreshCommand;
 
@@ -39,7 +27,7 @@ namespace Financier.Desktop.Reports.ViewModel
 
         private DateTime to;
 
-        public ReportVM(IEnumerable<ByCategoryReport> rows, IEnumerable<Category> categories)
+        public ReportVM(IEnumerable<ByCategoryReportV2> rows, IEnumerable<Category> categories)
             :base(rows)
         {
             PeriodType = PeriodType.Today;
@@ -104,7 +92,6 @@ namespace Financier.Desktop.Reports.ViewModel
             }
         }
 
-        // TODO - convert all transactions to home currency
         internal void RefreshReport(double width)
         {
             currentWidth = width;
@@ -119,8 +106,8 @@ namespace Financier.Desktop.Reports.ViewModel
                 Right = x.FirstOrDefault().category_right,
                 CurrencySign = x.FirstOrDefault().from_account_currency.Symbol,
                 SubCategoties = new List<ByCategoryReportRow>(),
-                TotalPositiveAmount = x.Where(y => y.from_amount > 0).Sum(y => y.from_amount),
-                TotalNegativeAmount = x.Where(y => y.from_amount < 0).Sum(y => y.from_amount),
+                TotalPositiveAmount = x.Where(y => y.from_amount_default_currency > 0).Sum(y => y.from_amount_default_currency),
+                TotalNegativeAmount = x.Where(y => y.from_amount_default_currency < 0).Sum(y => y.from_amount_default_currency),
             }).ToList();
 
             var finalTree = new List<ByCategoryReportRow>();
