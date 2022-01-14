@@ -7,17 +7,21 @@
     using Financier.Desktop.Converters;
     using Xunit;
 
+    // Cant use constants as expexted value because Azure Pipeline run test in different time zone
     public class UnixTimeConverterTest
     {
+        private static readonly DateTime StartDate = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+
         private readonly IValueConverter converter = new UnixTimeConverter();
 
-        [InlineAutoData(1642152563000, "2022-01-14 13:29:23")]
-        [InlineAutoData(1642111200000, "2022-01-14 02:00:00")]
+        [InlineAutoData(1642152563000)]
+        [InlineAutoData(1642111200000)]
         [Theory]
-        public void Convert_GotParameters_ExpectedValues(object value, string expexted)
+        public void Convert_GotParameters_ExpectedValues(long value)
         {
             string exp;
-            DateTime date = DateTime.Parse(expexted).ToUniversalTime();
+            DateTime date = StartDate.AddMilliseconds(value).ToLocalTime();
+
             exp = date == date.Date ? date.ToString(UnixTimeConverter.FORMAT_DAY) : date.ToString(UnixTimeConverter.FORMAT);
 
             // Act
@@ -26,12 +30,14 @@
             Assert.Equal(exp, actual);
         }
 
-        [InlineAutoData("2022-01-14 11:29:23", 1642152563000)]
-        [InlineAutoData("2022-01-14", 1642111200000)]
+        [InlineAutoData("2022-01-14 11:29:23")]
+        [InlineAutoData("2022-01-14")]
         [Theory]
-        public void ConvertBack_GotParameters_ExpectedValues(string value, long expexted)
+        public void ConvertBack_GotParameters_ExpectedValues(string value)
         {
             DateTime dateTime = DateTime.Parse(value).ToUniversalTime();
+            DateTimeOffset dto = new DateTimeOffset(dateTime);
+            long expexted = dto.ToUnixTimeMilliseconds();
 
             // Act
             var actual = this.converter.ConvertBack(dateTime, null, null, CultureInfo.InvariantCulture);
