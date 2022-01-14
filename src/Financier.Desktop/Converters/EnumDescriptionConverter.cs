@@ -8,7 +8,7 @@ namespace Financier.Desktop.Converters
 {
     public class EnumDescriptionConverter : IValueConverter
     {
-        private string GetEnumDescription(Enum enumObj)
+        private static string GetEnumDescription(Enum enumObj)
         {
             FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString());
 

@@ -34,7 +34,7 @@
     <DataTemplate DataType="{x:Type ViewModel:InfoVM}">
         <View:InfoControl/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type Report:ReportVM}">
+    <DataTemplate DataType="{x:Type Report:ByCategoryReportVM}">
         <View:ByCategoryReportView/>
     </DataTemplate>
 

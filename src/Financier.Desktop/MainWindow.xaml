@@ -106,12 +106,12 @@
                     <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
                                   Label="Project costs" />-->
                 </RibbonGroup>
-                <RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
+                <!--<RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png"
                                   Label="Export to excel" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/backup_file.png"
                                   Label="Export to csv" />
-                </RibbonGroup>
+                </RibbonGroup>-->
                 <RibbonGroup Header="Monobank"
                              IsEnabled="True">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png"

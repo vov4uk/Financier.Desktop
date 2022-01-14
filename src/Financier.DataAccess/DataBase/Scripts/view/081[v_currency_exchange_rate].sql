@@ -8,11 +8,11 @@ SELECT from_currency_id,
                       AND t1.to_currency_id = t.to_currency_id
                       AND t1.rate_date > t.rate_date
                ORDER  BY rate_date
-               LIMIT  1), 253402293599000) rate_date_end,
+               LIMIT  1), 253402293599000) AS rate_date_end,
        rate,
        updated_on,
        remote_key
 FROM   currency_exchange_rate t
-ORDER  BY from_currency_id,
-          to_currency_id,
+ORDER  BY from_currency_id ASC,
+          to_currency_id ASC,
           rate_date DESC ;

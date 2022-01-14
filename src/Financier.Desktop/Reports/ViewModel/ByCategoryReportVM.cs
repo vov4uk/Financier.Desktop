@@ -13,7 +13,7 @@ namespace Financier.Desktop.Reports.ViewModel
 {
 
     [ExcludeFromCodeCoverage]
-    public class ReportVM : EntityBaseVM<ByCategoryReportV2>
+    public class ByCategoryReportVM : EntityBaseVM<ByCategoryReportV2>
     {
         private DelegateCommand _refreshCommand;
 
@@ -27,7 +27,7 @@ namespace Financier.Desktop.Reports.ViewModel
 
         private DateTime to;
 
-        public ReportVM(IEnumerable<ByCategoryReportV2> rows, IEnumerable<Category> categories)
+        public ByCategoryReportVM(IEnumerable<ByCategoryReportV2> rows, IEnumerable<Category> categories)
             :base(rows)
         {
             PeriodType = PeriodType.Today;

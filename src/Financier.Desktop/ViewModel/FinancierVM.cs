@@ -350,7 +350,7 @@ namespace Financier.Desktop.ViewModel
                         var allCategories = await uow.GetAllAsync<Category>();
                         var orderedCategories = allCategories.Where(x => x.Id > 0).OrderBy(x => x.Left).ToList();
                         var byCategoryReport = await uow.GetAllAsync<ByCategoryReportV2>(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
-                        return new ReportVM(byCategoryReport, orderedCategories);
+                        return new ByCategoryReportVM(byCategoryReport, orderedCategories);
                     }
                 case nameof(CurrencyExchangeRate):
                     return await GetOrCreatePage<CurrencyExchangeRate, ExchangeRatesVM>(transform: null,

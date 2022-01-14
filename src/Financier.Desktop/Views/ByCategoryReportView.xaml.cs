@@ -24,7 +24,11 @@ namespace Financier.Desktop.Views
 
         private void RefreshReport(object sender, EventArgs e)
         {
-            ((ReportVM)DataContext).RefreshReport(PlotPresenter.RenderSize.Width);
+            var context = DataContext as ByCategoryReportVM;
+            if (context != null)
+            {
+                context.RefreshReport(PlotPresenter.RenderSize.Width);
+            }
         }
     }
 }
