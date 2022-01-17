@@ -1,0 +1,27 @@
+<UserControl x:Class="fcrd.ReportStructureDebit"
+             xmlns:fcrd="clr-namespace:fcrd"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:charting="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <fcrd:DataGridAutoHeaders Grid.Row="1" ItemsSource="{Binding Path=ReportData}" />
+    <charting:Chart Name="Charts" Grid.Row="2">
+      <charting:PieSeries DependentValuePath="Total" IndependentValuePath="Name" ItemsSource="{Binding Path=ReportData}" />
+    </charting:Chart>
+    <Grid Row="0">
+      <DockPanel>
+        <fcrd:StartYearMonthFilter Margin="4" />
+        <fcrd:EndYearMonthFilter Margin="4" />
+        <Button Grid.Column="1" HorizontalAlignment="Left" Margin="4" Width="150" Content="Сформировать"
+                Command="{Binding Path=RefreshDataCommand}" />
+      </DockPanel>
+    </Grid>
+  </Grid>
+</UserControl>

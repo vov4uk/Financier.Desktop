@@ -1,9 +1,11 @@
 ﻿using Financier.DataAccess.Data;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.DataAccess.View
 {
+    [ExcludeFromCodeCoverage]
     [DebuggerDisplay("{name} - {from_amount_default_currency}")]
     public class ByCategoryReportV2 : ByCategoryReportBase, IIdentity
     {
