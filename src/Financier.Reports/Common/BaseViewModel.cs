@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 
-namespace fcrd
+namespace Financier.Reports.Common
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
@@ -10,7 +10,7 @@ namespace fcrd
 
         public virtual void OnPropertyChanged<T>(Expression<Func<T>> property)
         {
-            PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            PropertyChangedEventHandler propertyChanged = PropertyChanged;
             if (propertyChanged == null)
                 return;
             if (!(property.Body is MemberExpression body))
@@ -20,9 +20,9 @@ namespace fcrd
 
         public virtual void OnPropertyChanged(string propName)
         {
-            if (this.PropertyChanged == null)
+            if (PropertyChanged == null)
                 return;
-            this.PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
     }
 }

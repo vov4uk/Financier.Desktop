@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace fcrd
+namespace Financier.Reports.Converters
 {
     public class BoolReverseConverter : IValueConverter
     {
@@ -20,7 +20,7 @@ namespace fcrd
           object parameter,
           CultureInfo culture)
         {
-            return this.Convert(value, targetType, parameter, culture);
+            return Convert(value, targetType, parameter, culture);
         }
     }
 }

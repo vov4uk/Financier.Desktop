@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Financier.Reports.Common;
+using System;
 using System.Collections.ObjectModel;
-using System.Reflection;
 
-namespace fcrd
+namespace Financier.Reports.Forms
 {
     public class ReportNode
     {
@@ -14,8 +14,8 @@ namespace fcrd
 
         private ReportNode(string name, string type)
         {
-            this.Name = name;
-            this.Type = type;
+            Name = name;
+            Type = type;
         }
 
         public ReportNode(string name)
@@ -23,10 +23,10 @@ namespace fcrd
         {
         }
 
-        public ReportNode(System.Type type)
+        public ReportNode(Type type)
         {
-            this.Type = type.ToString();
-            this.Name = ((HeaderAttribute)Attribute.GetCustomAttribute((MemberInfo)type, typeof(HeaderAttribute))).Header;
+            Type = type.ToString();
+            Name = ((HeaderAttribute)Attribute.GetCustomAttribute(type, typeof(HeaderAttribute))).Header;
         }
     }
 }

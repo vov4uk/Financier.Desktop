@@ -1,28 +1,29 @@
-﻿using System;
+﻿using Financier.Reports.Common;
+using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace fcrd
+namespace Financier.Reports.DataLoad
 {
     public class DataLoader
     {
         private readonly string _backupDir;
 
-        public DataLoader(string backupDir) => this._backupDir = backupDir;
+        public DataLoader(string backupDir) => _backupDir = backupDir;
 
         public void Start()
         {
-            string str = FilePrepare.Prepare(this._backupDir);
-            SQLiteTransaction sqLiteTransaction = DB.Connection.BeginTransaction();
+            string str = FilePrepare.Prepare(_backupDir);
+            SqliteTransaction sqLiteTransaction = DB.Connection.BeginTransaction();
             DB.TruncateTables();
             DataReader dataReader = new DataReader();
-            dataReader.OnEntityRead += new DataReader.EntityReadDelegate(this.DataReaderOnEntityRead);
+            dataReader.OnEntityRead += new DataReader.EntityReadDelegate(DataReaderOnEntityRead);
             dataReader.Start(str);
             File.Delete(str);
-            this.PrepareData();
+            PrepareData();
             sqLiteTransaction.Commit();
             DbManual.ResetManuals();
         }

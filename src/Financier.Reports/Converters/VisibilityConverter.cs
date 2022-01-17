@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace fcrd
+namespace Financier.Reports.Converters
 {
     public class VisibilityConverter : IValueConverter
     {
@@ -21,7 +21,7 @@ namespace fcrd
           object parameter,
           CultureInfo culture)
         {
-            return ((Visibility)value == Visibility.Visible);
+            return (Visibility)value == Visibility.Visible;
         }
     }
 }

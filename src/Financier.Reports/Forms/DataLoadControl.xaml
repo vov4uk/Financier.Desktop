@@ -1,5 +1,5 @@
-<UserControl x:Class="fcrd.DataLoadControl"
-             xmlns:fcrd="clr-namespace:fcrd"
+<UserControl x:Class="Financier.Reports.Forms.DataLoadControl"
+             xmlns:fcrd="clr-namespace:Financier.Reports.Forms"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Height="150" Width="400" FontSize="14" Style="{StaticResource FontsStyle}">

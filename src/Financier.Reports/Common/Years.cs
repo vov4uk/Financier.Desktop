@@ -1,4 +1,4 @@
-﻿namespace fcrd
+﻿namespace Financier.Reports.Common
 {
     public class Years : BaseReportM
     {

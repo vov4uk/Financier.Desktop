@@ -1,7 +1,8 @@
-<UserControl x:Class="fcrd.ReportByPeriodMonthCrc"
+<UserControl x:Class="Financier.Reports.Reports.ReportByPeriodMonthCrc"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:fcrd="clr-namespace:fcrd"
+             xmlns:fcrd="clr-namespace:Financier.Reports.Common"
+             xmlns:filters="clr-namespace:Financier.Reports.Reports.Filters"
              xmlns:charting="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit">
     <Grid>
         <Grid.RowDefinitions>
@@ -20,13 +21,13 @@
         </charting:Chart>
         <Grid Row="0">
             <DockPanel>
-                <fcrd:CurrencyFilter Margin="4" />
-                <fcrd:AccountFilter Margin="4" />
-                <fcrd:CategoryFilter Margin="4" />
-                <fcrd:ProjectFilter Margin="4" />
-                <fcrd:PayeeFilter Margin="4" />
-                <fcrd:StartYearMonthFilter Margin="4" />
-                <fcrd:EndYearMonthFilter Margin="4" />
+                <filters:CurrencyFilter Margin="4" />
+                <filters:AccountFilter Margin="4" />
+                <filters:CategoryFilter Margin="4" />
+                <filters:ProjectFilter Margin="4" />
+                <filters:PayeeFilter Margin="4" />
+                <filters:StartYearMonthFilter Margin="4" />
+                <filters:EndYearMonthFilter Margin="4" />
                 <Button Grid.Column="1" Margin="4" Width="150" HorizontalAlignment="Left" Content="Сформировать"
                 Command="{Binding Path=RefreshDataCommand}" />
             </DockPanel>

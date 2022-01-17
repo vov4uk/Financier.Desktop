@@ -1,6 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Financier.Reports.Common;
+using System.ComponentModel;
 
-namespace fcrd
+namespace Financier.Reports.Reports
 {
     public class ReportDynamicRestM : BaseReportM
     {
@@ -16,7 +17,7 @@ namespace fcrd
         [Field("day")]
         public long Day { get; protected set; }
 
-        public string Title => string.Format("{0}.{1}.{2}", this.Day, this.Month, this.Year);
+        public string Title => string.Format("{0}.{1}.{2}", Day, Month, Year);
 
         [DisplayName("Всего в домашней валюте")]
         [Field("total")]

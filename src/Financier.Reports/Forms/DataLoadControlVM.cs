@@ -1,9 +1,9 @@
-﻿using fcrd.Properties;
-using System;
-using System.Windows.Forms;
+﻿using Financier.Reports.Reports.Properties;
+using Financier.Reports.Common;
+using Financier.Reports.DataLoad;
 using System.Windows.Input;
 
-namespace fcrd
+namespace Financier.Reports.Forms
 {
     public class DataLoadControlVM : BaseViewModel
     {
@@ -17,37 +17,37 @@ namespace fcrd
             set
             {
                 ExSettings.LastBackupDir = value;
-                this.OnPropertyChanged(nameof(BackupDir));
+                OnPropertyChanged(nameof(BackupDir));
             }
         }
 
-        public event DataLoadControlVM.DataLoadedDelegate DataLoaded;
+        public event DataLoadedDelegate DataLoaded;
 
         public void OnDataLoaded()
         {
-            if (this.DataLoaded == null)
+            if (DataLoaded == null)
                 return;
-            this.DataLoaded(this);
+            DataLoaded(this);
         }
 
-        public ICommand LoadDataCommand => (ICommand)(this._loadDataCommand ?? (this._loadDataCommand = new RelayCommand((Action<object>)(param => this.LoadData()))));
+        public ICommand LoadDataCommand => _loadDataCommand ?? (_loadDataCommand = new RelayCommand(param => LoadData()));
 
         public void LoadData()
         {
             new DataLoader(Settings.Default.LastBackupDir).Start();
-            this.OnDataLoaded();
+            OnDataLoaded();
         }
 
-        public ICommand CancelLoadDataCommand => (ICommand)(this._cancelLoadDataCommand ?? (this._cancelLoadDataCommand = new RelayCommand((Action<object>)(param => this.OnDataLoaded()))));
+        public ICommand CancelLoadDataCommand => _cancelLoadDataCommand ?? (_cancelLoadDataCommand = new RelayCommand(param => OnDataLoaded()));
 
-        public ICommand SelectBackUpDirtCommand => (ICommand)(this._selectBackUpDirCommand ?? (this._selectBackUpDirCommand = new RelayCommand((Action<object>)(p => this.SelectBackUpDir()))));
+        public ICommand SelectBackUpDirtCommand => _selectBackUpDirCommand ?? (_selectBackUpDirCommand = new RelayCommand(p => SelectBackUpDir()));
 
         public void SelectBackUpDir()
         {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
-                return;
-            this.BackupDir = folderBrowserDialog.SelectedPath;
+            //FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            //if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
+            //    return;
+            //BackupDir = folderBrowserDialog.SelectedPath;
         }
 
         public delegate void DataLoadedDelegate(object sender);

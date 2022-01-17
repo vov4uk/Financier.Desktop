@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace fcrd
+namespace Financier.Reports.Common
 {
     public class TableInfo
     {
@@ -10,8 +10,8 @@ namespace fcrd
 
         public TableInfo(string tableName, List<ColumnInfo> columnsInfo)
         {
-            this.TableName = tableName;
-            this.ColumnsInfo = columnsInfo;
+            TableName = tableName;
+            ColumnsInfo = columnsInfo;
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Markup;
 
-namespace fcrd
+namespace Financier.Reports.Reports.Filters
 {
-    public partial class CategoryFilter : UserControl, IComponentConnector
+    public partial class CategoryFilter : UserControl
     {
-        public CategoryFilter() => this.InitializeComponent();
+        public CategoryFilter()
+        {
+            this.InitializeComponent();
+        }
     }
 }

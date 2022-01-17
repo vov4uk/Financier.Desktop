@@ -1,10 +1,14 @@
-﻿using System.Windows.Controls;
-using System.Windows.Markup;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows.Controls;
 
-namespace fcrd
+namespace Financier.Reports.Forms
 {
-    public partial class DataLoadControl : UserControl, IComponentConnector
+    [ExcludeFromCodeCoverage]
+    public partial class DataLoadControl : UserControl
     {
-        public DataLoadControl() => this.InitializeComponent();
+        public DataLoadControl()
+        {
+            InitializeComponent();
+        }
     }
 }

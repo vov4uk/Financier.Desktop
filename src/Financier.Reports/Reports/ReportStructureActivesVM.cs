@@ -1,4 +1,6 @@
-﻿namespace fcrd
+﻿using Financier.Reports.Common;
+
+namespace Financier.Reports.Reports
 {
     [Header("Структура активов")]
     public class ReportStructureActivesVM : BaseReportVM<ReportStructureActivesM>
@@ -17,9 +19,9 @@ WHERE  1 = 1 {1}
         protected override string GetSql()
         {
             string str = string.Empty;
-            if (this.CurentCurrency.ID.HasValue)
-            { 
-                str = string.Format("and currency_id = {0}", this.CurentCurrency.ID);
+            if (CurentCurrency.ID.HasValue)
+            {
+                str = string.Format("and currency_id = {0}", CurentCurrency.ID);
             }
             return string.Format(
 "\r\n                             select" +
@@ -29,7 +31,7 @@ WHERE  1 = 1 {1}
 "\r\n                            where 1 = 1" +
 "\r\n                            {1} /*FILTERS*/" +
 "\r\n                    ",
-this.CurentCurrency.ID.HasValue ? 1 : 0,
+CurentCurrency.ID.HasValue ? 1 : 0,
 str);
         }
     }

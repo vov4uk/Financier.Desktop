@@ -1,9 +1,8 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Markup;
 
-namespace fcrd
+namespace Financier.Reports.Reports
 {
-    public partial class ReportByPeriodMonthCrc : UserControl, IComponentConnector
+    public partial class ReportByPeriodMonthCrc : UserControl
     {
         public ReportByPeriodMonthCrc() => this.InitializeComponent();
     }

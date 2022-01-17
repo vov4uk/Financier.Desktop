@@ -2,7 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 
-namespace fcrd
+namespace Financier.Reports.DataLoad
 {
     public static class FilePrepare
     {
@@ -15,7 +15,7 @@ namespace fcrd
                 if (fileToDecompress.CreationTime < fileInfo.CreationTime)
                     fileToDecompress = fileInfo;
             }
-            return FilePrepare.Decompress(fileToDecompress);
+            return Decompress(fileToDecompress);
         }
 
         public static string Decompress(FileInfo fileToDecompress)
@@ -25,8 +25,8 @@ namespace fcrd
             {
                 using (FileStream destination = File.Create(tempFileName))
                 {
-                    using (GZipStream gzipStream = new GZipStream((Stream)fileStream, CompressionMode.Decompress))
-                        gzipStream.CopyTo((Stream)destination);
+                    using (GZipStream gzipStream = new GZipStream(fileStream, CompressionMode.Decompress))
+                        gzipStream.CopyTo(destination);
                 }
             }
             return tempFileName;

@@ -1,4 +1,6 @@
-﻿namespace fcrd
+﻿using Financier.Reports.Common;
+
+namespace Financier.Reports.Reports
 {
     [Header("По месяцам")]
     public class ReportByPeriodMonthCrcVM : BaseReportVM<ReportByPeriodMonthCrcM>
@@ -46,12 +48,12 @@ FROM   (
         {
             string str = string.Empty;
             if (CurentCurrency.ID.HasValue)
-            { 
+            {
                 str = string.Format("and from_account_crc_id = {0}", CurentCurrency.ID);
             }
             string standartTrnFilter = GetStandartTrnFilter();
             if (standartTrnFilter != string.Empty)
-            { 
+            {
                 str = str + " and " + standartTrnFilter;
             }
             return string.Format(
@@ -78,7 +80,7 @@ FROM   (
 "\r\n                    date_month" +
 "\r\n                ) tx" +
 "\r\n        ",
-this.CurentCurrency.ID.HasValue ? 1 : 0,
+CurentCurrency.ID.HasValue ? 1 : 0,
 str);
         }
     }

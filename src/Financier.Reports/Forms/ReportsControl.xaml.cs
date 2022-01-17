@@ -1,10 +1,12 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Markup;
 
-namespace fcrd
+namespace Financier.Reports.Forms
 {
-    public partial class ReportsControl : UserControl, IComponentConnector
+    public partial class ReportsControl : UserControl
     {
-        public ReportsControl() => this.InitializeComponent();
+        public ReportsControl()
+        {
+            this.InitializeComponent();
+        }
     }
 }

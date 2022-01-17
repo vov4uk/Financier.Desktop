@@ -1,4 +1,4 @@
-﻿namespace fcrd
+﻿namespace Financier.Reports.Common
 {
     public class ColumnInfo
     {
@@ -8,8 +8,8 @@
 
         public ColumnInfo(string name, string type)
         {
-            this.ColName = name;
-            this.Type = type;
+            ColName = name;
+            Type = type;
         }
     }
 }

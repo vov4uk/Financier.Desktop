@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace fcrd
+namespace Financier.Reports.Common
 {
     public static class DbManual
     {
@@ -11,6 +11,7 @@ namespace fcrd
         private static ObservableCollection<Project> _project;
         private static ObservableCollection<YearMonths> _yearMonths;
         private static ObservableCollection<Years> _years;
+
         public static ObservableCollection<Account> Account
         {
             get

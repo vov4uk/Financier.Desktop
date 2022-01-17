@@ -1,6 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Financier.Reports.Common;
+using System.ComponentModel;
 
-namespace fcrd
+namespace Financier.Reports.Reports
 {
     public class ReportDynamicDebitCretitPayeeM : BaseReportM
     {
@@ -12,7 +13,7 @@ namespace fcrd
         [Field("date_month")]
         public long Month { get; protected set; }
 
-        public string PeriodDesr => string.Format("{0} {1}", this.Month, this.Year);
+        public string PeriodDesr => string.Format("{0} {1}", Month, Year);
 
         [Field("total")]
         [DisplayName("Сумма")]

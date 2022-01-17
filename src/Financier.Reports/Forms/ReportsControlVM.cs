@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Financier.Reports.Common;
+using Financier.Reports.Reports;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
 
-namespace fcrd
+namespace Financier.Reports.Forms
 {
     internal class ReportsControlVM : BaseViewModel
     {
@@ -12,9 +14,9 @@ namespace fcrd
         private RelayCommand _openReportCommand;
         private ObservableCollection<object> _reportsVM;
         private object _selectedReport;
-        public ICommand CloseReportCommand => this._closeReportCommand ?? (this._closeReportCommand = new RelayCommand(p => this.CloseReport()));
+        public ICommand CloseReportCommand => _closeReportCommand ?? (_closeReportCommand = new RelayCommand(p => CloseReport()));
 
-        public ICommand OpenReportCommand => this._openReportCommand ?? (this._openReportCommand = new RelayCommand(p => this.OpenReport((string)p)));
+        public ICommand OpenReportCommand => _openReportCommand ?? (_openReportCommand = new RelayCommand(p => OpenReport((string)p)));
 
         public ObservableCollection<ReportNode> ReportsInfo
         {
@@ -65,40 +67,40 @@ namespace fcrd
 
         public ObservableCollection<object> ReportsVM
         {
-            get => this._reportsVM ?? (this._reportsVM = new ObservableCollection<object>());
+            get => _reportsVM ?? (_reportsVM = new ObservableCollection<object>());
             set
             {
-                if (this._reportsVM == value)
+                if (_reportsVM == value)
                     return;
-                this._reportsVM = value;
-                this.OnPropertyChanged(nameof(ReportsVM));
+                _reportsVM = value;
+                OnPropertyChanged(nameof(ReportsVM));
             }
         }
 
         public object SelectedReport
         {
-            get => this._selectedReport;
+            get => _selectedReport;
             set
             {
-                if (this._selectedReport == value)
+                if (_selectedReport == value)
                     return;
-                this._selectedReport = value;
-                this.OnPropertyChanged(nameof(SelectedReport));
+                _selectedReport = value;
+                OnPropertyChanged(nameof(SelectedReport));
             }
         }
 
         public void CloseReport()
         {
-            this.ReportsVM.Remove(this.SelectedReport);
-            this.SelectedReport = this.ReportsVM.FirstOrDefault();
+            ReportsVM.Remove(SelectedReport);
+            SelectedReport = ReportsVM.FirstOrDefault();
         }
 
         public void OpenReport(string reportType)
         {
-            object obj1 = this.ReportsVM.Where(p => p.GetType().ToString() == reportType).FirstOrDefault();
+            object obj1 = ReportsVM.Where(p => p.GetType().ToString() == reportType).FirstOrDefault();
             if (obj1 != null)
             {
-                this.SelectedReport = obj1;
+                SelectedReport = obj1;
             }
             else
             {
@@ -111,8 +113,8 @@ namespace fcrd
                         object obj2 = constructor.Invoke(new object[0]);
                         HeaderAttribute customAttribute = (HeaderAttribute)Attribute.GetCustomAttribute(type, typeof(HeaderAttribute));
                         obj2.GetType().GetProperty("Header").SetValue(obj2, customAttribute.Header, null);
-                        this.ReportsVM.Add(obj2);
-                        this.SelectedReport = obj2;
+                        ReportsVM.Add(obj2);
+                        SelectedReport = obj2;
                     }
                 }
             }

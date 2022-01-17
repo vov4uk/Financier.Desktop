@@ -1,4 +1,4 @@
-﻿namespace fcrd
+﻿namespace Financier.Reports.Common
 {
     public class Category : BaseReportM
     {
@@ -8,7 +8,7 @@
         [Field("title")]
         public string title { get; set; }
 
-        public string Title => (this.title ?? string.Empty).PadLeft((this.title ?? string.Empty).Length + (int)(this.level ?? 0L), '-');
+        public string Title => (title ?? string.Empty).PadLeft((title ?? string.Empty).Length + (int)(level ?? 0L), '-');
 
         [Field("level")]
         public long? level { get; set; }

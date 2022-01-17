@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Financier.Reports.Common;
+using Financier.Reports.Forms;
 using System.Windows.Input;
 
-namespace fcrd
+namespace Financier.Reports
 {
     public class MainWindowVM : BaseViewModel
     {
@@ -10,47 +11,47 @@ namespace fcrd
         private bool _isDataLoaded;
         private DataLoadControlVM _dataLoad;
 
-        public ICommand OpenLoadDataCommand => (ICommand)(this._openloadDataCommand ?? (this._openloadDataCommand = new RelayCommand((Action<object>)(param => this.DataLoadInitLoad()))));
+        public ICommand OpenLoadDataCommand => _openloadDataCommand ?? (_openloadDataCommand = new RelayCommand(param => DataLoadInitLoad()));
 
-        public ICommand ClearDataCommand => (ICommand)(this._clearDataCommand ?? (this._clearDataCommand = new RelayCommand((Action<object>)(param => DB.TruncateTables()))));
+        public ICommand ClearDataCommand => _clearDataCommand ?? (_clearDataCommand = new RelayCommand(param => DB.TruncateTables()));
 
         public bool IsDataLoaded
         {
-            get => this._isDataLoaded;
+            get => _isDataLoaded;
             set
             {
-                if (this._isDataLoaded == value)
+                if (_isDataLoaded == value)
                     return;
-                this._isDataLoaded = value;
-                this.OnPropertyChanged(nameof(IsDataLoaded));
+                _isDataLoaded = value;
+                OnPropertyChanged(nameof(IsDataLoaded));
             }
         }
 
         public DataLoadControlVM DataLoad
         {
-            get => this._dataLoad;
+            get => _dataLoad;
             set
             {
-                if (this._dataLoad == value)
+                if (_dataLoad == value)
                     return;
-                this._dataLoad = value;
-                this.OnPropertyChanged(nameof(DataLoad));
+                _dataLoad = value;
+                OnPropertyChanged(nameof(DataLoad));
             }
         }
 
-        public MainWindowVM() => this.DataLoadInitLoad();
+        public MainWindowVM() => DataLoadInitLoad();
 
         private void DataLoadInitLoad()
         {
-            this.DataLoad = new DataLoadControlVM();
-            this.DataLoad.DataLoaded += new DataLoadControlVM.DataLoadedDelegate(this.DataLoadDataLoaded);
-            this.IsDataLoaded = false;
+            DataLoad = new DataLoadControlVM();
+            DataLoad.DataLoaded += new DataLoadControlVM.DataLoadedDelegate(DataLoadDataLoaded);
+            IsDataLoaded = false;
         }
 
         private void DataLoadDataLoaded(object sender)
         {
-            this.IsDataLoaded = true;
-            this.DataLoad = (DataLoadControlVM)null;
+            IsDataLoaded = true;
+            DataLoad = null;
         }
     }
 }

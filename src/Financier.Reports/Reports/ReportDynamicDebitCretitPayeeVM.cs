@@ -1,6 +1,7 @@
-﻿using System.Windows;
+﻿using Financier.Reports.Common;
+using System.Windows;
 
-namespace fcrd
+namespace Financier.Reports.Reports
 {
     [Header("Динамика расходов-доходов")]
     public class ReportDynamicDebitCretitPayeeVM : BaseReportVM<ReportDynamicDebitCretitPayeeM>
@@ -33,9 +34,9 @@ ORDER BY tx.date_year,
         {
             long? id;
             int num1;
-            if (!this.Payee.ID.HasValue)
+            if (!Payee.ID.HasValue)
             {
-                id = this.Category.ID;
+                id = Category.ID;
                 num1 = id.HasValue ? 1 : 0;
             }
             else
@@ -46,17 +47,17 @@ ORDER BY tx.date_year,
                 return string.Empty;
             }
             string str = string.Empty;
-            id = this.CurentCurrency.ID;
+            id = CurentCurrency.ID;
             if (id.HasValue)
             {
                 str = string.Format(" and from_account_crc_id = {0}", CurentCurrency.ID);
             }
-            string standartTrnFilter = this.GetStandartTrnFilter();
+            string standartTrnFilter = GetStandartTrnFilter();
             if (standartTrnFilter != string.Empty)
             {
                 str = str + " and " + standartTrnFilter;
             }
-            id = this.CurentCurrency.ID;
+            id = CurentCurrency.ID;
             return string.Format(
 "\r\n                        select" +
 "\r\n                            tx.date_year as date_year, tx.date_month as date_month, round(tx.total / 100.00, 2) as total" +
@@ -68,7 +69,7 @@ ORDER BY tx.date_year,
 "\r\n                        group by trn.date_year, trn.date_month ) tx " +
 "\r\n                        order by " +
 "\r\n                            tx.date_year, tx.date_month" +
-"\r\n        ",id.HasValue ? 1 : 0, str);
+"\r\n        ", id.HasValue ? 1 : 0, str);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace fcrd
+﻿using Financier.Reports.Common;
+
+namespace Financier.Reports.Reports
 {
     [Header("Динамика остатков")]
     public class ReportDynamicRestVM : BaseReportVM<ReportDynamicRestM>
@@ -25,10 +27,10 @@ FROM   (
 
         protected override string GetSql()
         {
-            string standartTrnFilter = this.GetStandartTrnFilter();
+            string standartTrnFilter = GetStandartTrnFilter();
             return string.Format(
 "\r\n                           select" +
-"\r\n                                    cr.year as year, cr.month as month, cr.day as day,"+
+"\r\n                                    cr.year as year, cr.month as month, cr.day as day," +
 "\r\n                                    round( (select sum(from_amount_default_crr) " +
 "\r\n                                     from transactions trn where date(trn.datetime) <= cr.date " +
 "\r\n                                            and to_account_id = 0 ) / 100.00, 2 )as total" +

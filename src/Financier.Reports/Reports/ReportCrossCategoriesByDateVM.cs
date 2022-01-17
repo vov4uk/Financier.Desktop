@@ -1,6 +1,7 @@
-﻿using System.Windows;
+﻿using Financier.Reports.Common;
+using System.Windows;
 
-namespace fcrd
+namespace Financier.Reports.Reports
 {
     [Header("По категория за период")]
     internal class ReportCrossCategoriesByDateVM : BaseReportVM<ReportCrossCategoriesByDateM>
@@ -47,14 +48,14 @@ FROM   (
         protected override string GetSql()
         {
             string str = string.Empty;
-            if (!this.Payee.ID.HasValue && !this.Category.ID.HasValue)
+            if (!Payee.ID.HasValue && !Category.ID.HasValue)
             {
                 int num = (int)MessageBox.Show("Укажите получателя или категорию!");
                 return string.Empty;
             }
-            if (this.CurentCurrency.ID.HasValue)
-                str = string.Format("and from_account_crc_id = {0}", this.CurentCurrency.ID);
-            string standartTrnFilter = this.GetStandartTrnFilter();
+            if (CurentCurrency.ID.HasValue)
+                str = string.Format("and from_account_crc_id = {0}", CurentCurrency.ID);
+            string standartTrnFilter = GetStandartTrnFilter();
             if (standartTrnFilter != string.Empty)
                 str = str + " and " + standartTrnFilter;
             return string.Format(
@@ -80,7 +81,7 @@ FROM   (
 "\r\n                    date_year," +
 "\r\n                    date_month" +
 "\r\n                ) tx" +
-"\r\n        ", this.CurentCurrency.ID.HasValue ? 1 : 0, str);
+"\r\n        ", CurentCurrency.ID.HasValue ? 1 : 0, str);
         }
     }
 }

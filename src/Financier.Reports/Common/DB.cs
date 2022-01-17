@@ -1,73 +1,75 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Data.SQLite;
 using System.Text;
 
-namespace fcrd
+namespace Financier.Reports.Common
 {
     public static class DB
     {
-        private static SQLiteConnection _connection;
+        private static SqliteConnection _connection;
         private static List<TableInfo> _tablesInfo;
 
-        public static List<TableInfo> TablesInfo => DB._tablesInfo ?? (DB._tablesInfo = DB.LoadTablesInfo());
+        public static List<TableInfo> TablesInfo => _tablesInfo ?? (_tablesInfo = LoadTablesInfo());
 
-        public static SQLiteConnection Connection
+        public static SqliteConnection Connection
         {
             get
             {
-                if (DB._connection == null)
-                    DB._connection = DB.CreateConnection();
-                if (DB._connection.State != ConnectionState.Open)
-                    DB._connection.Open();
-                return DB._connection;
+                if (_connection == null)
+                    _connection = CreateConnection();
+                if (_connection.State != ConnectionState.Open)
+                    _connection.Open();
+                return _connection;
             }
         }
 
-        private static SQLiteConnection CreateConnection() => new SQLiteConnection("Data Source= " + ExSettings.DbPath + ";Version=3;");
+        private static SqliteConnection CreateConnection() => new SqliteConnection("Data Source= " + ExSettings.DbPath + ";Version=3;");
 
-        public static void ExecuteNonQuery(string sqlCommand)
+        public static void ExecuteNonQuery(string SqlCommand)
         {
-            using (SQLiteCommand sqLiteCommand = new SQLiteCommand(DB.Connection))
+            using (SqliteCommand SqliteCommand = new SqliteCommand())
             {
-                sqLiteCommand.CommandText = sqlCommand;
-                sqLiteCommand.CommandType = CommandType.Text;
-                sqLiteCommand.ExecuteNonQuery();
+                SqliteCommand.Connection = Connection;
+                SqliteCommand.CommandText = SqlCommand;
+                SqliteCommand.CommandType = CommandType.Text;
+                SqliteCommand.ExecuteNonQuery();
             }
         }
 
         private static List<TableInfo> LoadTablesInfo()
         {
             List<TableInfo> tableInfoList = new List<TableInfo>();
-            using (SQLiteCommand sqLiteCommand1 = new SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table'", DB.Connection))
+            using (SqliteCommand SqliteCommand1 = new SqliteCommand("SELECT name FROM Sqlite_master WHERE type='table'", Connection))
             {
-                using (SQLiteCommand sqLiteCommand2 = new SQLiteCommand(DB.Connection))
+                using (SqliteCommand SqliteCommand2 = new SqliteCommand())
                 {
-                    SQLiteDataReader sqLiteDataReader1 = sqLiteCommand1.ExecuteReader();
-                    while (sqLiteDataReader1.Read())
+                    SqliteCommand2.Connection = Connection;
+                    SqliteDataReader SqliteDataReader1 = SqliteCommand1.ExecuteReader();
+                    while (SqliteDataReader1.Read())
                     {
-                        string tableName = sqLiteDataReader1.GetString(0);
+                        string tableName = SqliteDataReader1.GetString(0);
                         List<ColumnInfo> columnsInfo = new List<ColumnInfo>();
-                        sqLiteCommand2.CommandText = string.Format("PRAGMA table_info([{0}])", tableName);
-                        SQLiteDataReader sqLiteDataReader2 = sqLiteCommand2.ExecuteReader();
-                        while (sqLiteDataReader2.Read())
-                            columnsInfo.Add(new ColumnInfo(sqLiteDataReader2.GetString(1), sqLiteDataReader2.GetString(2)));
-                        sqLiteDataReader2.Close();
+                        SqliteCommand2.CommandText = string.Format("PRAGMA table_info([{0}])", tableName);
+                        SqliteDataReader SqliteDataReader2 = SqliteCommand2.ExecuteReader();
+                        while (SqliteDataReader2.Read())
+                            columnsInfo.Add(new ColumnInfo(SqliteDataReader2.GetString(1), SqliteDataReader2.GetString(2)));
+                        SqliteDataReader2.Close();
                         tableInfoList.Add(new TableInfo(tableName, columnsInfo));
                     }
-                    sqLiteDataReader1.Close();
+                    SqliteDataReader1.Close();
                 }
             }
             return tableInfoList;
         }
 
-        public static void GetData<T>(string sqlText, ObservableCollection<T> data) where T : BaseReportM, new()
+        public static void GetData<T>(string SqlText, ObservableCollection<T> data) where T : BaseReportM, new()
         {
             data.Clear();
-            using (SQLiteCommand sqLiteCommand = new SQLiteCommand(sqlText, DB.Connection))
+            using (SqliteCommand SqliteCommand = new SqliteCommand(SqlText, Connection))
             {
-                SQLiteDataReader reader = sqLiteCommand.ExecuteReader();
+                SqliteDataReader reader = SqliteCommand.ExecuteReader();
                 try
                 {
                     while (reader.Read())
@@ -87,9 +89,9 @@ namespace fcrd
         public static void TruncateTables()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            foreach (TableInfo tableInfo in DB.TablesInfo)
+            foreach (TableInfo tableInfo in TablesInfo)
                 stringBuilder.AppendFormat("delete from [{0}];", tableInfo.TableName);
-            DB.ExecuteNonQuery(stringBuilder.ToString());
+            ExecuteNonQuery(stringBuilder.ToString());
         }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Markup;
 
-namespace fcrd
+namespace Financier.Reports.Reports
 {
-    public partial class ReportStructureActives : UserControl, IComponentConnector
+    public partial class ReportStructureActives : UserControl
     {
         public ReportStructureActives() => this.InitializeComponent();
     }

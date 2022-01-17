@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace fcrd
+namespace Financier.Reports.DataLoad
 {
     public static class StreamExtensions
     {

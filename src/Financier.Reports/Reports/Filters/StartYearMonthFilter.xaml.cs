@@ -1,9 +1,8 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Markup;
 
-namespace fcrd
+namespace Financier.Reports.Reports.Filters
 {
-    public partial class StartYearMonthFilter : UserControl, IComponentConnector
+    public partial class StartYearMonthFilter : UserControl
     {
         public StartYearMonthFilter() => this.InitializeComponent();
     }

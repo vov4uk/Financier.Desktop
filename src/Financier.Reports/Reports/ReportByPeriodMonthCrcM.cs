@@ -1,6 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Financier.Reports.Common;
+using System.ComponentModel;
 
-namespace fcrd
+namespace Financier.Reports.Reports
 {
     public class ReportByPeriodMonthCrcM : BaseReportM
     {

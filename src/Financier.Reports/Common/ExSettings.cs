@@ -1,7 +1,7 @@
-﻿using fcrd.Properties;
+﻿using Financier.Reports.Reports.Properties;
 using System;
 
-namespace fcrd
+namespace Financier.Reports.Common
 {
     public static class ExSettings
     {

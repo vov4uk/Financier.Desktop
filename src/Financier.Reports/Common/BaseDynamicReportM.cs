@@ -1,12 +1,12 @@
 ﻿using System.Dynamic;
 
-namespace fcrd
+namespace Financier.Reports.Common
 {
     internal class BaseDynamicReportM : BaseReportM
     {
         private ExpandoObject ReportData { get; set; }
 
-        public BaseDynamicReportM() => this.ReportData = new ExpandoObject();
+        public BaseDynamicReportM() => ReportData = new ExpandoObject();
 
         public virtual void InitReportData()
         {

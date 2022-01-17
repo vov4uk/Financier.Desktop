@@ -1,68 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="db\fcrd.db3" />
-    <None Remove="lib\ReuxablesLegacy.dll" />
-    <None Remove="lib\SQLite.Interop.dll" />
-    <None Remove="lib\System.Data.SQLite.dll" />
-    <None Remove="lib\System.Windows.Controls.DataVisualization.Toolkit.dll" />
-    <None Remove="lib\WPFToolkit.dll" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="db\fcrd.db3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\ReuxablesLegacy.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\SQLite.Interop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\System.Data.SQLite.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\System.Windows.Controls.DataVisualization.Toolkit.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\WPFToolkit.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="NLog" Version="4.7.13" />
-    <PackageReference Include="SQLite.Interop.dll" Version="1.0.103" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.115.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="ReuxablesLegacy">
-      <HintPath>lib\ReuxablesLegacy.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\fcrd\lib\System.Data.SQLite.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Controls.DataVisualization.Toolkit">
-      <HintPath>..\fcrd\lib\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
+      <HintPath>lib\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Forms">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Windows.Forms.dll</HintPath>
-    </Reference>
-    <Reference Include="WPFToolkit">
-      <HintPath>lib\WPFToolkit.dll</HintPath>
-    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="lib\System.Windows.Controls.DataVisualization.Toolkit.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

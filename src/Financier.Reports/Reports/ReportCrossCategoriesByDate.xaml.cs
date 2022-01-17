@@ -1,9 +1,8 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Markup;
 
-namespace fcrd
+namespace Financier.Reports.Reports
 {
-    public partial class ReportCrossCategoriesByDate : UserControl, IComponentConnector
+    public partial class ReportCrossCategoriesByDate : UserControl
     {
         public ReportCrossCategoriesByDate() => this.InitializeComponent();
     }
