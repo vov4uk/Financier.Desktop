@@ -3,7 +3,7 @@
 namespace Financier.Reports.Reports
 {
     [Header("Структура активов")]
-    public class ReportStructureActivesVM : BaseReportVM<ReportStructureActivesM>
+    public class ReportStructureActivesVM : BaseReportVM<ReportStructureActivesModel>
     {
         private const string BaseSqlText = @"
 SELECT title,

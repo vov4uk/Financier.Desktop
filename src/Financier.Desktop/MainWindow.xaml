@@ -3,6 +3,7 @@
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:data="clr-namespace:Financier.DataAccess.Data;assembly=Financier.DataAccess"
                xmlns:dataView="clr-namespace:Financier.DataAccess.View;assembly=Financier.DataAccess"
+               xmlns:reports="clr-namespace:Financier.Reports.Forms;assembly=Financier.Reports"
                xmlns:converters="clr-namespace:Financier.Desktop.Converters"
                Icon="pack://application:,,,/Images/ic_launcher.png"
                Title="Financier Desktop"
@@ -22,6 +23,7 @@
             <x:Type x:Key="CurrencyExchangeRateType" TypeName="data:CurrencyExchangeRate" />
             <x:Type x:Key="BudgetType" TypeName="data:Budget" />
             <x:Type x:Key="TransactionsViewType" TypeName="dataView:BlotterTransactions" />
+            <x:Type x:Key="ReportsControl" TypeName="reports:ReportsControlVM" />
             <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InverseBooleanConverter x:Key="InverseBool" />
@@ -103,8 +105,10 @@
                                   Label="By category"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource ReportType}"/>
-                    <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
-                                  Label="Project costs" />-->
+                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
+                                  Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource ReportsControl}"
+                                  Label="Others" />
                 </RibbonGroup>
                 <!--<RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png"

@@ -4,7 +4,7 @@ using System.Windows;
 namespace Financier.Reports.Reports
 {
     [Header("По категория за период")]
-    internal class ReportCrossCategoriesByDateVM : BaseReportVM<ReportCrossCategoriesByDateM>
+    internal class ReportCrossCategoriesByDateVM : BaseReportVM<ReportCrossCategoriesByDateModel>
     {
         private const string BaseSqlText = @"
 SELECT tx.date_year                           AS date_year,

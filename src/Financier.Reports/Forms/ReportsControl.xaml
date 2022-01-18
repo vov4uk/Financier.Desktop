@@ -4,9 +4,16 @@
              xmlns:local="clr-namespace:Financier.Reports.Forms"
              xmlns:fcrd="clr-namespace:Financier.Reports.Reports"
              Name="ReportsCtrl">
-  <FrameworkElement.DataContext>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <!--<FrameworkElement.DataContext>
     <local:ReportsControlVM />
-  </FrameworkElement.DataContext>
+  </FrameworkElement.DataContext>-->
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="1*" />

@@ -4,15 +4,15 @@ namespace Financier.Reports.Common
 {
     public static class DbManual
     {
-        private static ObservableCollection<Account> _account;
-        private static ObservableCollection<Category> _category;
-        private static ObservableCollection<Currency> _currencies;
-        private static ObservableCollection<Payee> _payee;
-        private static ObservableCollection<Project> _project;
+        private static ObservableCollection<AccountModel> _account;
+        private static ObservableCollection<CategoryModel> _category;
+        private static ObservableCollection<CurrencyModel> _currencies;
+        private static ObservableCollection<PayeeModel> _payee;
+        private static ObservableCollection<ProjectModel> _project;
         private static ObservableCollection<YearMonths> _yearMonths;
         private static ObservableCollection<Years> _years;
 
-        public static ObservableCollection<Account> Account
+        public static ObservableCollection<AccountModel> Account
         {
             get
             {
@@ -22,14 +22,14 @@ namespace Financier.Reports.Common
                         "title " +
                         "from account " +
                         "where title is not null " +
-                        "order by 2 desc", _account = new ObservableCollection<Account>());
-                    _account.Insert(0, new Account());
+                        "order by 2 desc", _account = new ObservableCollection<AccountModel>());
+                    _account.Insert(0, new AccountModel());
                 }
                 return _account;
             }
         }
 
-        public static ObservableCollection<Category> Category
+        public static ObservableCollection<CategoryModel> Category
         {
             get
             {
@@ -41,22 +41,23 @@ namespace Financier.Reports.Common
 "\r\n                    title," +
 "\r\n                    (select count(*) from category x where x.left < ctx.left and x.[right] > ctx.[right] ) as level" +
 "\r\n                    from category ctx" +
-"\r\n                    order by left, sort_order", _category = new ObservableCollection<Category>());
-                    _category.Insert(0, new Category());
+"\r\n                    order by left, sort_order", _category = new ObservableCollection<CategoryModel>());
+                    _category.Insert(0, new CategoryModel());
                 }
                 return _category;
             }
         }
 
-        public static ObservableCollection<Currency> Currencies
+        public static ObservableCollection<CurrencyModel> Currencies
         {
             get
             {
                 if (_currencies == null)
                 {
                     DB.GetData("select * " +
-                        "from currency", _currencies = new ObservableCollection<Currency>());
-                    _currencies.Insert(0, new Currency()
+                               "from currency",
+                        _currencies = new ObservableCollection<CurrencyModel>());
+                    _currencies.Insert(0, new CurrencyModel()
                     {
                         Name = "Все валюты"
                     });
@@ -65,7 +66,7 @@ namespace Financier.Reports.Common
             }
         }
 
-        public static ObservableCollection<Payee> Payee
+        public static ObservableCollection<PayeeModel> Payee
         {
             get
             {
@@ -75,14 +76,14 @@ namespace Financier.Reports.Common
                         "title " +
                         "from payee " +
                         "where title is not null " +
-                        "order by 2 desc", _payee = new ObservableCollection<Payee>());
-                    _payee.Insert(0, new Payee());
+                        "order by 2 desc", _payee = new ObservableCollection<PayeeModel>());
+                    _payee.Insert(0, new PayeeModel());
                 }
                 return _payee;
             }
         }
 
-        public static ObservableCollection<Project> Project
+        public static ObservableCollection<ProjectModel> Project
         {
             get
             {
@@ -92,8 +93,8 @@ namespace Financier.Reports.Common
                         "title " +
                         "from project " +
                         "where title is not null " +
-                        "order by 2 desc", _project = new ObservableCollection<Project>());
-                    _project.Insert(0, new Project());
+                        "order by 2 desc", _project = new ObservableCollection<ProjectModel>());
+                    _project.Insert(0, new ProjectModel());
                 }
                 return _project;
             }

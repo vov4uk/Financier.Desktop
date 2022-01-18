@@ -1,5 +1,6 @@
 ﻿using Financier.Reports.Common;
 using Financier.Reports.Reports;
+using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Windows.Input;
 
 namespace Financier.Reports.Forms
 {
-    internal class ReportsControlVM : BaseViewModel
+    public class ReportsControlVM : BindableBase
     {
         private RelayCommand _closeReportCommand;
         private RelayCommand _openReportCommand;
@@ -24,7 +25,7 @@ namespace Financier.Reports.Forms
             {
                 ObservableCollection<ReportNode> reportsInfo = new ObservableCollection<ReportNode>();
                 ObservableCollection<ReportNode> observableCollection1 = reportsInfo;
-                ReportNode reportNode1 = new ReportNode("Все отчеты");
+                ReportNode reportNode1 = new("Все отчеты");
                 ReportNode reportNode2 = reportNode1;
                 ObservableCollection<ReportNode> observableCollection2 = new ObservableCollection<ReportNode>();
                 ObservableCollection<ReportNode> observableCollection3 = observableCollection2;
@@ -73,7 +74,7 @@ namespace Financier.Reports.Forms
                 if (_reportsVM == value)
                     return;
                 _reportsVM = value;
-                OnPropertyChanged(nameof(ReportsVM));
+                RaisePropertyChanged(nameof(ReportsVM));
             }
         }
 
@@ -85,7 +86,7 @@ namespace Financier.Reports.Forms
                 if (_selectedReport == value)
                     return;
                 _selectedReport = value;
-                OnPropertyChanged(nameof(SelectedReport));
+                RaisePropertyChanged(nameof(SelectedReport));
             }
         }
 

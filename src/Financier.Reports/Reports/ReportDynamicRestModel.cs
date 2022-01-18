@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Financier.Reports.Reports
 {
-    public class ReportDynamicRestM : BaseReportM
+    public class ReportDynamicRestModel : BaseReportModel
     {
         [Field("year")]
         [DisplayName("Год")]

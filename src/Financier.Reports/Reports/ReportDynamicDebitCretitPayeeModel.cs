@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Financier.Reports.Reports
 {
-    public class ReportDynamicDebitCretitPayeeM : BaseReportM
+    public class ReportDynamicDebitCretitPayeeModel : BaseReportModel
     {
         [DisplayName("Год")]
         [Field("date_year")]

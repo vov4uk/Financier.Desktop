@@ -2,7 +2,7 @@
 
 namespace Financier.Reports.Reports
 {
-    internal class ReportCrossCategoriesByDateM : BaseDynamicReportM
+    internal class ReportCrossCategoriesByDateModel : BaseDynamicReportModel
     {
     }
 }

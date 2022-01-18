@@ -3,7 +3,6 @@
                     xmlns:fcrd="clr-namespace:Financier.Reports.Converters">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/ReuxablesLegacy;component/candy.xaml" />
         <ResourceDictionary>
             <fcrd:VisibilityConverter x:Key="VisibilityConverter" />
             <fcrd:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />

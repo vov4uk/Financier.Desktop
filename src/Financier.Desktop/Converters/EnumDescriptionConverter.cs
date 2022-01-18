@@ -27,9 +27,13 @@ namespace Financier.Desktop.Converters
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Enum myEnum = (Enum)value;
-            string description = GetEnumDescription(myEnum);
-            return description;
+            if (value is Enum)
+            {
+                Enum myEnum = (Enum)value;
+                string description = GetEnumDescription(myEnum);
+                return description;
+            }
+            return value;
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

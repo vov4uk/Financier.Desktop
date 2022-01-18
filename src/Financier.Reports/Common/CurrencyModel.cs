@@ -1,6 +1,6 @@
 ﻿namespace Financier.Reports.Common
 {
-    public class Currency : BaseReportM
+    public class CurrencyModel : BaseReportModel
     {
         [Field("_id")]
         public long? ID { get; set; }

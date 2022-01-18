@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Financier.Reports.Reports
 {
-    public class ReportByPeriodMonthCrcM : BaseReportM
+    public class ReportByPeriodMonthCrcModel : BaseReportModel
     {
         [DisplayName("Год")]
         [Field("date_year")]

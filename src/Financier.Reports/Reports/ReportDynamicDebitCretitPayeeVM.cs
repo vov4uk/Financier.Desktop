@@ -4,7 +4,7 @@ using System.Windows;
 namespace Financier.Reports.Reports
 {
     [Header("Динамика расходов-доходов")]
-    public class ReportDynamicDebitCretitPayeeVM : BaseReportVM<ReportDynamicDebitCretitPayeeM>
+    public class ReportDynamicDebitCretitPayeeVM : BaseReportVM<ReportDynamicDebitCretitPayeeModel>
     {
         private const string BaseSqlText = @"
 SELECT   tx.date_year                AS date_year,

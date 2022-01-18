@@ -19,6 +19,7 @@ using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using Financier.Desktop.Data;
 using Mvvm.Async;
+using Financier.Reports.Forms;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -300,6 +301,7 @@ namespace Financier.Desktop.ViewModel
             Projects.AddRaised += Projects_AddRaised;
             Projects.EditRaised += Projects_EditRaised;
         }
+
         private async Task<BindableBase> GetOrCreatePage(Type type)
         {
 
@@ -358,6 +360,10 @@ namespace Financier.Desktop.ViewModel
                         deleteAction: null,
                         editAction: null,
                         x => x.FromCurrency, x => x.ToCurrency);
+                case nameof(ReportsControlVM):
+                    {
+                        return new ReportsControlVM();
+                    }
 
                 default: throw new NotSupportedException($"{type.FullName} not suported");
             }

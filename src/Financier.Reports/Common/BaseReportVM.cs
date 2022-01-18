@@ -1,17 +1,18 @@
-﻿using System.Collections.ObjectModel;
+﻿using Prism.Mvvm;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
 namespace Financier.Reports.Common
 {
-    public abstract class BaseReportVM<T> : BaseViewModel where T : BaseReportM, new()
+    public abstract class BaseReportVM<T> : BindableBase where T : BaseReportModel, new()
     {
-        private Project _project;
-        private Category _category;
-        private Account _account;
-        private Payee _payee;
-        private Currency _curentCurrency;
+        private ProjectModel _project;
+        private CategoryModel _category;
+        private AccountModel _account;
+        private PayeeModel _payee;
+        private CurrencyModel _curentCurrency;
         private YearMonths _startYearMonths;
         private YearMonths _endYearMonths;
         private RelayCommand _refreshDataCommand;
@@ -25,53 +26,53 @@ namespace Financier.Reports.Common
             ReportData = new ObservableCollection<T>();
         }
 
-        public Project Project
+        public ProjectModel Project
         {
             get => _project ??= DbManual.Project.FirstOrDefault(p => !p.ID.HasValue);
             set
             {
                 _project = value;
-                OnPropertyChanged(nameof(Project));
+                RaisePropertyChanged(nameof(Project));
             }
         }
 
-        public Category Category
+        public CategoryModel Category
         {
             get => _category ??= DbManual.Category.FirstOrDefault(p => !p.ID.HasValue);
             set
             {
                 _category = value;
-                OnPropertyChanged(nameof(Category));
+                RaisePropertyChanged(nameof(Category));
             }
         }
 
-        public Account Account
+        public AccountModel Account
         {
             get => _account ??= DbManual.Account.FirstOrDefault(p => !p.ID.HasValue);
             set
             {
                 _account = value;
-                OnPropertyChanged(nameof(Account));
+                RaisePropertyChanged(nameof(Account));
             }
         }
 
-        public Payee Payee
+        public PayeeModel Payee
         {
             get => _payee ?? (_payee = DbManual.Payee.FirstOrDefault(p => !p.ID.HasValue));
             set
             {
                 _payee = value;
-                OnPropertyChanged(nameof(Payee));
+                RaisePropertyChanged(nameof(Payee));
             }
         }
 
-        public Currency CurentCurrency
+        public CurrencyModel CurentCurrency
         {
             get => _curentCurrency ?? (_curentCurrency = DbManual.Currencies.FirstOrDefault(p => !p.ID.HasValue));
             set
             {
                 _curentCurrency = value;
-                OnPropertyChanged(nameof(CurentCurrency));
+                RaisePropertyChanged(nameof(CurentCurrency));
             }
         }
 
@@ -81,7 +82,7 @@ namespace Financier.Reports.Common
             set
             {
                 _startYearMonths = value;
-                OnPropertyChanged(nameof(StartYearMonths));
+                RaisePropertyChanged(nameof(StartYearMonths));
             }
         }
 
@@ -91,7 +92,7 @@ namespace Financier.Reports.Common
             set
             {
                 _endYearMonths = value;
-                OnPropertyChanged(nameof(EndYearMonths));
+                RaisePropertyChanged(nameof(EndYearMonths));
             }
         }
 

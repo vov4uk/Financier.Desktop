@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Financier.Reports.Reports
 {
-    public class ReportStructureActivesM : BaseReportM
+    public class ReportStructureActivesModel : BaseReportModel
     {
         [Field("title")]
         [DisplayName("Актив")]

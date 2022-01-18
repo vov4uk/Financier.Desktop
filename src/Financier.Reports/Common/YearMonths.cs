@@ -1,6 +1,6 @@
 ﻿namespace Financier.Reports.Common
 {
-    public class YearMonths : BaseReportM
+    public class YearMonths : BaseReportModel
     {
         [Field("year")]
         public long? Year { get; set; }

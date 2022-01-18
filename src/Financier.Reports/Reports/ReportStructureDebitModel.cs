@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Financier.Reports.Reports
 {
-    public class ReportStructureCreditM : BaseReportM
+    public class ReportStructureDebitModel : BaseReportModel
     {
         [Field("title")]
         [DisplayName("Получатель")]

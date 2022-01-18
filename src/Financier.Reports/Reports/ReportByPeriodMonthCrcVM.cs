@@ -3,7 +3,7 @@
 namespace Financier.Reports.Reports
 {
     [Header("По месяцам")]
-    public class ReportByPeriodMonthCrcVM : BaseReportVM<ReportByPeriodMonthCrcM>
+    public class ReportByPeriodMonthCrcVM : BaseReportVM<ReportByPeriodMonthCrcModel>
     {
         private const string BaseSqlText = @"
 SELECT tx.date_year                           AS date_year,

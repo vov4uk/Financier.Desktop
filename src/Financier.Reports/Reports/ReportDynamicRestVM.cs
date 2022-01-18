@@ -3,7 +3,7 @@
 namespace Financier.Reports.Reports
 {
     [Header("Динамика остатков")]
-    public class ReportDynamicRestVM : BaseReportVM<ReportDynamicRestM>
+    public class ReportDynamicRestVM : BaseReportVM<ReportDynamicRestModel>
     {
         private const string BaseSqlText = @"
 SELECT cr.year  AS year,

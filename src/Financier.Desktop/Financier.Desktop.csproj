@@ -156,5 +156,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Financier.Adapter\Financier.Adapter.csproj" />
+    <ProjectReference Include="..\Financier.Reports\Financier.Reports.csproj" />
   </ItemGroup>
 </Project>
