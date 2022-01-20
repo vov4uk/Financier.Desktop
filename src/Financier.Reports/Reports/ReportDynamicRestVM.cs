@@ -1,4 +1,5 @@
-﻿using Financier.Reports.Common;
+﻿using Financier.DataAccess.Abstractions;
+using Financier.Reports.Common;
 
 namespace Financier.Reports.Reports
 {
@@ -12,7 +13,7 @@ SELECT cr.year  AS year,
        Round(
                (
                SELECT Sum(from_amount_default_crr)
-               FROM   transactions trn
+               FROM   v_report_transactions trn
                WHERE  Date(trn.datetime) <= cr.date
                AND    to_account_id = 0 ) / 100.00, 2 )AS total
 FROM   (
@@ -20,27 +21,36 @@ FROM   (
                                        date_year      AS year,
                                        date_month     AS month,
                                        date_day       AS day
-                       FROM            transactions
+                       FROM            v_report_transactions
                        WHERE           1 = 1 {0}
                                        /* FILTER */
        ) cr";
+
+        public ReportDynamicRestVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
+        {
+        }
 
         protected override string GetSql()
         {
             string standartTrnFilter = GetStandartTrnFilter();
             return string.Format(
-"\r\n                           select" +
-"\r\n                                    cr.year as year, cr.month as month, cr.day as day," +
-"\r\n                                    round( (select sum(from_amount_default_crr) " +
-"\r\n                                     from transactions trn where date(trn.datetime) <= cr.date " +
-"\r\n                                            and to_account_id = 0 ) / 100.00, 2 )as total" +
-"\r\n                                from " +
-"\r\n                                    (select distinct date(datetime) as date, date_year as year, date_month as month, date_day as day" +
-"\r\n                                    from transactions" +
-"\r\n                                    where 1 = 1 " +
-"\r\n                                    {0}/* FILTER */" +
-"\r\n                                    ) cr" +
-"\r\n                    ",
+                                     "select " +
+                                        "cr.year as year, " +
+                                        "cr.month as month, " +
+                                        "cr.day as day, " +
+                                        "round( (select sum(from_amount_default_crr) " +
+                                        " from v_report_transactions trn where Date(trn.datetime / 1000, 'unixepoch') <= cr.date " +
+                                                "and to_account_id = 0 ) / 100.00, 2 ) as total " +
+                                    "from " +
+                                        "(" +
+                                         "select distinct Date(datetime / 1000, 'unixepoch') as date, " +
+                                                "date_year as year, " +
+                                                "date_month as month, " +
+                                                "date_day as day " +
+                                         "from v_report_transactions " +
+                                         "where 1 = 1 " +
+                                         "{0} /* FILTER */ " +
+                                      ") cr ",
 !string.IsNullOrEmpty(standartTrnFilter) ? " and " + standartTrnFilter : string.Empty);
         }
     }

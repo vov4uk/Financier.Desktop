@@ -12,7 +12,10 @@
     </Grid.RowDefinitions>
     <fcrd:DataGridAutoHeaders Grid.Row="1" ItemsSource="{Binding Path=ReportData}" />
     <charting:Chart Name="Charts" Grid.Row="2">
-      <charting:PieSeries DependentValuePath="Total" IndependentValuePath="Name" ItemsSource="{Binding Path=ReportData}" />
+      <charting:PieSeries
+          DependentValuePath="Total"
+          IndependentValuePath="Name"
+          ItemsSource="{Binding Path=ReportData}" />
     </charting:Chart>
     <Grid Row="0">
       <DockPanel>

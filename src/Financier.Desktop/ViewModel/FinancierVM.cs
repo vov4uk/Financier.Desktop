@@ -362,7 +362,7 @@ namespace Financier.Desktop.ViewModel
                         x => x.FromCurrency, x => x.ToCurrency);
                 case nameof(ReportsControlVM):
                     {
-                        return new ReportsControlVM();
+                        return new ReportsControlVM(db);
                     }
 
                 default: throw new NotSupportedException($"{type.FullName} not suported");

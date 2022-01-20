@@ -1,8 +1,10 @@
-﻿namespace Financier.Reports.Common
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Financier.Reports.Common
 {
     public class Years : BaseReportModel
     {
-        [Field("year")]
+        [Column("year")]
         public long? Year { get; set; }
     }
 }

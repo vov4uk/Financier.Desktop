@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using Financier.DataAccess.Abstractions;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Financier.Reports.Common
 {
@@ -12,125 +14,104 @@ namespace Financier.Reports.Common
         private static ObservableCollection<YearMonths> _yearMonths;
         private static ObservableCollection<Years> _years;
 
-        public static ObservableCollection<AccountModel> Account
+        public static async Task Setup(IFinancierDatabase financierDatabase)
         {
-            get
+            if (_account == null)
             {
-                if (_account == null)
+                var accounts = await financierDatabase.ExecuteQuery<AccountModel>(
+                    "select _id, " +
+                    "title " +
+                    "from account " +
+                    "where title is not null " +
+                    "order by 2 desc");
+                _account = new ObservableCollection<AccountModel>(accounts);
+                _account.Insert(0, new AccountModel());
+            }
+
+            if (_category == null)
+            {
+              var categories = await financierDatabase.ExecuteQuery<CategoryModel>(
+                  "select " +
+                  "_id, " +
+                  "title, " +
+                  "(select count(*) from category x where x.left < ctx.left and x.[right] > ctx.[right] ) as level " +
+                  "from category ctx " +
+                  "order by left, sort_order");
+                _category = new ObservableCollection<CategoryModel>(categories);
+                _category.Insert(0, new CategoryModel());
+            }
+
+            if (_currencies == null)
+            {
+                var currencies = await financierDatabase.ExecuteQuery<CurrencyModel>("select * from currency");
+
+                _currencies = new ObservableCollection<CurrencyModel>(currencies);
+                _currencies.Insert(0, new CurrencyModel()
                 {
-                    DB.GetData("select _id, " +
-                        "title " +
-                        "from account " +
-                        "where title is not null " +
-                        "order by 2 desc", _account = new ObservableCollection<AccountModel>());
-                    _account.Insert(0, new AccountModel());
-                }
-                return _account;
+                    Name = "Все валюты"
+                });
+            }
+
+            if (_payee == null)
+            {
+                var payees = await financierDatabase.ExecuteQuery<PayeeModel>(
+                    "select _id, " +
+                    "title " +
+                    "from payee " +
+                    "where title is not null " +
+                    "order by 2 desc");
+                _payee = new ObservableCollection<PayeeModel>(payees);
+                _payee.Insert(0, new PayeeModel());
+            }
+
+            if (_project == null)
+            {
+                var projects = await financierDatabase.ExecuteQuery<ProjectModel>(
+                    "select _id, " +
+                    "title " +
+                    "from project " +
+                    "where title is not null " +
+                    "order by 2 desc");
+                _project = new ObservableCollection<ProjectModel>(projects);
+                _project.Insert(0, new ProjectModel());
+            }
+
+            if (_yearMonths == null)
+            {
+                var yearMonths = await financierDatabase.ExecuteQuery<YearMonths>(
+                    "select distinct date_year as year, " +
+                    "date_month as month " +
+                    "from v_report_transactions " +
+                    "order by 1 desc, " +
+                    "2 desc");
+                _yearMonths = new ObservableCollection<YearMonths>(yearMonths);
+                _yearMonths.Insert(0, new YearMonths());
+            }
+
+            if (_years == null)
+            {
+                var years = await financierDatabase.ExecuteQuery<Years>(
+                    "select distinct date_year as year " +
+                    "from v_report_transactions " +
+                    "order by 1 desc");
+                _years = new ObservableCollection<Years>(years);
+                _years.Insert(0, new Years());
             }
         }
 
-        public static ObservableCollection<CategoryModel> Category
-        {
-            get
-            {
-                if (_category == null)
-                {
-                    DB.GetData(
-"\r\n                    select" +
-"\r\n                    _id," +
-"\r\n                    title," +
-"\r\n                    (select count(*) from category x where x.left < ctx.left and x.[right] > ctx.[right] ) as level" +
-"\r\n                    from category ctx" +
-"\r\n                    order by left, sort_order", _category = new ObservableCollection<CategoryModel>());
-                    _category.Insert(0, new CategoryModel());
-                }
-                return _category;
-            }
-        }
+        public static ObservableCollection<AccountModel> Account => _account;
 
-        public static ObservableCollection<CurrencyModel> Currencies
-        {
-            get
-            {
-                if (_currencies == null)
-                {
-                    DB.GetData("select * " +
-                               "from currency",
-                        _currencies = new ObservableCollection<CurrencyModel>());
-                    _currencies.Insert(0, new CurrencyModel()
-                    {
-                        Name = "Все валюты"
-                    });
-                }
-                return _currencies;
-            }
-        }
+        public static ObservableCollection<CategoryModel> Category => _category;
 
-        public static ObservableCollection<PayeeModel> Payee
-        {
-            get
-            {
-                if (_payee == null)
-                {
-                    DB.GetData("select _id, " +
-                        "title " +
-                        "from payee " +
-                        "where title is not null " +
-                        "order by 2 desc", _payee = new ObservableCollection<PayeeModel>());
-                    _payee.Insert(0, new PayeeModel());
-                }
-                return _payee;
-            }
-        }
+        public static ObservableCollection<CurrencyModel> Currencies => _currencies;
 
-        public static ObservableCollection<ProjectModel> Project
-        {
-            get
-            {
-                if (_project == null)
-                {
-                    DB.GetData("select _id, " +
-                        "title " +
-                        "from project " +
-                        "where title is not null " +
-                        "order by 2 desc", _project = new ObservableCollection<ProjectModel>());
-                    _project.Insert(0, new ProjectModel());
-                }
-                return _project;
-            }
-        }
+        public static ObservableCollection<PayeeModel> Payee => _payee;
 
-        public static ObservableCollection<YearMonths> YearMonths
-        {
-            get
-            {
-                if (_yearMonths == null)
-                {
-                    DB.GetData("select distinct date_year as year, " +
-                        "date_month as month " +
-                        "from transactions " +
-                        "order by 1 desc, " +
-                        "2 asc", _yearMonths = new ObservableCollection<YearMonths>());
-                    _yearMonths.Insert(0, new YearMonths());
-                }
-                return _yearMonths;
-            }
-        }
+        public static ObservableCollection<ProjectModel> Project => _project;
 
-        public static ObservableCollection<Years> Years
-        {
-            get
-            {
-                if (_years == null)
-                {
-                    DB.GetData("select distinct date_year as year " +
-                        "from transactions " +
-                        "order by 1 desc", _years = new ObservableCollection<Years>());
-                    _years.Insert(0, new Years());
-                }
-                return _years;
-            }
-        }
+        public static ObservableCollection<YearMonths> YearMonths => _yearMonths;
+
+        public static ObservableCollection<Years> Years => _years;
 
         public static void ResetManuals()
         {

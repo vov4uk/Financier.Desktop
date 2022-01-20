@@ -1,11 +1,13 @@
-﻿namespace Financier.Reports.Common
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Financier.Reports.Common
 {
     public class ProjectModel : BaseReportModel
     {
-        [Field("_id")]
+        [Column("_id")]
         public long? ID { get; set; }
 
-        [Field("title")]
+        [Column("title")]
         public string Title { get; set; }
     }
 }

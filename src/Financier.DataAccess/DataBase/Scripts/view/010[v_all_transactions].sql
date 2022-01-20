@@ -2,11 +2,11 @@ CREATE VIEW v_all_transactions AS
 SELECT
     t._id as _id,
     t.parent_id as parent_id,
-    a1._id as from_account_id,		
+    a1._id as from_account_id,
     a1.title as from_account_title,
     a1.is_include_into_totals as from_account_is_include_into_totals,
     c1._id as from_account_currency_id,
-    a2._id as to_account_id,		
+    a2._id as to_account_id,
     a2.title as to_account_title,
     c2._id as to_account_currency_id,
     cat._id as category_id,
@@ -38,7 +38,7 @@ SELECT
     trb.balance as to_account_balance,
     t.to_account_id as is_transfer
 FROM 
-    transactions as t	
+    transactions as t
     INNER JOIN account as a1 ON a1._id=t.from_account_id
     INNER JOIN currency as c1 ON c1._id=a1.currency_id
     INNER JOIN category as cat ON cat._id=t.category_id

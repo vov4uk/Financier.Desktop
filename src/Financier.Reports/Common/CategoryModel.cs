@@ -1,16 +1,18 @@
-﻿namespace Financier.Reports.Common
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Financier.Reports.Common
 {
     public class CategoryModel : BaseReportModel
     {
-        [Field("_id")]
+        [Column("_id")]
         public long? ID { get; set; }
 
-        [Field("title")]
+        [Column("title")]
         public string title { get; set; }
 
         public string Title => (title ?? string.Empty).PadLeft((title ?? string.Empty).Length + (int)(level ?? 0L), '-');
 
-        [Field("level")]
+        [Column("level")]
         public long? level { get; set; }
     }
 }

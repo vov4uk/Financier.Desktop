@@ -17,11 +17,15 @@
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="1*" />
-      <ColumnDefinition Width="4*" />
+      <ColumnDefinition Width="5*" />
     </Grid.ColumnDefinitions>
-    <TreeView Background="Transparent" ItemsSource="{Binding Path=ReportsInfo, Mode=OneWay}">
+    <TreeView Background="Transparent"
+              ItemsSource="{Binding Path=ReportsInfo, Mode=OneWay}"
+              >
       <ItemsControl.ItemContainerStyle>
-        <Style TargetType="{x:Type TreeViewItem}" />
+        <Style TargetType="{x:Type TreeViewItem}" >
+            <Setter Property="IsExpanded" Value="True"/>
+        </Style>
       </ItemsControl.ItemContainerStyle>
       <ItemsControl.ItemTemplate>
         <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
@@ -35,7 +39,9 @@
         </HierarchicalDataTemplate>
       </ItemsControl.ItemTemplate>
     </TreeView>
-    <TabControl TabStripPlacement="Top" Grid.Column="1" ItemsSource="{Binding Path=ReportsVM}"
+    <TabControl TabStripPlacement="Top"
+                Grid.Column="1"
+                ItemsSource="{Binding Path=ReportsVM}"
                 SelectedItem="{Binding Path=SelectedReport}">
       <FrameworkElement.Resources>
         <DataTemplate DataType="{x:Type fcrd:ReportByPeriodMonthCrcVM}">
@@ -68,7 +74,10 @@
               <ColumnDefinition Width="28" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="{Binding Path=Header}" />
-            <Button Grid.Column="1" Height="24" Width="24"
+            <Button Grid.Column="1"
+                    Height="24"
+                    Width="24"
+                    HorizontalAlignment="Right"
                     Command="{Binding ElementName=ReportsCtrl, Path=DataContext.CloseReportCommand}">
 
                 <Path Fill="Tomato"

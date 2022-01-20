@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using Financier.DataAccess.Abstractions;
+using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Financier.Reports.Common
 {
     public abstract class BaseReportVM<T> : BindableBase where T : BaseReportModel, new()
     {
+        private readonly IFinancierDatabase financierDatabase;
         private ProjectModel _project;
         private CategoryModel _category;
         private AccountModel _account;
@@ -16,13 +18,23 @@ namespace Financier.Reports.Common
         private YearMonths _startYearMonths;
         private YearMonths _endYearMonths;
         private RelayCommand _refreshDataCommand;
+        private ObservableCollection<T> reportData;
 
         public string Header { get; set; }
 
-        public ObservableCollection<T> ReportData { get; set; }
-
-        protected BaseReportVM()
+        public ObservableCollection<T> ReportData
         {
+            get => reportData;
+            set
+            {
+                reportData = value;
+                RaisePropertyChanged(nameof(ReportData));
+            }
+        }
+
+        protected BaseReportVM(IFinancierDatabase financierDatabase)
+        {
+            this.financierDatabase = financierDatabase;
             ReportData = new ObservableCollection<T>();
         }
 
@@ -98,12 +110,13 @@ namespace Financier.Reports.Common
 
         public ICommand RefreshDataCommand => _refreshDataCommand ?? (_refreshDataCommand = new RelayCommand(param => RefreshData()));
 
-        private void RefreshData()
+        private async void RefreshData()
         {
             string sql = GetSql();
             if (string.IsNullOrEmpty(sql))
                 return;
-            DB.GetData(sql, ReportData);
+            var data = await financierDatabase.ExecuteQuery<T>(sql);
+            ReportData = new ObservableCollection<T>(data);
         }
 
         protected abstract string GetSql();

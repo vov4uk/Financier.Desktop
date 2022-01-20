@@ -1,4 +1,5 @@
-﻿using Financier.Reports.Common;
+﻿using Financier.DataAccess.Abstractions;
+using Financier.Reports.Common;
 
 namespace Financier.Reports.Reports
 {
@@ -12,9 +13,13 @@ SELECT title,
               WHEN {0}= 1 THEN total_amount
               ELSE total_amount_indef
        END / 100.00, 2) AS total
-FROM   account
+FROM   v_account
 WHERE  1 = 1 {1}
        /*FILTERS*/";
+
+        public ReportStructureActivesVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
+        {
+        }
 
         protected override string GetSql()
         {
@@ -27,7 +32,7 @@ WHERE  1 = 1 {1}
 "\r\n                             select" +
 "\r\n                                title," +
 "\r\n                                round(case when {0}= 1 then total_amount else total_amount_indef end / 100.00, 2) as total" +
-"\r\n                            from account" +
+"\r\n                            from v_account" +
 "\r\n                            where 1 = 1" +
 "\r\n                            {1} /*FILTERS*/" +
 "\r\n                    ",

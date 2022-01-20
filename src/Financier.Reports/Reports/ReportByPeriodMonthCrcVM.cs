@@ -1,4 +1,5 @@
-﻿using Financier.Reports.Common;
+﻿using Financier.DataAccess.Abstractions;
+using Financier.Reports.Common;
 
 namespace Financier.Reports.Reports
 {
@@ -32,7 +33,7 @@ FROM   (
                                            END )
                                   ELSE 0
                          END) / 100.00 AS debit_sum
-                FROM     transactions
+                FROM     v_report_transactions
                 WHERE    to_account_id = 0
                 AND      (
                                   payee_id > 0
@@ -43,6 +44,10 @@ FROM   (
                          date_month
                 ORDER BY date_year,
                          date_month ) tx";
+
+        public ReportByPeriodMonthCrcVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
+        {
+        }
 
         protected override string GetSql()
         {
@@ -69,7 +74,7 @@ FROM   (
 "\r\n                    date_month," +
 "\r\n                    sum( case when from_amount > 0 then (case when {0} = 1 then from_amount else from_amount_default_crr end ) else 0 end) / 100.00 as credit_sum," +
 "\r\n                    sum( case when from_amount < 0 then - (case when {0} = 1 then from_amount else from_amount_default_crr end ) else 0 end) / 100.00  as debit_sum" +
-"\r\n                from transactions " +
+"\r\n                from v_report_transactions " +
 "\r\n                where to_account_id = 0 and (payee_id > 0 or category_id > 0 or project_id > 0)" +
 "\r\n                        {1} /*FILTERS*/" +
 "\r\n                group by" +

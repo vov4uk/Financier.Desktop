@@ -5,7 +5,6 @@ SELECT t._id,
        t.category_id,
        t.project_id,
        t.location_id,
-       t.note,
        t.from_amount,
        t.to_amount,
        t.datetime,
@@ -24,11 +23,8 @@ SELECT t._id,
        t.last_recurrence,
        t.payee_id,
        t.parent_id,
-       t.updated_on,
-       t.remote_key,
        t.original_currency_id,
        t.original_from_amount,
-       t.blob_key,
        fc.currency_id AS from_account_crc_id,
        tc.currency_id AS to_account_crc_id,
        CASE (SELECT _id FROM currency WHERE  is_default = 1)
@@ -51,12 +47,12 @@ SELECT t._id,
                                                OR rate_date_end = 253402293599000 )), 0)
        END
        to_amount_default_crr,
-       Strftime('%Y', Date(datetime / 1000, 'unixepoch')) date_year,
-       Strftime('%m', Date(datetime / 1000, 'unixepoch')) date_month,
-       Strftime('%d', Date(datetime / 1000, 'unixepoch')) date_day,
-       Strftime('%W', Date(datetime / 1000, 'unixepoch')) date_week,
-       Strftime('%w', Date(datetime / 1000, 'unixepoch')) date_weekday
-FROM   v_report_category t
+       cast (Strftime('%Y', Date(datetime / 1000, 'unixepoch')) as integer) date_year,
+       cast (Strftime('%m', Date(datetime / 1000, 'unixepoch')) as integer) date_month,
+       cast (Strftime('%d', Date(datetime / 1000, 'unixepoch')) as integer) date_day,
+       cast (Strftime('%W', Date(datetime / 1000, 'unixepoch')) as integer) date_week,
+       cast (Strftime('%w', Date(datetime / 1000, 'unixepoch')) as integer) date_weekday
+FROM   transactions t
        LEFT JOIN account fc
               ON t.from_account_id = fc._id
        LEFT JOIN account tc

@@ -1,6 +1,6 @@
 ﻿using Financier.Reports.Common;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace Financier.Reports.Forms
 {
@@ -10,7 +10,7 @@ namespace Financier.Reports.Forms
 
         public string Type { get; private set; }
 
-        public ObservableCollection<ReportNode> Child { get; set; }
+        public List<ReportNode> Child { get; set; }
 
         private ReportNode(string name, string type)
         {

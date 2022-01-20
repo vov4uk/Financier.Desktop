@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Financier.DataAccess\Financier.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System.Windows.Controls.DataVisualization.Toolkit">
       <HintPath>lib\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
     </Reference>

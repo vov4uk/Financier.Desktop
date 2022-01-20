@@ -1,11 +1,13 @@
-﻿namespace Financier.Reports.Common
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Financier.Reports.Common
 {
     public class YearMonths : BaseReportModel
     {
-        [Field("year")]
+        [Column("year")]
         public long? Year { get; set; }
 
-        [Field("month")]
+        [Column("month")]
         public long? Month { get; set; }
 
         public string Name => string.Format("{0} {1}", Month, Year);

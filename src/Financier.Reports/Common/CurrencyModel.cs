@@ -1,14 +1,16 @@
-﻿namespace Financier.Reports.Common
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Financier.Reports.Common
 {
     public class CurrencyModel : BaseReportModel
     {
-        [Field("_id")]
+        [Column("_id")]
         public long? ID { get; set; }
 
-        [Field("name")]
+        [Column("name")]
         public string Name { get; set; }
 
-        [Field("symbol")]
+        [Column("symbol")]
         public string Symbol { get; set; }
     }
 }
