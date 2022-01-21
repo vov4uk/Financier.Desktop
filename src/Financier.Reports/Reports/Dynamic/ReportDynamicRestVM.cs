@@ -1,5 +1,11 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.Reports.Common;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Financier.Reports.Reports
 {
@@ -10,12 +16,11 @@ namespace Financier.Reports.Reports
 SELECT cr.year  AS year,
        cr.month AS month,
        cr.day   AS day,
-       Round(
-               (
+       Round(  (
                SELECT Sum(from_amount_default_crr)
                FROM   v_report_transactions trn
                WHERE  Date(trn.datetime) <= cr.date
-               AND    to_account_id = 0 ) / 100.00, 2 )AS total
+               AND    to_account_id = 0 ) / 100.00, 2 ) AS total
 FROM   (
                        SELECT DISTINCT Date(datetime) AS date,
                                        date_year      AS year,
@@ -50,8 +55,38 @@ FROM   (
                                          "from v_report_transactions " +
                                          "where 1 = 1 " +
                                          "{0} /* FILTER */ " +
-                                      ") cr ",
+                                      ") cr order by year, month, day",
 !string.IsNullOrEmpty(standartTrnFilter) ? " and " + standartTrnFilter : string.Empty);
+        }
+
+        protected override void SetupSeries(List<ReportDynamicRestModel> list)
+        {
+            var plotModel1 = new PlotModel
+            {
+                Title = "DateTime axis"
+            };
+            var dateTimeAxis1 = new DateTimeAxis();
+            var linearAxis1 = new LinearAxis();
+            var lineSeries1 = new LineSeries
+            {
+
+                Color = OxyColor.FromArgb(255, 78, 154, 6),
+                MarkerFill = OxyColor.FromArgb(255, 78, 154, 6),
+                MarkerStroke = OxyColors.ForestGreen,
+                MarkerType = MarkerType.Plus,
+                StrokeThickness = 1
+            };
+
+            foreach (var item in list.OrderBy(x => x.Year).ThenBy(x => x.Month).ThenBy(x => x.Day))
+            {
+                lineSeries1.Points.Add(DateTimeAxis.CreateDataPoint(new DateTime((int)item.Year, (int)item.Month, (int)item.Day), item.Total ?? 0));
+            }
+
+            plotModel1.Axes.Add(dateTimeAxis1);
+            plotModel1.Axes.Add(linearAxis1);
+            plotModel1.Series.Add(lineSeries1);
+
+            PlotModel = plotModel1;
         }
     }
 }

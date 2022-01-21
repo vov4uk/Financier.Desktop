@@ -4,14 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Financier.Reports.Reports
 {
-    public class ReportStructureActivesModel : BaseReportModel
+    public class ReportStructureDebitModel : BaseReportModel
     {
         [Column("title")]
-        [DisplayName("Актив")]
+        [DisplayName("Получатель")]
         public string Name { get; protected set; }
 
         [Column("total")]
         [DisplayName("Сумма")]
         public double? Total { get; protected set; }
+
+        public string Label => $"{Name} ({Total})";
     }
 }

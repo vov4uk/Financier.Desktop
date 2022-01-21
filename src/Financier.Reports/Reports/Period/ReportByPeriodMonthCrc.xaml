@@ -3,14 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Reports.Common"
              xmlns:filters="clr-namespace:Financier.Reports.Reports.Filters"
-             xmlns:charting="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit">
+             xmlns:charting="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" xmlns:oxy="http://oxyplot.org/wpf">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <fcrd:DataGridAutoHeaders Grid.Row="1" ItemsSource="{Binding Path=ReportData}" />
+        <DockPanel Grid.Row="0">
+            <filters:CurrencyFilter Margin="4" />
+            <filters:AccountFilter Margin="4" />
+            <filters:CategoryFilter Margin="4" />
+            <filters:ProjectFilter Margin="4" />
+            <filters:PayeeFilter Margin="4" />
+            <filters:StartYearMonthFilter Margin="4" />
+            <filters:EndYearMonthFilter Margin="4" />
+            <Button Grid.Column="1" Margin="4" Width="150" HorizontalAlignment="Left" Content="Сформировать"
+                        Command="{Binding Path=RefreshDataCommand}" />
+        </DockPanel>
+        <!--<fcrd:DataGridAutoHeaders Grid.Row="1" ItemsSource="{Binding Path=ReportData}" />-->
+        <oxy:PlotView Grid.Row="1" Model="{Binding PlotModel}" />
         <charting:Chart Name="Charts" Grid.Row="2">
             <charting:ColumnSeries DependentValuePath="CreditSum" IndependentValuePath="PeriodDesr" Title="Прибыль"
                              ItemsSource="{Binding Path=ReportData}" />
@@ -19,18 +31,5 @@
             <charting:LineSeries DependentValuePath="Saldo" IndependentValuePath="PeriodDesr" Title="Сальдо"
                            ItemsSource="{Binding Path=ReportData}" />
         </charting:Chart>
-        <Grid Row="0">
-            <DockPanel>
-                <filters:CurrencyFilter Margin="4" />
-                <filters:AccountFilter Margin="4" />
-                <filters:CategoryFilter Margin="4" />
-                <filters:ProjectFilter Margin="4" />
-                <filters:PayeeFilter Margin="4" />
-                <filters:StartYearMonthFilter Margin="4" />
-                <filters:EndYearMonthFilter Margin="4" />
-                <Button Grid.Column="1" Margin="4" Width="150" HorizontalAlignment="Left" Content="Сформировать"
-                Command="{Binding Path=RefreshDataCommand}" />
-            </DockPanel>
-        </Grid>
     </Grid>
 </UserControl>

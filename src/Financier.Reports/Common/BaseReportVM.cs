@@ -1,5 +1,9 @@
 ﻿using Financier.DataAccess.Abstractions;
+using OxyPlot;
+using Prism.Commands;
 using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -17,10 +21,23 @@ namespace Financier.Reports.Common
         private CurrencyModel _curentCurrency;
         private YearMonths _startYearMonths;
         private YearMonths _endYearMonths;
-        private RelayCommand _refreshDataCommand;
+        private DateTime? _date;
+        private DelegateCommand _refreshDataCommand;
         private ObservableCollection<T> reportData;
 
+        private PlotModel plotModel;
+
         public string Header { get; set; }
+
+        public PlotModel PlotModel
+        {
+            get => plotModel;
+            set
+            {
+                plotModel = value;
+                RaisePropertyChanged(nameof(PlotModel));
+            }
+        }
 
         public ObservableCollection<T> ReportData
         {
@@ -108,7 +125,17 @@ namespace Financier.Reports.Common
             }
         }
 
-        public ICommand RefreshDataCommand => _refreshDataCommand ?? (_refreshDataCommand = new RelayCommand(param => RefreshData()));
+        public DateTime? DateFilter
+        {
+            get => _date;
+            set
+            {
+                _date = value;
+                RaisePropertyChanged(nameof(DateFilter));
+            }
+        }
+
+        public ICommand RefreshDataCommand => _refreshDataCommand ?? (_refreshDataCommand = new DelegateCommand(RefreshData));
 
         private async void RefreshData()
         {
@@ -117,15 +144,19 @@ namespace Financier.Reports.Common
                 return;
             var data = await financierDatabase.ExecuteQuery<T>(sql);
             ReportData = new ObservableCollection<T>(data);
+            SetupSeries(data);
         }
 
         protected abstract string GetSql();
+        protected abstract void SetupSeries(List<T> list);
 
         protected string GetStandartTrnFilter()
         {
             StringBuilder stringBuilder = new StringBuilder();
             if (StartYearMonths.Year.HasValue)
                 stringBuilder.Append(string.Format(" ((date_year = {0} and date_month >= {1}) or date_year > {0})", StartYearMonths.Year, StartYearMonths.Month));
+            if (DateFilter.HasValue)
+                stringBuilder.Append($" date(\"{DateFilter.Value.ToString("yyyy-MM-dd")}\")");
             if (EndYearMonths.Year.HasValue)
                 stringBuilder.Append(string.Format(" {2} ((date_year = {0} and date_month <= {1}) or date_year < {0})", EndYearMonths.Year, EndYearMonths.Month, stringBuilder.Length != 0 ? " and " : string.Empty));
             if (Payee.ID.HasValue)

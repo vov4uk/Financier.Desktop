@@ -1,6 +1,7 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.Reports.Common;
 using Financier.Reports.Reports;
+using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace Financier.Reports.Forms
             {
                 Child = new List<ReportNode>
                 {
-                    new ReportNode(typeof(ReportByPeriodMonthCrcVM))
+                    new ReportNode(typeof(ReportByPeriodMonthCrcVM)),
                 }
             };
 
@@ -55,26 +56,21 @@ namespace Financier.Reports.Forms
 
             reportsInfo = new List<ReportNode>
             {
-                new ReportNode("Все отчеты")
-                {
-                    Child = new List<ReportNode>
-                    {
-                        income_outcome,
-                        structure,
-                        dynam
-                    }
-                }
+                income_outcome,
+                structure,
+                dynam
             };
         }
 
-        private RelayCommand _closeReportCommand;
-        private RelayCommand _openReportCommand;
+        private DelegateCommand _closeReportCommand;
+        private DelegateCommand<string> _openReportCommand;
         private ObservableCollection<object> _reportsVM;
         private List<ReportNode> reportsInfo;
         private object _selectedReport;
-        public ICommand CloseReportCommand => _closeReportCommand ?? (_closeReportCommand = new RelayCommand(p => CloseReport()));
 
-        public ICommand OpenReportCommand => _openReportCommand ?? (_openReportCommand = new RelayCommand(p => OpenReport((string)p)));
+        public ICommand CloseReportCommand => _closeReportCommand ?? (_closeReportCommand = new DelegateCommand(CloseReport));
+
+        public ICommand OpenReportCommand => _openReportCommand ?? (_openReportCommand = new DelegateCommand<string>(OpenReport));
 
         public List<ReportNode> ReportsInfo
         {
