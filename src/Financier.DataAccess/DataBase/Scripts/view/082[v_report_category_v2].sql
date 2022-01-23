@@ -18,7 +18,6 @@ SELECT t._id,
        t.project_id,
        t.location_id,
        t.payee_id,
-       t.status,
        CASE (SELECT _id FROM currency WHERE is_default = 1)
          WHEN fc.currency_id THEN from_amount
          ELSE Round(from_amount * (SELECT rate
@@ -38,7 +37,10 @@ SELECT t._id,
                                         AND ( ( datetime BETWEEN rate_date AND rate_date_end )
                                                OR rate_date_end = 253402293599000 )), 0)
        END
-       to_amount_default_currency
+       to_amount_default_currency,
+       cast (Strftime('%Y', Date(datetime / 1000, 'unixepoch')) as integer) date_year,
+       cast (Strftime('%m', Date(datetime / 1000, 'unixepoch')) as integer) date_month,
+       cast (Strftime('%d', Date(datetime / 1000, 'unixepoch')) as integer) date_day
 FROM   v_report_category t
        LEFT JOIN account fc
               ON t.from_account_id = fc._id

@@ -1,6 +1,9 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.Reports.Common;
+using OxyPlot;
+using OxyPlot.Series;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace Financier.Reports.Reports
@@ -64,7 +67,23 @@ WHERE RowNum = 1";
 
         protected override void SetupSeries(List<ReportStructureActivesModel> list)
         {
+            var model = new PlotModel { Title = "Структура активов" };
+            var ps = new PieSeries
+            {
+                StrokeThickness = 2.0,
+                InsideLabelPosition = 0.8,
+                AngleSpan = 360,
+                StartAngle = 0,
+            };
 
+            var series = list.Where(x => x.AccountIsIncludeInTotals == 1 && x.DefaultCurrencyBalance != 0.0).Select(x => new PieSlice(x.Title, x.DefaultCurrencyBalance ?? 0));
+
+            foreach (var item in series)
+            {
+                ps.Slices.Add(item);
+            }
+            model.Series.Add(ps);
+            PlotModel = model;
         }
     }
 }

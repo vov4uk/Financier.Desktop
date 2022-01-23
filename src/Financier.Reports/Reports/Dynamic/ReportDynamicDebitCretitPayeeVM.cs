@@ -1,6 +1,11 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.Reports.Common;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace Financier.Reports.Reports
@@ -81,6 +86,36 @@ ORDER BY tx.date_year,
         protected override void SetupSeries(List<ReportDynamicDebitCretitPayeeModel> list)
         {
 
+            var model = new PlotModel();
+
+            var dateTimeAxis1 = new DateTimeAxis();
+
+            var valueAxis = new LinearAxis
+            {
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dot,
+            };
+
+            // TODO - add title (selected payee + category)
+            var saldo = new LineSeries
+            {
+                RenderInLegend = false,
+                LabelFormatString = "{1}",
+                MarkerType = MarkerType.Circle,
+            };
+
+            foreach (var item in list.OrderBy(x => x.Year).ThenBy(x => x.Month))
+            {
+                saldo.Points.Add(DateTimeAxis.CreateDataPoint(new DateTime((int)item.Year, (int)item.Month, 1), item.Total ?? 0));
+            }
+
+            model.Series.Add(saldo);
+
+            model.Axes.Add(valueAxis);
+            model.Axes.Add(dateTimeAxis1);
+
+
+            PlotModel = model;
         }
     }
 }

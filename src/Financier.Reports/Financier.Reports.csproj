@@ -15,16 +15,4 @@
     <ProjectReference Include="..\Financier.DataAccess\Financier.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit">
-      <HintPath>lib\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="lib\System.Windows.Controls.DataVisualization.Toolkit.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

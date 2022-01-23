@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Reports.Common"
              MinWidth="140">
-  <GroupBox Header="Получатель">
-    <ComboBox Grid.Column="1" DisplayMemberPath="Title" SelectedItem="{Binding Path=Payee}"
+    <GroupBox Header="Payee">
+    <ComboBox DisplayMemberPath="Title"
+              SelectedItem="{Binding Path=Payee}"
               ItemsSource="{Binding Source={x:Static fcrd:DbManual.Payee}, Mode=OneWay}" />
   </GroupBox>
 </UserControl>

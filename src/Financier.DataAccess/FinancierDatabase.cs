@@ -4,6 +4,7 @@ using Financier.DataAccess.DataBase.Scripts;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Financier.DataAccess
 {
     public class FinancierDatabase : IFinancierDatabase
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly DbConnection _connection;
         private bool isDisposed;
 
@@ -219,6 +221,7 @@ namespace Financier.DataAccess
             await using (var db = new FinancierDataContext(ContextOptions))
             using (var command = db.Database.GetDbConnection().CreateCommand())
             {
+                Logger.Info(query);
                 command.CommandText = query;
                 command.CommandType = CommandType.Text;
 

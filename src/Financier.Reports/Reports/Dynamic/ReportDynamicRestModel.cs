@@ -16,7 +16,7 @@ namespace Financier.Reports.Reports
         public long Day { get; protected set; }
 
         [DisplayName("Дата")]
-        public string Title => string.Format("{0}.{1,##}.{2,##}", Year, Month, Day);
+        public string Title => $"{Year}.{Month:00}.{Day:00}";
 
         [DisplayName("Всего в домашней валюте")]
         [Column("total")]

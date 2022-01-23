@@ -110,13 +110,13 @@ str);
             {
                 XAxisKey = "Value",
                 YAxisKey = "Category",
-                Title = "Debit",
+                Title = "Outcome",
                 RenderInLegend = true,
             };
 
             var credit = new BarSeries
             {
-                Title = "Credit",
+                Title = "Income",
                 XAxisKey = "Value",
                 YAxisKey = "Category",
                 RenderInLegend = true,

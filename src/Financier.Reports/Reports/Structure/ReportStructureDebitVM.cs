@@ -11,25 +11,28 @@ namespace Financier.Reports.Reports
     public class ReportStructureDebitVM : BaseReportVM<ReportStructureDebitModel>
     {
         private const string BaseSqlText = @"
-SELECT     p.title                       AS title,
-           - Round(tx.total / 100.00, 2) AS total
-FROM       (
-                    SELECT   t.category_id,
-                             Sum(
-                             CASE
-                                      WHEN {0}=1 THEN t.from_amount
-                                      ELSE t.from_amount_default_crr
-                             END) AS total
-                    FROM     v_report_transactions t
-                    WHERE    (
-                                      payee_id > 0
-                             OR       category_id > 0
-                             OR       project_id > 0)
-                    AND      t.from_amount < 0 {1}
-                             /*FILTERS*/
-                    GROUP BY t.category_id ) tx
-INNER JOIN category p
-ON         p._id = tx.category_id";
+SELECT p.title                                                 AS title,
+       Round(Sum(tx.from_amount_default_currency) / 100.00, 2) AS total
+FROM   (SELECT (SELECT parent._id AS _id
+                FROM   category AS node,
+                       category AS parent
+                WHERE  node.LEFT BETWEEN parent.LEFT AND parent.right
+                       AND node._id = t.category_id
+                       AND parent._id != t.category_id
+                ORDER  BY parent.LEFT ASC
+                LIMIT  1) top_parent,
+               t.from_amount_default_currency
+        FROM   v_report_category_v2 t
+        WHERE  ( payee_id > 0 OR category_id > 0 OR project_id > 0 )
+        AND t.from_amount < 0
+/*FILTERS*/
+               {0}
+/*FILTERS*/
+       ) tx
+       INNER JOIN category p
+               ON p._id = tx.top_parent
+GROUP  BY p._id
+ORDER  BY total ASC ";
 
         public ReportStructureDebitVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
         {
@@ -39,36 +42,16 @@ ON         p._id = tx.category_id";
         protected override string GetSql()
         {
             string str = string.Empty;
-            if (CurentCurrency.ID.HasValue)
-            {
-                str = string.Format(" and from_account_crc_id = {0}", CurentCurrency.ID);
-            }
             string standartTrnFilter = GetStandartTrnFilter();
             if (standartTrnFilter != string.Empty)
             {
-                str = str + " and " + standartTrnFilter;
+                str = " and " + standartTrnFilter;
             }
-            return string.Format(
-"\r\n                            select" +
-"\r\n                                p.title as title," +
-"\r\n                                round(tx.total / 100.00, 2) as total" +
-"\r\n                            from (" +
-"\r\n                            select t.category_id, sum(case when {0}=1 then t.from_amount else t.from_amount_default_crr end) as total" +
-"\r\n                            from v_report_transactions t" +
-"\r\n                            where " +
-"\r\n                                 (payee_id > 0 or category_id > 0 or project_id > 0) and t.from_amount < 0" +
-"\r\n                                {1} /*FILTERS*/" +
-"\r\n                            group by" +
-"\r\n                                t.category_id" +
-"\r\n                                ) tx inner join category p on p._id = tx.category_id" +
-"\r\n                            order by total asc",
-                CurentCurrency.ID.HasValue ? 1 : 0,
-                str);
+            return string.Format(BaseSqlText, str);
         }
 
         protected override void SetupSeries(List<ReportStructureDebitModel> list)
         {
-
             var model = new PlotModel { Title = "Структура расходов"};
             var ps = new PieSeries
             {

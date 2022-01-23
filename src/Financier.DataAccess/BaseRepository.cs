@@ -12,6 +12,7 @@ namespace Financier.DataAccess
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly DbContext ctx;
 
         public BaseRepository(DbContext context)
@@ -46,7 +47,7 @@ namespace Financier.DataAccess
             foreach (var includeExpression in includes)
                 result = result.Include(includeExpression);
 
-            Debug.WriteLine(result.ToQueryString());
+            Logger.Info(result.ToQueryString());
 
             return await result.ToListAsync();
         }

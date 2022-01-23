@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Reports.Common"
              Width="120">
-  <GroupBox Header="Начало периода">
-    <ComboBox Grid.Column="1" DisplayMemberPath="Name" SelectedItem="{Binding Path=StartYearMonths}"
+  <GroupBox Header="From">
+    <ComboBox Grid.Column="1" DisplayMemberPath="Name"
+              SelectedItem="{Binding Path=StartYearMonths}"
               ItemsSource="{Binding Source={x:Static fcrd:DbManual.YearMonths}, Mode=OneWay}" />
   </GroupBox>
 </UserControl>
