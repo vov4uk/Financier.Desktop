@@ -7,7 +7,7 @@ namespace Financier.Reports.Reports
     public class ReportStructureActivesModel : BaseReportModel
     {
         [Column("account_title")]
-        [DisplayName("Актив")]
+        [DisplayName("Account")]
         public string Title { get; protected set; }
 
         [Column("account_id")]
@@ -22,18 +22,19 @@ namespace Financier.Reports.Reports
         [Column("sort_order")]
         public long SortOrder { get; protected set; }
 
+        [DisplayName("Balance")]
         [Column("balance")]
         public double? Balance { get; protected set; }
 
-        [DisplayName("Баланс")]
         public string BalanceStr => $"{Balance}{BalanceSymbol}";
 
-        [DisplayName("Всего в домашней валюте")]
         public string DefaultCurrencyBalanceStr => $"{DefaultCurrencyBalance}{DefaultCurrencySymbol}";
 
+        [DisplayName("Sign")]
         [Column("symbol")]
         public string BalanceSymbol { get; protected set; }
 
+        [DisplayName("Total (home currency)")]
         [Column("balance_default_crr")]
         public double? DefaultCurrencyBalance { get; protected set; }
 
@@ -41,7 +42,7 @@ namespace Financier.Reports.Reports
         public string DefaultCurrencySymbol { get; protected set; }
 
         [Column("date")]
-        [DisplayName("Дата")]
+        [DisplayName("Date")]
         public string Date { get; protected set; }
     }
 }

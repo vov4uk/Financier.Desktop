@@ -56,9 +56,6 @@
                 <DataTemplate DataType="{x:Type fcrd:ReportStructureDebitVM}">
                     <fcrd:ReportStructureDebit />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type fcrd:ReportStructureCreditVM}">
-                    <fcrd:ReportStructureCredit />
-                </DataTemplate>
                 <DataTemplate DataType="{x:Type fcrd:ReportDynamicDebitCretitPayeeVM}">
                     <fcrd:ReportDynamicDebitCretitPayee />
                 </DataTemplate>

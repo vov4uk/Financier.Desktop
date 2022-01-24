@@ -32,7 +32,7 @@ namespace Financier.Reports.Common
         public PlotModel PlotModel
         {
             get => plotModel;
-            set
+            private set
             {
                 plotModel = value;
                 RaisePropertyChanged(nameof(PlotModel));
@@ -53,6 +53,7 @@ namespace Financier.Reports.Common
         {
             this.financierDatabase = financierDatabase;
             ReportData = new ObservableCollection<T>();
+            PlotModel = GetPlotModel(new List<T>());
         }
 
         public ProjectModel Project
@@ -144,11 +145,11 @@ namespace Financier.Reports.Common
                 return;
             var data = await financierDatabase.ExecuteQuery<T>(sql);
             ReportData = new ObservableCollection<T>(data);
-            SetupSeries(data);
+            PlotModel = GetPlotModel(data);
         }
 
         protected abstract string GetSql();
-        protected abstract void SetupSeries(List<T> list);
+        protected abstract PlotModel GetPlotModel(List<T> list);
 
         protected string GetStandartTrnFilter()
         {

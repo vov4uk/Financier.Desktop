@@ -7,11 +7,11 @@ namespace Financier.Reports.Reports
     public class ReportStructureDebitModel : BaseReportModel
     {
         [Column("title")]
-        [DisplayName("Получатель")]
+        [DisplayName("Category")]
         public string Name { get; protected set; }
 
         [Column("total")]
-        [DisplayName("Сумма")]
+        [DisplayName("Total")]
         public double? Total { get; protected set; }
 
         public string Label => $"{Name} ({Total})";

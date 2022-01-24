@@ -5,17 +5,45 @@
              xmlns:filters="clr-namespace:Financier.Reports.Reports.Filters"
              xmlns:oxy="http://oxyplot.org/wpf">
     <Grid>
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="boolToVis"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
-            <RowDefinition />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
+            <GroupBox Header="View">
+                <DockPanel Width="128">
+                    <RadioButton Content="Pie chart"
+                                 x:Name="GraphicsBtn"
+                                 Width="60"
+                                 Height="22"
+                                 Style="{StaticResource {x:Type ToggleButton}}"
+                                 Margin="2" />
+                    <RadioButton Content="Grid"
+                                 Style="{StaticResource {x:Type ToggleButton}}"
+                                 x:Name="GridBtn"
+                                 IsChecked="True"
+                                 Width="60"
+                                 Height="22"
+                                 Margin="2" />
+                </DockPanel>
+            </GroupBox>
             <filters:DateFilter Margin="4" />
-            <Button Grid.Column="1" Margin="4" HorizontalAlignment="Left" Width="150" Content="Сформировать"
-                Command="{Binding Path=RefreshDataCommand}" />
+            <Button Grid.Column="1"
+                    Margin="4"
+                    HorizontalAlignment="Left"
+                    Width="150"
+                    Height="40"
+                    Content="Refresh"
+                    Command="{Binding Path=RefreshDataCommand}" />
         </DockPanel>
-        <fcrd:DataGridAutoHeaders Grid.Row="1" ItemsSource="{Binding Path=ReportData}" />
-        <oxy:PlotView Grid.Row="2" Model="{Binding PlotModel}" />
+        <oxy:PlotView Grid.Row="1"
+                      Model="{Binding PlotModel}"
+                      Visibility="{Binding ElementName=GraphicsBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"/>
+        <fcrd:DataGridAutoHeaders Grid.Row="1"
+                                  Visibility="{Binding ElementName=GridBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"
+                                  ItemsSource="{Binding Path=ReportData}" />
     </Grid>
 </UserControl>

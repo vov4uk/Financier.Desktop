@@ -39,13 +39,13 @@ SELECT
     t.to_account_id as is_transfer
 FROM 
     transactions as t
-    INNER JOIN account as a1 ON a1._id=t.from_account_id
-    INNER JOIN currency as c1 ON c1._id=a1.currency_id
-    INNER JOIN category as cat ON cat._id=t.category_id
+    INNER JOIN account as a1 ON a1._id = t.from_account_id
+    INNER JOIN currency as c1 ON c1._id = a1.currency_id
+    INNER JOIN category as cat ON cat._id = t.category_id
     LEFT OUTER JOIN running_balance as frb ON frb.transaction_id = t._id AND frb.account_id=t.from_account_id
     LEFT OUTER JOIN running_balance as trb ON trb.transaction_id = t._id AND trb.account_id=t.to_account_id
-    LEFT OUTER JOIN account as a2 ON a2._id=t.to_account_id
-    LEFT OUTER JOIN currency as c2 ON c2._id=a2.currency_id
-    LEFT OUTER JOIN project as p ON p._id=t.project_id
-    LEFT OUTER JOIN locations as loc ON loc._id=t.location_id
-    LEFT OUTER JOIN payee as pp ON pp._id=t.payee_id;
+    LEFT OUTER JOIN account as a2 ON a2._id = t.to_account_id
+    LEFT OUTER JOIN currency as c2 ON c2._id = a2.currency_id
+    LEFT OUTER JOIN project as p ON p._id = t.project_id
+    LEFT OUTER JOIN locations as loc ON loc._id = t.location_id
+    LEFT OUTER JOIN payee as pp ON pp._id = t.payee_id;

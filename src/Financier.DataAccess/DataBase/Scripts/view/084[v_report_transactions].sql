@@ -1,6 +1,7 @@
 CREATE VIEW v_report_transactions AS
 SELECT t._id,
        t.from_account_id,
+       fc.is_include_into_totals as from_account_is_include_into_totals,
        t.to_account_id,
        t.category_id,
        t.project_id,

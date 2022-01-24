@@ -7,26 +7,36 @@ using System.Linq;
 
 namespace Financier.Reports.Reports
 {
-    [Header("Структура расходов")]
+    [Header("Income-Expense structure")]
     public class ReportStructureDebitVM : BaseReportVM<ReportStructureDebitModel>
     {
+        private bool isIncome;
+        public bool IsIncome {
+
+            get => isIncome;
+            set
+            {
+                isIncome = value;
+                RaisePropertyChanged(nameof(IsIncome));
+            }
+        }
+
         private const string BaseSqlText = @"
-SELECT p.title                                                 AS title,
-       Round(Sum(tx.from_amount_default_currency) / 100.00, 2) AS total
+SELECT p.title                                            AS title,
+       Round(Sum(tx.from_amount_default_crr) / 100.00, 2) AS total
 FROM   (SELECT (SELECT parent._id AS _id
                 FROM   category AS node,
                        category AS parent
                 WHERE  node.LEFT BETWEEN parent.LEFT AND parent.right
                        AND node._id = t.category_id
-                       AND parent._id != t.category_id
                 ORDER  BY parent.LEFT ASC
                 LIMIT  1) top_parent,
-               t.from_amount_default_currency
-        FROM   v_report_category_v2 t
-        WHERE  ( payee_id > 0 OR category_id > 0 OR project_id > 0 )
-        AND t.from_amount < 0
+               t.from_amount_default_crr
+        FROM   v_report_transactions t
+        WHERE  category_id > 0 AND from_account_is_include_into_totals = 1
+        AND t.from_amount {0} 0
 /*FILTERS*/
-               {0}
+               {1}
 /*FILTERS*/
        ) tx
        INNER JOIN category p
@@ -47,12 +57,15 @@ ORDER  BY total ASC ";
             {
                 str = " and " + standartTrnFilter;
             }
-            return string.Format(BaseSqlText, str);
+
+            string sign = IsIncome ? ">" : "<";
+
+            return string.Format(BaseSqlText, sign, str);
         }
 
-        protected override void SetupSeries(List<ReportStructureDebitModel> list)
+        protected override PlotModel GetPlotModel(List<ReportStructureDebitModel> list)
         {
-            var model = new PlotModel { Title = "Структура расходов"};
+            var model = new PlotModel();
             var ps = new PieSeries
             {
                 StrokeThickness = 2.0,
@@ -68,7 +81,7 @@ ORDER  BY total ASC ";
                 ps.Slices.Add(item);
             }
             model.Series.Add(ps);
-            PlotModel = model;
+            return model;
         }
     }
 }

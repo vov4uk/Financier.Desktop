@@ -2,20 +2,67 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fcrd="clr-namespace:Financier.Reports.Common"
              xmlns:filters="clr-namespace:Financier.Reports.Reports.Filters">
     <Grid>
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="boolToVis" />
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Row="0">
             <DockPanel>
+                <GroupBox Header="Type">
+                    <DockPanel Width="128">
+                        <RadioButton Content="Expense"
+                                     Width="60"
+                                     Height="22"
+                                     Style="{StaticResource {x:Type ToggleButton}}"
+                                     IsChecked="True"
+                                     Margin="2" />
+                        <RadioButton Content="Income"
+                                     IsChecked="{Binding IsIncome, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource {x:Type ToggleButton}}"
+                                     Width="60"
+                                     Height="22"
+                                     Margin="2" />
+                    </DockPanel>
+                </GroupBox>
+                <GroupBox Header="View">
+                    <DockPanel Width="128">
+                        <RadioButton Content="Pie chart"
+                                     x:Name="GraphicsBtn"
+                                     Width="60"
+                                     Height="22"
+                                     Style="{StaticResource {x:Type ToggleButton}}"
+                                     IsChecked="True"
+                                     Margin="2" />
+                        <RadioButton Content="Grid"
+                                     Style="{StaticResource {x:Type ToggleButton}}"
+                                     x:Name="GridBtn"
+                                     Width="60"
+                                     Height="22"
+                                     Margin="2" />
+                    </DockPanel>
+                </GroupBox>
                 <filters:StartYearMonthFilter Margin="4" />
                 <filters:EndYearMonthFilter Margin="4" />
-                <Button Grid.Column="1" HorizontalAlignment="Left" Margin="4" Width="150" Content="Сформировать"
-                Command="{Binding Path=RefreshDataCommand}" />
+                <Button Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        Margin="4"
+                        Width="150"
+                        Height="40"
+                        Content="Refresh"
+                        Command="{Binding Path=RefreshDataCommand}" />
             </DockPanel>
         </Grid>
-        <oxy:PlotView Grid.Row="1" Model="{Binding PlotModel}" />
+        <oxy:PlotView Grid.Row="1"
+                      Model="{Binding PlotModel}"
+                      Visibility="{Binding ElementName=GraphicsBtn, Path=IsChecked, Converter={StaticResource boolToVis}}" />
+        <fcrd:DataGridAutoHeaders Grid.Row="1"
+                                  Visibility="{Binding ElementName=GridBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"
+                                  ItemsSource="{Binding Path=ReportData}" />
     </Grid>
 </UserControl>

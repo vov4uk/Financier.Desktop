@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Financier.Reports.Reports
 {
-    [Header("Динамика остатков")]
+    [Header("Balance dynamics")]
     public class ReportDynamicRestVM : BaseReportVM<ReportDynamicRestModel>
     {
 
@@ -19,7 +19,6 @@ namespace Financier.Reports.Reports
 //               cr.week AS week,
 //               Round((SELECT Sum(from_amount_default_crr)
 //                      FROM   v_report_transactions trn
-        
 //                      WHERE Date(trn.datetime / 1000, 'unixepoch') <= cr.date
 //                            AND to_account_id = 0
 //                     AND category_id != -1) / 100.00, 2) AS total
@@ -74,22 +73,18 @@ ORDER BY year, month, day";
             return string.Format(BaseSqlText, !string.IsNullOrEmpty(standartTrnFilter) ? " and " + standartTrnFilter : string.Empty);
         }
 
-        protected override void SetupSeries(List<ReportDynamicRestModel> list)
+        protected override PlotModel GetPlotModel(List<ReportDynamicRestModel> list)
         {
-            var plotModel1 = new PlotModel
-            {
-                Title = "Динамика остатков"
-            };
-            var dateTimeAxis1 = new DateTimeAxis();
+            var model = new PlotModel();
+            var dateTimeAxis = new DateTimeAxis();
 
-            var linearAxis1 = new LinearAxis
+            var linearAxis = new LinearAxis
             {
                 MajorGridlineStyle = LineStyle.Solid,
                 MinorGridlineStyle = LineStyle.Dot,
             };
-            var lineSeries1 = new LineSeries
+            var lineSeries = new LineSeries
             {
-
                 Color = OxyColor.FromArgb(255, 78, 154, 6),
                 MarkerFill = OxyColor.FromArgb(255, 78, 154, 6),
                 MarkerStroke = OxyColors.ForestGreen,
@@ -99,14 +94,14 @@ ORDER BY year, month, day";
 
             foreach (var item in list.OrderBy(x => x.Year).ThenBy(x => x.Month).ThenBy(x => x.Day))
             {
-                lineSeries1.Points.Add(DateTimeAxis.CreateDataPoint(new DateTime((int)item.Year, (int)item.Month, (int)item.Day), item.Total ?? 0));
+                lineSeries.Points.Add(DateTimeAxis.CreateDataPoint(new DateTime((int)item.Year, (int)item.Month, (int)item.Day), item.Total ?? 0));
             }
 
-            plotModel1.Axes.Add(dateTimeAxis1);
-            plotModel1.Axes.Add(linearAxis1);
-            plotModel1.Series.Add(lineSeries1);
+            model.Axes.Add(dateTimeAxis);
+            model.Axes.Add(linearAxis);
+            model.Series.Add(lineSeries);
 
-            PlotModel = plotModel1;
+            return model;
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Financier.Reports.Common
                 _currencies = new ObservableCollection<CurrencyModel>(currencies);
                 _currencies.Insert(0, new CurrencyModel()
                 {
-                    Name = "Все валюты"
+                    Name = "All currencies"
                 });
             }
 

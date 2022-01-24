@@ -15,10 +15,10 @@ namespace Financier.Reports.Reports
         [Column("day")]
         public long Day { get; protected set; }
 
-        [DisplayName("Дата")]
+        [DisplayName("Date")]
         public string Title => $"{Year}.{Month:00}.{Day:00}";
 
-        [DisplayName("Всего в домашней валюте")]
+        [DisplayName("Total (home currency)")]
         [Column("total")]
         public double? Total { get; protected set; }
     }

@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace Financier.Reports.Reports
 {
-    [Header("Структура активов")]
+    [Header("Asset structure")]
     public class ReportStructureActivesVM : BaseReportVM<ReportStructureActivesModel>
     {
         private const string BaseSqlText = @"
@@ -36,7 +36,7 @@ FROM   (SELECT a.title AS account_title,
                WHEN c._id THEN r.balance / 100.0
                ELSE Round((r.balance / 100.0 ) * (SELECT rate
                                                   FROM v_currency_exchange_rate
-                                                  WHERE to_currency_id = (SELECT _id FROM   currency WHERE is_default = 1)
+                                                  WHERE to_currency_id = (SELECT _id FROM currency WHERE is_default = 1)
                                                         AND from_currency_id = c._id
                                                         AND((t.datetime BETWEEN rate_date AND rate_date_end) OR rate_date_end = 253402293599000 )), 0)
                END AS balance_default_crr,
@@ -48,7 +48,8 @@ FROM   (SELECT a.title AS account_title,
              INNER JOIN transactions t ON t._id = r.transaction_id
         WHERE Date(t.datetime / 1000, 'unixepoch') < {0}
         ORDER BY a._id, r.datetime DESC ) rep
-WHERE RowNum = 1";
+WHERE RowNum = 1
+ORDER BY account_is_active DESC, sort_order ASC";
 
         public ReportStructureActivesVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
         {
@@ -65,9 +66,9 @@ WHERE RowNum = 1";
             return string.Format(BaseSqlText, GetStandartTrnFilter());
         }
 
-        protected override void SetupSeries(List<ReportStructureActivesModel> list)
+        protected override PlotModel GetPlotModel(List<ReportStructureActivesModel> list)
         {
-            var model = new PlotModel { Title = "Структура активов" };
+            var model = new PlotModel();
             var ps = new PieSeries
             {
                 StrokeThickness = 2.0,
@@ -83,7 +84,7 @@ WHERE RowNum = 1";
                 ps.Slices.Add(item);
             }
             model.Series.Add(ps);
-            PlotModel = model;
+            return model;
         }
     }
 }

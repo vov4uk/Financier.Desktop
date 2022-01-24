@@ -27,7 +27,7 @@ namespace Financier.Reports.Forms
 
         private void BuildReportsTree()
         {
-            ReportNode income_outcome = new ReportNode("Приход/расход за период")
+            ReportNode income_outcome = new ReportNode("Income / expense for the period")
             {
                 Child = new List<ReportNode>
                 {
@@ -35,17 +35,16 @@ namespace Financier.Reports.Forms
                 }
             };
 
-            ReportNode structure = new ReportNode("Структура")
+            ReportNode structure = new ReportNode("Structure")
             {
                 Child = new List<ReportNode>
                 {
                     new ReportNode(typeof(ReportStructureActivesVM)),
                     new ReportNode(typeof(ReportStructureDebitVM)),
-                    new ReportNode(typeof(ReportStructureCreditVM)),
                 }
             };
 
-            ReportNode dynam = new ReportNode("Динамика")
+            ReportNode dynam = new ReportNode("Dynamics")
             {
                 Child = new List<ReportNode>
                 {
