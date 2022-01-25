@@ -31,11 +31,11 @@
                 <ItemsControl.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
                         <TextBlock Text="{Binding Path=Name}">
-            <UIElement.InputBindings>
-              <MouseBinding Gesture="LeftDoubleClick"
-                            Command="{Binding ElementName=ReportsCtrl, Path=DataContext.OpenReportCommand}"
-                            CommandParameter="{Binding Type}" />
-            </UIElement.InputBindings>
+                             <UIElement.InputBindings>
+                               <MouseBinding Gesture="LeftDoubleClick"
+                                             Command="{Binding ElementName=ReportsCtrl, Path=DataContext.OpenReportCommand}"
+                                             CommandParameter="{Binding Type}" />
+                             </UIElement.InputBindings>
                         </TextBlock>
                     </HierarchicalDataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -58,6 +58,9 @@
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type fcrd:ReportDynamicDebitCretitPayeeVM}">
                     <fcrd:ReportDynamicDebitCretitPayee />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type fcrd:ByCategoryReportVM}">
+                    <fcrd:ByCategoryReportView />
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type fcrd:ReportDynamicRestVM}">
                     <fcrd:ReportDynamicRest />

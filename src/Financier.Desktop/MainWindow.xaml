@@ -19,7 +19,6 @@
             <x:Type x:Key="PayeeType" TypeName="data:Payee" />
             <x:Type x:Key="LocationType" TypeName="data:Location" />
             <x:Type x:Key="CurrencyType" TypeName="data:Currency" />
-            <x:Type x:Key="ReportType" TypeName="dataView:ByCategoryReportV2" />
             <x:Type x:Key="CurrencyExchangeRateType" TypeName="data:CurrencyExchangeRate" />
             <x:Type x:Key="BudgetType" TypeName="data:Budget" />
             <x:Type x:Key="TransactionsViewType" TypeName="dataView:BlotterTransactions" />
@@ -102,13 +101,9 @@
                 <RibbonGroup x:Name="Reports"
                              Header="Reports">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_reports_selected.png"
-                                  Label="By category"
+                                  Label="Reports"
                                   Command="{Binding Path=MenuNavigateCommand}"
-                                  CommandParameter="{StaticResource ReportType}"/>
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
-                                  Command="{Binding Path=MenuNavigateCommand}"
-                                  CommandParameter="{StaticResource ReportsControl}"
-                                  Label="Others" />
+                                  CommandParameter="{StaticResource ReportsControl}"/>
                 </RibbonGroup>
                 <!--<RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png"

@@ -3,10 +3,11 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Reports.Common"
-             xmlns:filters="clr-namespace:Financier.Reports.Reports.Filters">
+             xmlns:filters="clr-namespace:Financier.Reports.Reports.Filters" xmlns:converters="clr-namespace:Financier.Reports.Converters">
     <Grid>
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="boolToVis" />
+            <converters:InvertedBooleanToVisibilityConverter x:Key="invBoolToVis"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -31,15 +32,21 @@
                     </DockPanel>
                 </GroupBox>
                 <GroupBox Header="View">
-                    <DockPanel Width="128">
+                    <DockPanel Width="192">
                         <RadioButton Content="Pie chart"
-                                     x:Name="GraphicsBtn"
+                                     x:Name="PieBtn"
                                      Width="60"
                                      Height="22"
                                      Style="{StaticResource {x:Type ToggleButton}}"
                                      IsChecked="True"
                                      Margin="2" />
-                        <RadioButton Content="Grid"
+                        <RadioButton Content="Bar chart"
+                                     x:Name="BarBtn"
+                                     Width="60"
+                                     Height="22"
+                                     Style="{StaticResource {x:Type ToggleButton}}"
+                                     Margin="2" />
+                        <RadioButton Content="GridBtn"
                                      Style="{StaticResource {x:Type ToggleButton}}"
                                      x:Name="GridBtn"
                                      Width="60"
@@ -60,8 +67,12 @@
         </Grid>
         <oxy:PlotView Grid.Row="1"
                       Model="{Binding PlotModel}"
-                      Visibility="{Binding ElementName=GraphicsBtn, Path=IsChecked, Converter={StaticResource boolToVis}}" />
+                      Visibility="{Binding ElementName=PieBtn, Path=IsChecked, Converter={StaticResource boolToVis}}" />
+        <oxy:PlotView Grid.Row="1"
+                      Model="{Binding BarChartModel}"
+                      Visibility="{Binding ElementName=BarBtn, Path=IsChecked, Converter={StaticResource boolToVis}}" />
         <fcrd:DataGridAutoHeaders Grid.Row="1"
+                                  x:Name="dataGrid"
                                   Visibility="{Binding ElementName=GridBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"
                                   ItemsSource="{Binding Path=ReportData}" />
     </Grid>

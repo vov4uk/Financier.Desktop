@@ -1,5 +1,6 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
+using Financier.DataAccess.Utils;
 using Financier.DataAccess.View;
 using Financier.Desktop.Views;
 using Financier.Adapter;

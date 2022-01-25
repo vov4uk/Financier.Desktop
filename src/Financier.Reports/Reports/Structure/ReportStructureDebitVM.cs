@@ -1,7 +1,10 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.Reports.Common;
 using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Legends;
 using OxyPlot.Series;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,13 +14,25 @@ namespace Financier.Reports.Reports
     public class ReportStructureDebitVM : BaseReportVM<ReportStructureDebitModel>
     {
         private bool isIncome;
-        public bool IsIncome {
 
+        public bool IsIncome
+        {
             get => isIncome;
             set
             {
                 isIncome = value;
                 RaisePropertyChanged(nameof(IsIncome));
+            }
+        }
+        private PlotModel barChartModel;
+
+        public PlotModel BarChartModel
+        {
+            get => barChartModel;
+            private set
+            {
+                barChartModel = value;
+                RaisePropertyChanged(nameof(BarChartModel));
             }
         }
 
@@ -65,6 +80,12 @@ ORDER  BY total ASC ";
 
         protected override PlotModel GetPlotModel(List<ReportStructureDebitModel> list)
         {
+            BarChartModel = GetBarChartModel(list);
+            return GetPieChartModel(list);
+        }
+
+        private static PlotModel GetPieChartModel(List<ReportStructureDebitModel> list)
+        {
             var model = new PlotModel();
             var ps = new PieSeries
             {
@@ -82,6 +103,58 @@ ORDER  BY total ASC ";
             }
             model.Series.Add(ps);
             return model;
+        }
+
+        protected PlotModel GetBarChartModel(List<ReportStructureDebitModel> list)
+        {
+            var plotModel1 = new PlotModel
+            {
+            };
+            var categoryAxis1 = new CategoryAxis
+            {
+                MinorStep = 1,
+                Position = AxisPosition.Left
+            };
+
+            plotModel1.Axes.Add(categoryAxis1);
+
+            var linearAxis1 = new LinearAxis
+            {
+                AbsoluteMinimum = 0,
+                MaximumPadding = 0.06,
+                MinimumPadding = 0,
+                Position = AxisPosition.Bottom
+            };
+
+            plotModel1.Axes.Add(linearAxis1);
+
+            var barSeries1 = new BarSeries
+            {
+                BaseValue = 0.1,
+                StrokeThickness = 1,
+                LabelFormatString = "{0}",
+                FillColor = IsIncome ? OxyColors.Green : OxyColors.Orange,
+            };
+
+
+            foreach (var item in list.OrderBy(x => Math.Abs(x.Total ?? 0)))
+            {
+                categoryAxis1.ActualLabels.Add(item.Name);
+                barSeries1.ActualItems.Add(new BarItem(Math.Abs(item.Total ?? 0), -1));
+            }
+
+
+            plotModel1.Series.Add(barSeries1);
+
+            var legend1 = new Legend
+            {
+                LegendOrientation = LegendOrientation.Horizontal,
+                LegendBorderThickness = 0,
+                LegendPlacement = LegendPlacement.Outside,
+                LegendPosition = LegendPosition.BottomCenter
+            };
+            plotModel1.Legends.Add(legend1);
+            return plotModel1;
         }
     }
 }

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Financier.Desktop.Helpers
+namespace Financier.DataAccess.Utils
 {
-    internal static class UnitOfWorkHelper
+    public static class UnitOfWorkHelper
     {
         public static async Task<List<T>> GetAllAsync<T>(this IUnitOfWork uow, params Expression<Func<T, object>>[] includes)
             where T : class

@@ -41,6 +41,7 @@ namespace Financier.Reports.Forms
                 {
                     new ReportNode(typeof(ReportStructureActivesVM)),
                     new ReportNode(typeof(ReportStructureDebitVM)),
+                    new ReportNode(typeof(ByCategoryReportVM)),
                 }
             };
 
