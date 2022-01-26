@@ -22,7 +22,7 @@ namespace Financier.Reports.Common
                 e.Column.Header = proprtyDisplayName;
             else
                 e.Column.Visibility = Visibility.Hidden;
-            if (!(name == typeof(long).Name) && !(name == typeof(long?).Name) && !(name == typeof(double).Name) && !(name == typeof(double?).Name))
+            if ((name != typeof(long).Name) && (name != typeof(long?).Name) && (name != typeof(double).Name) && (name != typeof(double?).Name))
                 return;
             e.Column.CellStyle = new Style(typeof(DataGridCell));
             e.Column.CellStyle.Setters.Add(new Setter(HorizontalAlignmentProperty, HorizontalAlignment.Right));

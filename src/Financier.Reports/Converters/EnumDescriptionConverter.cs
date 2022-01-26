@@ -27,9 +27,9 @@ namespace Financier.Reports.Converters
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Enum)
+            Enum myEnum = value as Enum;
+            if (myEnum != null)
             {
-                Enum myEnum = (Enum)value;
                 string description = GetEnumDescription(myEnum);
                 return description;
             }

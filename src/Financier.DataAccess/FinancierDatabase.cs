@@ -230,7 +230,6 @@ namespace Financier.DataAccess
                 using (var reader = await command.ExecuteReaderAsync())
                 {
                     var lst = new List<T>();
-                    var lstColumns = new T().GetType().GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToList();
                     while (await reader.ReadAsync())
                     {
                         var newObject = new T();

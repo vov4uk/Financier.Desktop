@@ -3,7 +3,7 @@
     using System.Globalization;
     using System.Windows.Data;
     using AutoFixture.Xunit2;
-    using Financier.Desktop.Converters;
+    using Financier.Reports.Converters;
     using Financier.Reports.Reports;
     using Xunit;
 

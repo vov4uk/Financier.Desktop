@@ -1,7 +1,6 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Mvvm.Async;
 using OxyPlot;
-using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace Financier.Reports.Common
 {
@@ -58,7 +56,7 @@ namespace Financier.Reports.Common
         {
             this.financierDatabase = financierDatabase;
             ReportData = new ObservableCollection<T>();
-            PlotModel = GetPlotModel(new List<T>());
+            PlotModel = new PlotModel();
         }
 
         public ProjectModel Project

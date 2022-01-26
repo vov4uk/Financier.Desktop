@@ -115,7 +115,7 @@ namespace Financier.Reports.Forms
 
         public void OpenReport(string reportType)
         {
-            object existingReport = ReportsVM.Where(p => p.GetType().ToString() == reportType).FirstOrDefault();
+            object existingReport = ReportsVM.FirstOrDefault(p => p.GetType().ToString() == reportType);
             if (existingReport != null)
             {
                 SelectedReport = existingReport;

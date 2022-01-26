@@ -11,13 +11,6 @@ namespace Financier.Reports.Reports
     [Header("By months")]
     public class ReportByPeriodMonthCrcVM : BaseReportVM<ReportByPeriodMonthCrcModel>
     {
-        LineSeries saldo;
-        BarSeries debit;
-        BarSeries credit;
-        LinearAxis valueAxis;
-        CategoryAxis categoryAxis;
-        Legend legend;
-
         private const string BaseSqlText = @" /* ReportByPeriodMonthCrcVM */
 select
     tx.date_year as date_year,
@@ -66,7 +59,7 @@ order by
 
         protected override PlotModel GetPlotModel(List<ReportByPeriodMonthCrcModel> list)
         {
-            saldo = new LineSeries
+            var saldo = new LineSeries
             {
                 Title = "Saldo",
                 RenderInLegend = true,
@@ -74,7 +67,7 @@ order by
                 MarkerType = MarkerType.Circle,
             };
 
-            debit = new BarSeries
+            var debit = new BarSeries
             {
                 XAxisKey = "Value",
                 YAxisKey = "Category",
@@ -82,7 +75,7 @@ order by
                 RenderInLegend = true,
             };
 
-            credit = new BarSeries
+            var credit = new BarSeries
             {
                 Title = "Income",
                 XAxisKey = "Value",
@@ -90,7 +83,7 @@ order by
                 RenderInLegend = true,
             };
 
-            valueAxis = new LinearAxis
+            var valueAxis = new LinearAxis
             {
                 Position = AxisPosition.Left,
                 Key = "Value",
@@ -98,7 +91,7 @@ order by
                 MinorGridlineStyle = LineStyle.Dot,
             };
 
-            legend = new Legend
+            var legend = new Legend
             {
                 LegendOrientation = LegendOrientation.Horizontal,
                 LegendBorderThickness = 0,
@@ -106,7 +99,7 @@ order by
                 LegendPosition = LegendPosition.RightMiddle
             };
 
-            categoryAxis = new CategoryAxis
+            var categoryAxis = new CategoryAxis
             {
                 Position = AxisPosition.Bottom,
                 Key = "Category",

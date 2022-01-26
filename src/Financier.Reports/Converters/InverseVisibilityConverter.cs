@@ -7,7 +7,10 @@ namespace Financier.Reports.Converters
 {
     public class InverseVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => (Visibility)(value == null ? 2 : !(bool)value ? 0 : 2);
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (Visibility)(value == null ? 2 : (bool)value ? 2 : 0);
+        }
 
         public object ConvertBack(
           object value,

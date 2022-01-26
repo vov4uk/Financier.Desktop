@@ -9,7 +9,7 @@ namespace Financier.Reports.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool flag = false;
-            if (value != null && value is bool)
+            if (value is bool)
                 flag = !(bool)value;
             return flag;
         }
