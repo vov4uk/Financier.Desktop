@@ -14,10 +14,6 @@
             <BitmapImage x:Key="pie_icon" UriSource="/Financier.Reports;component/Images/ic_tab_budgets_unselected.png" />
             <BitmapImage x:Key="line_icon" UriSource="/Financier.Reports;component/Images/ic_tab_reports_line_unselected.png" />
             <BitmapImage x:Key="bar_icon" UriSource="/Financier.Reports;component/Images/ic_tab_reports_unselected.png" />
-            <Style x:Key="FontsStyle" TargetType="{x:Type Control}">
-                <Setter Property="Control.FontSize" Value="14" />
-                <Setter Property="Control.FontFamily" Value="./#MagistralC" />
-            </Style>
             <Style TargetType="{x:Type RadioButton}" x:Key="IconRadioButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
                 <Setter Property="Width" Value="24"/>
                 <Setter Property="Height" Value="24"/>

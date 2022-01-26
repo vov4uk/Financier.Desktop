@@ -4,7 +4,7 @@
     using System.Windows.Data;
     using AutoFixture.Xunit2;
     using Financier.Desktop.Converters;
-    using Financier.Desktop.Reports.ViewModel;
+    using Financier.Reports.Reports;
     using Xunit;
 
     public class EnumDescriptionConverterTest

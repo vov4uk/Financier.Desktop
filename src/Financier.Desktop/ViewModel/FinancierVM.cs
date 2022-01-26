@@ -12,7 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Views.Controls;
-using Financier.Desktop.Reports.ViewModel;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using System.IO;
@@ -346,15 +345,6 @@ namespace Financier.Desktop.ViewModel
                     }
                 case nameof(Category):
                     return await GetOrCreatePage<Category, CategoriesVM>(transform: x => x.Where(x => x.Id > 0).OrderBy(x => x.Left));
-
-                case nameof(ByCategoryReportV2):
-                    {
-                        using var uow = db.CreateUnitOfWork();
-                        var allCategories = await uow.GetAllAsync<Category>();
-                        var orderedCategories = allCategories.Where(x => x.Id > 0).OrderBy(x => x.Left).ToList();
-                        var byCategoryReport = await uow.GetAllAsync<ByCategoryReportV2>(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
-                        return new ByCategoryReportVM(byCategoryReport, orderedCategories);
-                    }
                 case nameof(CurrencyExchangeRate):
                     return await GetOrCreatePage<CurrencyExchangeRate, ExchangeRatesVM>(transform: null,
                         addAction: null,
