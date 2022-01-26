@@ -1,4 +1,5 @@
 ﻿using Financier.DataAccess.Abstractions;
+using Mvvm.Async;
 using OxyPlot;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Financier.Reports.Common
@@ -16,13 +18,16 @@ namespace Financier.Reports.Common
         private readonly IFinancierDatabase financierDatabase;
         private ProjectModel _project;
         private CategoryModel _category;
+        private CategoryModel _topCategory;
         private AccountModel _account;
         private PayeeModel _payee;
         private CurrencyModel _curentCurrency;
         private YearMonths _startYearMonths;
         private YearMonths _endYearMonths;
         private DateTime? _date;
-        private DelegateCommand _refreshDataCommand;
+        private DateTime? _from;
+        private DateTime? _to;
+        private IAsyncCommand _refreshDataCommand;
         private ObservableCollection<T> reportData;
 
         private PlotModel plotModel;
@@ -73,6 +78,16 @@ namespace Financier.Reports.Common
             {
                 _category = value;
                 RaisePropertyChanged(nameof(Category));
+            }
+        }
+
+        public CategoryModel TopCategory
+        {
+            get => _topCategory ??= DbManual.TopCategories.FirstOrDefault(p => !p.ID.HasValue);
+            set
+            {
+                _topCategory = value;
+                RaisePropertyChanged(nameof(TopCategory));
             }
         }
 
@@ -131,21 +146,48 @@ namespace Financier.Reports.Common
             get => _date;
             set
             {
-                _date = value;
-                RaisePropertyChanged(nameof(DateFilter));
+                if (SetProperty(ref _date, value))
+                {
+                    RaisePropertyChanged(nameof(DateFilter));
+                }
             }
         }
 
-        public ICommand RefreshDataCommand => _refreshDataCommand ?? (_refreshDataCommand = new DelegateCommand(RefreshData));
+        public DateTime? From
+        {
+            get => _from;
+            set
+            {
+                if (SetProperty(ref _from, value))
+                {
+                    RaisePropertyChanged(nameof(From));
+                }
+            }
+        }
 
-        private async void RefreshData()
+        public DateTime? To
+        {
+            get => _to;
+            set
+            {
+                if (SetProperty(ref _to, value))
+                {
+                    RaisePropertyChanged(nameof(To));
+                }
+            }
+        }
+
+        public IAsyncCommand RefreshDataCommand => _refreshDataCommand ?? (_refreshDataCommand = new AsyncCommand(RefreshData));
+
+        private async Task RefreshData()
         {
             string sql = GetSql();
-            if (string.IsNullOrEmpty(sql))
-                return;
-            var data = await financierDatabase.ExecuteQuery<T>(sql);
-            ReportData = new ObservableCollection<T>(data);
-            PlotModel = GetPlotModel(data);
+            if (!string.IsNullOrEmpty(sql))
+            {
+                var data = await financierDatabase.ExecuteQuery<T>(sql);
+                ReportData = new ObservableCollection<T>(data);
+                PlotModel = GetPlotModel(data);
+            }
         }
 
         protected abstract string GetSql();
@@ -163,9 +205,19 @@ namespace Financier.Reports.Common
             if (Payee.ID.HasValue)
                 stringBuilder.Append(string.Format(" {1} ( payee_id = {0} )", Payee.ID, stringBuilder.Length != 0 ? " and " : string.Empty));
             if (Category.ID.HasValue)
-                stringBuilder.Append(string.Format("{1} category_id in ( select _id from category ctx," +
-"\r\n                                (select xxx.left, xxx.right from category xxx where xxx._id = {0}) root " +
-"\r\n                                where ctx.left >= root.left and ctx.right <= root.right)", Category.ID, stringBuilder.Length != 0 ? " and " : string.Empty));
+                stringBuilder.Append(string.Format(@"
+{1} category_id IN
+(
+       SELECT _id
+       FROM   category ctx,
+              (
+                     SELECT xxx.LEFT,
+                            xxx.RIGHT
+                     FROM   category xxx
+                     WHERE  xxx._id = {0}) root
+       WHERE  ctx.LEFT >= root.LEFT
+       AND    ctx.RIGHT <= root.RIGHT
+)", Category.ID, stringBuilder.Length != 0 ? " and " : string.Empty));
             if (Project.ID.HasValue)
                 stringBuilder.Append(string.Format(" {1} ( project_id = {0} )", Project.ID, stringBuilder.Length != 0 ? " and " : string.Empty));
             if (Account.ID.HasValue)

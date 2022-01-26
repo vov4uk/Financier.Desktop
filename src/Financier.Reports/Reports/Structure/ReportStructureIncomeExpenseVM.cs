@@ -11,7 +11,7 @@ using System.Linq;
 namespace Financier.Reports.Reports
 {
     [Header("Income-Expense structure")]
-    public class ReportStructureDebitVM : BaseReportVM<ReportStructureDebitModel>
+    public class ReportStructureIncomeExpenseVM : BaseReportVM<ReportStructureIncomeExpenseModel>
     {
         private bool isIncome;
 
@@ -24,6 +24,7 @@ namespace Financier.Reports.Reports
                 RaisePropertyChanged(nameof(IsIncome));
             }
         }
+
         private PlotModel barChartModel;
 
         public PlotModel BarChartModel
@@ -36,7 +37,7 @@ namespace Financier.Reports.Reports
             }
         }
 
-        private const string BaseSqlText = @"
+        private const string BaseSqlText = @" /* ReportStructureDebitVM */
 SELECT p.title                                            AS title,
        Round(Sum(tx.from_amount_default_crr) / 100.00, 2) AS total
 FROM   (SELECT (SELECT parent._id AS _id
@@ -59,7 +60,7 @@ FROM   (SELECT (SELECT parent._id AS _id
 GROUP  BY p._id
 ORDER  BY total ASC ";
 
-        public ReportStructureDebitVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
+        public ReportStructureIncomeExpenseVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
         {
 
         }
@@ -78,19 +79,20 @@ ORDER  BY total ASC ";
             return string.Format(BaseSqlText, sign, str);
         }
 
-        protected override PlotModel GetPlotModel(List<ReportStructureDebitModel> list)
+        protected override PlotModel GetPlotModel(List<ReportStructureIncomeExpenseModel> list)
         {
             BarChartModel = GetBarChartModel(list);
             return GetPieChartModel(list);
         }
 
-        private static PlotModel GetPieChartModel(List<ReportStructureDebitModel> list)
+        private static PlotModel GetPieChartModel(List<ReportStructureIncomeExpenseModel> list)
         {
             var model = new PlotModel();
             var ps = new PieSeries
             {
-                StrokeThickness = 2.0,
-                InsideLabelPosition = 0.8,
+                StrokeThickness = 0.0,
+                InsideLabelFormat = "",
+                OutsideLabelFormat = "{1}: {2:0.00}%",
                 AngleSpan = 360,
                 StartAngle = 0,
             };
@@ -105,7 +107,7 @@ ORDER  BY total ASC ";
             return model;
         }
 
-        protected PlotModel GetBarChartModel(List<ReportStructureDebitModel> list)
+        protected PlotModel GetBarChartModel(List<ReportStructureIncomeExpenseModel> list)
         {
             var plotModel1 = new PlotModel
             {
@@ -113,7 +115,9 @@ ORDER  BY total ASC ";
             var categoryAxis1 = new CategoryAxis
             {
                 MinorStep = 1,
-                Position = AxisPosition.Left
+                Position = AxisPosition.Left,
+                Title = "Category",
+                TitleFormatString = "{0}",
             };
 
             plotModel1.Axes.Add(categoryAxis1);
@@ -132,7 +136,8 @@ ORDER  BY total ASC ";
             {
                 BaseValue = 0.1,
                 StrokeThickness = 1,
-                LabelFormatString = "{0}",
+                LabelPlacement = LabelPlacement.Base,
+                LabelFormatString = IsIncome ? "{0}" : "-{0}",
                 FillColor = IsIncome ? OxyColors.Green : OxyColors.Orange,
             };
 

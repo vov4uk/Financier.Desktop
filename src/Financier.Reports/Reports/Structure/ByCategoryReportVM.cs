@@ -1,56 +1,76 @@
 ﻿using Financier.DataAccess.Abstractions;
-using Financier.DataAccess.Data;
-using Financier.DataAccess.View;
-using Financier.DataAccess.Utils;
-using Financier.Reports.Controls;
-using Financier.Reports.Converters;
-using Prism.Commands;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Financier.Reports.Common;
+using OxyPlot;
+using Financier.Reports.Converters;
+using Financier.Reports.Reports.Structure;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using System.Linq;
+using OxyPlot.Legends;
 
 namespace Financier.Reports.Reports
 {
     [Header("By category")]
     [ExcludeFromCodeCoverage]
-    public class ByCategoryReportVM : BindableBase
+    public class ByCategoryReportVM : BaseReportVM<ByCategoryReportModel>
     {
-        private readonly IFinancierDatabase financierDatabase;
-        private DelegateCommand _refreshCommand;
+        private const string BaseSqlText = @" /* ByCategoryReportModel */
+SELECT parent_id,
+       parent_title,
+       is_expense,
+       Round(Sum(tx.from_amount_default_crr) / 100.00, 2) AS total
+FROM   (
+        SELECT ctgr.parent_id,
+               parent_level,
+               parent_title,
+               t.category_id,
+               parent_left,
+               parent_right,
+               t.from_amount_default_crr,
+               cast(t.from_amount < 0 as boolean) as is_expense
+        FROM   v_report_transactions t 
+        INNER JOIN (SELECT parent._id AS parent_id,
+                           parent.title as parent_title,
+                           parent.left as parent_left,
+                           parent.right as parent_right,
+                           node._id as node_id,
+                           node.title as node_title,
+                           (select count(*) from category x where x.left < node.left and x.[right] > node.[right] ) as node_level,
+                           (select count(*) from category x where x.left < parent.left and x.[right] > parent.[right] ) as parent_level
+                FROM   category AS node,
+                       category AS parent
+                WHERE  node.LEFT BETWEEN parent.LEFT AND parent.right
+                ORDER  BY parent.LEFT ASC ) ctgr
+                on ctgr.node_id = t.category_id
+        WHERE  t.category_id > 0 AND from_account_is_include_into_totals = 1
+/*FILTERS*/
+               {0} ) tx
+WHERE  {1}
+/*FILTERS*/
+GROUP  BY parent_id,  parent_title , is_expense
+ORDER  BY total ASC ";
 
-        private double currentWidth;
+        private PlotModel pieChartModel;
 
-        private DateTime from;
+        public PlotModel PieChartModel
+        {
+            get => pieChartModel;
+            private set
+            {
+                pieChartModel = value;
+                RaisePropertyChanged(nameof(PieChartModel));
+            }
+        }
 
         private PeriodType periodType;
 
-        private BarChart plot;
-
-        private DateTime to;
-
-        public string Header { get; set; }
-
-        public ByCategoryReportVM(IFinancierDatabase financierDatabase)
+        public ByCategoryReportVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
         {
-            this.financierDatabase = financierDatabase; 
             PeriodType = PeriodType.Today;
             UpdatePeriod(PeriodType);
-        }
-
-
-        public DateTime From
-        {
-            get => from;
-            set
-            {
-                if (SetProperty(ref from, value))
-                {
-                    RaisePropertyChanged(nameof(From));
-                }
-            }
         }
 
         public PeriodType PeriodType
@@ -66,127 +86,108 @@ namespace Financier.Reports.Reports
             }
         }
 
-        public BarChart Plot
+        protected override PlotModel GetPlotModel(List<ByCategoryReportModel> list)
         {
-            get => plot;
-            set
-            {
-                if (SetProperty(ref plot, value))
-                {
-                    RaisePropertyChanged(nameof(Plot));
-                }
-            }
+            PieChartModel = GetPieChartModel(list);
+            return GetBarChart(list);
         }
 
-        public DelegateCommand RefreshCommand
+        private static PlotModel GetPieChartModel(List<ByCategoryReportModel> list)
         {
-            get
+            var model = new PlotModel();
+            var ps = new PieSeries
             {
-                return _refreshCommand ??= new DelegateCommand(() => RefreshReport(currentWidth));
-            }
-        }
-        public DateTime To
-        {
-            get => to;
-            set
+                StrokeThickness = 0.0,
+                InsideLabelFormat = "",
+                OutsideLabelFormat = "{1}: {2:0.00}%",
+                AngleSpan = 360,
+                StartAngle = 0,
+            };
+
+            var groups = list.GroupBy(x => x.ParentId);
+            foreach (var item in groups.OrderBy(x => x.Max(y => Math.Abs(y.Total))))
             {
-                if (SetProperty(ref to, value))
-                {
-                    RaisePropertyChanged(nameof(To));
-                }
+                ps.Slices.Add(new PieSlice(item.First().Category, Math.Abs(item.Sum(x => x.Total))));
             }
-        }
 
-        // TODO - bug, transaction fron top-level categories not included into ByCategoryReportV2
-        // use another view or rewrite to SQL query as others reports
-        internal async void RefreshReport(double width)
-        {
-            using var uow = financierDatabase.CreateUnitOfWork();
-            var allCategories = await uow.GetAllAsync<Category>();
-            var orderedCategories = allCategories.Where(x => x.Id > 0).OrderBy(x => x.Left).ToList();
-            var repo = uow.GetRepository<ByCategoryReportV2>();
-            var fromUnix = UnixTimeConverter.ConvertBack(From);
-            var toUnix = UnixTimeConverter.ConvertBack(To);
-            var entites = await repo.FindManyAsync(
-                y => y.datetime >= fromUnix && y.datetime <= toUnix,
-                x => x.from_account_currency,
-                x => x.to_account_currency,
-                x => x.category );
-
-            currentWidth = width;
-
-            var filteredReportValues = entites
-                .GroupBy(x => x.Id)
-                .Select(x => new ByCategoryReportRow
-                {
-                   Id = x.Key,
-                   Title = x.FirstOrDefault().name,
-                   Left = x.FirstOrDefault().category_left,
-                   Right = x.FirstOrDefault().category_right,
-                   CurrencySign = x.FirstOrDefault().from_account_currency.Symbol,
-                   SubCategoties = new List<ByCategoryReportRow>(),
-                   TotalPositiveAmount = x.Where(y => y.from_amount_default_currency > 0).Sum(y => y.from_amount_default_currency),
-                   TotalNegativeAmount = x.Where(y => y.from_amount_default_currency < 0).Sum(y => y.from_amount_default_currency),
-                }).ToList();
-
-            var finalTree = new List<ByCategoryReportRow>();
-
-            BuildByCategoryReportTree(finalTree, orderedCategories, filteredReportValues, 0);
-            var barChartSource = finalTree.Where(x => x.GetAbsoluteMax() > 0).OfType<ReportRow>().ToList();
-            if (barChartSource.Count > 0)
-            {
-                Plot = new BarChart(barChartSource, width - 80); // 80px label width
-            }
-            else
-            {
-                Plot = default;
-            }
+            model.Series.Add(ps);
+            return model;
         }
 
-        private void BuildByCategoryReportTree(List<ByCategoryReportRow> newNodes, List<Category> categories, List<ByCategoryReportRow> groupedNodes, int level)
+        private static PlotModel GetBarChart(List<ByCategoryReportModel> list)
         {
-            foreach (var category in categories.OrderBy(x => x.Left))
+            var plotModel1 = new PlotModel();
+            var categoryAxis1 = new CategoryAxis
             {
-                if (!newNodes.Any(x => x.Right > category.Left))
+                MinorStep = 1,
+                Position = AxisPosition.Left,
+                Title = "Category",
+                TitleFormatString = "{0}",
+            };
+
+            var linearAxis1 = new LinearAxis
+            {
+                MinimumPadding = 0,
+                Position = AxisPosition.Bottom
+            };
+
+            var incomeSeries = new BarSeries
+            {
+                Title = "Income",
+                LabelFormatString = "{0}",
+                LabelPlacement = LabelPlacement.Base
+            };
+            var ExpenseSeries = new BarSeries
+            {
+                Title = "Expense",
+                LabelFormatString = "-{0}",
+                LabelPlacement = LabelPlacement.Base
+            };
+
+            int i = 0;
+            List<string> names = new List<string>();
+            var groups = list.GroupBy(x => x.ParentId);
+            foreach (var item in groups.OrderBy(x => x.Max(y => Math.Abs(y.Total))))
+            {
+                names.Add(item.First().Category);
+                foreach (var cat in item)
                 {
-                    var subNode = new ByCategoryReportRow
+                    if (cat.IsExpense == 0)
                     {
-                        Id = category.Id,
-                        Title = category.Title,
-                        Left = category.Left,
-                        Right = category.Right,
-                        TotalNegativeAmount = 0,
-                        TotalPositiveAmount = 0,
-                        SubCategoties = new List<ByCategoryReportRow>()
-                    };
-
-                    var nodeWithAmount = groupedNodes.FirstOrDefault(x => x.Id == category.Id);
-                    if (nodeWithAmount != null)
-                    {
-                        subNode.TotalNegativeAmount = nodeWithAmount.TotalNegativeAmount;
-                        subNode.TotalPositiveAmount = nodeWithAmount.TotalPositiveAmount;
-                        subNode.CurrencySign = nodeWithAmount.CurrencySign;
+                        incomeSeries.Items.Add(new BarItem(Math.Abs(cat.Total), i));
                     }
-
-                    newNodes.Add(subNode);
-
-                    var sub = categories.Where(x => x.Left > category.Left && x.Right < category.Right).ToList();
-                    if (sub.Any())
+                    else
                     {
-                        BuildByCategoryReportTree(subNode.SubCategoties, sub, groupedNodes, level + 1);
-                        if (level == 0)
-                        {
-                            foreach (var item in subNode.SubCategoties)
-                            {
-                                subNode.TotalNegativeAmount += item.TotalNegativeAmount;
-                                subNode.TotalPositiveAmount += item.TotalPositiveAmount;
-                            }
-                        }
-
-                        subNode.CurrencySign = subNode.SubCategoties.FirstOrDefault(x => !string.IsNullOrEmpty(x.CurrencySign))?.CurrencySign;
+                        ExpenseSeries.Items.Add(new BarItem(Math.Abs(cat.Total), i));
                     }
                 }
+                i++;
             }
+
+            var legend1 = new Legend();
+            legend1.LegendPosition = LegendPosition.RightBottom;
+
+            plotModel1.Legends.Add(legend1);
+
+            categoryAxis1.ItemsSource = names;
+            plotModel1.Series.Add(incomeSeries);
+            plotModel1.Axes.Add(linearAxis1);
+            plotModel1.Axes.Add(categoryAxis1);
+            plotModel1.Series.Add(ExpenseSeries);
+            return plotModel1;
+        }
+
+        protected override string GetSql()
+        {
+            var fromUnix = UnixTimeConverter.ConvertBack(From ?? DateTime.MinValue);
+            var toUnix = UnixTimeConverter.ConvertBack(To ?? DateTime.MaxValue);
+
+            var dateFilter = $"AND t.datetime BETWEEN {fromUnix} AND {toUnix}";
+            string str = this.TopCategory?.ID == null
+                ? "parent_level = 0"
+                : $"parent_left > {TopCategory.Left} AND parent_right < {TopCategory.Right} AND parent_level = 1";
+
+            return string.Format(BaseSqlText, dateFilter, str);
         }
 
         private void UpdatePeriod(PeriodType type)

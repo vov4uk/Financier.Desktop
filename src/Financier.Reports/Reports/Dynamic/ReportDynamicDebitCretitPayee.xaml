@@ -4,6 +4,13 @@
              xmlns:fcrd="clr-namespace:Financier.Reports.Common"
              xmlns:filters="clr-namespace:Financier.Reports.Reports.Filters"
              xmlns:oxy="http://oxyplot.org/wpf">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="boolToVis" />
@@ -24,45 +31,38 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <GroupBox Header="View" Grid.Column="0" Grid.Row="0" >
-                <DockPanel Width="128" DockPanel.Dock="Top">
-                    <RadioButton Content="Pie chart"
-                                     x:Name="GraphicsBtn"
-                                     Width="60"
-                                     Height="22"
-                                     Style="{StaticResource {x:Type ToggleButton}}"
-                                     IsChecked="True"
-                                     Margin="2" />
-                    <RadioButton Content="Grid"
-                                     Style="{StaticResource {x:Type ToggleButton}}"
-                                     x:Name="GridBtn"
-                                     Width="60"
-                                     Height="22"
-                                     Margin="2" />
+                <DockPanel Width="56" DockPanel.Dock="Top">
+                    <RadioButton ToolTip="Graphic"
+                                 x:Name="GraphicsBtn"
+                                 IsChecked="True"
+                                 Style="{StaticResource IconRadioButton}">
+                        <Image Source="{StaticResource line_icon}" />
+                    </RadioButton>
+                    <RadioButton ToolTip="Grid"
+                                 Style="{StaticResource IconRadioButton}">
+                        <Image Source="{StaticResource grid_icon}"/>
+                    </RadioButton>
                 </DockPanel>
             </GroupBox>
             <filters:PayeeFilter Grid.Column="0" Grid.Row="1"
                                  HorizontalAlignment="Left"
-                                 Margin="4" />
+                                 Margin="4 2" />
             <filters:CategoryFilter Grid.Column="1" Grid.Row="0"
                                     HorizontalAlignment="Left"
-                                    Margin="4" />
+                                    Margin="4 2" />
             <filters:CurrencyFilter Grid.Column="1" Grid.Row="1"
                                     HorizontalAlignment="Left"
-                                    Margin="4" />
+                                    Margin="4 2" />
             <filters:StartYearMonthFilter Grid.Column="2" Grid.Row="0"
                                           HorizontalAlignment="Left"
-                                          Margin="4" />
+                                          Margin="4 2" />
             <filters:EndYearMonthFilter Grid.Column="2" Grid.Row="1"
                                         HorizontalAlignment="Left"
-                                        Margin="4" />
-            <Button Grid.Column="4" Grid.Row="0"
+                                        Margin="4 2" />
+            <Button Grid.Column="4"
+                    Grid.Row="0"
                     Grid.RowSpan="2"
-                    Margin="4"
-                    Width="150"
-                    Height="40"
-                    HorizontalAlignment="Left"
-                    Content="Refresh"
-                    Command="{Binding Path=RefreshDataCommand}" />
+                    Style="{StaticResource RefreshButton}" />
         </Grid>
         <oxy:PlotView Grid.Row="1"
                       Model="{Binding PlotModel}"

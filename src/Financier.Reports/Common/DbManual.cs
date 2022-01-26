@@ -1,13 +1,15 @@
 ﻿using Financier.DataAccess.Abstractions;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Financier.Reports.Common
 {
     public static class DbManual
     {
-        private static ObservableCollection<AccountModel> _account;
+        private static ObservableCollection<AccountModel> _accounts;
         private static ObservableCollection<CategoryModel> _category;
+        private static ObservableCollection<CategoryModel> _topCategory;
         private static ObservableCollection<CurrencyModel> _currencies;
         private static ObservableCollection<PayeeModel> _payee;
         private static ObservableCollection<ProjectModel> _project;
@@ -16,29 +18,38 @@ namespace Financier.Reports.Common
 
         public static async Task Setup(IFinancierDatabase financierDatabase)
         {
-            if (_account == null)
+            if (_accounts == null)
             {
-                var accounts = await financierDatabase.ExecuteQuery<AccountModel>(
-                    "select _id, " +
-                    "title " +
-                    "from account " +
-                    "where title is not null " +
-                    "order by 2 desc");
-                _account = new ObservableCollection<AccountModel>(accounts);
-                _account.Insert(0, new AccountModel());
+                var accounts = await financierDatabase.ExecuteQuery<AccountModel>(@"
+SELECT _id,
+       title
+FROM   account
+WHERE  title IS NOT NULL
+ORDER  BY 2 DESC"
+);
+                _accounts = new ObservableCollection<AccountModel>(accounts);
+                _accounts.Insert(0, new AccountModel());
             }
 
             if (_category == null)
             {
               var categories = await financierDatabase.ExecuteQuery<CategoryModel>(
-                  "select " +
-                  "_id, " +
-                  "title, " +
-                  "(select count(*) from category x where x.left < ctx.left and x.[right] > ctx.[right] ) as level " +
-                  "from category ctx " +
-                  "order by left, sort_order");
+@"SELECT _id,
+       title,
+       LEFT,
+       [right],
+       (SELECT Count(*)
+        FROM   category x
+        WHERE  x.LEFT < ctx.LEFT
+               AND x.[right] > ctx.[right]) AS level
+FROM   category ctx
+ORDER  BY LEFT,
+          sort_order");
                 _category = new ObservableCollection<CategoryModel>(categories);
                 _category.Insert(0, new CategoryModel());
+
+                _topCategory = new ObservableCollection<CategoryModel>(categories.Where(x => x.Level == 0 && x.ID > 0));
+                _topCategory.Insert(0, new CategoryModel());
             }
 
             if (_currencies == null)
@@ -54,24 +65,24 @@ namespace Financier.Reports.Common
 
             if (_payee == null)
             {
-                var payees = await financierDatabase.ExecuteQuery<PayeeModel>(
-                    "select _id, " +
-                    "title " +
-                    "from payee " +
-                    "where title is not null " +
-                    "order by 2 desc");
+                var payees = await financierDatabase.ExecuteQuery<PayeeModel>(@"
+SELECT _id,
+       title
+FROM   payee
+WHERE  title IS NOT NULL
+ORDER  BY 2 DESC");
                 _payee = new ObservableCollection<PayeeModel>(payees);
                 _payee.Insert(0, new PayeeModel());
             }
 
             if (_project == null)
             {
-                var projects = await financierDatabase.ExecuteQuery<ProjectModel>(
-                    "select _id, " +
-                    "title " +
-                    "from project " +
-                    "where title is not null " +
-                    "order by 2 desc");
+                var projects = await financierDatabase.ExecuteQuery<ProjectModel>(@"
+SELECT _id,
+       title
+FROM   project
+WHERE  title IS NOT NULL
+ORDER  BY 2 DESC");
                 _project = new ObservableCollection<ProjectModel>(projects);
                 _project.Insert(0, new ProjectModel());
             }
@@ -79,29 +90,31 @@ namespace Financier.Reports.Common
             if (_yearMonths == null)
             {
                 var yearMonths = await financierDatabase.ExecuteQuery<YearMonths>(
-                    "select distinct date_year as year, " +
-                    "date_month as month " +
-                    "from v_report_transactions " +
-                    "order by 1 desc, " +
-                    "2 desc");
+@"SELECT DISTINCT date_year  AS year,
+                date_month AS month
+FROM   v_report_transactions
+ORDER  BY 1 DESC,
+          2 DESC");
                 _yearMonths = new ObservableCollection<YearMonths>(yearMonths);
                 _yearMonths.Insert(0, new YearMonths());
             }
 
             if (_years == null)
             {
-                var years = await financierDatabase.ExecuteQuery<Years>(
-                    "select distinct date_year as year " +
-                    "from v_report_transactions " +
-                    "order by 1 desc");
+                var years = await financierDatabase.ExecuteQuery<Years>(@"
+SELECT DISTINCT date_year AS year
+FROM   v_report_transactions
+ORDER  BY 1 DESC ");
                 _years = new ObservableCollection<Years>(years);
                 _years.Insert(0, new Years());
             }
         }
 
-        public static ObservableCollection<AccountModel> Account => _account;
+        public static ObservableCollection<AccountModel> Account => _accounts;
 
         public static ObservableCollection<CategoryModel> Category => _category;
+
+        public static ObservableCollection<CategoryModel> TopCategories => _topCategory;
 
         public static ObservableCollection<CurrencyModel> Currencies => _currencies;
 
@@ -117,7 +130,7 @@ namespace Financier.Reports.Common
         {
             _project = null;
             _category = null;
-            _account = null;
+            _accounts = null;
             _currencies = null;
             _yearMonths = null;
             _years = null;

@@ -2,6 +2,7 @@
 using Financier.Reports.Common;
 using OxyPlot;
 using OxyPlot.Series;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -11,7 +12,7 @@ namespace Financier.Reports.Reports
     [Header("Asset structure")]
     public class ReportStructureActivesVM : BaseReportVM<ReportStructureActivesModel>
     {
-        private const string BaseSqlText = @"
+        private const string BaseSqlText = @" /* ReportStructureActivesVM */
 SELECT account_title,
        account_id,
        account_is_active,
@@ -71,18 +72,30 @@ ORDER BY account_is_active DESC, sort_order ASC";
             var model = new PlotModel();
             var ps = new PieSeries
             {
-                StrokeThickness = 2.0,
-                InsideLabelPosition = 0.8,
+                StrokeThickness = 0.0,
+                InsideLabelFormat = "",
+                OutsideLabelFormat = "{1}: {2:0.00}%",
                 AngleSpan = 360,
                 StartAngle = 0,
             };
 
-            var series = list.Where(x => x.AccountIsIncludeInTotals == 1 && x.DefaultCurrencyBalance != 0.0).Select(x => new PieSlice(x.Title, x.DefaultCurrencyBalance ?? 0));
+            var included = list.Where(x => x.AccountIsIncludeInTotals == 1 && x.DefaultCurrencyBalance > 0.0);
+            var total = included.Sum(x => x.DefaultCurrencyBalance ?? 0.0);
+
+            var others = included.Where(x => x.DefaultCurrencyBalance != null && (x.DefaultCurrencyBalance / total) < 0.01);
+
+            var series = included.Where(x => !others.Contains(x))
+                .Select(x => new PieSlice(x.Title, x.DefaultCurrencyBalance ?? 0));
 
             foreach (var item in series)
             {
                 ps.Slices.Add(item);
             }
+            if (others.Any())
+            {
+                ps.Slices.Add(new PieSlice("Others", others.Sum(x => x.DefaultCurrencyBalance) ?? 0));
+            }
+
             model.Series.Add(ps);
             return model;
         }

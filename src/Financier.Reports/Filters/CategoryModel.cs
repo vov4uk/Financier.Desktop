@@ -10,9 +10,15 @@ namespace Financier.Reports.Common
         [Column("title")]
         public string title { get; set; }
 
-        public string Title => (title ?? string.Empty).PadLeft((title ?? string.Empty).Length + (int)(level ?? 0L), '-');
+        public string Title => (title ?? string.Empty).PadLeft((title ?? string.Empty).Length + (int)Level, '-');
 
         [Column("level")]
-        public long? level { get; set; }
+        public long Level { get; set; }
+
+        [Column("left")]
+        public long Left { get; set; }
+
+        [Column("right")]
+        public long Right { get; set; }
     }
 }

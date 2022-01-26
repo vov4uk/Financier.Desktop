@@ -53,8 +53,8 @@
                 <DataTemplate DataType="{x:Type fcrd:ReportStructureActivesVM}">
                     <fcrd:ReportStructureActives />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type fcrd:ReportStructureDebitVM}">
-                    <fcrd:ReportStructureDebit />
+                <DataTemplate DataType="{x:Type fcrd:ReportStructureIncomeExpenseVM}">
+                    <fcrd:ReportStructureIncomeExpense />
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type fcrd:ReportDynamicDebitCretitPayeeVM}">
                     <fcrd:ReportDynamicDebitCretitPayee />

@@ -29,6 +29,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
+        <!-- TODO : USE istead of (ImageSource="pack) <BitmapImage x:Key="ic_action_cancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace Financier.Reports.Common
 {
@@ -10,6 +11,10 @@ namespace Financier.Reports.Common
         [Column("month")]
         public long? Month { get; set; }
 
-        public string Name => string.Format("{0} {1}", Month, Year);
+        public string Name => string.Format("{0} {1}",
+            Month == null ?
+                          string.Empty :
+                          CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName((int)Month),
+            Year);
     }
 }

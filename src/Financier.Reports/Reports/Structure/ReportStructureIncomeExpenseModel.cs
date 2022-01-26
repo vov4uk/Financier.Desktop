@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace Financier.Reports.Reports
 {
     [DebuggerDisplay("{Label}")]
-    public class ReportStructureDebitModel : BaseReportModel
+    public class ReportStructureIncomeExpenseModel : BaseReportModel
     {
         [Column("title")]
         [DisplayName("Category")]

@@ -14,6 +14,7 @@ namespace Financier.Reports.Forms
 {
     public class ReportsControlVM : BindableBase
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly IFinancierDatabase financierDatabase;
 
         public ReportsControlVM(IFinancierDatabase financierDatabase)
@@ -40,7 +41,7 @@ namespace Financier.Reports.Forms
                 Child = new List<ReportNode>
                 {
                     new ReportNode(typeof(ReportStructureActivesVM)),
-                    new ReportNode(typeof(ReportStructureDebitVM)),
+                    new ReportNode(typeof(ReportStructureIncomeExpenseVM)),
                     new ReportNode(typeof(ByCategoryReportVM)),
                 }
             };
@@ -100,12 +101,14 @@ namespace Financier.Reports.Forms
                 if (_selectedReport == value)
                     return;
                 _selectedReport = value;
+                Logger.Info($"Current report -> {_selectedReport?.GetType()?.Name}");
                 RaisePropertyChanged(nameof(SelectedReport));
             }
         }
 
         public void CloseReport()
         {
+            Logger.Info($"Close report -> {_selectedReport?.GetType()?.Name}");
             ReportsVM.Remove(SelectedReport);
             SelectedReport = ReportsVM.FirstOrDefault();
         }

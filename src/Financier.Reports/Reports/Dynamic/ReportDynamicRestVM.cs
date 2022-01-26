@@ -42,7 +42,7 @@ namespace Financier.Reports.Reports
 
 
 
-        private const string BaseSqlText = @"
+        private const string BaseSqlText = @" /* ReportDynamicRestVM */
 SELECT cr.year  AS year,
        cr.month AS month,
        cr.day   AS day,

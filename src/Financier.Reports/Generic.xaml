@@ -6,34 +6,33 @@
         <ResourceDictionary>
             <fcrd:VisibilityConverter x:Key="VisibilityConverter" />
             <fcrd:InverseVisibilityConverter x:Key="InverseVisibilityConverter" />
-        </ResourceDictionary>
-        <ResourceDictionary>
+            <BitmapImage x:Key="report_both" UriSource="/Financier.Reports;component/Images/ic_menu_report_both.png" />
+            <BitmapImage x:Key="report_expense" UriSource="/Financier.Reports;component/Images/ic_menu_report_expense.png" />
+            <BitmapImage x:Key="report_income" UriSource="/Financier.Reports;component/Images/ic_menu_report_income.png" />
+            <BitmapImage x:Key="report_summary" UriSource="/Financier.Reports;component/Images/ic_menu_report_summary.png" />
+            <BitmapImage x:Key="grid_icon" UriSource="/Financier.Reports;component/Images/ic_tab_blotter_unselected.png" />
+            <BitmapImage x:Key="pie_icon" UriSource="/Financier.Reports;component/Images/ic_tab_budgets_unselected.png" />
+            <BitmapImage x:Key="line_icon" UriSource="/Financier.Reports;component/Images/ic_tab_reports_line_unselected.png" />
+            <BitmapImage x:Key="bar_icon" UriSource="/Financier.Reports;component/Images/ic_tab_reports_unselected.png" />
             <Style x:Key="FontsStyle" TargetType="{x:Type Control}">
                 <Setter Property="Control.FontSize" Value="14" />
                 <Setter Property="Control.FontFamily" Value="./#MagistralC" />
             </Style>
-            <Style TargetType="{x:Type Button}" x:Key="TransparentButton">
-                <Setter Property="Control.Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Button}">
-                            <Border x:Name="IconBorder" Background="Transparent" CornerRadius="8" BorderThickness="3" Margin="8,4,8,4">
-                                <ContentPresenter />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="ButtonBase.IsPressed" Value="true">
-                                    <Setter TargetName="IconBorder" Property="UIElement.BitmapEffect">
-                                        <Setter.Value>
-                                            <DropShadowBitmapEffect Color="Green" Direction="0" ShadowDepth="0" Softness="1" Opacity="1" />
-                                        </Setter.Value>
-                                    </Setter>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
+            <Style TargetType="{x:Type RadioButton}" x:Key="IconRadioButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                <Setter Property="Width" Value="24"/>
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="Margin" Value="2 0"/>
+                <Setter Property="Background" Value="Transparent"/>
             </Style>
-        </ResourceDictionary>
-        <ResourceDictionary>
+            <Style TargetType="{x:Type Button}" x:Key="RefreshButton">
+                <Setter Property="Width" Value="80"/>
+                <Setter Property="Height" Value="28"/>
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Command" Value="{Binding Path=RefreshDataCommand}"/>
+                <Setter Property="Content" Value="Refresh"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
             <Path x:Key="IconRefresh"
                   Fill="DarkBlue"
                   Stroke="DarkBlue"

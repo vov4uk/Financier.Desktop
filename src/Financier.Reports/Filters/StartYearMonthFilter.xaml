@@ -4,7 +4,9 @@
              xmlns:fcrd="clr-namespace:Financier.Reports.Common"
              Width="120">
   <GroupBox Header="From">
-    <ComboBox Grid.Column="1" DisplayMemberPath="Name"
+    <ComboBox Grid.Column="1"
+              Margin="2 0"
+              DisplayMemberPath="Name"
               SelectedItem="{Binding Path=StartYearMonths}"
               ItemsSource="{Binding Source={x:Static fcrd:DbManual.YearMonths}, Mode=OneWay}" />
   </GroupBox>

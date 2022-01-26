@@ -18,7 +18,7 @@ namespace Financier.Reports.Reports
         CategoryAxis categoryAxis;
         Legend legend;
 
-        private const string BaseSqlText = @"
+        private const string BaseSqlText = @" /* ReportByPeriodMonthCrcVM */
 select
     tx.date_year as date_year,
     tx.date_month as date_month,
