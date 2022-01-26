@@ -9,7 +9,11 @@ namespace Financier.Reports.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (Visibility)(value == null ? 2 : (bool)value ? 2 : 0);
+            if (value == null)
+            {
+                return Visibility.Collapsed;
+            }
+            return (bool)value ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(

@@ -22,6 +22,7 @@
         [InlineAutoData(PeriodType.Custom, "Custom")]
         [InlineAutoData(TimeSpanStyles.None, "None")]
         [InlineAutoData(TimeSpanStyles.AssumeNegative, "AssumeNegative")]
+        [InlineAutoData("AssumeNegative", "AssumeNegative")]
         [Theory]
         public void Convert_HasDescription_DescriptionMatch(object val, string desc)
         {

@@ -14,7 +14,6 @@ using OxyPlot.Legends;
 namespace Financier.Reports.Reports
 {
     [Header("By category")]
-    [ExcludeFromCodeCoverage]
     public class ByCategoryReportVM : BaseReportVM<ByCategoryReportModel>
     {
         private const string BaseSqlText = @" /* ByCategoryReportModel */
