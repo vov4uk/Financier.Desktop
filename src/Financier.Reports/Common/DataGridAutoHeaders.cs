@@ -28,7 +28,7 @@ namespace Financier.Reports.Common
             e.Column.CellStyle.Setters.Add(new Setter(HorizontalAlignmentProperty, HorizontalAlignment.Right));
         }
 
-        private string GetProprtyDisplayName(object p)
+        private static string GetProprtyDisplayName(object p)
         {
             PropertyDescriptor propertyDescriptor = p as PropertyDescriptor;
             string proprtyDisplayName = null;
