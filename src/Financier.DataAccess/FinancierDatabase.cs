@@ -241,7 +241,9 @@ namespace Financier.DataAccess
                             if (customAttribute != null)
                             {
                                 int ordinal = reader.GetOrdinal(customAttribute.Name);
-                                object obj = ordinal != -1 ? reader.GetValue(ordinal) : throw new Exception(string.Format("В классе [{0}] определен атрибут несуществующего поля [{1}] в ридере", this.GetType(), customAttribute.Name));
+                                object obj = ordinal != -1 ?
+                                    reader.GetValue(ordinal) :
+                                    throw new Exception(string.Format("Class [{0}] have attribute of field [{1}] which not exist in reader", this.GetType(), customAttribute.Name));
                                 if (obj != DBNull.Value)
                                     property.SetValue(newObject, obj, null);
                             }

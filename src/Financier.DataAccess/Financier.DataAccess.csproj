@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DataBase\Scripts\view\081[v_currency_exchange_rate].sql" />
-    <None Remove="DataBase\Scripts\view\082[v_report_category_v2].sql" />
-    <None Remove="DataBase\Scripts\view\083[v_account].sql" />
-    <None Remove="DataBase\Scripts\view\084[v_report_transactions].sql" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="DataBase\Scripts\alter\20090723_0035_initial_data.sql" />
     <EmbeddedResource Include="DataBase\Scripts\alter\20090830_1754_add_is_default.sql" />
     <EmbeddedResource Include="DataBase\Scripts\alter\20090929_2217_add_decimals.sql" />
