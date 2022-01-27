@@ -4,19 +4,26 @@ using Financier.DataAccess.DataBase.Scripts;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Resources;
 using System.Threading.Tasks;
 
 namespace Financier.DataAccess
 {
+    [ExcludeFromCodeCoverage]
     public class FinancierDatabase : IFinancierDatabase
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly DbConnection _connection;
         private bool isDisposed;
 
@@ -209,6 +216,44 @@ namespace Financier.DataAccess
                 }
             }
             await uow.SaveChangesAsync();
+        }
+
+        public async Task<List<T>> ExecuteQuery<T>(string query) where T : class, new()
+        {
+            await using (var db = new FinancierDataContext(ContextOptions))
+            using (var command = db.Database.GetDbConnection().CreateCommand())
+            {
+                Logger.Info(query);
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+
+                await db.Database.OpenConnectionAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    var lst = new List<T>();
+                    while (await reader.ReadAsync())
+                    {
+                        var newObject = new T();
+                        foreach (PropertyInfo property in newObject.GetType().GetProperties())
+                        {
+                            ColumnAttribute customAttribute = Attribute.GetCustomAttribute(property, typeof(ColumnAttribute)) as ColumnAttribute;
+                            if (customAttribute != null)
+                            {
+                                int ordinal = reader.GetOrdinal(customAttribute.Name);
+                                object obj = ordinal != -1 ?
+                                    reader.GetValue(ordinal) :
+                                    throw new Exception(string.Format("Class [{0}] have attribute of field [{1}] which not exist in reader", this.GetType(), customAttribute.Name));
+                                if (obj != DBNull.Value)
+                                    property.SetValue(newObject, obj, null);
+                            }
+                        }
+                        lst.Add(newObject);
+                    }
+
+                    return lst;
+                }
+            }
         }
 
         protected virtual void Dispose(bool disposing)

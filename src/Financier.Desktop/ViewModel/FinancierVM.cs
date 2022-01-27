@@ -1,5 +1,6 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
+using Financier.DataAccess.Utils;
 using Financier.DataAccess.View;
 using Financier.Desktop.Views;
 using Financier.Adapter;
@@ -11,7 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Views.Controls;
-using Financier.Desktop.Reports.ViewModel;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using System.IO;
@@ -19,6 +19,7 @@ using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using Financier.Desktop.Data;
 using Mvvm.Async;
+using Financier.Reports.Forms;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -300,6 +301,7 @@ namespace Financier.Desktop.ViewModel
             Projects.AddRaised += Projects_AddRaised;
             Projects.EditRaised += Projects_EditRaised;
         }
+
         private async Task<BindableBase> GetOrCreatePage(Type type)
         {
 
@@ -343,21 +345,16 @@ namespace Financier.Desktop.ViewModel
                     }
                 case nameof(Category):
                     return await GetOrCreatePage<Category, CategoriesVM>(transform: x => x.Where(x => x.Id > 0).OrderBy(x => x.Left));
-
-                case nameof(ByCategoryReport):
-                    {
-                        using var uow = db.CreateUnitOfWork();
-                        var allCategories = await uow.GetAllAsync<Category>();
-                        var orderedCategories = allCategories.Where(x => x.Id > 0).OrderBy(x => x.Left).ToList();
-                        var byCategoryReport = await uow.GetAllAsync<ByCategoryReport>(x => x.from_account_currency, x => x.to_account_currency, x => x.category);
-                        return new ReportVM(byCategoryReport, orderedCategories);
-                    }
                 case nameof(CurrencyExchangeRate):
                     return await GetOrCreatePage<CurrencyExchangeRate, ExchangeRatesVM>(transform: null,
                         addAction: null,
                         deleteAction: null,
                         editAction: null,
                         x => x.FromCurrency, x => x.ToCurrency);
+                case nameof(ReportsControlVM):
+                    {
+                        return new ReportsControlVM(db);
+                    }
 
                 default: throw new NotSupportedException($"{type.FullName} not suported");
             }

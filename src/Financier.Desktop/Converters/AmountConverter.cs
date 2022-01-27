@@ -12,9 +12,9 @@ namespace Financier.Desktop.Converters
             {
                 if (System.Convert.ToString(parameter) == "false")
                 {
-                    return amount / 100.0m;
+                    return amount / 100.0;
                 }
-                return Math.Abs(amount / 100.0m);
+                return Math.Abs(amount / 100.0);
             }
             return value;
         }

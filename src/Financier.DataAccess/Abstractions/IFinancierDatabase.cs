@@ -16,6 +16,9 @@ namespace Financier.DataAccess.Abstractions
         Task<T> GetOrCreateAsync<T>(int id)
             where T : class, IIdentity, new();
 
+        Task<List<T>> ExecuteQuery<T>(string query)
+            where T : class, new();
+
         Task<Transaction> GetOrCreateTransactionAsync(int id);
 
         Task<IEnumerable<Transaction>> GetSubTransactionsAsync(int id);

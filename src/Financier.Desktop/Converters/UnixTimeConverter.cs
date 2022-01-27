@@ -6,8 +6,8 @@ namespace Financier.Desktop.Converters
 {
     public class UnixTimeConverter : IValueConverter
     {
-        private const string  FORMAT = "yyyy'-'MM'-'dd' 'HH':'mm':'ss";
-        private const string  FORMAT_DAY = "yyyy'-'MM'-'dd";
+        public const string  FORMAT = "yyyy'-'MM'-'dd' 'HH':'mm':'ss";
+        public const string  FORMAT_DAY = "yyyy'-'MM'-'dd";
         private static readonly DateTime StartDate = new DateTime(1970, 1, 1, 0, 0, 0, 0);
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -34,7 +34,6 @@
         private readonly Mock<IBackupWriter> backupWriterMock;
         private readonly Mock<IBaseRepository<Account>> accountsRepo;
         private readonly Mock<IBaseRepository<BlotterTransactions>> transactionsRepo;
-        private readonly Mock<IBaseRepository<ByCategoryReport>> categoryReportsRepo;
         private readonly Mock<IBaseRepository<Category>> categoriesRepo;
         private readonly Mock<IBaseRepository<CurrencyExchangeRate>> exchangeRatesRepo;
 
@@ -61,7 +60,6 @@
             this.backupWriterMock = new Mock<IBackupWriter>(MockBehavior.Strict);
             this.accountsRepo = new Mock<IBaseRepository<Account>>();
             this.transactionsRepo = new Mock<IBaseRepository<BlotterTransactions>>();
-            this.categoryReportsRepo = new Mock<IBaseRepository<ByCategoryReport>>();
             this.categoriesRepo = new Mock<IBaseRepository<Category>>();
             this.exchangeRatesRepo = new Mock<IBaseRepository<CurrencyExchangeRate>>();
 

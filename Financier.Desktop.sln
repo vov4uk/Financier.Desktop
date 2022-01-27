@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.Tests.Common", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.DataAccess.Tests", "src\Tests\Financier.DataAccess.Tests\Financier.DataAccess.Tests.csproj", "{C9388995-AFA0-42F3-989A-D066B8351074}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.Reports", "src\Financier.Reports\Financier.Reports.csproj", "{906EEAEE-8086-4697-BE44-4FF4759F8D33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{C9388995-AFA0-42F3-989A-D066B8351074}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9388995-AFA0-42F3-989A-D066B8351074}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9388995-AFA0-42F3-989A-D066B8351074}.Release|Any CPU.Build.0 = Release|Any CPU
+		{906EEAEE-8086-4697-BE44-4FF4759F8D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{906EEAEE-8086-4697-BE44-4FF4759F8D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{906EEAEE-8086-4697-BE44-4FF4759F8D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{906EEAEE-8086-4697-BE44-4FF4759F8D33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

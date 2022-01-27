@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Financier.DataAccess
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly DbContext ctx;
 
         public BaseRepository(DbContext context)
@@ -44,6 +46,8 @@ namespace Financier.DataAccess
 
             foreach (var includeExpression in includes)
                 result = result.Include(includeExpression);
+
+            Logger.Info(result.ToQueryString());
 
             return await result.ToListAsync();
         }

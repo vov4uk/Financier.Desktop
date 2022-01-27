@@ -3,6 +3,7 @@
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:data="clr-namespace:Financier.DataAccess.Data;assembly=Financier.DataAccess"
                xmlns:dataView="clr-namespace:Financier.DataAccess.View;assembly=Financier.DataAccess"
+               xmlns:reports="clr-namespace:Financier.Reports.Forms;assembly=Financier.Reports"
                xmlns:converters="clr-namespace:Financier.Desktop.Converters"
                Icon="pack://application:,,,/Images/ic_launcher.png"
                Title="Financier Desktop"
@@ -18,16 +19,17 @@
             <x:Type x:Key="PayeeType" TypeName="data:Payee" />
             <x:Type x:Key="LocationType" TypeName="data:Location" />
             <x:Type x:Key="CurrencyType" TypeName="data:Currency" />
-            <x:Type x:Key="ReportType" TypeName="dataView:ByCategoryReport" />
             <x:Type x:Key="CurrencyExchangeRateType" TypeName="data:CurrencyExchangeRate" />
             <x:Type x:Key="BudgetType" TypeName="data:Budget" />
             <x:Type x:Key="TransactionsViewType" TypeName="dataView:BlotterTransactions" />
+            <x:Type x:Key="ReportsControl" TypeName="reports:ReportsControlVM" />
             <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InverseBooleanConverter x:Key="InverseBool" />
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
+        <!-- TODO : USE istead of (ImageSource="pack) <BitmapImage x:Key="ic_action_cancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -100,18 +102,16 @@
                 <RibbonGroup x:Name="Reports"
                              Header="Reports">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_reports_selected.png"
-                                  Label="By category"
+                                  Label="Reports"
                                   Command="{Binding Path=MenuNavigateCommand}"
-                                  CommandParameter="{StaticResource ReportType}"/>
-                    <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_tab_reports_line_unselected.png"
-                                  Label="Project costs" />-->
+                                  CommandParameter="{StaticResource ReportsControl}"/>
                 </RibbonGroup>
-                <RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
+                <!--<RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png"
                                   Label="Export to excel" />
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/backup_file.png"
                                   Label="Export to csv" />
-                </RibbonGroup>
+                </RibbonGroup>-->
                 <RibbonGroup Header="Monobank"
                              IsEnabled="True">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png"

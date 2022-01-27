@@ -95,12 +95,17 @@
     <EmbeddedResource Include="DataBase\Scripts\view\062[v_report_location].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\063[v_report_project].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\064[v_report_payee].sql" />
+    <EmbeddedResource Include="DataBase\Scripts\view\084[v_report_transactions].sql" />
+    <EmbeddedResource Include="DataBase\Scripts\view\083[v_account].sql" />
+    <EmbeddedResource Include="DataBase\Scripts\view\082[v_report_category_v2].sql" />
+    <EmbeddedResource Include="DataBase\Scripts\view\081[v_currency_exchange_rate].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\080[v_transaction_attributes].sql" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.6" />
+    <PackageReference Include="NLog" Version="5.0.0-rc2" />
   </ItemGroup>
 
   <ItemGroup>

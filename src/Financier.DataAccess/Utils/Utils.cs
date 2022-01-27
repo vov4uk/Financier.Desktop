@@ -1,5 +1,6 @@
 ﻿using Financier.DataAccess.Data;
 using System;
+using System.Globalization;
 using System.Text;
 
 namespace Financier.DataAccess.Utils
@@ -46,7 +47,7 @@ namespace Financier.DataAccess.Utils
             {
                 c = Currency.Empty;
             }
-            string s = (amount / HUNDRED).ToString("F2");
+            string s = (amount / HUNDRED).ToString("F2", CultureInfo.InvariantCulture);
             if (s.EndsWith("."))
             {
                 s = s.Substring(0, s.Length - 1);
