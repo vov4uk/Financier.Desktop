@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 
 namespace Financier.DataAccess
 {
+    [ExcludeFromCodeCoverage]
     public class FinancierDatabase : IFinancierDatabase
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
