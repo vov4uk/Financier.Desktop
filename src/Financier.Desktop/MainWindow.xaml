@@ -42,17 +42,22 @@
                 <Label Content="{Binding Path=OpenBackupPath}" />
             </Ribbon.HelpPaneContent>
 
-            <Ribbon.ApplicationMenu>
+            <Ribbon.ApplicationMenu >
                 <RibbonApplicationMenu>
                     <RibbonApplicationMenuItem Header="Open"
+                                               ToolTip="Open backup file"
+                                               ToolTipDescription="Open backup file"
                                                Command="{Binding Path=OpenBackupCommand}"
                                                ImageSource="pack://application:,,,/Images/actionbar_db_restore.png" />
                     <RibbonApplicationMenuItem Header="Save"
                                                Command="{Binding Path=SaveBackupCommand}"
                                                ImageSource="pack://application:,,,/Images/actionbar_db_backup.png" />
-                    <RibbonApplicationMenuItem Header="Options"
+                    <RibbonApplicationMenuItem Header="Save as .db"
+                                               Command="{Binding Path=SaveBackupAsDbCommand}"
+                                               ImageSource="pack://application:,,,/Images/save_as_db.png" />
+                    <!--<RibbonApplicationMenuItem Header="Options"
                                                ImageSource="pack://application:,,,/Images/ic_action_gear.png"
-                                               IsEnabled="False" />
+                                               IsEnabled="False" />-->
                     <RibbonApplicationMenuItem Header="Exit"
                                                Click="Exit_Click"
                                                ImageSource="pack://application:,,,/Images/ic_menu_back.png" />

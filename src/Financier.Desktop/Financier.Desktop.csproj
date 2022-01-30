@@ -76,6 +76,7 @@
     <Resource Include="Images\menu_entities_payees.png" />
     <Resource Include="Images\menu_entities_projects.png" />
     <Resource Include="Images\monobank.png" />
+    <Resource Include="Images\save_as_db.png" />
   </ItemGroup>
 
   <ItemGroup>

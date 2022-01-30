@@ -38,6 +38,7 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _monoCommand;
         private IAsyncCommand _openBackupCommand;
         private IAsyncCommand _saveBackupCommand;
+        private IAsyncCommand _saveBackupAsDbCommand;
         private readonly IBackupWriter backupWriter;
         private BlotterVM blotterVm;
         private BindableBase currentPage;
@@ -140,11 +141,20 @@ namespace Financier.Desktop.ViewModel
             get => projectsVm;
             private set => SetProperty(ref projectsVm, value);
         }
+
         public IAsyncCommand SaveBackupCommand
         {
             get
             {
                 return _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
+            }
+        }
+
+        public IAsyncCommand SaveBackupAsDbCommand
+        {
+            get
+            {
+                return _saveBackupAsDbCommand ??= new AsyncCommand(SaveBackupAdDb);
             }
         }
 
@@ -650,12 +660,25 @@ namespace Financier.Desktop.ViewModel
                 vm.Entities = new ObservableCollection<T>(entities);
             }
         }
+
         private async Task SaveBackup_Click()
         {
             var backupPath = dialogWrapper.SaveFileDialog(Backup, Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName()));
             if (!string.IsNullOrEmpty(backupPath))
             {
                 await SaveBackup(backupPath);
+
+                dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
+                Logger.Info($"Backup done. Saved {backupPath}");
+            }
+        }
+
+        private async Task SaveBackupAdDb()
+        {
+            var backupPath = dialogWrapper.SaveFileDialog("db", Path.Combine(Path.GetDirectoryName(OpenBackupPath), Path.ChangeExtension(BackupWriter.GenerateFileName(), "db")));
+            if (!string.IsNullOrEmpty(backupPath))
+            {
+                await db.SaveAsFile(backupPath);
 
                 dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
                 Logger.Info($"Backup done. Saved {backupPath}");

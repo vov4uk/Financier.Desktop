@@ -178,6 +178,22 @@
 
         [Theory]
         [AutoMoqData]
+        public async void SaveBackupAsDb_ExecuteCommand_DBQueryExecuted(
+            string backupPath)
+        {
+            var vm = this.GetFinancierVM();
+            this.dbMock.Setup(x => x.SaveAsFile(backupPath)).Verifiable();
+            this.dialogMock.Setup(x => x.SaveFileDialog(It.IsAny<string>(), It.IsAny<string>())).Returns(backupPath).Verifiable();
+            this.dialogMock.Setup(x => x.ShowMessageBox($"Saved {backupPath}", "Backup done.", false)).Verifiable();
+
+            await vm.SaveBackupAsDbCommand.ExecuteAsync();
+
+            this.dbMock.VerifyAll();
+            this.dialogMock.VerifyAll();
+        }
+
+        [Theory]
+        [AutoMoqData]
         public void Locations_AddRaised_NewItemAdded(LocationDto result)
         {
             var location = new Location() { Id = 0 };

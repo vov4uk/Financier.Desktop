@@ -256,6 +256,22 @@ namespace Financier.DataAccess
             }
         }
 
+        public async Task SaveAsFile(string dest)
+        {
+            await using (var db = new FinancierDataContext(ContextOptions))
+            using (var command = db.Database.GetDbConnection().CreateCommand())
+            {
+                string query = $"VACUUM main INTO '{dest}'";
+                Logger.Info(query);
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+
+                await db.Database.OpenConnectionAsync();
+
+                await command.ExecuteNonQueryAsync();
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (this.isDisposed)
