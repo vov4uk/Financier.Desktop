@@ -40,9 +40,18 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
         public override void CreatePages()
         {
+            var page1 = new Page1VM(this.TotalAmount);
+            page1.PropertyChanged += (_, e) => 
+            {
+                if (e.PropertyName == nameof(page1.Text))
+                {
+                    MoveNextCommand.RaiseCanExecuteChanged();
+                }
+            };
+
             _pages = new List<WizardPageBaseVM>()
             {
-                new Page1VM(this.TotalAmount),
+                page1,
                 new Page2VM(categories, projects, this.TotalAmount),
             }.AsReadOnly();
 

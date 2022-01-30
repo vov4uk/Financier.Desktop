@@ -27,25 +27,25 @@ namespace Financier.DataAccess.Utils
             return sb.ToString();
         }
 
-        private static StringBuilder AmountToString(StringBuilder sb, Currency c, long amount)
+        private static StringBuilder AmountToString(StringBuilder sb, Currency currency, long amount)
         {
-            return AmountToString(sb, c, amount, false);
+            return AmountToString(sb, currency, amount, false);
         }
 
-        private static StringBuilder AmountToString(StringBuilder sb, Currency c, long amount, bool addPlus)
+        private static StringBuilder AmountToString(StringBuilder sb, Currency currency, long amount, bool addPlus)
         {
-            return AmountToString(sb, c, new decimal(amount), addPlus);
+            return AmountToString(sb, currency, new decimal(amount), addPlus);
         }
 
-        private static StringBuilder AmountToString(StringBuilder sb, Currency c, decimal amount, bool addPlus)
+        private static StringBuilder AmountToString(StringBuilder sb, Currency currency, decimal amount, bool addPlus)
         {
             if (amount.CompareTo(decimal.Zero) > 0 && addPlus)
             {
                 sb.Append("+");
             }
-            if (c == null)
+            if (currency == null)
             {
-                c = Currency.Empty;
+                currency = Currency.Empty;
             }
             string s = (amount / HUNDRED).ToString("F2", CultureInfo.InvariantCulture);
             if (s.EndsWith("."))
@@ -53,9 +53,9 @@ namespace Financier.DataAccess.Utils
                 s = s.Substring(0, s.Length - 1);
             }
             sb.Append(s);
-            if (!string.IsNullOrEmpty(c.Symbol))
+            if (!string.IsNullOrEmpty(currency.Symbol))
             {
-              sb.Append(" ").Append(c.Symbol);
+              sb.Append(" ").Append(currency.Symbol);
             }
             return sb;
         }

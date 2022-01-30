@@ -11,6 +11,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         private DelegateCommand _addRowCommand;
         private DelegateCommand<FinancierTransactionDto> _deleteCommand;
         private DelegateCommand _totalCommand;
+        private DelegateCommand _clearAllNotesCommand;
+
         private ObservableCollection<Category> categories;
         private ObservableCollection<FinancierTransactionDto> financierTransactions;
         private ObservableCollection<Project> projects;
@@ -40,7 +42,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
-        public DelegateCommand<FinancierTransactionDto> DeleteCommand
+        public DelegateCommand<FinancierTransactionDto> DeleteRowCommand
         {
             get
             {
@@ -85,6 +87,14 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
         }
 
+        public DelegateCommand ClearAllNotesCommand
+        {
+            get
+            {
+                return _clearAllNotesCommand ??= new DelegateCommand(ClearAllNotes);
+            }
+        }
+
         public override bool IsValid() => true;
         public void SetTransactions(List<FinancierTransactionDto> list)
         {
@@ -96,6 +106,14 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             base.CalculatedAmount =
                 FinancierTransactions.Sum(x => x.FromAmount) / 100.0;
+        }
+
+        private void ClearAllNotes()
+        {
+            foreach (var item in FinancierTransactions)
+            {
+                item.Note = null;
+            }
         }
     }
 }

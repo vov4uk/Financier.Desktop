@@ -349,7 +349,7 @@ namespace Financier.Desktop.ViewModel
                                 addAction: Blotter_AddTransactionRaised,
                                 deleteAction: Blotter_DeleteRaised,
                                 editAction: BlotterVM_OpenTransactionRaised,
-                                x => x.from_account_currency, x => x.to_account_currency);
+                                x => x.from_account_currency, x => x.to_account_currency, x => x.original_currency);
                         }
                         return Blotter;
                     }

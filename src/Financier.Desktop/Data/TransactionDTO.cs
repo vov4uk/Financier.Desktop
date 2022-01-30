@@ -96,6 +96,11 @@ namespace Financier.Desktop.Data
             {
                 category = value;
                 RaisePropertyChanged(nameof(Category));
+
+                if (category != null)
+                {
+                    IsAmountNegative = category.Type == 0;
+                }
             }
         }
 

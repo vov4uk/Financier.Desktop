@@ -83,7 +83,30 @@
             vm.FinancierTransactions.Add(new () { FromAmount = -10000, Order = 1 });
             vm.FinancierTransactions.Add(toDelete);
             vm.FinancierTransactions.Add(lastOne);
-            vm.DeleteCommand.Execute(toDelete);
+            vm.DeleteRowCommand.Execute(toDelete);
+
+            Assert.Equal(2, vm.FinancierTransactions.Last().Order);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void ClearAllNotes_Execute_NotesEmpty(List<Category> categories, List<Project> projects, List<FinancierTransactionDto> transactions)
+        {
+            var vm = new Page2VM(categories, projects, -100);
+
+            Assert.Equal(0, vm.CalculatedAmount);
+
+            foreach (var item in transactions)
+            {
+                vm.FinancierTransactions.Add(item);
+            }
+
+            vm.ClearAllNotesCommand.Execute();
+
+            foreach (var item in vm.FinancierTransactions)
+            {
+                Assert.Null(item.Note);
+            }
 
             Assert.Equal(2, vm.FinancierTransactions.Last().Order);
         }
