@@ -69,6 +69,10 @@
             transaction.FromAmount = 100;
             transaction.IsAmountNegative = true;
             transaction.IsSubTransaction = false;
+            transaction.OriginalCurrencyId = 0;
+            transaction.OriginalCurrency = default;
+            subTransaction.OriginalCurrencyId = 0;
+            subTransaction.OriginalCurrency = default;
 
             this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionDailogVM>(), 340, 340, "Sub Transaction"))
                 .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionDailogVM)a).Transaction; })
@@ -112,7 +116,11 @@
             transaction.FromAmount = 100;
             transaction.IsAmountNegative = true;
             transaction.IsSubTransaction = false;
+            transaction.OriginalCurrencyId = 0;
+            transaction.OriginalCurrency = default;
 
+            subTransaction.OriginalCurrencyId = 0;
+            subTransaction.OriginalCurrency = default;
             subTransaction.IsSubTransaction = true;
 
             this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionDailogVM>(), 340, 340, "Sub Transaction"))
@@ -152,6 +160,8 @@
             transaction.FromAmount = 1000;
             transaction.IsAmountNegative = true;
             transaction.SubTransactions.Clear();
+            transaction.OriginalCurrencyId = 0;
+            transaction.OriginalCurrency = default;
 
             RecipesVM recipesVM = default;
 

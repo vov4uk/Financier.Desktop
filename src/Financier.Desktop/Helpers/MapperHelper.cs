@@ -25,15 +25,16 @@ namespace Financier.Desktop.Helpers
         public static void MapTransaction(TransactionDto dto, Transaction tr)
         {
             tr.FromAccountId = dto.AccountId;
-            tr.FromAmount = dto.RealFromAmount;
 
             if (dto.OriginalCurrencyId > 0 && dto.Account?.CurrencyId == dto.OriginalCurrencyId)
             {
+                tr.FromAmount = dto.RealFromAmount;
                 tr.OriginalCurrencyId = 0;
                 tr.OriginalFromAmount = 0;
             }
             else
             {
+                tr.FromAmount = Math.Abs(dto.FromAmount) * (dto.IsAmountNegative ? -1 : 1);
                 tr.OriginalFromAmount = dto.OriginalFromAmount ?? 0;
                 tr.OriginalCurrencyId = dto.OriginalCurrencyId ?? 0;
             }

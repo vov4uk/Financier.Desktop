@@ -181,7 +181,7 @@ namespace Financier.DataAccess
             if (id != 0)
             {
                 using var uow = CreateUnitOfWork();
-                return await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == id, o => o.OriginalCurrency, c => c.Category);
+                return await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == id, o => o.OriginalCurrency, c => c.Category, x => x.FromAccount);
             }
 
             return new Transaction { DateTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds(), Id = 0, CategoryId = 0 };

@@ -51,17 +51,18 @@ namespace Financier.Desktop.Data
         public TransactionDto(Transaction transaction)
         {
             Id = transaction.Id;
+            Account = transaction.FromAccount;
             AccountId = transaction.FromAccountId;
             CategoryId = transaction.CategoryId;
             Category = transaction.Category;
             PayeeId = transaction.PayeeId;
             OriginalCurrencyId = transaction.OriginalCurrencyId;
             OriginalCurrency = transaction.OriginalCurrency;
+            OriginalFromAmount = transaction.OriginalFromAmount;
             LocationId = transaction.LocationId;
             ProjectId = transaction.ProjectId;
             Note = transaction.Note;
             FromAmount = transaction.FromAmount;
-            OriginalFromAmount = transaction.OriginalFromAmount;
             IsAmountNegative = transaction.FromAmount <= 0;
             Date = UnixTimeConverter.Convert(transaction.DateTime).Date;
             Time = UnixTimeConverter.Convert(transaction.DateTime);
@@ -138,10 +139,10 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public bool IsOriginalFromAmountVisible =>
-            currency != null && account != null && currency?.Id != account?.Currency.Id;
+        public bool IsOriginalFromAmountVisible => OriginalCurrency != null && Account != null && OriginalCurrency.Id != Account.CurrencyId;
 
         public bool IsSplitCategory => categoryId == -1;
+
         public bool IsSubTransaction { get; set; }
 
         public int? LocationId
@@ -225,19 +226,18 @@ namespace Financier.Desktop.Data
                 if (Rate != 0)
                 {
                     var d = 1.0 / Rate;
-                    return
-                        $"1{currency?.Name}={Rate:F5}{account?.Currency.Name}, 1{account?.Currency?.Name}={d:F5}{currency?.Name}";
+                    return $"1{currency?.Name}={Rate:F5}{account?.Currency.Name}, 1{account?.Currency?.Name}={d:F5}{currency?.Name}";
                 }
 
                 return "N/A";
             }
         }
 
-        public long RealFromAmount => Math.Abs(FromAmount) * (IsAmountNegative ? -1 : 1);
+        public long RealFromAmount => Math.Abs(IsOriginalFromAmountVisible ? OriginalFromAmount.Value : FromAmount) * (IsAmountNegative ? -1 : 1);
 
         public long SplitAmount
         {
-            get { return subTransactions?.Sum(x => x.fromAmount) ?? 0; }
+            get { return subTransactions?.Sum(x => x.RealFromAmount) ?? 0; }
         }
 
         public ObservableCollection<TransactionDto> SubTransactions

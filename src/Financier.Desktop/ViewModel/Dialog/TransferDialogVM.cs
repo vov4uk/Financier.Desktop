@@ -8,7 +8,12 @@ namespace Financier.Desktop.ViewModel.Dialog
 {
     public class TransferDialogVM : DialogBaseVM
     {
-        private readonly string[] TrackingProperies = new string[] { nameof(TransferDto.FromAmount), nameof(TransferDto.ToAccount), nameof(TransferDto.FromAccount), };
+        private readonly string[] TrackingProperies = new string[]
+        {
+            nameof(TransferDto.FromAmount),
+            nameof(TransferDto.ToAccount),
+            nameof(TransferDto.FromAccount),
+        };
         private DelegateCommand _clearNotesCommand;
 
         public TransferDialogVM(TransferDto transfer, List<Account> accounts)
@@ -18,17 +23,11 @@ namespace Financier.Desktop.ViewModel.Dialog
             Transfer.PropertyChanged += TransferPropertyChanged;
         }
 
+        public TransferDto Transfer { get; }
         public List<Account> Accounts { get; }
 
-        public DelegateCommand ClearNotesCommand
-        {
-            get
-            {
-                return _clearNotesCommand ??= new DelegateCommand(() => { Transfer.Note = default; });
-            }
-        }
+        public DelegateCommand ClearNotesCommand => _clearNotesCommand ??= new DelegateCommand(() => { Transfer.Note = default; });
 
-        public TransferDto Transfer { get; }
         public override object OnRequestSave()
         {
             return Transfer;

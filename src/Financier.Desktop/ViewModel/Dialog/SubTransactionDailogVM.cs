@@ -28,22 +28,17 @@ namespace Financier.Desktop.ViewModel.Dialog
         }
 
         public List<Category> Categories { get; }
+        public List<Project> Projects { get; }
+        public TransactionDto Transaction { get; }
 
         public DelegateCommand ChangeFromAmountSignCommand
         {
-            get
-            {
-                return _changeFromAmountSignCommand ??=
-                    new DelegateCommand(() => { Transaction.IsAmountNegative = !Transaction.IsAmountNegative; });
-            }
+            get { return _changeFromAmountSignCommand ??= new DelegateCommand(() => { Transaction.IsAmountNegative = !Transaction.IsAmountNegative; }); }
         }
 
         public DelegateCommand<int?> ClearCategoryCommand
         {
-            get
-            {
-                return _clearCategoryCommand ??= new DelegateCommand<int?>(i => { Transaction.CategoryId = i; });
-            }
+            get { return _clearCategoryCommand ??= new DelegateCommand<int?>(i => { Transaction.CategoryId = i; }); }
         }
 
         public DelegateCommand ClearFromAmountCommand
@@ -66,10 +61,6 @@ namespace Financier.Desktop.ViewModel.Dialog
             get { return _clearProjectCommand ??= new DelegateCommand(() => { Transaction.ProjectId = default; }); }
         }
 
-        public List<Project> Projects { get; }
-
-        public TransactionDto Transaction { get; }
-
         public override object OnRequestSave()
         {
             return Transaction;
@@ -77,8 +68,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         protected override bool CanSaveCommandExecute()
         {
-            if (Transaction.IsSplitCategory) return Transaction.UnsplitAmount == 0;
-            return true;
+            return !Transaction.IsSplitCategory || Transaction.UnsplitAmount == 0;
         }
 
         private void Transaction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

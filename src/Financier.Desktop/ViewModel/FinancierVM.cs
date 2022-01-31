@@ -544,6 +544,15 @@ namespace Financier.Desktop.ViewModel
             IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(id);
             var transactionDto = new TransactionDto(transaction, subTransactions);
 
+            // if transaction not in home currency, replace FromAmount with OriginalFromAmount to show correct values
+            if (transactionDto.IsOriginalFromAmountVisible)
+            {
+                foreach (var item in transactionDto.SubTransactions)
+                {
+                    item.FromAmount = item.OriginalFromAmount ?? 0;
+                }
+            }
+
             using var uow = db.CreateUnitOfWork();
 
             TransactionDialogVM dialogVm = new TransactionDialogVM(
@@ -564,11 +573,11 @@ namespace Financier.Desktop.ViewModel
                 var resultTransactions = new List<Transaction>();
 
                 MapperHelper.MapTransaction(resultVm, transaction);
-
+                long fromAmount = transaction.FromAmount;
                 resultTransactions.Add(transaction);
                 if (resultVm?.SubTransactions?.Any() == true)
                 {
-                    // TODO : Add Unit Test gor code below
+                    // TODO : Add Unit Test for code below
                     foreach (var subTransactionDto in resultVm.SubTransactions)
                     {
                         var subTransaction = await db.GetOrCreateAsync<Transaction>(subTransactionDto.Id);
@@ -579,7 +588,24 @@ namespace Financier.Desktop.ViewModel
                         subTransaction.FromAccountId = transaction.FromAccountId;
                         subTransaction.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
                         subTransaction.Category = default;
+
+                        //Set FromAmount in home currency
+                        if (resultVm.IsOriginalFromAmountVisible)
+                        {
+                            var originalFromAmount = subTransactionDto.FromAmount;
+                            subTransaction.FromAmount = (long)(originalFromAmount * resultVm.Rate);
+                            subTransaction.OriginalFromAmount = originalFromAmount;
+                            fromAmount -= subTransaction.FromAmount;
+                        }
+
                         resultTransactions.Add(subTransaction);
+                    }
+
+                    // check if sum of all subtransaction == parentTransaction.FromAmount
+                    // if not - add diference to last transaction
+                    if (fromAmount != 0)
+                    {
+                        resultTransactions.Last().FromAmount += fromAmount;
                     }
                 }
 
