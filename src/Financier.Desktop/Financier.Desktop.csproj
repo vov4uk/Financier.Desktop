@@ -63,7 +63,6 @@
     <Resource Include="Images\ic_action_trash.png" />
     <Resource Include="Images\ic_launcher.png" />
     <Resource Include="Images\ic_menu_back.png" />
-    <Resource Include="Images\ic_tab_accounts_selected.png" />
     <Resource Include="Images\ic_tab_accounts_unselected.png" />
     <Resource Include="Images\ic_tab_blotter_selected.png" />
     <Resource Include="Images\ic_tab_budgets_unselected.png" />
