@@ -12,7 +12,7 @@
 
             Assert.Equal("Paste text", vm.Title);
             Assert.Equal(-100.0, vm.TotalAmount);
-            Assert.True(vm.IsValid());
+            Assert.False(vm.IsValid());
             Assert.Empty(vm.Amounts);
         }
 
@@ -33,6 +33,7 @@ Discount -0.5 A";
             Assert.Equal(-100.0, vm.CalculatedAmount);
             Assert.Equal(0.0, vm.Diff);
             Assert.Equal(4, vm.Amounts.Count);
+            Assert.True(vm.IsValid());
         }
     }
 }

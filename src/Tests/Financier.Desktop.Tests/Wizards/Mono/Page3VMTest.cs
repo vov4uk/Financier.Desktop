@@ -60,9 +60,9 @@
             List<Account> accounts,
             List<Project> projects)
         {
-            List<MonoTransaction> transactions = new List<MonoTransaction>
+            List<BankTransaction> transactions = new List<BankTransaction>
             {
-                new MonoTransaction // Description -> Location.Title
+                new BankTransaction // Description -> Location.Title
                 {
                     CardCurrencyAmount = 100.0,
                     ExchangeRate = null,
@@ -75,7 +75,7 @@
                     Commission = 0.0,
                     MCC = "1000",
                 },
-                new MonoTransaction// Description -> Location.Address
+                new BankTransaction// Description -> Location.Address
                 {
                     CardCurrencyAmount = 100.0,
                     ExchangeRate = null,
@@ -88,7 +88,7 @@
                     Commission = 0.0,
                     MCC = "1000",
                 },
-                new MonoTransaction // Description -> Category.Title
+                new BankTransaction // Description -> Category.Title
                 {
                     CardCurrencyAmount = 100.0,
                     ExchangeRate = null,
@@ -101,7 +101,7 @@
                     Commission = 0.0,
                     MCC = "1000",
                 },
-                new MonoTransaction // Description -> Note
+                new BankTransaction // Description -> Note
                 {
                     CardCurrencyAmount = 100.0,
                     ExchangeRate = null,
@@ -114,7 +114,7 @@
                     Commission = 0.0,
                     MCC = "1000",
                 },
-                new MonoTransaction // OperationCurrency -> OriginalCurrencyId
+                new BankTransaction // OperationCurrency -> OriginalCurrencyId
                 {
                     CardCurrencyAmount = 100.0,
                     ExchangeRate = 25.0,
@@ -219,9 +219,9 @@
             List<Category> categories,
             List<Project> projects)
         {
-            List<MonoTransaction> transactions = new List<MonoTransaction>
+            List<BankTransaction> transactions = new List<BankTransaction>
             {
-                new MonoTransaction // Description -> Location.Title
+                new BankTransaction // Description -> Location.Title
                 {
                     CardCurrencyAmount = 100.0,
                     ExchangeRate = null,
@@ -234,7 +234,7 @@
                     Commission = 0.0,
                     MCC = "1000",
                 },
-                new MonoTransaction// Description -> Location.Address
+                new BankTransaction// Description -> Location.Address
                 {
                     CardCurrencyAmount = 100.0,
                     ExchangeRate = null,

@@ -27,7 +27,7 @@ namespace Financier.Desktop.Helpers
             tr.FromAccountId = dto.AccountId;
             tr.FromAmount = dto.RealFromAmount;
 
-            if (dto.OriginalCurrencyId > 0 && dto.Account.CurrencyId == dto.OriginalCurrencyId)
+            if (dto.OriginalCurrencyId > 0 && dto.Account?.CurrencyId == dto.OriginalCurrencyId)
             {
                 tr.OriginalCurrencyId = 0;
                 tr.OriginalFromAmount = 0;

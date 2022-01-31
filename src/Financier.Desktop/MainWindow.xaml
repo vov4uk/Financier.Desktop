@@ -117,11 +117,15 @@
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/backup_file.png"
                                   Label="Export to csv" />
                 </RibbonGroup>-->
-                <RibbonGroup Header="Monobank"
+                <RibbonGroup Header="Import"
                              IsEnabled="True">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png"
-                                  Label="Import from CSV"
+                                  Label="Monobank CSV"
                                   Command="{Binding Path=MonoCommand}"
+                                  />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/abank.png"
+                                  Label="A-Bank PDF"
+                                  Command="{Binding Path=AbankCommand}"
                                   />
                 </RibbonGroup>
             </RibbonTab>

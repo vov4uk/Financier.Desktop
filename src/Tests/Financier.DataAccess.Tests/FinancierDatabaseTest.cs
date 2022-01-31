@@ -174,7 +174,7 @@
             List<Entity> entities = new List<Entity>()
             {
                 new Currency() { Id = 1, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." },
-                new Category() { Id = 1, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = "Expanse" },
+                new Category() { Id = 1, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = 0 },
                 new Account() { Id = 1, Title = "Default account", CurrencyId = 1, Type = "CASH", IsActive = true },
                 new Transaction()
                 {
@@ -290,7 +290,7 @@
             List<Entity> entities = new List<Entity>()
             {
                 new Currency() { Id = 1, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." },
-                new Category() { Id = 1, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = "Expanse" },
+                new Category() { Id = 1, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = 0 },
                 new Account() { Id = 1, Title = "Default account", CurrencyId = 1, Type = "CASH", IsActive = true },
                 new Transaction()
                 {
@@ -364,7 +364,7 @@
             List<Entity> entities = new List<Entity>()
             {
                 new Currency() { Id = 1, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." },
-                new Category() { Id = 1, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = "Expanse" },
+                new Category() { Id = 1, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = 0 },
                 new Account() { Id = 1, Title = "Default account", CurrencyId = 1, Type = "CASH", IsActive = true },
                 new Transaction()
                 {
@@ -434,7 +434,7 @@
             {
                 var currency = new Currency() { Id = 0, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." };
                 await uow.GetRepository<Currency>().AddAsync(currency);
-                var category = new Category() { Id = 0, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = "Expanse" };
+                var category = new Category() { Id = 0, IsActive = true, Title = "Default category", LastLocationId = 0, LastProjectId = 0, Type = 0 };
                 var account = new Account() { Id = 0, Title = "Default account", Currency = currency, Type = "CASH", IsActive = true };
                 await uow.GetRepository<Account>().AddAsync(account);
 

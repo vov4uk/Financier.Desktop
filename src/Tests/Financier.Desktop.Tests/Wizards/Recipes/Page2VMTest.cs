@@ -107,8 +107,6 @@
             {
                 Assert.Null(item.Note);
             }
-
-            Assert.Equal(2, vm.FinancierTransactions.Last().Order);
         }
     }
 }

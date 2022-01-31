@@ -16,7 +16,7 @@
         [Theory]
         [AutoMoqData]
         public void Constructor_ReceiveParameters_CurrentPageNotEmpty(
-            List<MonoTransaction> mono,
+            List<BankTransaction> mono,
             List<Account> accounts,
             List<Currency> currencies,
             List<Location> locations,
@@ -44,7 +44,7 @@
             List<Project> projects)
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = await new Helpers.MonoCsvHelper().ParseCsv(csvPath);
+            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM(
                 mono,
                 accounts,
@@ -68,7 +68,7 @@
             List<Project> projects)
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            var mono = await new Helpers.MonoCsvHelper().ParseCsv(csvPath);
+            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM(
                 mono,
                 accounts,
@@ -106,7 +106,7 @@
             List<Currency> currencies = new List<Currency> { new Currency { Id = 1, Name = "USD" }, new Currency { Id = 2, Name = "UAH" } };
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = await new Helpers.MonoCsvHelper().ParseCsv(csvPath);
+            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM(
                 mono,
                 accounts,

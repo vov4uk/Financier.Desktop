@@ -10,25 +10,20 @@ using Financier.DataAccess.Monobank;
 
 namespace Financier.Desktop.Helpers
 {
-    public interface ICsvHelper
+    public class MonobankHelper : IBankHelper
     {
-        Task<IEnumerable<MonoTransaction>> ParseCsv(string csvFilePath);
-    }
-
-    public class MonoCsvHelper : ICsvHelper
-    {
-        public async Task<IEnumerable<MonoTransaction>> ParseCsv(string csvFilePath)
+        public async Task<IEnumerable<BankTransaction>> ParseReport(string filePath)
         {
-            if (File.Exists(csvFilePath))
+            if (File.Exists(filePath))
             {
-                await using FileStream file = File.OpenRead(csvFilePath);
+                await using FileStream file = File.OpenRead(filePath);
                 using StreamReader streamReader = new StreamReader(file, Encoding.UTF8);
                 using (var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture))
                 {
-                    return await csv.GetRecordsAsync<MonoTransaction>().ToListAsync();
+                    return await csv.GetRecordsAsync<BankTransaction>().ToListAsync();
                 }
             }
-            return Array.Empty<MonoTransaction>();
+            return Array.Empty<BankTransaction>();
         }
     }
 }

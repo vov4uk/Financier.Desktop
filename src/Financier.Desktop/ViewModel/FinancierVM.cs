@@ -28,7 +28,7 @@ namespace Financier.Desktop.ViewModel
         private const string Backup = "backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
-        private readonly ICsvHelper csvHelper;
+        private readonly IBankHelperFactory bankFactory;
         private readonly IFinancierDatabaseFactory dbFactory;
         private readonly IDialogWrapper dialogWrapper;
         private readonly List<Entity> keyLessEntities = new();
@@ -36,6 +36,7 @@ namespace Financier.Desktop.ViewModel
         private Dictionary<string, List<string>> _entityColumnsOrder;
         private IAsyncCommand<Type> _menuNavigateCommand;
         private IAsyncCommand _monoCommand;
+        private IAsyncCommand _abankCommand;
         private IAsyncCommand _openBackupCommand;
         private IAsyncCommand _saveBackupCommand;
         private IAsyncCommand _saveBackupAsDbCommand;
@@ -53,13 +54,13 @@ namespace Financier.Desktop.ViewModel
             IFinancierDatabaseFactory dbFactory,
             IEntityReader entityReader,
             IBackupWriter backupWriter,
-            ICsvHelper csvHelper)
+            IBankHelperFactory bankFactory)
         {
             this.dialogWrapper = dialogWrapper;
             this.dbFactory = dbFactory;
             this.entityReader = entityReader;
             this.backupWriter = backupWriter;
-            this.csvHelper = csvHelper;
+            this.bankFactory = bankFactory;
             this.db = dbFactory.CreateDatabase();
 
             CreatePages();
@@ -112,7 +113,15 @@ namespace Financier.Desktop.ViewModel
         {
             get
             {
-                return _monoCommand ??= new AsyncCommand(OpenMonoWizardAsync);
+                return _monoCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("Monobank", "csv"));
+            }
+        }
+
+        public IAsyncCommand AbankCommand
+        {
+            get
+            {
+                return _abankCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("A-Bank", "pdf"));
             }
         }
 
@@ -479,20 +488,21 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private async Task OpenMonoWizardAsync()
+        private async Task OpenMonoWizardAsync(string bank, string fileExtention)
         {
-            var fileName = dialogWrapper.OpenFileDialog("csv");
-            Logger.Info($"csv fileName -> {fileName}");
+            var fileName = dialogWrapper.OpenFileDialog(fileExtention);
+            Logger.Info($"{fileExtention} fileName -> {fileName}");
             if (!string.IsNullOrEmpty(fileName))
             {
                 using var uow = db.CreateUnitOfWork();
-                var accounts = await uow.GetAllOrderedByDefaultAsync<Account>();
+                var accounts = await uow.GetAllOrderedByDefaultAsync<Account>( includes: x => x.Currency );
                 var currencies = await uow.GetAllAsync<Currency>();
                 var locations = await uow.GetAllOrderedByDefaultAsync<Location>();
                 var categories = await uow.GetAllAsync<Category>();
                 var projects = await uow.GetAllOrderedByDefaultAsync<Project>();
 
-                var csvTransactions = await csvHelper.ParseCsv(fileName);
+                var csvHelper = this.bankFactory.CreateBankHelper(bank);
+                var csvTransactions = await csvHelper.ParseReport(fileName);
 
                 var vm = new MonoWizardVM(csvTransactions, accounts, currencies, locations, categories.OrderBy(x => x.Left), projects);
 
@@ -521,7 +531,7 @@ namespace Financier.Desktop.ViewModel
                     this.dialogWrapper.ShowMessageBox(
                         $"Imported {monoToImport.Count} transactions."
                         + ((duplicatesCount > 0) ? $" Skiped {duplicatesCount} duplicates." : string.Empty),
-                        "Monobank CSV Import");
+                        $"{bank} Import");
 
                     Logger.Info($"Imported {monoToImport.Count} transactions. Found duplicates : {duplicatesCount}");
                 }
@@ -675,7 +685,18 @@ namespace Financier.Desktop.ViewModel
 
         private async Task SaveBackupAdDb()
         {
-            var backupPath = dialogWrapper.SaveFileDialog("db", Path.Combine(Path.GetDirectoryName(OpenBackupPath), Path.ChangeExtension(BackupWriter.GenerateFileName(), "db")));
+            string fileName = Path.ChangeExtension(BackupWriter.GenerateFileName(), "db");
+            string defaultPath;
+            if (!string.IsNullOrEmpty(OpenBackupPath))
+            {
+                defaultPath = Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty), fileName);
+            }
+            else
+            {
+                defaultPath = fileName;
+            }
+
+            var backupPath = dialogWrapper.SaveFileDialog("db", defaultPath);
             if (!string.IsNullOrEmpty(backupPath))
             {
                 await db.SaveAsFile(backupPath);

@@ -13,10 +13,10 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private readonly List<Category> categories;
         private readonly List<Currency> currencies;
         private readonly List<Location> locations;
-        private readonly List<MonoTransaction> monoTransactions;
+        private readonly List<BankTransaction> monoTransactions;
         private readonly List<Project> projects;
         public MonoWizardVM(
-            IEnumerable<MonoTransaction> monoTransactions,
+            IEnumerable<BankTransaction> monoTransactions,
             IEnumerable<Account> accounts,
             IEnumerable<Currency> currencies,
             IEnumerable<Location> locations,

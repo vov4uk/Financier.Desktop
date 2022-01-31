@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace Financier.DataAccess.Monobank
 {
     [DebuggerDisplay("{Description} : {CardCurrencyAmount} : {Balance}")]
-    public class MonoTransaction
+    public class BankTransaction
     {
         [Name("Date and time", "Дата i час операції"), TypeConverter(typeof(DateTimeConvert)), Index(0)]
         public DateTime Date { get; set; }
