@@ -28,20 +28,20 @@ namespace Financier.Desktop.Helpers
             if (File.Exists(filePath))
             {
                 StringBuilder sb = new StringBuilder();
+                sb.AppendLine(csvHeader);
                 using (var docReader = DocLib.Instance.GetDocReader(filePath, new PageDimensions()))
                 {
                     for (var i = 0; i < docReader.GetPageCount(); i++)
                     {
                         using (var pageReader = docReader.GetPageReader(i))
                         {
-                            sb.AppendLine(pageReader.GetText());
+                            var pageText = ParseTransactionsTable(pageReader.GetText().Replace(Environment.NewLine, space));
+                            sb.AppendLine(pageText);
                         }
                     }
                 }
 
-                var table = ParseTransactionsTable(sb.ToString().Replace(Environment.NewLine, space));
-
-                using (TextReader streamReader = new StringReader(table))
+                using (TextReader streamReader = new StringReader(sb.ToString()))
                 {
                     using (var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture))
                     {
@@ -55,7 +55,6 @@ namespace Financier.Desktop.Helpers
         private string ParseTransactionsTable(string pageText)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(csvHeader);
 
             Match firstMatch = this.dateRegex.Matches(pageText).FirstOrDefault();
             Match lastMatch = this.numberRegex.Matches(pageText).LastOrDefault();
