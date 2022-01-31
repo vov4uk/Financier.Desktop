@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Financier.Desktop.Helpers
 {
-    internal class ABankHelper : IBankHelper
+    public class ABankHelper : IBankHelper
     {
         private const string csvHeader = "\"Date and time\",Description,MCC,\"Card currency amount, (UAH)\",\"Operation amount\",\"Operation currency\",\"Exchange rate\",\"Commission, (UAH)\",\"Cashback amount, (UAH)\",Balance";
         private const string endText = "ПІДПИС БАНКУ";
