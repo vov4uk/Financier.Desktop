@@ -16,10 +16,12 @@ namespace Financier.Desktop.Helpers
     public class ABankHelper : IBankHelper
     {
         private const string csvHeader = "\"Date and time\",Description,MCC,\"Card currency amount, (UAH)\",\"Operation amount\",\"Operation currency\",\"Exchange rate\",\"Commission, (UAH)\",\"Cashback amount, (UAH)\",Balance";
-        private const string endText = "ПІДПИС БАНКУ";
-        private const string startText = @"Залишок
-після операціЇ";
-        private const string dateRegex = @"[0-3][0-9]\.[0-1][0-9]\.[0-9]{4} [0-2][0-9]:[0-5][0-9]";
+        private const string dateRegexPattern = @"[0-3][0-9]\.[0-1][0-9]\.[0-9]{4} [0-2][0-9]:[0-5][0-9]";
+        private const string doubleRegexPattern = "[+-]?\\d*\\.?\\d+";
+        private const string space = " ";
+
+        private readonly Regex dateRegex = new Regex(dateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        private readonly Regex numberRegex = new Regex(doubleRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
         public async Task<IEnumerable<BankTransaction>> ParseReport(string filePath)
         {
@@ -37,7 +39,7 @@ namespace Financier.Desktop.Helpers
                     }
                 }
 
-                var table = ParseTransactionsTable(sb.ToString());
+                var table = ParseTransactionsTable(sb.ToString().Replace(Environment.NewLine, space));
 
                 using (TextReader streamReader = new StringReader(table))
                 {
@@ -50,33 +52,31 @@ namespace Financier.Desktop.Helpers
             return Array.Empty<BankTransaction>();
         }
 
-        private static string ParseTransactionsTable(string pageText)
+        private string ParseTransactionsTable(string pageText)
         {
             StringBuilder sb = new StringBuilder();
-            var tableStartIndex = pageText.IndexOf(startText, StringComparison.InvariantCultureIgnoreCase);
-            var tableEndIndex = pageText.IndexOf(endText, StringComparison.InvariantCultureIgnoreCase);
-
-            var tableText = pageText.Substring(tableStartIndex, tableEndIndex - tableStartIndex)
-                .Replace(startText, string.Empty)
-                .Replace(Environment.NewLine, " ")
-                .Trim();
-
-            var regex = new Regex(dateRegex, RegexOptions.Singleline);
-            var tableLines = regex.Matches(tableText);
-
             sb.AppendLine(csvHeader);
-            for (int j = 1; j < tableLines.Count; j++)
+
+            Match firstMatch = this.dateRegex.Matches(pageText).FirstOrDefault();
+            Match lastMatch = this.numberRegex.Matches(pageText).LastOrDefault();
+
+            if (firstMatch != null && lastMatch != null)
             {
-                var line = tableLines[j];
-                var prevLine = tableLines[j - 1];
-                var row = tableText.Substring(prevLine.Index, line.Index - prevLine.Index);
-                string parsedRow = AddSeparators(row);
-                sb.AppendLine(parsedRow);
+                string tableText = pageText.Substring(firstMatch.Index, lastMatch.Index + lastMatch.Length - firstMatch.Index);
+
+                List<int> tableLines = dateRegex.Matches(tableText).Select(x => x.Index).ToList();
+                tableLines.Add(tableText.Length);
+
+                for (int j = 1; j < tableLines.Count; j++)
+                {
+                    int line = tableLines[j];
+                    int prevLine = tableLines[j - 1];
+                    string lineText = tableText.Substring(prevLine, line - prevLine);
+                    string csvText = AddSeparators(lineText);
+                    sb.AppendLine(csvText);
+                }
             }
-            var lastLine = tableLines[tableLines.Count - 1];
-            var lastRow = tableText.Substring(lastLine.Index);
-            string parsedLastRow = AddSeparators(lastRow);
-            sb.AppendLine(parsedLastRow);
+
             return sb.ToString();
         }
 
@@ -101,7 +101,7 @@ namespace Financier.Desktop.Helpers
                 }
                 else
                 {
-                    details = word + " " + details;
+                    details = word + space + details;
                 }
             }
 

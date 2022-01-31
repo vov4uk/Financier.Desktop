@@ -54,6 +54,7 @@
                 categories,
                 projects);
 
+            Assert.Equal(46, mono.Count());
             Assert.Equal(46, ((Page2VM)vm.Pages[1]).GetMonoTransactions().Count);
             Assert.NotNull(vm.CurrentPage);
             Assert.Equal(3, vm.Pages.Count);
@@ -103,43 +104,44 @@
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
             IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
 
-            Assert.StrictEqual(expected, mono.ToList());
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(mono.ToList()));
         }
 
         [Fact]
         public async Task LoadTransactions_Abank_ExpectedTransactions()
         {
-           var first = new BankTransaction
-           {
-               Date = new DateTime(2022, 1, 19, 15, 55, 0, DateTimeKind.Local),
-               Description = "McDonald’s",
-               Balance = 10360.00,
-               MCC = "5814",
-               Commission = 0.0,
-               CardCurrencyAmount = -119.00,
-               OperationAmount = -119.00,
-               OperationCurrency = "UAH",
-               Cashback = 3.57,
-           };
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2022, 1, 19, 15, 55, 0, DateTimeKind.Local),
+                Description = "McDonald’s",
+                Balance = 10360.00,
+                MCC = "5814",
+                Commission = 0.0,
+                CardCurrencyAmount = -119.00,
+                OperationAmount = -119.00,
+                OperationCurrency = "UAH",
+                Cashback = 3.57,
+            };
 
-           var last = new BankTransaction
-           {
-               Date = new DateTime(2022, 1, 1, 0, 1, 0, DateTimeKind.Local),
-               Description = "Відсотки на залишок власних коштів",
-               Balance = 10315.12,
-               Commission = 0.0,
-               MCC = "4829",
-               CardCurrencyAmount = 3.12,
-               OperationAmount = 3.12,
-               OperationCurrency = "UAH",
-               Cashback = 0.0,
-           };
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2022, 1, 1, 0, 1, 0, DateTimeKind.Local),
+                Description = "Відсотки на залишок власних коштів",
+                Balance = 10315.12,
+                Commission = 0.0,
+                MCC = "4829",
+                CardCurrencyAmount = 3.12,
+                OperationAmount = 3.12,
+                OperationCurrency = "UAH",
+                Cashback = 0.0,
+            };
 
-           var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
-           IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(csvPath);
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
+            IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(csvPath);
 
-           Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
-           Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
+            Assert.Equal(8, abank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
         }
 
         [Fact]
