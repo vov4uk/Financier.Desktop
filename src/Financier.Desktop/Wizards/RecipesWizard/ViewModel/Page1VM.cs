@@ -3,6 +3,8 @@ using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Xceed.Wpf.Toolkit;
 
@@ -37,6 +39,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         }
 
         public override string Title => "Paste text";
+
         public void CalculateCurrentAmount()
         {
             Amounts.Clear();
@@ -93,9 +96,32 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
         private void HighLight(RichTextBox textBox)
         {
+            FormatText();
             textBox.BeginInit();
             textBox.EndInit();
             CalculateCurrentAmount();
+        }
+
+        private void FormatText()
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            var array = text.Split(new[] { Environment.NewLine }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+            var singleLine = string.Join(' ', array);
+            Regex numberRegex = new Regex(RecipesFormatter.Pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+            var matches = numberRegex.Matches(singleLine).Select(x => x.Value);
+
+            foreach (var match in matches)
+            {
+                singleLine = singleLine.Replace(match, match.Replace(" ", "-") + Environment.NewLine);
+            }
+
+            Text = singleLine;
         }
     }
 }

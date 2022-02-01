@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -10,9 +11,9 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class RecipesFormatter : ITextFormatter
     {
-        public const string Pattern = @"((\+|\-)?)\d+(?:(\.|\,)?\d+)(\s+)(A|a|а|А)";
+        public const string Pattern = @"((\+|\-)?)\d+(?:(\.|\,)?\d+)(\s+|-)(A|a|а|А|Б|б)";
         private const string NumbersRegex = @"\d+";
-        private const string Space = " ";
+        public const string Space = " ";
 
         public string GetText(FlowDocument document)
         {
@@ -23,18 +24,29 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
         {
             Paragraph p = new Paragraph();
 
-            var lines = text.Split(Environment.NewLine).Where(x => !string.IsNullOrWhiteSpace(x));
-            foreach (var line in lines)
+            foreach (var line in text.Split(Environment.NewLine))
             {
-                if (Regex.IsMatch(line, Pattern, RegexOptions.IgnoreCase))
+                var words = line.Trim().Split(Space);
+                for (int i = 0; i < words.Length; i++)
                 {
-                    p.Inlines.AddRange(line.Split(Space).Select(word => GetRun(word, Brushes.DarkRed, Brushes.Yellow)));
+                    string word = words[i];
+                    if (Regex.IsMatch(word, Pattern, RegexOptions.IgnoreCase))
+                    {
+                        p.Inlines.Add(GetRun(word, Brushes.DarkRed, Brushes.Yellow));
+                        if (i != words.Length - 1) //not last word
+                        {
+                            p.Inlines.Add(GetRun(Space, Brushes.DarkRed, Brushes.Yellow));
+                        }
+                    }
+                    else
+                    {
+                        p.Inlines.Add(GetRun(word, Brushes.DarkViolet, Brushes.LightGreen));
+                        if (i != words.Length - 1) //not last word
+                        {
+                            p.Inlines.Add(GetRun(Space, Brushes.DarkRed, Brushes.Yellow));
+                        }
+                    }
                 }
-                else
-                {
-                    p.Inlines.AddRange(line.Split(Space).Select(word => GetRun(word, Brushes.DarkViolet, Brushes.LightGreen)));
-                }
-
                 p.Inlines.Add(GetDefaultRun(Environment.NewLine));
             }
 
@@ -56,7 +68,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
         {
             return new Run
             {
-                Text = word + Space,
+                Text = word,
                 Foreground = foreground,
                 Background = background
             };
@@ -66,7 +78,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
         {
             return new Run
             {
-                Text = word + Space
+                Text = word
             };
         }
     }
