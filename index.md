@@ -1,12 +1,9 @@
 ## Welcome to Financier Desktop
 
-## About
- Desktop version of [Financier](https://github.com/handydevcom/financier "Financier") which is a fork of the great [Financisto](https://github.com/dsolonenko/financisto) app. Financisto is an open-source personal finance tracker for Android platform.
+### Features
 
-## Features
-
-- [Open/save Financier (Financisto) .backup files](/pages/open/open.md)
-- Edit transactions/transfers
+- [Open/save Financier (Financisto) .backup files](/pages/open.md)
+- [Edit transactions/transfers](/pages/transactions.md)
 - Edit entities (projects, locations ..)
 - Import CSV report from Monobank
 - Import PDF report from A-Bank
