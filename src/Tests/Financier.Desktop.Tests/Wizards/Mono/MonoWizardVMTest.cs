@@ -9,6 +9,7 @@
     using Financier.DataAccess.Monobank;
     using Financier.Desktop.Wizards.MonoWizard.ViewModel;
     using Financier.Tests.Common;
+    using Newtonsoft.Json;
     using Xunit;
 
     public class MonoWizardVMTest
@@ -16,7 +17,7 @@
         [Theory]
         [AutoMoqData]
         public void Constructor_ReceiveParameters_CurrentPageNotEmpty(
-            List<MonoTransaction> mono,
+            List<BankTransaction> mono,
             List<Account> accounts,
             List<Currency> currencies,
             List<Location> locations,
@@ -44,7 +45,7 @@
             List<Project> projects)
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = await new Helpers.MonoCsvHelper().ParseCsv(csvPath);
+            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM(
                 mono,
                 accounts,
@@ -53,6 +54,7 @@
                 categories,
                 projects);
 
+            Assert.Equal(46, mono.Count());
             Assert.Equal(46, ((Page2VM)vm.Pages[1]).GetMonoTransactions().Count);
             Assert.NotNull(vm.CurrentPage);
             Assert.Equal(3, vm.Pages.Count);
@@ -68,7 +70,7 @@
             List<Project> projects)
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            var mono = await new Helpers.MonoCsvHelper().ParseCsv(csvPath);
+            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM(
                 mono,
                 accounts,
@@ -80,6 +82,75 @@
             Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
             Assert.NotNull(vm.CurrentPage);
             Assert.Equal(3, vm.Pages.Count);
+        }
+
+        [Fact]
+        public async Task LoadTransactions_Monobank_ExpectedTransactions()
+        {
+            var expected = new List<BankTransaction>
+            {
+               new BankTransaction
+               {
+                    Date = new DateTime(2021, 11, 15, 10, 19, 11, DateTimeKind.Local),
+                    Description = "Київстар",
+                    Balance = 0.0,
+                    MCC = "4814",
+                    CardCurrencyAmount = -132.25,
+                    OperationAmount = -132.25,
+                    OperationCurrency = "UAH",
+               },
+            };
+
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
+            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(mono.ToList()));
+        }
+
+        [Fact]
+        public async Task LoadTransactions_Monobank_EmptyList()
+        {
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", Guid.NewGuid().ToString());
+            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+
+            Assert.Empty(mono);
+        }
+
+        [Fact]
+        public async Task LoadTransactions_Abank_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2022, 1, 19, 15, 55, 0, DateTimeKind.Local),
+                Description = "McDonald’s",
+                Balance = 10360.00,
+                MCC = "5814",
+                Commission = 0.0,
+                CardCurrencyAmount = -119.00,
+                OperationAmount = -119.00,
+                OperationCurrency = "UAH",
+                Cashback = 3.57,
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2022, 1, 1, 0, 1, 0, DateTimeKind.Local),
+                Description = "Відсотки на залишок власних коштів",
+                Balance = 10315.12,
+                Commission = 0.0,
+                MCC = "4829",
+                CardCurrencyAmount = 3.12,
+                OperationAmount = 3.12,
+                OperationCurrency = "UAH",
+                Cashback = 0.0,
+            };
+
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
+            IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(csvPath);
+
+            Assert.Equal(8, abank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
         }
 
         [Fact]
@@ -106,7 +177,7 @@
             List<Currency> currencies = new List<Currency> { new Currency { Id = 1, Name = "USD" }, new Currency { Id = 2, Name = "UAH" } };
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = await new Helpers.MonoCsvHelper().ParseCsv(csvPath);
+            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM(
                 mono,
                 accounts,

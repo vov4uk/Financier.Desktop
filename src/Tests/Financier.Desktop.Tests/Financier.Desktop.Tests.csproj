@@ -11,12 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\min.backup" />
-    <None Remove="Assets\mono.eng.csv" />
-    <None Remove="Assets\mono.ukr.csv" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Content Include="Assets\abank.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\min.backup">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

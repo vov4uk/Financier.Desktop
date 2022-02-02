@@ -28,29 +28,11 @@ namespace Financier.Desktop.ViewModel
 
         public event EventHandler<T> EditRaised;
 
-        public DelegateCommand AddCommand
-        {
-            get
-            {
-                return _addCommand ??= new DelegateCommand(() => AddRaised?.Invoke(this, EventArgs.Empty));
-            }
-        }
+        public DelegateCommand AddCommand => _addCommand ??= new DelegateCommand(() => AddRaised?.Invoke(this, EventArgs.Empty));
 
-        public DelegateCommand DeleteCommand
-        {
-            get
-            {
-                return _deleteCommand ??= new DelegateCommand(() => DeleteRaised?.Invoke(this, SelectedValue), () => SelectedValue != null);
-            }
-        }
+        public DelegateCommand DeleteCommand => _deleteCommand ??= new DelegateCommand(() => DeleteRaised?.Invoke(this, SelectedValue), () => SelectedValue != null);
 
-        public DelegateCommand EditCommand
-        {
-            get
-            {
-                return _editCommand ??= new DelegateCommand(() => EditRaised?.Invoke(this, SelectedValue), () => SelectedValue != null);
-            }
-        }
+        public DelegateCommand EditCommand => _editCommand ??= new DelegateCommand(() => EditRaised?.Invoke(this, SelectedValue), () => SelectedValue != null);
 
         public ObservableCollection<T> Entities
         {

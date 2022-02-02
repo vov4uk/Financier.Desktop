@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using System.Linq.Expressions;
@@ -28,7 +27,8 @@
         private readonly Mock<IDialogWrapper> dialogMock;
         private readonly Mock<IFinancierDatabaseFactory> dbFactoryMock;
         private readonly Mock<IFinancierDatabase> dbMock;
-        private readonly Mock<ICsvHelper> csvMock;
+        private readonly Mock<IBankHelper> csvMock;
+        private readonly Mock<IBankHelperFactory> bankMock;
         private readonly Mock<IUnitOfWork> uowMock;
         private readonly Mock<IEntityReader> entityReaderMock;
         private readonly Mock<IBackupWriter> backupWriterMock;
@@ -51,7 +51,8 @@
 
         public FinancierVMTest()
         {
-            this.csvMock = new Mock<ICsvHelper>(MockBehavior.Strict);
+            this.bankMock = new Mock<IBankHelperFactory>(MockBehavior.Strict);
+            this.csvMock = new Mock<IBankHelper>(MockBehavior.Strict);
             this.dialogMock = new Mock<IDialogWrapper>(MockBehavior.Strict);
             this.dbFactoryMock = new Mock<IFinancierDatabaseFactory>(MockBehavior.Strict);
             this.dbMock = new Mock<IFinancierDatabase>(MockBehavior.Strict);
@@ -64,6 +65,7 @@
             this.exchangeRatesRepo = new Mock<IBaseRepository<CurrencyExchangeRate>>();
 
             this.dbFactoryMock.Setup(x => x.CreateDatabase()).Returns(this.dbMock.Object);
+            this.bankMock.Setup(x => x.CreateBankHelper(It.IsAny<string>())).Returns(this.csvMock.Object);
         }
 
         [Fact]
@@ -174,6 +176,21 @@
             this.dbMock.VerifyAll();
             this.uowMock.VerifyAll();
             this.entityReaderMock.VerifyAll();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async void SaveBackupAsDb_ExecuteCommand_DBQueryExecuted(string backupPath)
+        {
+            var vm = this.GetFinancierVM();
+            this.dbMock.Setup(x => x.SaveAsFile(backupPath)).Returns(Task.CompletedTask).Verifiable();
+            this.dialogMock.Setup(x => x.SaveFileDialog(It.IsAny<string>(), It.IsAny<string>())).Returns(backupPath).Verifiable();
+            this.dialogMock.Setup(x => x.ShowMessageBox($"Saved {backupPath}", "Backup done.", false)).Returns(true).Verifiable();
+
+            await vm.SaveBackupAsDbCommand.ExecuteAsync();
+
+            this.dbMock.VerifyAll();
+            this.dialogMock.VerifyAll();
         }
 
         [Theory]
@@ -293,7 +310,7 @@
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
             this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<MonoWizardVM>())).Returns(output);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", "Monobank CSV Import", false)).Returns(true);
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", "Monobank Import", false)).Returns(true);
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
@@ -304,7 +321,7 @@
             this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
-            this.csvMock.Setup(x => x.ParseCsv(csvPath)).ReturnsAsync(Array.Empty<MonoTransaction>());
+            this.csvMock.Setup(x => x.ParseReport(csvPath)).ReturnsAsync(Array.Empty<BankTransaction>());
 
             var vm = this.GetFinancierVM();
             await vm.MonoCommand.ExecuteAsync();
@@ -331,7 +348,7 @@
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
             this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<MonoWizardVM>())).Returns(findManyOutput);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skiped 1 duplicates.", "Monobank CSV Import", false)).Returns(true);
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skiped 1 duplicates.", "Monobank Import", false)).Returns(true);
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
@@ -341,7 +358,7 @@
             this.trMock.Setup(x => x.FindManyAsync(It.IsAny<Expression<Func<Transaction, bool>>>())).ReturnsAsync(findManyOutput);
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
-            this.csvMock.Setup(x => x.ParseCsv(csvPath)).ReturnsAsync(Array.Empty<MonoTransaction>());
+            this.csvMock.Setup(x => x.ParseReport(csvPath)).ReturnsAsync(Array.Empty<BankTransaction>());
 
             var vm = this.GetFinancierVM();
             await vm.MonoCommand.ExecuteAsync();
@@ -362,7 +379,7 @@
             this.uowMock.Setup(x => x.Dispose());
             this.SetupWizardRepos();
 
-            this.csvMock.Setup(x => x.ParseCsv(csvPath)).ReturnsAsync(Array.Empty<MonoTransaction>());
+            this.csvMock.Setup(x => x.ParseReport(csvPath)).ReturnsAsync(Array.Empty<BankTransaction>());
 
             var vm = this.GetFinancierVM();
             await vm.MonoCommand.ExecuteAsync();
@@ -375,10 +392,15 @@
         public void OpenTransaction_ExistingTransaction_UpdateTransaction(
             BlotterTransactions eventArgs,
             Transaction transaction,
+            Account account,
+            Currency currency,
             IEnumerable<Transaction> subTransactions)
         {
             eventArgs.category_id = -1;
+
             var output = new TransactionDto(transaction, subTransactions);
+            account.Currency = currency;
+            output.Account = account;
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
@@ -581,7 +603,7 @@
             this.SetupRepo(new Mock<IBaseRepository<Project>>());
         }
 
-        private FinancierVM GetFinancierVM() => new FinancierVM(this.dialogMock.Object, this.dbFactoryMock.Object, this.entityReaderMock.Object, this.backupWriterMock.Object, this.csvMock.Object);
+        private FinancierVM GetFinancierVM() => new FinancierVM(this.dialogMock.Object, this.dbFactoryMock.Object, this.entityReaderMock.Object, this.backupWriterMock.Object, this.bankMock.Object);
 
         private void SetupRepo<T>(Mock<IBaseRepository<T>> mock)
             where T : Entity

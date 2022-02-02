@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\abank.png" />
     <Resource Include="Images\AccountType\account_type_asset.png" />
     <Resource Include="Images\AccountType\account_type_bank.png" />
     <Resource Include="Images\AccountType\account_type_card.png" />
@@ -62,7 +63,6 @@
     <Resource Include="Images\ic_action_trash.png" />
     <Resource Include="Images\ic_launcher.png" />
     <Resource Include="Images\ic_menu_back.png" />
-    <Resource Include="Images\ic_tab_accounts_selected.png" />
     <Resource Include="Images\ic_tab_accounts_unselected.png" />
     <Resource Include="Images\ic_tab_blotter_selected.png" />
     <Resource Include="Images\ic_tab_budgets_unselected.png" />
@@ -76,10 +76,12 @@
     <Resource Include="Images\menu_entities_payees.png" />
     <Resource Include="Images\menu_entities_projects.png" />
     <Resource Include="Images\monobank.png" />
+    <Resource Include="Images\save_as_db.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DataGridExtensions" Version="2.6.0-beta1" />
+    <PackageReference Include="Docnet.Core" Version="2.4.0-alpha.2" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="4.6.97" />
     <PackageReference Include="Emoji.Wpf" Version="0.3.3" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />

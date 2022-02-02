@@ -181,7 +181,7 @@ namespace Financier.DataAccess
             if (id != 0)
             {
                 using var uow = CreateUnitOfWork();
-                return await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == id, o => o.OriginalCurrency, c => c.Category);
+                return await uow.GetRepository<Transaction>().FindByAsync(x => x.Id == id, o => o.OriginalCurrency, c => c.Category, x => x.FromAccount);
             }
 
             return new Transaction { DateTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds(), Id = 0, CategoryId = 0 };
@@ -253,6 +253,22 @@ namespace Financier.DataAccess
 
                     return lst;
                 }
+            }
+        }
+
+        public async Task SaveAsFile(string dest)
+        {
+            await using (var db = new FinancierDataContext(ContextOptions))
+            using (var command = db.Database.GetDbConnection().CreateCommand())
+            {
+                string query = $"VACUUM main INTO '{dest}'";
+                Logger.Info(query);
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+
+                await db.Database.OpenConnectionAsync();
+
+                await command.ExecuteNonQueryAsync();
             }
         }
 

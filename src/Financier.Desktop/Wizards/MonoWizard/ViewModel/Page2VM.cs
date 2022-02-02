@@ -10,18 +10,18 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page2VM : WizardPageBaseVM
     {
-        private DelegateCommand<MonoTransaction> _deleteCommand;
+        private DelegateCommand<BankTransaction> _deleteCommand;
         private Account _monoAccount;
 
-        private MonoTransaction _startTransaction;
+        private BankTransaction _startTransaction;
 
-        private ObservableCollection<MonoTransaction> allTransactions;
-        public Page2VM(List<MonoTransaction> records)
+        private ObservableCollection<BankTransaction> allTransactions;
+        public Page2VM(List<BankTransaction> records)
         {
-            AllTransactions = new ObservableCollection<MonoTransaction>(records);
+            AllTransactions = new ObservableCollection<BankTransaction>(records);
         }
 
-        public ObservableCollection<MonoTransaction> AllTransactions
+        public ObservableCollection<BankTransaction> AllTransactions
         {
             get => allTransactions;
             private set
@@ -31,11 +31,11 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public DelegateCommand<MonoTransaction> DeleteCommand
+        public DelegateCommand<BankTransaction> DeleteCommand
         {
             get
             {
-                return _deleteCommand ??= new DelegateCommand<MonoTransaction>(tr => { allTransactions.Remove(tr); });
+                return _deleteCommand ??= new DelegateCommand<BankTransaction>(tr => { allTransactions.Remove(tr); });
             }
         }
 
@@ -51,13 +51,13 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public List<MonoTransaction> GetMonoTransactions()
+        public List<BankTransaction> GetMonoTransactions()
         {
             var startDate = _startTransaction?.Date ?? new DateTime(2017, 11, 17); // Monobank launched
             return allTransactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
         }
 
-        public MonoTransaction StartTransaction
+        public BankTransaction StartTransaction
         {
             get => _startTransaction;
             set

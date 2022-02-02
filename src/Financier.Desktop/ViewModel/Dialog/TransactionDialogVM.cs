@@ -14,15 +14,12 @@ namespace Financier.Desktop.ViewModel.Dialog
     {
         private readonly IDialogWrapper dialogWrapper;
         private DelegateCommand _addSubTransactionCommand;
-
         private DelegateCommand _clearLocationCommand;
-
         private DelegateCommand _clearPayeeCommand;
-
         private DelegateCommand<TransactionDto> _deleteSubTransactionCommand;
-
         private DelegateCommand _openRecipesDialogCommand;
         private DelegateCommand<TransactionDto> _openSubTransactionDialogCommand;
+
         public TransactionDialogVM(
             TransactionDto transaction,
             IDialogWrapper dialogWrapper,
@@ -41,63 +38,26 @@ namespace Financier.Desktop.ViewModel.Dialog
             Payees = payees;
         }
         public List<Account> Accounts { get; }
-
-        public DelegateCommand AddSubTransactionCommand
-        {
-            get
-            {
-                return _addSubTransactionCommand ??= new DelegateCommand(() =>
-                {
-                    ShowSubTransactionDialog(new TransactionDto(), true);
-                });
-            }
-        }
-
-        public DelegateCommand ClearLocationCommand
-        {
-            get { return _clearLocationCommand ??= new DelegateCommand(() => { Transaction.LocationId = default; }); }
-        }
-
-        public DelegateCommand ClearPayeeCommand
-        {
-            get { return _clearPayeeCommand ??= new DelegateCommand(() => { Transaction.PayeeId = default; }); }
-        }
-
         public List<Currency> Currencies { get; }
-
-        public DelegateCommand<TransactionDto> DeleteSubTransactionCommand
-        {
-            get
-            {
-                return _deleteSubTransactionCommand ??= new DelegateCommand<TransactionDto>(tr =>
-                {
-                    Transaction.SubTransactions.Remove(tr);
-                    Transaction.RecalculateUnSplitAmount();
-                });
-            }
-        }
-
-        public DelegateCommand<TransactionDto> EditSubTransactionCommand
-        {
-            get
-            {
-                return _openSubTransactionDialogCommand ??=
-                    new DelegateCommand<TransactionDto>(tr => ShowSubTransactionDialog(tr, false));
-            }
-        }
-
         public List<Location> Locations { get; }
-
-        public DelegateCommand OpenRecipesDialogCommand
-        {
-            get
-            {
-                return _openRecipesDialogCommand ??=
-                    new DelegateCommand(ShowRecepiesDialog);
-            }
-        }
-
         public List<Payee> Payees { get; }
+
+        public DelegateCommand AddSubTransactionCommand => _addSubTransactionCommand ??= new DelegateCommand(() => { ShowSubTransactionDialog(new TransactionDto(), true); });
+
+        public DelegateCommand ClearLocationCommand => _clearLocationCommand ??= new DelegateCommand(() => { Transaction.LocationId = default; });
+
+        public DelegateCommand ClearPayeeCommand => _clearPayeeCommand ??= new DelegateCommand(() => { Transaction.PayeeId = default; });
+
+        public DelegateCommand<TransactionDto> DeleteSubTransactionCommand => _deleteSubTransactionCommand ??= new DelegateCommand<TransactionDto>(tr =>
+                                                                                            {
+                                                                                                Transaction.SubTransactions.Remove(tr);
+                                                                                                Transaction.RecalculateUnSplitAmount();
+                                                                                            });
+
+        public DelegateCommand<TransactionDto> EditSubTransactionCommand => _openSubTransactionDialogCommand ??= new DelegateCommand<TransactionDto>(tr => ShowSubTransactionDialog(tr, false));
+
+        public DelegateCommand OpenRecipesDialogCommand => _openRecipesDialogCommand ??= new DelegateCommand(ShowRecepiesDialog);
+
         protected override bool CanSaveCommandExecute()
         {
             return Transaction.Account != null && Transaction.FromAmount != 0;

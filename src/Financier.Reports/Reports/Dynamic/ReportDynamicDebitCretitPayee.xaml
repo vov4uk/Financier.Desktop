@@ -39,6 +39,7 @@
                         <Image Source="{StaticResource line_icon}" />
                     </RadioButton>
                     <RadioButton ToolTip="Grid"
+                                 x:Name="GridBtn"
                                  Style="{StaticResource IconRadioButton}">
                         <Image Source="{StaticResource grid_icon}"/>
                     </RadioButton>

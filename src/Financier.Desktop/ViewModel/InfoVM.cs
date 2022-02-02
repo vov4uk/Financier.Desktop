@@ -13,13 +13,7 @@ namespace Financier.Desktop.ViewModel
 
         public event EventHandler RequestClose;
 
-        public DelegateCommand ExitCommand
-        {
-            get
-            {
-                return _exitCommand ??= new DelegateCommand(() => RequestClose?.Invoke(this, EventArgs.Empty));
-            }
-        }
+        public DelegateCommand ExitCommand => _exitCommand ??= new DelegateCommand(() => RequestClose?.Invoke(this, EventArgs.Empty));
 
         public string Text
         {

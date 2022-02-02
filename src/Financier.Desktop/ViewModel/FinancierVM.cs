@@ -28,7 +28,7 @@ namespace Financier.Desktop.ViewModel
         private const string Backup = "backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly ConcurrentDictionary<Type, object> _pages = new ConcurrentDictionary<Type, object>();
-        private readonly ICsvHelper csvHelper;
+        private readonly IBankHelperFactory bankFactory;
         private readonly IFinancierDatabaseFactory dbFactory;
         private readonly IDialogWrapper dialogWrapper;
         private readonly List<Entity> keyLessEntities = new();
@@ -36,8 +36,10 @@ namespace Financier.Desktop.ViewModel
         private Dictionary<string, List<string>> _entityColumnsOrder;
         private IAsyncCommand<Type> _menuNavigateCommand;
         private IAsyncCommand _monoCommand;
+        private IAsyncCommand _abankCommand;
         private IAsyncCommand _openBackupCommand;
         private IAsyncCommand _saveBackupCommand;
+        private IAsyncCommand _saveBackupAsDbCommand;
         private readonly IBackupWriter backupWriter;
         private BlotterVM blotterVm;
         private BindableBase currentPage;
@@ -52,13 +54,13 @@ namespace Financier.Desktop.ViewModel
             IFinancierDatabaseFactory dbFactory,
             IEntityReader entityReader,
             IBackupWriter backupWriter,
-            ICsvHelper csvHelper)
+            IBankHelperFactory bankFactory)
         {
             this.dialogWrapper = dialogWrapper;
             this.dbFactory = dbFactory;
             this.entityReader = entityReader;
             this.backupWriter = backupWriter;
-            this.csvHelper = csvHelper;
+            this.bankFactory = bankFactory;
             this.db = dbFactory.CreateDatabase();
 
             CreatePages();
@@ -93,40 +95,16 @@ namespace Financier.Desktop.ViewModel
 
         public bool IsTransactionPageSelected => currentPage is BlotterVM;
 
-        public LocationsVM Locations
-        {
-            get => locationsVm;
-            private set => SetProperty(ref locationsVm, value);
-        }
-
-        public IAsyncCommand<Type> MenuNavigateCommand
-        {
-            get
-            {
-                return _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
-            }
-        }
-
-        public IAsyncCommand MonoCommand
-        {
-            get
-            {
-                return _monoCommand ??= new AsyncCommand(OpenMonoWizardAsync);
-            }
-        }
-
-        public IAsyncCommand OpenBackupCommand
-        {
-            get
-            {
-                return _openBackupCommand ??= new AsyncCommand(OpenBackup_OnClickAsync);
-            }
-        }
-
         public string OpenBackupPath
         {
             get => openBackupPath;
             private set => SetProperty(ref openBackupPath, value);
+        }
+
+        public LocationsVM Locations
+        {
+            get => locationsVm;
+            private set => SetProperty(ref locationsVm, value);
         }
 
         public PayeesVM Payees
@@ -140,13 +118,18 @@ namespace Financier.Desktop.ViewModel
             get => projectsVm;
             private set => SetProperty(ref projectsVm, value);
         }
-        public IAsyncCommand SaveBackupCommand
-        {
-            get
-            {
-                return _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
-            }
-        }
+
+        public IAsyncCommand<Type> MenuNavigateCommand => _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
+
+        public IAsyncCommand MonoCommand => _monoCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("Monobank", "csv"));
+
+        public IAsyncCommand AbankCommand => _abankCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("A-Bank", "pdf"));
+
+        public IAsyncCommand OpenBackupCommand => _openBackupCommand ??= new AsyncCommand(OpenBackup_OnClickAsync);
+
+        public IAsyncCommand SaveBackupCommand => _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
+
+        public IAsyncCommand SaveBackupAsDbCommand => _saveBackupAsDbCommand ??= new AsyncCommand(SaveBackupAdDb);
 
         public async Task OpenBackup(string backupPath)
         {
@@ -230,6 +213,8 @@ namespace Financier.Desktop.ViewModel
                     await repo.DeleteAsync(transaction);
                     await uow.SaveChangesAsync();
                 }
+                await db.RebuildAccountBalanceAsync(eventArgs.from_account_id);
+                await db.RebuildAccountBalanceAsync(eventArgs.to_account_id ?? 0);
                 await RefreshBlotterTransactionsAsync();
             }
         }
@@ -339,7 +324,7 @@ namespace Financier.Desktop.ViewModel
                                 addAction: Blotter_AddTransactionRaised,
                                 deleteAction: Blotter_DeleteRaised,
                                 editAction: BlotterVM_OpenTransactionRaised,
-                                x => x.from_account_currency, x => x.to_account_currency);
+                                x => x.from_account_currency, x => x.to_account_currency, x => x.original_currency);
                         }
                         return Blotter;
                     }
@@ -469,20 +454,21 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private async Task OpenMonoWizardAsync()
+        private async Task OpenMonoWizardAsync(string bank, string fileExtention)
         {
-            var fileName = dialogWrapper.OpenFileDialog("csv");
-            Logger.Info($"csv fileName -> {fileName}");
+            var fileName = dialogWrapper.OpenFileDialog(fileExtention);
+            Logger.Info($"{fileExtention} fileName -> {fileName}");
             if (!string.IsNullOrEmpty(fileName))
             {
                 using var uow = db.CreateUnitOfWork();
-                var accounts = await uow.GetAllOrderedByDefaultAsync<Account>();
+                var accounts = await uow.GetAllOrderedByDefaultAsync<Account>( includes: x => x.Currency );
                 var currencies = await uow.GetAllAsync<Currency>();
                 var locations = await uow.GetAllOrderedByDefaultAsync<Location>();
                 var categories = await uow.GetAllAsync<Category>();
                 var projects = await uow.GetAllOrderedByDefaultAsync<Project>();
 
-                var csvTransactions = await csvHelper.ParseCsv(fileName);
+                var csvHelper = this.bankFactory.CreateBankHelper(bank);
+                var csvTransactions = await csvHelper.ParseReport(fileName);
 
                 var vm = new MonoWizardVM(csvTransactions, accounts, currencies, locations, categories.OrderBy(x => x.Left), projects);
 
@@ -511,7 +497,7 @@ namespace Financier.Desktop.ViewModel
                     this.dialogWrapper.ShowMessageBox(
                         $"Imported {monoToImport.Count} transactions."
                         + ((duplicatesCount > 0) ? $" Skiped {duplicatesCount} duplicates." : string.Empty),
-                        "Monobank CSV Import");
+                        $"{bank} Import");
 
                     Logger.Info($"Imported {monoToImport.Count} transactions. Found duplicates : {duplicatesCount}");
                 }
@@ -523,6 +509,15 @@ namespace Financier.Desktop.ViewModel
             Transaction transaction = await db.GetOrCreateTransactionAsync(id);
             IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(id);
             var transactionDto = new TransactionDto(transaction, subTransactions);
+
+            // if transaction not in home currency, replace FromAmount with OriginalFromAmount to show correct values
+            if (transactionDto.IsOriginalFromAmountVisible)
+            {
+                foreach (var item in transactionDto.SubTransactions)
+                {
+                    item.FromAmount = item.OriginalFromAmount ?? 0;
+                }
+            }
 
             using var uow = db.CreateUnitOfWork();
 
@@ -544,11 +539,11 @@ namespace Financier.Desktop.ViewModel
                 var resultTransactions = new List<Transaction>();
 
                 MapperHelper.MapTransaction(resultVm, transaction);
-
+                long fromAmount = transaction.FromAmount;
                 resultTransactions.Add(transaction);
                 if (resultVm?.SubTransactions?.Any() == true)
                 {
-                    // TODO : Add Unit Test gor code below
+                    // TODO : Add Unit Test for code below
                     foreach (var subTransactionDto in resultVm.SubTransactions)
                     {
                         var subTransaction = await db.GetOrCreateAsync<Transaction>(subTransactionDto.Id);
@@ -559,7 +554,24 @@ namespace Financier.Desktop.ViewModel
                         subTransaction.FromAccountId = transaction.FromAccountId;
                         subTransaction.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
                         subTransaction.Category = default;
+
+                        //Set FromAmount in home currency
+                        if (resultVm.IsOriginalFromAmountVisible)
+                        {
+                            var originalFromAmount = subTransactionDto.FromAmount;
+                            subTransaction.FromAmount = (long)(originalFromAmount * resultVm.Rate);
+                            subTransaction.OriginalFromAmount = originalFromAmount;
+                            fromAmount -= subTransaction.FromAmount;
+                        }
+
                         resultTransactions.Add(subTransaction);
+                    }
+
+                    // check if sum of all subtransaction == parentTransaction.FromAmount
+                    // if not - add diference to last transaction
+                    if (fromAmount != 0)
+                    {
+                        resultTransactions.Last().FromAmount += fromAmount;
                     }
                 }
 
@@ -650,12 +662,36 @@ namespace Financier.Desktop.ViewModel
                 vm.Entities = new ObservableCollection<T>(entities);
             }
         }
+
         private async Task SaveBackup_Click()
         {
             var backupPath = dialogWrapper.SaveFileDialog(Backup, Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName()));
             if (!string.IsNullOrEmpty(backupPath))
             {
                 await SaveBackup(backupPath);
+
+                dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
+                Logger.Info($"Backup done. Saved {backupPath}");
+            }
+        }
+
+        private async Task SaveBackupAdDb()
+        {
+            string fileName = Path.ChangeExtension(BackupWriter.GenerateFileName(), "db");
+            string defaultPath;
+            if (!string.IsNullOrEmpty(OpenBackupPath))
+            {
+                defaultPath = Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty), fileName);
+            }
+            else
+            {
+                defaultPath = fileName;
+            }
+
+            var backupPath = dialogWrapper.SaveFileDialog("db", defaultPath);
+            if (!string.IsNullOrEmpty(backupPath))
+            {
+                await db.SaveAsFile(backupPath);
 
                 dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
                 Logger.Info($"Backup done. Saved {backupPath}");

@@ -18,21 +18,25 @@
               Margin="10 10 0 0"
               Height="24">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="54"/>
-                <ColumnDefinition Width="54"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
-                    Width="50"
+                    Width="65"
+                    Margin="2"
                     HorizontalAlignment="Stretch"
                     Content="Paste"
+                    ToolTip="Paste text from clipboard"
                     Command="ApplicationCommands.Paste"
                     CommandTarget="{Binding ElementName=_richTextBox}"
                 />
             <Button Grid.Column="1"
-                    Width="50"
+                    Width="65"
+                    Margin="2"
                     HorizontalAlignment="Stretch"
                     Content="Highlight"
+                    ToolTip="Highlight text. Yellow - transaction row, green - other numbers "
                     Command="{Binding Path=HighlightCommand}"
                     CommandParameter="{Binding ElementName=_richTextBox}"
                 />

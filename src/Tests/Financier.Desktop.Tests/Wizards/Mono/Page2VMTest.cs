@@ -12,7 +12,7 @@
     {
         [Theory]
         [AutoMoqData]
-        public void Constructor_ReceiveTransactions_AllTransactionsSeted(List<MonoTransaction> transactions)
+        public void Constructor_ReceiveTransactions_AllTransactionsSeted(List<BankTransaction> transactions)
         {
             var vm = new Page2VM(transactions);
 
@@ -25,10 +25,10 @@
         public void MonoAccount_BalanceMatch_StartTransactionSetted()
         {
             var account = new Account() { TotalAmount = 10000 };
-            var startTr = new MonoTransaction() { Balance = 100.0 };
-            var transactions = new List<MonoTransaction>()
+            var startTr = new BankTransaction() { Balance = 100.0 };
+            var transactions = new List<BankTransaction>()
             {
-                new MonoTransaction() { Balance = 99.0 },
+                new BankTransaction() { Balance = 99.0 },
                 startTr,
             };
 
@@ -42,10 +42,10 @@
         public void MonoAccount_BalanceNotMatch_StartTransactionNotSetted()
         {
             var account = new Account() { TotalAmount = 10001 };
-            var transactions = new List<MonoTransaction>()
+            var transactions = new List<BankTransaction>()
             {
-                new MonoTransaction() { Balance = 99.0 },
-                new MonoTransaction() { Balance = 100.0 },
+                new BankTransaction() { Balance = 99.0 },
+                new BankTransaction() { Balance = 100.0 },
             };
 
             var vm = new Page2VM(transactions);
@@ -57,10 +57,10 @@
         [Fact]
         public void MonoTransactions_StartTransactionNotSet_MonoTransactionsReturnNotAllTansactions()
         {
-            var transactions = new List<MonoTransaction>()
+            var transactions = new List<BankTransaction>()
             {
-                new MonoTransaction() { Balance = 99.0, Date = new DateTime(2017, 11, 18) },
-                new MonoTransaction() { Balance = 100.0, Date = new DateTime(2017, 11, 16) },
+                new BankTransaction() { Balance = 99.0, Date = new DateTime(2017, 11, 18) },
+                new BankTransaction() { Balance = 100.0, Date = new DateTime(2017, 11, 16) },
             };
 
             var vm = new Page2VM(transactions);
@@ -71,16 +71,16 @@
         [Fact]
         public void MonoTransactions_StartTransactionSeted_MonoTransactionsReturn3Trsnsactions()
         {
-            var startTr = new MonoTransaction() { Balance = 100.0, Date = new DateTime(2019, 11, 17) };
-            var transactions = new List<MonoTransaction>()
+            var startTr = new BankTransaction() { Balance = 100.0, Date = new DateTime(2019, 11, 17) };
+            var transactions = new List<BankTransaction>()
             {
-                new MonoTransaction() { Balance = 199.0, Date = new DateTime(2019, 11, 18) },
-                new MonoTransaction() { Balance = 102.0, Date = new DateTime(2019, 11, 18) },
-                new MonoTransaction() { Balance = 101.0, Date = new DateTime(2019, 11, 18) },
+                new BankTransaction() { Balance = 199.0, Date = new DateTime(2019, 11, 18) },
+                new BankTransaction() { Balance = 102.0, Date = new DateTime(2019, 11, 18) },
+                new BankTransaction() { Balance = 101.0, Date = new DateTime(2019, 11, 18) },
                 startTr,
-                new MonoTransaction() { Balance = 102.0, Date = new DateTime(2019, 11, 16) },
-                new MonoTransaction() { Balance = 103.0, Date = new DateTime(2019, 11, 16) },
-                new MonoTransaction() { Balance = 104.0, Date = new DateTime(2019, 11, 16) },
+                new BankTransaction() { Balance = 102.0, Date = new DateTime(2019, 11, 16) },
+                new BankTransaction() { Balance = 103.0, Date = new DateTime(2019, 11, 16) },
+                new BankTransaction() { Balance = 104.0, Date = new DateTime(2019, 11, 16) },
             };
 
             var vm = new Page2VM(transactions);
@@ -91,9 +91,9 @@
 
         [Theory]
         [AutoMoqData]
-        public void DeleteCommand_Execute_TransactionsRemoved(List<MonoTransaction> transactions)
+        public void DeleteCommand_Execute_TransactionsRemoved(List<BankTransaction> transactions)
         {
-            var trToremove = new MonoTransaction();
+            var trToremove = new BankTransaction();
             transactions.Add(trToremove);
             var vm = new Page2VM(transactions);
             vm.DeleteCommand.Execute(trToremove);

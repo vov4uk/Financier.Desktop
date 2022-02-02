@@ -1,4 +1,5 @@
-﻿using Financier.Desktop.Wizards.RecipesWizard.View;
+﻿using Financier.Desktop.Helpers;
+using Financier.Desktop.Wizards.RecipesWizard.View;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         }
 
         public List<FinancierTransactionDto> Amounts { get; } = new List<FinancierTransactionDto>();
-        public DelegateCommand<RichTextBox> HighlightCommand
-        {
-            get
-            {
-                return _highlightCommand ??= new DelegateCommand<RichTextBox>(HighLight, (_) => true);
-            }
-        }
+
+        public DelegateCommand<RichTextBox> HighlightCommand => _highlightCommand ??= new DelegateCommand<RichTextBox>(HighLight);
 
         public string Text
         {
@@ -37,40 +33,45 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         }
 
         public override string Title => "Paste text";
+
         public void CalculateCurrentAmount()
         {
-            double tmp = 0.0;
             Amounts.Clear();
-            int order = 1;
-            var lines = text.Split(Environment.NewLine);
-            foreach (var line in lines)
+            if (!string.IsNullOrEmpty(text))
             {
-                if (!string.IsNullOrWhiteSpace(line))
+                double tmp = 0.0;
+                int order = 1;
+                var lines = text.Split(Environment.NewLine);
+                foreach (var line in lines)
                 {
-                    var res = Regex.Match(line, RecipesFormatter.Pattern, RegexOptions.IgnoreCase);
-                    if (res.Success)
+                    if (!string.IsNullOrWhiteSpace(line))
                     {
-                        var number = res.Value.Substring(0, res.Value.Length - 2);
-                        var amount = GetDouble(number.Replace(",", ".").Trim());
-                        tmp += amount;
-                        if (amount != 0.0)
+                        var res = Regex.Match(line, RecipesFormatter.Pattern, RegexOptions.IgnoreCase);
+                        if (res.Success)
                         {
-                            var note = line.Replace(res.Value, string.Empty);
-                            Amounts.Add(new FinancierTransactionDto
+                            var number = res.Value.Substring(0, res.Value.Length - 2);
+                            var amount = GetDouble(number.Replace(",", ".").Trim());
+                            tmp += amount;
+                            if (amount != 0.0)
                             {
-                                FromAmount = Convert.ToInt64(amount * -100.0),
-                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
-                                Order = order++
-                            });
+                                var note = line.Replace(res.Value, string.Empty);
+                                Amounts.Add(new FinancierTransactionDto
+                                {
+                                    FromAmount = Convert.ToInt64(amount * -100.0),
+                                    Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
+                                    Order = order++
+                                });
+                            }
                         }
                     }
                 }
-            }
 
-            CalculatedAmount = Math.Abs(tmp) * -1.0;
+                CalculatedAmount = Math.Abs(tmp) * -1.0;
+            }
         }
 
-        public override bool IsValid() => true;
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(Text);
+
         private static double GetDouble(string value, double defaultValue = 0.0)
         {
             double result;
@@ -89,6 +90,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
         private void HighLight(RichTextBox textBox)
         {
+            Text = RecipiesHelper.FormatText(Text);
             textBox.BeginInit();
             textBox.EndInit();
             CalculateCurrentAmount();

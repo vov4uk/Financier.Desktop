@@ -16,6 +16,20 @@
         <BitmapImage x:Key="ic_action_minus"    UriSource="pack://application:,,,/Images/ic_action_minus.png" />
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <converters:AmountConverter x:Key="AmountConverter" />
+        <Style TargetType="{x:Type xctk:DecimalUpDown}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="true">
+                    <DataTrigger.Setters>
+                        <Setter Property="Background" Value="LightPink"/>
+                    </DataTrigger.Setters>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="false">
+                    <DataTrigger.Setters>
+                        <Setter Property="Background" Value="YellowGreen"/>
+                    </DataTrigger.Setters>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -32,7 +46,8 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="24" />
         </Grid.ColumnDefinitions>
-        <TextBlock          Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" x:Name="OriginalFromAmountBlock"
+        <TextBlock          Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
+                            x:Name="OriginalFromAmountBlock"
                             Text="{Binding Path=Transaction.OriginalCurrency.Name, StringFormat={}Amount ({0}), TargetNullValue=Amount}"
                             Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}}" />
         <xctk:IconButton    Grid.Column="0" Grid.Row="1"
@@ -123,7 +138,7 @@
                             Minimum="0"
                             FormatString="F2"
                             ShowButtonSpinner="True" >
-            <xctk:DecimalUpDown.Style>
+            <!--<xctk:DecimalUpDown.Style>
                 <Style TargetType="{x:Type xctk:DecimalUpDown}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="true">
@@ -138,7 +153,7 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </xctk:DecimalUpDown.Style>
+            </xctk:DecimalUpDown.Style>-->
         </xctk:DecimalUpDown>
 
         <xctk:IconButton   Grid.Column="2" Grid.Row="3"

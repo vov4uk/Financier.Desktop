@@ -119,7 +119,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             return true;
         }
 
-        public void SetMonoTransactions(List<MonoTransaction> transactions)
+        public void SetMonoTransactions(List<BankTransaction> transactions)
         {
             List<FinancierTransactionDto> transToAdd = new List<FinancierTransactionDto>();
             foreach (var x in transactions)

@@ -88,6 +88,7 @@ namespace Financier.Desktop.Wizards
         public abstract void BeforeCurrentPageUpdated(WizardPageBaseVM old, WizardPageBaseVM newValue);
         public abstract void CreatePages();
         public abstract object OnRequestClose(bool save);
+
         void MoveToNextPage()
         {
             if (CanMoveToNextPage)

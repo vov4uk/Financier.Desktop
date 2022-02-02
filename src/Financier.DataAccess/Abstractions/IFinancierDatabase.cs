@@ -25,5 +25,7 @@ namespace Financier.DataAccess.Abstractions
 
         Task InsertOrUpdateAsync<T>(IEnumerable<T> entities)
             where T : Entity, IIdentity;
+
+        Task SaveAsFile(string dest);
     }
 }

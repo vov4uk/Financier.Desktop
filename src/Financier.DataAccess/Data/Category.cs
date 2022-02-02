@@ -23,7 +23,7 @@ namespace Financier.DataAccess.Data
         public int Right { get; set; } = 2;
 
         [Column("type")]
-        public string Type { get; set; }
+        public int Type { get; set; }
 
         [Column("last_location_id")]
         public int? LastLocationId { get; set; }

@@ -8,9 +8,10 @@
              xmlns:converters="clr-namespace:Financier.Desktop.Converters"
              xmlns:entities="clr-namespace:Financier.Desktop.Views"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.Data"
+             xmlns:dialog="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionDialogVM}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type dialog:TransactionDialogVM}, IsDesignTimeCreatable=True}"
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
@@ -151,6 +152,7 @@
                                                  SelectedValuePath="Id"
                                                  TextSearch.TextPath="Title"
                                                  ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"
+                                                 SelectedItem="{Binding Transaction.Category}"
                                                  SelectedValue="{Binding Transaction.CategoryId}">
                         </xctk:WatermarkComboBox>
                         <xctk:IconButton   Grid.Column="1"
@@ -263,8 +265,8 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid.InputBindings>
                                         <MouseBinding MouseAction="LeftDoubleClick"
-                                                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.EditSubTransactionCommand}"
-                                                          CommandParameter="{Binding}" />
+                                                      Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.EditSubTransactionCommand}"
+                                                      CommandParameter="{Binding}" />
                                     </Grid.InputBindings>
                                     <Grid.Style>
                                         <Style TargetType="{x:Type Grid}">
