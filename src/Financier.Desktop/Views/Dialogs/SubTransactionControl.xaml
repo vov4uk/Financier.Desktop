@@ -80,6 +80,7 @@
                                          SelectedValuePath="Id"
                                          TextSearch.TextPath="Title"
                                          ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"
+                                         SelectedItem="{Binding Transaction.Category}"
                                          SelectedValue="{Binding Transaction.CategoryId}">
                 </xctk:WatermarkComboBox>
 
