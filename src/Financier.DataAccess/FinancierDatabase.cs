@@ -119,7 +119,7 @@ namespace Financier.DataAccess
         {
             await using (var context = new FinancierDataContext(ContextOptions))
             {
-                await context.Database.ExecuteSqlRawAsync($"delete from running_balance where account_id={accountId}");
+                await context.Database.ExecuteSqlRawAsync("delete from running_balance where account_id=@p0", accountId);
                 await context.SaveChangesAsync();
 
                 var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.from_account_id == accountId).OrderBy(x => x.datetime).ToListAsync();
