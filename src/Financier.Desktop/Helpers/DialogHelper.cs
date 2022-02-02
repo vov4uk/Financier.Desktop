@@ -3,6 +3,7 @@ using Financier.Desktop.Wizards;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Forms;
+using Application = System.Windows.Application;
 
 namespace Financier.Desktop.Helpers
 {
@@ -33,6 +34,8 @@ namespace Financier.Desktop.Helpers
                 ResizeMode = ResizeMode.NoResize,
                 Height = height,
                 Width = width,
+                Owner = Application.Current.MainWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Title = title ?? "Financier",
                 ShowInTaskbar = Debugger.IsAttached
             };

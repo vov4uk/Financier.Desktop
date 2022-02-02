@@ -128,10 +128,12 @@ ORDER  BY 1 DESC ");
 
         public static void ResetManuals()
         {
-            _project = null;
-            _category = null;
             _accounts = null;
+            _category = null;
+            _topCategory = null;
             _currencies = null;
+            _payee = null;
+            _project = null;
             _yearMonths = null;
             _years = null;
         }

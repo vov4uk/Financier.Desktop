@@ -22,7 +22,7 @@ WORK IN PROGRESS
 - Save .backup as SQLite database (.db file)
 - Reporting (kudos to [@2ruslan](https://github.com/2ruslan))
 
-![Alt text](FinancierDesktop.png?raw=true "UI example")
+![Alt text](Financier.Desktop.gif?raw=true "UI example")
 
 ## License
 

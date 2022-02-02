@@ -40,12 +40,16 @@ namespace Financier.Desktop
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var backup = Directory.EnumerateFiles(@$"C:\Users\{Environment.UserName}\Dropbox\apps\FinancierAndroid", BackupFormat).OrderByDescending(x => x).FirstOrDefault();
-            if (!string.IsNullOrEmpty(backup))
+            var bakupFolder = @$"C:\Users\{Environment.UserName}\Dropbox\apps\FinancierAndroid";
+            if (Directory.Exists(bakupFolder))
             {
-                Logger.Info($"Loaded backup : {backup}");
-                await ViewModel.OpenBackup(backup);
-                await ViewModel.MenuNavigateCommand.ExecuteAsync(typeof(BlotterTransactions));
+                var backupFile = Directory.EnumerateFiles(bakupFolder, BackupFormat).OrderByDescending(x => x).FirstOrDefault();
+                if (!string.IsNullOrEmpty(backupFile) && File.Exists(backupFile))
+                {
+                    Logger.Info($"Loaded backup : {backupFile}");
+                    await ViewModel.OpenBackup(backupFile);
+                    await ViewModel.MenuNavigateCommand.ExecuteAsync(typeof(BlotterTransactions));
+                }
             }
         }
 
