@@ -25,36 +25,12 @@
 
         public event EventHandler<TransactionsView> InfoRaised;
 
-        public DelegateCommand AddTemplateCommand
-        {
-            get
-            {
-                return _addTemplateCommand ??= new DelegateCommand(() => AddTemplateRaised?.Invoke(this, EventArgs.Empty), () => false);
-            }
-        }
+        public DelegateCommand AddTemplateCommand => _addTemplateCommand ??= new DelegateCommand(() => AddTemplateRaised?.Invoke(this, EventArgs.Empty), () => false);
 
-        public DelegateCommand AddTransferCommand
-        {
-            get
-            {
-                return _addTransferCommand ??= new DelegateCommand(() => AddTransferRaised?.Invoke(this, EventArgs.Empty));
-            }
-        }
+        public DelegateCommand AddTransferCommand => _addTransferCommand ??= new DelegateCommand(() => AddTransferRaised?.Invoke(this, EventArgs.Empty));
 
-        public DelegateCommand DuplicateCommand
-        {
-            get
-            {
-                return _duplicateCommand ??= new DelegateCommand(() => DuplicateRaised?.Invoke(this, SelectedValue), () => false);
-            }
-        }
+        public DelegateCommand DuplicateCommand => _duplicateCommand ??= new DelegateCommand(() => DuplicateRaised?.Invoke(this, SelectedValue), () => false);
 
-        public DelegateCommand InfoCommand
-        {
-            get
-            {
-                return _infoCommand ??= new DelegateCommand(() => InfoRaised?.Invoke(this, SelectedValue), () => false);
-            }
-        }
+        public DelegateCommand InfoCommand => _infoCommand ??= new DelegateCommand(() => InfoRaised?.Invoke(this, SelectedValue), () => false);
     }
 }

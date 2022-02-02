@@ -1,10 +1,9 @@
-﻿using Financier.Desktop.Wizards.RecipesWizard.View;
+﻿using Financier.Desktop.Helpers;
+using Financier.Desktop.Wizards.RecipesWizard.View;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Xceed.Wpf.Toolkit;
 
@@ -20,13 +19,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         }
 
         public List<FinancierTransactionDto> Amounts { get; } = new List<FinancierTransactionDto>();
-        public DelegateCommand<RichTextBox> HighlightCommand
-        {
-            get
-            {
-                return _highlightCommand ??= new DelegateCommand<RichTextBox>(HighLight, (_) => true);
-            }
-        }
+
+        public DelegateCommand<RichTextBox> HighlightCommand => _highlightCommand ??= new DelegateCommand<RichTextBox>(HighLight);
 
         public string Text
         {
@@ -96,32 +90,10 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
         private void HighLight(RichTextBox textBox)
         {
-            FormatText();
+            Text = RecipiesHelper.FormatText(Text);
             textBox.BeginInit();
             textBox.EndInit();
             CalculateCurrentAmount();
-        }
-
-        private void FormatText()
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return;
-            }
-
-            var array = text.Split(new[] { Environment.NewLine }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-
-            var singleLine = string.Join(' ', array);
-            Regex numberRegex = new Regex(RecipesFormatter.Pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-
-            var matches = numberRegex.Matches(singleLine).Select(x => x.Value);
-
-            foreach (var match in matches)
-            {
-                singleLine = singleLine.Replace(match, match.Replace(" ", "-") + Environment.NewLine);
-            }
-
-            Text = singleLine;
         }
     }
 }

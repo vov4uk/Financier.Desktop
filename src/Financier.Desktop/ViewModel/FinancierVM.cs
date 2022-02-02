@@ -95,48 +95,16 @@ namespace Financier.Desktop.ViewModel
 
         public bool IsTransactionPageSelected => currentPage is BlotterVM;
 
-        public LocationsVM Locations
-        {
-            get => locationsVm;
-            private set => SetProperty(ref locationsVm, value);
-        }
-
-        public IAsyncCommand<Type> MenuNavigateCommand
-        {
-            get
-            {
-                return _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
-            }
-        }
-
-        public IAsyncCommand MonoCommand
-        {
-            get
-            {
-                return _monoCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("Monobank", "csv"));
-            }
-        }
-
-        public IAsyncCommand AbankCommand
-        {
-            get
-            {
-                return _abankCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("A-Bank", "pdf"));
-            }
-        }
-
-        public IAsyncCommand OpenBackupCommand
-        {
-            get
-            {
-                return _openBackupCommand ??= new AsyncCommand(OpenBackup_OnClickAsync);
-            }
-        }
-
         public string OpenBackupPath
         {
             get => openBackupPath;
             private set => SetProperty(ref openBackupPath, value);
+        }
+
+        public LocationsVM Locations
+        {
+            get => locationsVm;
+            private set => SetProperty(ref locationsVm, value);
         }
 
         public PayeesVM Payees
@@ -151,21 +119,17 @@ namespace Financier.Desktop.ViewModel
             private set => SetProperty(ref projectsVm, value);
         }
 
-        public IAsyncCommand SaveBackupCommand
-        {
-            get
-            {
-                return _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
-            }
-        }
+        public IAsyncCommand<Type> MenuNavigateCommand => _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
 
-        public IAsyncCommand SaveBackupAsDbCommand
-        {
-            get
-            {
-                return _saveBackupAsDbCommand ??= new AsyncCommand(SaveBackupAdDb);
-            }
-        }
+        public IAsyncCommand MonoCommand => _monoCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("Monobank", "csv"));
+
+        public IAsyncCommand AbankCommand => _abankCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("A-Bank", "pdf"));
+
+        public IAsyncCommand OpenBackupCommand => _openBackupCommand ??= new AsyncCommand(OpenBackup_OnClickAsync);
+
+        public IAsyncCommand SaveBackupCommand => _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
+
+        public IAsyncCommand SaveBackupAsDbCommand => _saveBackupAsDbCommand ??= new AsyncCommand(SaveBackupAdDb);
 
         public async Task OpenBackup(string backupPath)
         {
@@ -249,6 +213,8 @@ namespace Financier.Desktop.ViewModel
                     await repo.DeleteAsync(transaction);
                     await uow.SaveChangesAsync();
                 }
+                await db.RebuildAccountBalanceAsync(eventArgs.from_account_id);
+                await db.RebuildAccountBalanceAsync(eventArgs.to_account_id ?? 0);
                 await RefreshBlotterTransactionsAsync();
             }
         }

@@ -108,6 +108,15 @@
         }
 
         [Fact]
+        public async Task LoadTransactions_Monobank_EmptyList()
+        {
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", Guid.NewGuid().ToString());
+            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+
+            Assert.Empty(mono);
+        }
+
+        [Fact]
         public async Task LoadTransactions_Abank_ExpectedTransactions()
         {
             var first = new BankTransaction

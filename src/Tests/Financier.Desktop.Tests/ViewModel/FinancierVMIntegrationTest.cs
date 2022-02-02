@@ -9,6 +9,8 @@
     using Moq;
     using Xunit;
 
+    [Collection("Integration tests")]
+    [CollectionDefinition("Integration tests", DisableParallelization = true)]
     public class FinancierVMIntegrationTest
     {
         [Fact]
