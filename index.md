@@ -5,7 +5,7 @@
 
 ## Features
 
-- [Open/save Financier (Financisto) .backup files](/pages/1.open_backup/open.md)
+- [Open/save Financier (Financisto) .backup files](/pages/open/open.md)
 - Edit transactions/transfers
 - Edit entities (projects, locations ..)
 - Import CSV report from Monobank
