@@ -10,6 +10,7 @@ using Financier.DataAccess.Monobank;
 
 namespace Financier.Desktop.Helpers
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class MonobankHelper : IBankHelper
     {
         public async Task<IEnumerable<BankTransaction>> ParseReport(string filePath)
