@@ -1,6 +1,6 @@
 ﻿using System;
 using Financier.DataAccess.Data;
-using Financier.Desktop.Converters;
+using Financier.Converters;
 using Financier.Desktop.Data;
 
 namespace Financier.Desktop.Helpers

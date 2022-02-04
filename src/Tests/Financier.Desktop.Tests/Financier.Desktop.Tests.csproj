@@ -47,5 +47,4 @@
       <ProjectReference Include="..\..\Financier.Desktop\Financier.Desktop.csproj" />
       <ProjectReference Include="..\Financier.Tests.Common\Financier.Tests.Common.csproj" />
     </ItemGroup>
-
 </Project>

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace Financier.Desktop.Converters
+namespace Financier.Converters
 {
     public class StringEmptyToVisibilityConverter : System.Windows.Markup.MarkupExtension, IValueConverter
     {

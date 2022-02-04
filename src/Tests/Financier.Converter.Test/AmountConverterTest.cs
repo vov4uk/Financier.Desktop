@@ -1,9 +1,9 @@
-﻿namespace Financier.Desktop.Tests.Converters
+﻿namespace Financier.Converters.Tests
 {
     using System.Globalization;
     using System.Windows.Data;
     using AutoFixture.Xunit2;
-    using Financier.Desktop.Converters;
+    using Financier.Converters;
     using Xunit;
 
     public class AmountConverterTest
@@ -24,7 +24,7 @@
         public void Convert_HasDescription_DescriptionMatch(object value, object parameter, object expected)
         {
             // Act
-            var actual = this.converter.Convert(value, null, parameter, CultureInfo.InvariantCulture);
+            var actual = converter.Convert(value, null, parameter, CultureInfo.InvariantCulture);
 
             Assert.Equal(expected, actual);
         }
@@ -37,7 +37,7 @@
         public void ConvertBack_Execute_DescriptionMatch(object value, object expected)
         {
             // Act
-            var actual = this.converter.ConvertBack(value, null, null, CultureInfo.InvariantCulture);
+            var actual = converter.ConvertBack(value, null, null, CultureInfo.InvariantCulture);
 
             Assert.Equal(expected, actual);
         }

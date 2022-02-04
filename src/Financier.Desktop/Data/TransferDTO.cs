@@ -1,5 +1,5 @@
 ﻿using Financier.DataAccess.Data;
-using Financier.Desktop.Converters;
+using Financier.Converters;
 using System;
 
 namespace Financier.Desktop.Data

@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
-             xmlns:converters="clr-namespace:Financier.Desktop.Converters"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              xmlns:entities="clr-namespace:Financier.Desktop.Views"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.Data"
              xmlns:dialog="clr-namespace:Financier.Desktop.ViewModel.Dialog"

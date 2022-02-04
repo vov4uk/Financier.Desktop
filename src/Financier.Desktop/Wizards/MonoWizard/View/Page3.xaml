@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:convert="clr-namespace:Financier.Desktop.Converters"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
@@ -14,8 +14,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <convert:AmountConverter x:Key="AmountConverter"/>
-            <convert:UnixTimeConverter x:Key="DatetimeConverter" />
+            <converters:AmountConverter x:Key="AmountConverter"/>
+            <converters:UnixTimeConverter x:Key="DatetimeConverter" />
             <BitmapImage x:Key="IcActionCancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
         </ResourceDictionary>
     </UserControl.Resources>

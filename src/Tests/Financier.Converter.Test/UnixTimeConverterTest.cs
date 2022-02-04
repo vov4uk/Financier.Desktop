@@ -1,10 +1,10 @@
-﻿namespace Financier.Desktop.Tests.Converters
+﻿namespace Financier.Converters.Tests
 {
     using System;
     using System.Globalization;
     using System.Windows.Data;
     using AutoFixture.Xunit2;
-    using Financier.Desktop.Converters;
+    using Financier.Converters;
     using Xunit;
 
     // Cant use constants as expexted value because Azure Pipeline run test in different time zone
@@ -25,7 +25,7 @@
             exp = date == date.Date ? date.ToString(UnixTimeConverter.FORMAT_DAY) : date.ToString(UnixTimeConverter.FORMAT);
 
             // Act
-            var actual = this.converter.Convert(value, null, null, CultureInfo.InvariantCulture);
+            var actual = converter.Convert(value, null, null, CultureInfo.InvariantCulture);
 
             Assert.Equal(exp, actual);
         }
@@ -40,7 +40,7 @@
             long expexted = dto.ToUnixTimeMilliseconds();
 
             // Act
-            var actual = this.converter.ConvertBack(dateTime, null, null, CultureInfo.InvariantCulture);
+            var actual = converter.ConvertBack(dateTime, null, null, CultureInfo.InvariantCulture);
 
             Assert.Equal(expexted, actual);
         }
@@ -51,7 +51,7 @@
         public void Convert_InvalidParameters_ThrowsException(object value)
         {
             // Act
-            Assert.Throws<FormatException>(() => this.converter.Convert(value, null, null, CultureInfo.InvariantCulture));
+            Assert.Throws<FormatException>(() => converter.Convert(value, null, null, CultureInfo.InvariantCulture));
         }
     }
 }

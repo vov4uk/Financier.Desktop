@@ -1,10 +1,10 @@
-﻿namespace Financier.Desktop.Tests.Converters
+﻿namespace Financier.Converters.Tests
 {
     using System.Globalization;
     using System.Windows;
     using System.Windows.Data;
     using AutoFixture.Xunit2;
-    using Financier.Desktop.Converters;
+    using Financier.Converters;
     using Xunit;
 
     public class StringEmptyToVisibilityConverterTest
@@ -19,7 +19,7 @@
         public void Convert_GotParameters_ExpectedValues(object value, Visibility expexted)
         {
             // Act
-            var actual = this.converter.Convert(value, typeof(bool), null, CultureInfo.InvariantCulture);
+            var actual = converter.Convert(value, typeof(bool), null, CultureInfo.InvariantCulture);
 
             Assert.Equal(expexted, actual);
         }
@@ -28,7 +28,7 @@
         public void ConvertBack_NotSupported_ReturnNull()
         {
             // Act
-            var actual = this.converter.ConvertBack(null, null, null, CultureInfo.InvariantCulture);
+            var actual = converter.ConvertBack(null, null, null, CultureInfo.InvariantCulture);
 
             Assert.Null(actual);
         }

@@ -4,7 +4,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Financier.Desktop.Converters
+namespace Financier.Converters
 {
     public class AmountTextConverter : IMultiValueConverter
     {

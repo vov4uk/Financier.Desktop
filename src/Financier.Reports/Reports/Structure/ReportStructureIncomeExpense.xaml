@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Reports.Common"
              xmlns:filters="clr-namespace:Financier.Reports.Reports.Filters"
-             xmlns:converters="clr-namespace:Financier.Reports.Converters">
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -4,7 +4,7 @@
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:Financier.Reports.Reports"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:converters="clr-namespace:Financier.Reports.Converters"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:fcrd="clr-namespace:Financier.Reports.Common"
              xmlns:filters="clr-namespace:Financier.Reports.Reports.Filters">

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Windows.Data;
 
-namespace Financier.Reports.Converters
+namespace Financier.Converters
 {
     public class EnumDescriptionConverter : IValueConverter
     {

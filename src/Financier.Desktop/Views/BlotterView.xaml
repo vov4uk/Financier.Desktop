@@ -5,12 +5,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
-             xmlns:convert="clr-namespace:Financier.Desktop.Converters"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800">
     <UserControl.Resources>
-        <convert:UnixTimeConverter x:Key="DatetimeConverter" />
+        <converters:UnixTimeConverter x:Key="DatetimeConverter" />
     </UserControl.Resources>
     <Grid>
         <DataGrid Margin="5"

@@ -4,7 +4,7 @@
                xmlns:data="clr-namespace:Financier.DataAccess.Data;assembly=Financier.DataAccess"
                xmlns:dataView="clr-namespace:Financier.DataAccess.View;assembly=Financier.DataAccess"
                xmlns:reports="clr-namespace:Financier.Reports.Forms;assembly=Financier.Reports"
-               xmlns:converters="clr-namespace:Financier.Desktop.Converters"
+               xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
                Icon="pack://application:,,,/Images/ic_launcher.png"
                Title="Financier Desktop"
                Loaded="RibbonWindow_Loaded">

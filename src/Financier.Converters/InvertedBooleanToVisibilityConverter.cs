@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Financier.Reports.Converters
+namespace Financier.Converters
 {
     public sealed class InvertedBooleanToVisibilityConverter : BooleanConverter<Visibility>
     {

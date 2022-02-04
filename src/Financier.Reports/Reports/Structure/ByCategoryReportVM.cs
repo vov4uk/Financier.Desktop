@@ -1,10 +1,9 @@
 ﻿using Financier.DataAccess.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using Financier.Reports.Common;
 using OxyPlot;
-using Financier.Reports.Converters;
+using Financier.Converters;
 using Financier.Reports.Reports.Structure;
 using OxyPlot.Axes;
 using OxyPlot.Series;
