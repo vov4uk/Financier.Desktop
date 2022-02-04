@@ -1,0 +1,20 @@
+<UserControl x:Class="Financier.Common.Filters.CategoryFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities"
+             xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
+             xmlns:model="clr-namespace:Financier.Common.Model"
+             MinWidth="140">
+    <GroupBox Header="Category">
+        <ComboBox SelectedItem="{Binding Path=Category}"
+                  Margin="2 0"
+                  TextSearch.TextPath="Title"
+                  ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type model:CategoryModel}">
+                    <emoji:TextBlock x:Name="Txt" Text="{Binding Title}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </GroupBox>
+</UserControl>

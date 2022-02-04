@@ -6,9 +6,6 @@ namespace Financier.Desktop.Views
     [ExcludeFromCodeCoverage]
     public partial class LocationsView : UserControl
     {
-        public LocationsView()
-        {
-            InitializeComponent();
-        }
+        public LocationsView() => InitializeComponent();
     }
 }

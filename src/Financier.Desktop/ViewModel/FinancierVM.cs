@@ -19,7 +19,7 @@ using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using Financier.Desktop.Data;
 using Mvvm.Async;
-using Financier.Reports.Forms;
+using Financier.Reports;
 
 namespace Financier.Desktop.ViewModel
 {

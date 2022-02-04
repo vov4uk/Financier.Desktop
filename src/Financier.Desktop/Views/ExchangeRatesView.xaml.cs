@@ -6,9 +6,6 @@ namespace Financier.Desktop.Views
     [ExcludeFromCodeCoverage]
     public partial class ExchangeRatesView : UserControl
     {
-        public ExchangeRatesView()
-        {
-            InitializeComponent();
-        }
+        public ExchangeRatesView() => InitializeComponent();
     }
 }

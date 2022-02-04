@@ -3,8 +3,8 @@
     using System.Globalization;
     using System.Windows.Data;
     using AutoFixture.Xunit2;
+    using Financier.Common.Entities;
     using Financier.Converters;
-    using Financier.Reports.Reports;
     using Xunit;
 
     public class EnumDescriptionConverterTest

@@ -6,9 +6,6 @@ namespace Financier.Desktop.Views
     [ExcludeFromCodeCoverage]
     public partial class CategoriesView : UserControl
     {
-        public CategoriesView()
-        {
-            InitializeComponent();
-        }
+        public CategoriesView() => InitializeComponent();
     }
 }

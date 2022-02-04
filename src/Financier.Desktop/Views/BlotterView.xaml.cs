@@ -6,9 +6,6 @@ namespace Financier.Desktop.Views
     [ExcludeFromCodeCoverage]
     public partial class BlotterView : UserControl
     {
-        public BlotterView()
-        {
-            InitializeComponent();
-        }
+        public BlotterView() => InitializeComponent();
     }
 }

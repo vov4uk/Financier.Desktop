@@ -35,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Financier.Common\Financier.Common.csproj" />
     <ProjectReference Include="..\Financier.Converters\Financier.Converters.csproj" />
     <ProjectReference Include="..\Financier.DataAccess\Financier.DataAccess.csproj" />
   </ItemGroup>

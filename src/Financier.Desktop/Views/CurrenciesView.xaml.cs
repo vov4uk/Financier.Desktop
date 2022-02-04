@@ -6,8 +6,6 @@ namespace Financier.Desktop.Views
     [ExcludeFromCodeCoverage]
     public partial class CurrenciesView : UserControl
     {
-        public CurrenciesView()
-        {
-        }
+        public CurrenciesView() => InitializeComponent();
     }
 }

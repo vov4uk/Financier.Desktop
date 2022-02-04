@@ -6,9 +6,6 @@ namespace Financier.Desktop.Views
     [ExcludeFromCodeCoverage]
     public partial class AccountsView : UserControl
     {
-        public AccountsView()
-        {
-            InitializeComponent();
-        }
+        public AccountsView() => InitializeComponent();
     }
 }

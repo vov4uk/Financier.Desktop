@@ -6,9 +6,6 @@ namespace Financier.Desktop.Views
     [ExcludeFromCodeCoverage]
     public partial class EntityWithTitleView : UserControl
     {
-        public EntityWithTitleView()
-        {
-            InitializeComponent();
-        }
+        public EntityWithTitleView() => InitializeComponent();
     }
 }
