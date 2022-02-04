@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:Financier.Desktop.Views"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:SubTransactionDailogVM}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:SubTransactionDailogVM}, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="400">

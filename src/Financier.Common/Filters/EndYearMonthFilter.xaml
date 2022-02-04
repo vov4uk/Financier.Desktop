@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities"
              Width="120">
-  <GroupBox Header="To">
+  <GroupBox Header="To"
+            BorderThickness="0">
     <ComboBox Grid.Column="1"
               Margin="2 0"
               DisplayMemberPath="Name"

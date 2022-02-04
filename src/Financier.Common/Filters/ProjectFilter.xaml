@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities"
              MinWidth="140">
-    <GroupBox Header="Project">
-    <ComboBox DisplayMemberPath="Title"
-              Margin="2 0"
-              SelectedItem="{Binding Path=Project}"
-              ItemsSource="{Binding Source={x:Static fcrd:DbManual.Project}, Mode=OneWay}" />
-  </GroupBox>
+    <GroupBox Header="Project"
+              BorderThickness="0">
+        <ComboBox DisplayMemberPath="Title"
+                  Margin="2 0"
+                  SelectedItem="{Binding Path=Project}"
+                  ItemsSource="{Binding Source={x:Static fcrd:DbManual.Project}, Mode=OneWay}" />
+    </GroupBox>
 </UserControl>

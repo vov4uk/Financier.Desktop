@@ -30,7 +30,8 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <GroupBox Header="View" Grid.Column="0" Grid.Row="0" >
+            <GroupBox Header="View" Grid.Column="0" Grid.Row="0"
+                      BorderThickness="0">
                 <DockPanel Width="56" DockPanel.Dock="Top">
                     <RadioButton ToolTip="Graphic"
                                  x:Name="GraphicsBtn"

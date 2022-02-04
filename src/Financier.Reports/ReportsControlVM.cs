@@ -64,13 +64,13 @@ namespace Financier.Reports
             };
         }
 
-        private DelegateCommand _closeReportCommand;
+        private DelegateCommand<object> _closeReportCommand;
         private DelegateCommand<string> _openReportCommand;
         private ObservableCollection<object> _reportsVM;
         private List<TreeNode> reportsInfo;
         private object _selectedReport;
 
-        public ICommand CloseReportCommand => _closeReportCommand ?? (_closeReportCommand = new DelegateCommand(CloseReport));
+        public ICommand CloseReportCommand => _closeReportCommand ?? (_closeReportCommand = new DelegateCommand<object>(CloseReport));
 
         public ICommand OpenReportCommand => _openReportCommand ?? (_openReportCommand = new DelegateCommand<string>(OpenReport));
 
@@ -107,11 +107,13 @@ namespace Financier.Reports
             }
         }
 
-        public void CloseReport()
+        public void CloseReport(object selected)
         {
-            Logger.Info($"Close report -> {_selectedReport?.GetType()?.Name}");
-            ReportsVM.Remove(SelectedReport);
-            SelectedReport = ReportsVM.FirstOrDefault();
+            if (selected != null)
+            {
+                Logger.Info($"Close report -> {selected.GetType().Name}");
+                ReportsVM.Remove(selected);
+            }
         }
 
         public void OpenReport(string reportType)

@@ -21,7 +21,8 @@
         </Grid.RowDefinitions>
         <Grid Row="0">
             <DockPanel>
-                <GroupBox Header="Type">
+                <GroupBox Header="Type"
+                          BorderThickness="0">
                     <DockPanel Width="56">
                         <RadioButton ToolTip="Expense"
                                      Style="{StaticResource IconRadioButton}"
@@ -35,7 +36,8 @@
                         </RadioButton>
                     </DockPanel>
                 </GroupBox>
-                <GroupBox Header="View">
+                <GroupBox Header="View"
+                          BorderThickness="0">
                     <DockPanel Width="84">
                         <RadioButton ToolTip="Pie chart"
                                      x:Name="PieBtn"

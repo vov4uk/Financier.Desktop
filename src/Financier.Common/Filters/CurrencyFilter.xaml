@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities"
              Width="140">
-    <GroupBox Header="Currency">
+    <GroupBox Header="Currency"
+              BorderThickness="0">
     <ComboBox DisplayMemberPath="Name"
               SelectedItem="{Binding Path=CurentCurrency}"
               Margin="2 0"

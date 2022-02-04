@@ -5,7 +5,8 @@
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              xmlns:model="clr-namespace:Financier.Common.Model"
              MinWidth="140">
-    <GroupBox Header="Category">
+    <GroupBox Header="Category"
+              BorderThickness="0">
         <ComboBox SelectedItem="{Binding Path=Category}"
                   Margin="2 0"
                   TextSearch.TextPath="Title"

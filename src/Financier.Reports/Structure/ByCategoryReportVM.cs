@@ -64,25 +64,9 @@ ORDER  BY total ASC ";
             }
         }
 
-        private PeriodType periodType;
-
-        public ByCategoryReportVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
+        public ByCategoryReportVM(IFinancierDatabase financierDatabase)
+            : base(financierDatabase)
         {
-            PeriodType = PeriodType.Today;
-            UpdatePeriod(PeriodType);
-        }
-
-        public PeriodType PeriodType
-        {
-            get => periodType;
-            set
-            {
-                if (SetProperty(ref periodType, value))
-                {
-                    RaisePropertyChanged(nameof(PeriodType));
-                    UpdatePeriod(value);
-                }
-            }
         }
 
         protected override PlotModel GetPlotModel(List<ByCategoryReportModel> list)
@@ -124,7 +108,7 @@ ORDER  BY total ASC ";
                 TitleFormatString = "{0}",
             };
 
-            var linearAxis1 = new LinearAxis
+            var linearAxis1 = new LogarithmicAxis
             {
                 MinimumPadding = 0,
                 Position = AxisPosition.Bottom
@@ -187,89 +171,6 @@ ORDER  BY total ASC ";
                 : $"parent_left > {TopCategory.Left} AND parent_right < {TopCategory.Right} AND parent_level = 1";
 
             return string.Format(BaseSqlText, dateFilter, str);
-        }
-
-        private void UpdatePeriod(PeriodType type)
-        {
-            switch (type)
-            {
-                case PeriodType.Custom:
-                    break;
-                case PeriodType.Today:
-                    {
-                        From = DateTime.Today;
-                        To = DateTime.Today.AddDays(1).AddMilliseconds(-1);
-                    }
-                    break;
-                case PeriodType.Yesterday:
-                    {
-                        From = DateTime.Today.AddDays(-1);
-                        To = DateTime.Today.AddMilliseconds(-1);
-                    }
-                    break;
-                case PeriodType.PreviousWeek:
-                    {
-                        DayOfWeek weekStart = DayOfWeek.Monday;
-                        DateTime startingDate = DateTime.Today;
-
-                        while (startingDate.DayOfWeek != weekStart)
-                            startingDate = startingDate.AddDays(-1);
-
-                        From = startingDate.AddDays(-7);
-                        To = startingDate.AddMilliseconds(-1);
-                    }
-                    break;
-                case PeriodType.PreviousMonth:
-                    {
-                        var today = DateTime.Today;
-
-                        From = new DateTime(today.AddMonths(-1).Year, today.AddMonths(-1).Month, 1);
-                        To = new DateTime(today.Year, today.Month, 1).AddMilliseconds(-1);
-                    }
-                    break;
-                case PeriodType.CurrentWeek:
-                    {
-                        DayOfWeek weekStart = DayOfWeek.Monday;
-                        DateTime startingDate = DateTime.Today;
-
-                        while (startingDate.DayOfWeek != weekStart)
-                            startingDate = startingDate.AddDays(-1);
-
-                        From = startingDate;
-                        To = DateTime.Today.AddDays(1).AddMilliseconds(-1);
-                    }
-                    break;
-                case PeriodType.CurrentMonth:
-                    {
-                        var today = DateTime.Today;
-
-                        From = new DateTime(today.Year, today.Month, 1);
-                        To = new DateTime(today.AddMonths(1).Year, today.AddMonths(1).Month, 1).AddMilliseconds(-1);
-                    }
-                    break;
-                case PeriodType.PreviousAndCurrentWeek:
-                    {
-                        DayOfWeek weekStart = DayOfWeek.Monday;
-                        DateTime startingDate = DateTime.Today;
-
-                        while (startingDate.DayOfWeek != weekStart)
-                            startingDate = startingDate.AddDays(-1);
-
-                        From = startingDate.AddDays(-7);
-                        To = DateTime.Today.AddDays(1).AddMilliseconds(-1);
-                    }
-                    break;
-                case PeriodType.PreviousAndCurrentMonth:
-                    {
-                        var today = DateTime.Today;
-
-                        From = new DateTime(today.AddMonths(-1).Year, today.AddMonths(-1).Month, 1);
-                        To = new DateTime(today.AddMonths(1).Year, today.AddMonths(1).Month, 1).AddMilliseconds(-1);
-                    }
-                    break;
-                default:
-                    break;
-            }
         }
     }
 }

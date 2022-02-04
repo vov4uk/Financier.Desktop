@@ -18,7 +18,8 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
-            <GroupBox Header="View">
+            <GroupBox Header="View"
+                      BorderThickness="0">
                 <DockPanel Width="56">
                     <RadioButton x:Name="GraphicsBtn"
                                  ToolTip="Grapics"

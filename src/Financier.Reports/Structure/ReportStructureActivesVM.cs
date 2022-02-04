@@ -47,13 +47,14 @@ FROM   (SELECT a.title AS account_title,
              INNER JOIN account a ON a._id = r.account_id
              INNER JOIN currency c ON a.currency_id = c._id
              INNER JOIN transactions t ON t._id = r.transaction_id
-        WHERE Date(t.datetime / 1000, 'unixepoch') < {0}
+        WHERE Date(t.datetime / 1000, 'unixepoch') <= {0}
         ORDER BY a._id, r.datetime DESC ) rep
 WHERE RowNum = 1
 ORDER BY account_is_active DESC, sort_order ASC";
 
         public ReportStructureActivesVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
         {
+            DateFilter = DateTime.Now;
         }
 
         protected override string GetSql()
