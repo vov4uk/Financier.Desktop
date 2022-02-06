@@ -9,7 +9,6 @@ using OxyPlot.Series;
 using System.Linq;
 using OxyPlot.Legends;
 using Financier.Common.Attribute;
-using Financier.Common.Entities;
 
 namespace Financier.Reports
 {
@@ -108,7 +107,7 @@ ORDER  BY total ASC ";
                 TitleFormatString = "{0}",
             };
 
-            var linearAxis1 = new LogarithmicAxis
+            var linearAxis1 = new LinearAxis
             {
                 MinimumPadding = 0,
                 Position = AxisPosition.Bottom
@@ -166,7 +165,7 @@ ORDER  BY total ASC ";
             var toUnix = UnixTimeConverter.ConvertBack(To ?? DateTime.MaxValue);
 
             var dateFilter = $"AND t.datetime BETWEEN {fromUnix} AND {toUnix}";
-            string str = this.TopCategory?.ID == null
+            string str = this.TopCategory?.Id == null
                 ? "parent_level = 0"
                 : $"parent_left > {TopCategory.Left} AND parent_right < {TopCategory.Right} AND parent_level = 1";
 

@@ -45,7 +45,7 @@ namespace Financier.DataAccess.Utils
             }
             if (currency == null)
             {
-                currency = Currency.Empty;
+                currency = new Currency();
             }
             string s = (amount / HUNDRED).ToString("F2", CultureInfo.InvariantCulture);
             if (s.EndsWith("."))
@@ -60,7 +60,7 @@ namespace Financier.DataAccess.Utils
             return sb;
         }
 
-        internal static string GetTransferAmountText(Currency fromCurrency, long fromAmount, Currency toCurrency, long toAmount)
+        public static string GetTransferAmountText(Currency fromCurrency, long fromAmount, Currency toCurrency, long toAmount)
         {
             var sb = new StringBuilder();
             if (SameCurrency(fromCurrency, toCurrency))
@@ -80,7 +80,7 @@ namespace Financier.DataAccess.Utils
             return fromCurrency.Id == toCurrency.Id;
         }
 
-        internal static string SetTransferBalanceText(Currency fromCurrency, int? fromBalance, Currency toCurrency, int? toBalance)
+        public static string SetTransferBalanceText(Currency fromCurrency, int? fromBalance, Currency toCurrency, int? toBalance)
         {
             var sb = new StringBuilder();
             Utils.AmountToString(sb, fromCurrency, fromBalance ?? 0, false).Append(TRANSFER_DELIMITER);

@@ -14,6 +14,7 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Resources;
 using System.Threading.Tasks;
@@ -192,7 +193,9 @@ namespace Financier.DataAccess
             if (id != 0)
             {
                 using var uow = CreateUnitOfWork();
-                return (await uow.GetRepository<Transaction>().FindManyAsync(x => x.ParentId == id, o => o.OriginalCurrency, c => c.Category)) ?? Array.Empty<Transaction>().ToList();
+                return (await uow.GetRepository<Transaction>().FindManyAsync(
+                    predicate: x => x.ParentId == id,
+                    includes: new Expression<Func<Transaction, object>>[]{ o => o.OriginalCurrency, c => c.Category})) ?? Array.Empty<Transaction>().ToList();
             }
 
             return Array.Empty<Transaction>();

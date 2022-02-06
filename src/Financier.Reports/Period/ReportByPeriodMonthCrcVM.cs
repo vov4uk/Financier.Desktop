@@ -45,16 +45,16 @@ order by
         protected override string GetSql()
         {
             string str = string.Empty;
-            if (CurentCurrency.ID.HasValue)
+            if (CurentCurrency.Id.HasValue)
             {
-                str = string.Format("and from_account_crc_id = {0}", CurentCurrency.ID);
+                str = string.Format("and from_account_crc_id = {0}", CurentCurrency.Id);
             }
             string standartTrnFilter = GetStandartTrnFilter();
             if (standartTrnFilter != string.Empty)
             {
                 str = str + " and " + standartTrnFilter;
             }
-            return string.Format(BaseSqlText, CurentCurrency.ID.HasValue ? 1 : 0, str);
+            return string.Format(BaseSqlText, CurentCurrency.Id.HasValue ? 1 : 0, str);
         }
 
         protected override PlotModel GetPlotModel(List<ReportByPeriodMonthCrcModel> list)

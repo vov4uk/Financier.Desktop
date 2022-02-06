@@ -39,18 +39,5 @@ namespace Financier.DataAccess.Data
 
         [Column(UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
-
-        [NotMapped]
-        public static Currency Empty => new Currency
-        {
-            Id = 0,
-            Name = "",
-            Title = "Default",
-            Symbol = "",
-            SymbolFormat = "RS",
-            Decimals = 2,
-            DecimalSeparator = "'.'",
-            GroupSeparator = "','"
-        };
     }
 }

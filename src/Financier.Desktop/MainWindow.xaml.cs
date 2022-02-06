@@ -9,6 +9,7 @@ using Financier.Desktop.Helpers;
 using Financier.DataAccess;
 using Financier.Adapter;
 using Financier.DataAccess.View;
+using Financier.Common.Model;
 
 namespace Financier.Desktop
 {
@@ -48,7 +49,6 @@ namespace Financier.Desktop
                 {
                     Logger.Info($"Loaded backup : {backupFile}");
                     await ViewModel.OpenBackup(backupFile);
-                    await ViewModel.MenuNavigateCommand.ExecuteAsync(typeof(BlotterTransactions));
                 }
             }
         }

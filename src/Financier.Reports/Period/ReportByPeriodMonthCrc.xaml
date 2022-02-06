@@ -63,6 +63,6 @@
                       Visibility="{Binding ElementName=GraphicsBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"/>
         <fcrd:DataGridAutoHeaders Grid.Row="1"
                                   Visibility="{Binding ElementName=GridBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"
-                                  ItemsSource="{Binding Path=ReportData}" />
+                                  ItemsSource="{Binding Path=Entities}" />
     </Grid>
 </UserControl>

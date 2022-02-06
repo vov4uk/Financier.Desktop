@@ -10,17 +10,19 @@ namespace Financier.Common.Filters
         public PeriodFilter()
         {
             InitializeComponent();
-            Loaded += (o, _) =>
-            {
-                SelectedPeriodType = PeriodType.Today;
-            };
         }
 
         public static readonly DependencyProperty SelectedPeriodTypeProperty =
             DependencyProperty.Register("SelectedPeriodType",
                 typeof(PeriodType),
                 typeof(PeriodFilter),
-                typeMetadata: new FrameworkPropertyMetadata(defaultValue: PeriodType.Custom, propertyChangedCallback: PropertyChangedCallback));
+                typeMetadata: new FrameworkPropertyMetadata(defaultValue: PeriodType.AllTime, propertyChangedCallback: PropertyChangedCallback));
+
+        public static readonly DependencyProperty OrientationProperty =
+            DependencyProperty.Register("Orientation",
+                typeof(Orientation),
+                typeof(PeriodFilter),
+                typeMetadata: new FrameworkPropertyMetadata(defaultValue: Orientation.Horizontal));
 
         public PeriodType SelectedPeriodType
         {
@@ -28,21 +30,33 @@ namespace Financier.Common.Filters
             set => SetValue(SelectedPeriodTypeProperty, value);
         }
 
+        public Orientation Orientation
+        {
+            get => (Orientation)GetValue(OrientationProperty);
+            set => SetValue(OrientationProperty, value);
+        }
+
         private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var dates = UpdatePeriod((PeriodType)e.NewValue);
+           
             var filter = (PeriodFilter)d;
+            var dates = UpdatePeriod((PeriodType)e.NewValue, filter.FromDatePicker.SelectedDate, filter.ToDatePicker.SelectedDate);
             filter.FromDatePicker.SelectedDate = dates.from;
             filter.ToDatePicker.SelectedDate = dates.to;
         }
 
-        private static (DateTime? from, DateTime? to) UpdatePeriod(PeriodType type)
+        private static (DateTime? from, DateTime? to) UpdatePeriod(PeriodType type, DateTime? currentFrom, DateTime? currentTo)
         {
-            DateTime? from = default;
-            DateTime? to = default;
+            DateTime? from = currentFrom;
+            DateTime? to = currentTo;
             switch (type)
             {
                 case PeriodType.Custom:
+                case PeriodType.AllTime:
+                    {
+                        from = default;
+                        to = default;
+                    }
                     break;
                 case PeriodType.Today:
                     {

@@ -1,9 +1,8 @@
-﻿using Financier.Common.Entities;
+﻿using Financier.Common;
+using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
-using Mvvm.Async;
 using OxyPlot;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace Financier.Reports
 {
-    public abstract class BaseReportVM<T> : BindableBase where T : BaseModel, new()
+    public abstract class BaseReportVM<T> : BaseViewModel<T>
+        where T : BaseModel, new()
     {
-        private readonly IFinancierDatabase financierDatabase;
         private ProjectModel _project;
         private CategoryModel _category;
         private CategoryModel _topCategory;
-        private AccountModel _account;
+        private AccountFilterModel _account;
         private PayeeModel _payee;
         private CurrencyModel _curentCurrency;
         private YearMonths _startYearMonths;
@@ -27,8 +26,6 @@ namespace Financier.Reports
         private DateTime? _date;
         private DateTime? _from;
         private DateTime? _to;
-        private IAsyncCommand _refreshDataCommand;
-        private ObservableCollection<T> reportData;
 
         private PlotModel plotModel;
 
@@ -44,26 +41,15 @@ namespace Financier.Reports
             }
         }
 
-        public ObservableCollection<T> ReportData
-        {
-            get => reportData;
-            set
-            {
-                reportData = value;
-                RaisePropertyChanged(nameof(ReportData));
-            }
-        }
-
         protected BaseReportVM(IFinancierDatabase financierDatabase)
+            : base(financierDatabase)
         {
-            this.financierDatabase = financierDatabase;
-            ReportData = new ObservableCollection<T>();
             PlotModel = new PlotModel();
         }
 
         public ProjectModel Project
         {
-            get => _project ??= DbManual.Project.FirstOrDefault(p => !p.ID.HasValue);
+            get => _project ??= DbManual.Project.FirstOrDefault(p => !p.Id.HasValue);
             set
             {
                 _project = value;
@@ -73,7 +59,7 @@ namespace Financier.Reports
 
         public CategoryModel Category
         {
-            get => _category ??= DbManual.Category.FirstOrDefault(p => !p.ID.HasValue);
+            get => _category ??= DbManual.Category.FirstOrDefault(p => !p.Id.HasValue);
             set
             {
                 _category = value;
@@ -83,7 +69,7 @@ namespace Financier.Reports
 
         public CategoryModel TopCategory
         {
-            get => _topCategory ??= DbManual.TopCategories.FirstOrDefault(p => !p.ID.HasValue);
+            get => _topCategory ??= DbManual.TopCategories.FirstOrDefault(p => !p.Id.HasValue);
             set
             {
                 _topCategory = value;
@@ -91,9 +77,9 @@ namespace Financier.Reports
             }
         }
 
-        public AccountModel Account
+        public AccountFilterModel Account
         {
-            get => _account ??= DbManual.Account.FirstOrDefault(p => !p.ID.HasValue);
+            get => _account ??= DbManual.Account.FirstOrDefault(p => !p.Id.HasValue);
             set
             {
                 _account = value;
@@ -103,7 +89,7 @@ namespace Financier.Reports
 
         public PayeeModel Payee
         {
-            get => _payee ?? (_payee = DbManual.Payee.FirstOrDefault(p => !p.ID.HasValue));
+            get => _payee ?? (_payee = DbManual.Payee.FirstOrDefault(p => !p.Id.HasValue));
             set
             {
                 _payee = value;
@@ -113,7 +99,7 @@ namespace Financier.Reports
 
         public CurrencyModel CurentCurrency
         {
-            get => _curentCurrency ?? (_curentCurrency = DbManual.Currencies.FirstOrDefault(p => !p.ID.HasValue));
+            get => _curentCurrency ?? (_curentCurrency = DbManual.Currencies.FirstOrDefault(p => !p.Id.HasValue));
             set
             {
                 _curentCurrency = value;
@@ -177,20 +163,19 @@ namespace Financier.Reports
             }
         }
 
-        public IAsyncCommand RefreshDataCommand => _refreshDataCommand ?? (_refreshDataCommand = new AsyncCommand(RefreshData));
-
-        private async Task RefreshData()
+        protected override async Task RefreshData()
         {
             string sql = GetSql();
             if (!string.IsNullOrEmpty(sql))
             {
-                var data = await financierDatabase.ExecuteQuery<T>(sql);
-                ReportData = new ObservableCollection<T>(data);
+                var data = await base.financierDatabase.ExecuteQuery<T>(sql);
+                Entities = new ObservableCollection<T>(data);
                 PlotModel = GetPlotModel(data);
             }
         }
 
         protected abstract string GetSql();
+
         protected abstract PlotModel GetPlotModel(List<T> list);
 
         protected string GetStandartTrnFilter()
@@ -202,9 +187,9 @@ namespace Financier.Reports
                 stringBuilder.Append($" date(\"{DateFilter.Value.ToString("yyyy-MM-dd")}\")");
             if (EndYearMonths.Year.HasValue)
                 stringBuilder.Append(string.Format(" {2} ((date_year = {0} and date_month <= {1}) or date_year < {0})", EndYearMonths.Year, EndYearMonths.Month, stringBuilder.Length != 0 ? " and " : string.Empty));
-            if (Payee.ID.HasValue)
-                stringBuilder.Append(string.Format(" {1} ( payee_id = {0} )", Payee.ID, stringBuilder.Length != 0 ? " and " : string.Empty));
-            if (Category.ID.HasValue)
+            if (Payee.Id.HasValue)
+                stringBuilder.Append(string.Format(" {1} ( payee_id = {0} )", Payee.Id, stringBuilder.Length != 0 ? " and " : string.Empty));
+            if (Category.Id.HasValue)
                 stringBuilder.Append(string.Format(@"
 {1} category_id IN
 (
@@ -217,11 +202,11 @@ namespace Financier.Reports
                      WHERE  xxx._id = {0}) root
        WHERE  ctx.LEFT >= root.LEFT
        AND    ctx.RIGHT <= root.RIGHT
-)", Category.ID, stringBuilder.Length != 0 ? " and " : string.Empty));
-            if (Project.ID.HasValue)
-                stringBuilder.Append(string.Format(" {1} ( project_id = {0} )", Project.ID, stringBuilder.Length != 0 ? " and " : string.Empty));
-            if (Account.ID.HasValue)
-                stringBuilder.Append(string.Format(" {1} ( from_account_id = {0} )", Account.ID, stringBuilder.Length != 0 ? " and " : string.Empty));
+)", Category.Id, stringBuilder.Length != 0 ? " and " : string.Empty));
+            if (Project.Id.HasValue)
+                stringBuilder.Append(string.Format(" {1} ( project_id = {0} )", Project.Id, stringBuilder.Length != 0 ? " and " : string.Empty));
+            if (Account.Id.HasValue)
+                stringBuilder.Append(string.Format(" {1} ( from_account_id = {0} )", Account.Id, stringBuilder.Length != 0 ? " and " : string.Empty));
             return stringBuilder.ToString();
         }
     }

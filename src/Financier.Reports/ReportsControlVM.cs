@@ -1,5 +1,4 @@
 ﻿using Financier.Common.Attribute;
-using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Prism.Commands;
@@ -22,9 +21,6 @@ namespace Financier.Reports
         {
             this.financierDatabase = financierDatabase;
             BuildReportsTree();
-
-            DbManual.ResetManuals();
-            DbManual.Setup(financierDatabase).GetAwaiter().GetResult();
         }
 
         private void BuildReportsTree()

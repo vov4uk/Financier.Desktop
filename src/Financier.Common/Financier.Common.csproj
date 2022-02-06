@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.100" />
     <PackageReference Include="Emoji.Wpf" Version="0.3.3" />
+    <PackageReference Include="Mvvm.Async" Version="0.0.1" />
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="WPFChromeTabsMVVM" Version="1.4.0" />
   </ItemGroup>
 

@@ -54,7 +54,7 @@
                 </DockPanel>
             </GroupBox>
             <filters:TopCategoryFilter Margin="4" />
-            <filters:PeriodFilter Margin="0" />
+            <filters:PeriodFilter Margin="0" Orientation="Horizontal" />
             <Button Style="{StaticResource RefreshButton}" />
         </StackPanel>
         <oxy:PlotView Grid.Row="1"
@@ -66,6 +66,6 @@
         <fcrd:DataGridAutoHeaders Grid.Row="1"
                                   x:Name="dataGrid"
                                   Visibility="{Binding ElementName=GridBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"
-                                  ItemsSource="{Binding Path=ReportData}" />
+                                  ItemsSource="{Binding Path=Entities}" />
     </Grid>
 </UserControl>

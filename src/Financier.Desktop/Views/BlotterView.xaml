@@ -6,14 +6,54 @@
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
+             xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
              mc:Ignorable="d"
-             d:DesignHeight="450"
-             d:DesignWidth="800">
+             d:DesignHeight="480"
+             d:DesignWidth="1000">
     <UserControl.Resources>
         <converters:UnixTimeConverter x:Key="DatetimeConverter" />
     </UserControl.Resources>
     <Grid>
-        <DataGrid Margin="5"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Expander Margin="5"
+                  Grid.Column="1"
+                  IsExpanded="True"
+                  Background="Transparent"
+                  ExpandDirection="Left">
+            <StackPanel Orientation="Vertical">
+                <filters:PeriodFilter  Margin="0"
+                                       SelectedPeriodType="{Binding PeriodType, Mode=TwoWay}"
+                                       DataContext="{Binding}"
+                                       Orientation="Vertical"/>
+                <filters:AccountFilter Margin="4" />
+                <filters:CategoryFilter Margin="4" />
+                <filters:ProjectFilter Margin="4" />
+                <filters:PayeeFilter Margin="4" />
+                <filters:LocationFilter Margin="4" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Refresh"
+                        Height="24"
+                        Grid.Column="0"
+                        Command="{Binding RefreshDataCommand}"
+                        Margin="4"/>
+                    <Button Content="Clear"
+                        Height="24"
+                        Grid.Column="1"
+                        Command="{Binding ClearFiltersCommand}"
+                        Margin="4"/>
+                </Grid>
+
+            </StackPanel>
+        </Expander>
+        <DataGrid Grid.Column="0"
+                  Margin="5"
                   IsSynchronizedWithCurrentItem="True"
                   ItemsSource="{Binding Path=Entities}"
                   AutoGenerateColumns="False"
@@ -30,7 +70,7 @@
                     CommandParameter="{Binding SelectedValue}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Path=_id}"
+                <DataGridTextColumn Binding="{Binding Path=Id}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
                 <DataGridTemplateColumn Header=""
                                         dgx:DataGridFilterColumn.IsFilterVisible="False">
@@ -53,7 +93,7 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Time"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False"
-                                    Binding="{Binding Path=datetime, Converter= {StaticResource DatetimeConverter}}" />
+                                    Binding="{Binding Path=Datetime, Converter= {StaticResource DatetimeConverter}}" />
                 <DataGridTextColumn Header=""
                                     Binding="{Binding Path=AccountTitle}" />
                 <DataGridTemplateColumn Header="">

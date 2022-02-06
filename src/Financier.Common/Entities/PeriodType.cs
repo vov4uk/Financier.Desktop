@@ -4,6 +4,10 @@ namespace Financier.Common.Entities
 {
     public enum PeriodType
     {
+
+        [Description("All time")]
+        AllTime,
+
         [Description("Today")]
         Today,
 

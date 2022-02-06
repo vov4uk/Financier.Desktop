@@ -1,13 +1,29 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Financier.Common.Utils;
 
 namespace Financier.Common.Model
 {
     public class AccountModel : BaseModel
     {
-        [Column("_id")]
-        public long? ID { get; set; }
+        public int Id { get; set; } = -1;
 
-        [Column("title")]
+        public bool IsActive { get; set; } = true;
+
         public string Title { get; set; }
+
+        public long LastTransactionDate { get; set; }
+
+        public int CurrencyId { get; set; }
+
+        public string Type { get; set; }
+
+        public long TotalAmount { get; set; }
+
+        public int SortOrder { get; set; }
+
+        public bool IsIncludeIntoTotals { get; set; } = true;
+
+        public CurrencyModel Currency { get; set; }
+
+        public string AmountTitle => BlotterUtils.SetAmountText(Currency, TotalAmount, false);
     }
 }

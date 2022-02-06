@@ -33,7 +33,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Title}"/>
                 <DataGridTextColumn Header="Address" Binding="{Binding Path=Address}"/>
             </DataGrid.Columns>
         </DataGrid>

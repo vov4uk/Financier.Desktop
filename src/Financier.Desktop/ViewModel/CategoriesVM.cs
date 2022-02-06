@@ -1,50 +1,40 @@
-﻿using Financier.DataAccess.Data;
+﻿using Financier.Common.Entities;
+using Financier.Common.Model;
+using Financier.DataAccess.Abstractions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Financier.Desktop.ViewModel
 {
-    public class CategoriesVM : EntityBaseVM<Category>
+    public class CategoriesVM : EntityBaseVM<CategoryTreeModel>
     {
-        public CategoriesVM(IEnumerable<Category> items) : base(items)
+        private readonly List<CategoryTreeModel> _nodes = new List<CategoryTreeModel>();
+
+        public CategoriesVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
         {
-            InitializeNodes(_nodes, Entities.ToList(), 0);
-            RaisePropertyChanged(nameof(Nodes));
         }
 
-        private ObservableCollection<Node> _nodes = new ObservableCollection<Node>();
-        public ObservableCollection<Node> Nodes
+        protected override Task RefreshData()
         {
-            get
-            {
-                if (_nodes == null)
-                {
-                    _nodes = new ObservableCollection<Node>();
-                    RaisePropertyChanged(nameof(Nodes));
-                }
-                return _nodes;
-            }
-            set
-            {
-                _nodes = value;
-                RaisePropertyChanged(nameof(Nodes));
-            }
+            InitializeNodes(_nodes, DbManual.Category.Where(x => x.Id > 0).OrderBy(x => x.Left).ToList(), 0);
+            Entities = new ObservableCollection<CategoryTreeModel>(_nodes);
+            return Task.CompletedTask;
         }
 
-        private void InitializeNodes(ObservableCollection<Node> nodes, List<Category> categories, int level)
+        private void InitializeNodes(List<CategoryTreeModel> nodes, List<CategoryModel> categories, int level)
         {
             foreach (var category in categories.OrderBy(x => x.Left))
             {
                 if (!nodes.Any(x => x.Right > category.Left))
                 {
-                    var subNode = new Node
+                    var subNode = new CategoryTreeModel
                     {
-                        Id = category.Id,
+                        Id = (int)category.Id,
                         Title = new string('-', level) + category.Title,
-                        Left = category.Left,
-                        Right = category.Right,
-                        SubCategoties = new ObservableCollection<Node>()
+                        Right = (int)category.Right,
+                        SubCategoties = new()
                     };
                     nodes.Add(subNode);
 
@@ -55,15 +45,6 @@ namespace Financier.Desktop.ViewModel
                     }
                 }
             }
-        }
-
-        public class Node
-        {
-            public int Id { get; set; }
-            public int Left { get; set; }
-            public int Right { get; set; }
-            public string Title { get; set; }
-            public ObservableCollection<Node> SubCategoties { get; set; }
         }
     }
 }

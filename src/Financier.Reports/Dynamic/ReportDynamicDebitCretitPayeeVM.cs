@@ -44,9 +44,9 @@ order by
         {
             long? categoryId;
             int hasCategory;
-            if (!Payee.ID.HasValue)
+            if (!Payee.Id.HasValue)
             {
-                categoryId = Category.ID;
+                categoryId = Category.Id;
                 hasCategory = categoryId.HasValue ? 1 : 0;
             }
             else
@@ -60,17 +60,17 @@ order by
                 return string.Empty;
             }
             string str = string.Empty;
-            categoryId = CurentCurrency.ID;
+            categoryId = CurentCurrency.Id;
             if (categoryId.HasValue)
             {
-                str = string.Format(" and from_account_crc_id = {0}", CurentCurrency.ID);
+                str = string.Format(" and from_account_crc_id = {0}", CurentCurrency.Id);
             }
             string standartTrnFilter = GetStandartTrnFilter();
             if (standartTrnFilter != string.Empty)
             {
                 str = str + " and " + standartTrnFilter;
             }
-            categoryId = CurentCurrency.ID;
+            categoryId = CurentCurrency.Id;
             return string.Format(BaseSqlText, categoryId.HasValue ? 1 : 0, str);
         }
 

@@ -8,7 +8,8 @@ namespace Financier.Common.Entities
 {
     public static class DbManual
     {
-        private static List<AccountModel> _accounts;
+        private static List<AccountFilterModel> _accounts;
+        private static List<LocationModel> _location;
         private static List<CategoryModel> _category;
         private static List<CategoryModel> _topCategory;
         private static List<CurrencyModel> _currencies;
@@ -17,19 +18,36 @@ namespace Financier.Common.Entities
         private static List<YearMonths> _yearMonths;
         private static List<Years> _years;
 
-        public static async Task Setup(IFinancierDatabase financierDatabase)
+        public static async Task SetupAsync(IFinancierDatabase financierDatabase)
         {
             if (_accounts == null)
             {
-                var accounts = await financierDatabase.ExecuteQuery<AccountModel>(@"
+                var accounts = await financierDatabase.ExecuteQuery<AccountFilterModel>(@"
 SELECT _id,
-       title
+       title,
+       is_active,
+       sort_order
 FROM   account
 WHERE  title IS NOT NULL
-ORDER  BY 2 DESC"
+ORDER  BY 3 DESC, 4 ASC"
 );
-                _accounts = new List<AccountModel>(accounts);
-                _accounts.Insert(0, new AccountModel());
+                _accounts = new List<AccountFilterModel>(accounts);
+                _accounts.Insert(0, new AccountFilterModel());
+            }
+
+            if (_location == null)
+            {
+                var locations = await financierDatabase.ExecuteQuery<LocationModel>(@"
+SELECT _id,
+       title,
+       is_active,
+       resolved_address
+FROM   locations
+WHERE  title IS NOT NULL
+ORDER  BY 3 DESC, 2 ASC"
+);
+                _location = new List<LocationModel>(locations);
+                _location.Insert(0, new LocationModel());
             }
 
             if (_category == null)
@@ -49,7 +67,7 @@ ORDER  BY LEFT,
                 _category = new List<CategoryModel>(categories);
                 _category.Insert(0, new CategoryModel());
 
-                _topCategory = new List<CategoryModel>(categories.Where(x => x.Level == 0 && x.ID > 0));
+                _topCategory = new List<CategoryModel>(categories.Where(x => x.Level == 0 && x.Id > 0));
                 _topCategory.Insert(0, new CategoryModel());
             }
 
@@ -113,7 +131,7 @@ ORDER  BY 1 DESC ");
             }
         }
 
-        public static List<AccountModel> Account => _accounts;
+        public static List<AccountFilterModel> Account => _accounts;
 
         public static List<CategoryModel> Category => _category;
 
@@ -129,6 +147,8 @@ ORDER  BY 1 DESC ");
 
         public static List<Years> Years => _years;
 
+        public static List<LocationModel> Location => _location;
+
         public static void ResetManuals()
         {
             _accounts = null;
@@ -139,6 +159,7 @@ ORDER  BY 1 DESC ");
             _project = null;
             _yearMonths = null;
             _years = null;
+            _location = null;
         }
     }
 }

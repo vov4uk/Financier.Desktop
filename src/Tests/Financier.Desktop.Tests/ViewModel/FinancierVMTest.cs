@@ -7,6 +7,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Financier.Adapter;
+    using Financier.Common.Model;
     using Financier.DataAccess.Abstractions;
     using Financier.DataAccess.Data;
     using Financier.DataAccess.Monobank;
@@ -121,6 +122,13 @@
 
             this.dialogMock.Setup(x => x.ShowMessageBox(It.IsAny<string>(), "Success", false)).Returns(true);
             this.dbMock.Setup(x => x.ImportEntitiesAsync(entities)).Returns(Task.CompletedTask).Verifiable();
+            this.dbMock.Setup(x => x.ExecuteQuery<AccountFilterModel>(It.IsAny<string>())).ReturnsAsync(new List<AccountFilterModel>());
+            this.dbMock.Setup(x => x.ExecuteQuery<CategoryModel>(It.IsAny<string>())).ReturnsAsync(new List<CategoryModel>());
+            this.dbMock.Setup(x => x.ExecuteQuery<CurrencyModel>(It.IsAny<string>())).ReturnsAsync(new List<CurrencyModel>());
+            this.dbMock.Setup(x => x.ExecuteQuery<PayeeModel>(It.IsAny<string>())).ReturnsAsync(new List<PayeeModel>());
+            this.dbMock.Setup(x => x.ExecuteQuery<ProjectModel>(It.IsAny<string>())).ReturnsAsync(new List<ProjectModel>());
+            this.dbMock.Setup(x => x.ExecuteQuery<YearMonths>(It.IsAny<string>())).ReturnsAsync(new List<YearMonths>());
+            this.dbMock.Setup(x => x.ExecuteQuery<Years>(It.IsAny<string>())).ReturnsAsync(new List<Years>());
             this.dbMock.Setup(x => x.Dispose());
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose()).Verifiable();
@@ -418,7 +426,7 @@
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
+           // vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.trMock.VerifyAll();
@@ -451,7 +459,7 @@
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
+           // vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.trMock.VerifyAll();
@@ -504,7 +512,7 @@
                 .Returns(null);
 
             var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
+          //  vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.trMock.VerifyAll();
@@ -537,7 +545,7 @@
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
+          //  vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.trMock.VerifyAll();
@@ -588,7 +596,7 @@
                 .Returns(null);
 
             var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
+          //  vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.dbMock.VerifyAll();

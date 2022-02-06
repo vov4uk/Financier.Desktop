@@ -9,7 +9,7 @@
              xmlns:ent=       "clr-namespace:Financier.Common.Entities"
              x:Name="PeriodFilterInstance"
              mc:Ignorable="d"
-             d:DesignHeight="64"
+             d:DesignHeight="480"
              d:DesignWidth="480">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,11 +24,11 @@
             <BooleanToVisibilityConverter x:Key="boolToVis"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal">
+    <StackPanel Orientation="{Binding ElementName=PeriodFilterInstance, Path=Orientation}">
         <GroupBox Header="Period"
                   Margin="4"
                   BorderThickness="0"
-                  Width="140">
+                  Width="150">
             <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
                       x:Name="PeriodTypeSelector"
                       SelectedItem="{Binding Path=SelectedPeriodType, ElementName=PeriodFilterInstance, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">

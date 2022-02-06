@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -57,13 +56,6 @@ namespace Financier.DataAccess
             return ctx.Set<T>().OrderByDescending(x => x).Take(last).ToListAsync();
         }
 
-        /// <summary>
-        ///     Finds by predicate.
-        ///     http://appetere.com/post/passing-include-statements-into-a-repository
-        /// </summary>
-        /// <param name="predicate">The predicate.</param>
-        /// <param name="includes">The includes.</param>
-        /// <returns></returns>
         public virtual async Task<T> FindByAsync(Expression<Func<T, bool>> predicate,
             params Expression<Func<T, object>>[] includes)
         {
@@ -75,13 +67,6 @@ namespace Financier.DataAccess
             return await result?.FirstOrDefaultAsync();
         }
 
-        /// <summary>
-        ///     Finds by predicate.
-        ///     http://appetere.com/post/passing-include-statements-into-a-repository
-        /// </summary>
-        /// <param name="predicate">The predicate.</param>
-        /// <param name="includes">The includes.</param>
-        /// <returns></returns>
         public virtual async Task<List<T>> FindManyAsync(Expression<Func<T, bool>> predicate,
             params Expression<Func<T, object>>[] includes)
         {
@@ -91,6 +76,29 @@ namespace Financier.DataAccess
                 result = result.Include(includeExpression);
 
             return await result?.ToListAsync();
+        }
+
+        public virtual async Task<List<TResult>> FindManyAsync<TResult>(
+            Expression<Func<T, bool>> predicate,
+            Expression<Func<T, TResult>> projection,
+            params Expression<Func<T, object>>[] includes)
+        {
+            var result = ctx.Set<T>().AsNoTracking().Where(predicate);
+
+            foreach (var includeExpression in includes)
+            {
+                result = result.Include(includeExpression);
+            }
+
+            if (result != null)
+            {
+                var tresult = result.Select(projection);
+                Logger.Info(tresult.ToQueryString());
+
+                return await tresult.ToListAsync();
+            }
+
+            return default;
         }
 
         public virtual async Task<bool> UpdateAsync(T entity)

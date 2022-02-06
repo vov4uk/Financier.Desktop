@@ -5,7 +5,7 @@ namespace Financier.Common.Model
     public class CategoryModel : BaseModel
     {
         [Column("_id")]
-        public long? ID { get; set; }
+        public long? Id { get; set; }
 
         [Column("title")]
         public string title { get; set; }
