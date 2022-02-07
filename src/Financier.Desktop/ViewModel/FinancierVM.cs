@@ -1,7 +1,6 @@
 ﻿using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.DataAccess.Utils;
-using Financier.DataAccess.View;
 using Financier.Desktop.Views;
 using Financier.Adapter;
 using Prism.Mvvm;
@@ -158,7 +157,7 @@ namespace Financier.Desktop.ViewModel
             dialogWrapper.ShowMessageBox($"Imported {entities.Count()} entities. Duration : {duration}","Success");
 
             // TODO: DbManualReset entities then entities were updated
-            DbManual.ResetManuals();
+            DbManual.ResetAllManuals();
             await DbManual.SetupAsync(db);
 
             await NavigateToType(typeof(BlotterModel));
@@ -405,9 +404,9 @@ namespace Financier.Desktop.ViewModel
             where T : Entity, IActive, new()
         {
             T selectedEntity = await db.GetOrCreateAsync<T>(e);
-            EntityWithTitleVM context = new EntityWithTitleVM(new EntityWithTitleDto(selectedEntity));
+            TagVM context = new TagVM(new EntityWithTitleDto(selectedEntity));
 
-            var result = dialogWrapper.ShowDialog<EntityWithTitleControl>(context, 180, 300, typeof(T).Name);
+            var result = dialogWrapper.ShowDialog<TagControl>(context, 180, 300, typeof(T).Name);
 
             var updatedItem = result as EntityWithTitleDto;
             if (updatedItem != null)

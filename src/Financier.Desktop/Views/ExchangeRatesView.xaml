@@ -3,25 +3,66 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:UnixTimeConverter x:Key="DatetimeConverter"/>
     </UserControl.Resources>
     <Grid>
-        <DataGrid Margin="5"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="0">
+            <GroupBox Header="From"
+                      Width="120"
+                      BorderThickness="0">
+                <ComboBox DisplayMemberPath="Name"
+                      SelectedItem="{Binding Path=From}"
+                      Margin="2 0"
+                      ItemsSource="{Binding Source={x:Static fcrd:DbManual.Currencies}, Mode=OneWay}" />
+            </GroupBox>
+            <GroupBox Header="To"
+                      Width="120"
+                      BorderThickness="0">
+                <ComboBox DisplayMemberPath="Name"
+                      SelectedItem="{Binding Path=To}"
+                      Margin="2 0"
+                      ItemsSource="{Binding Source={x:Static fcrd:DbManual.Currencies}, Mode=OneWay}" />
+            </GroupBox>
+            <Button Content="Refresh"
+                        Height="24"
+                        Grid.Column="0"
+                        Command="{Binding RefreshDataCommand}"
+                        Margin="4 10 0 0 "/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <oxy:PlotView Grid.Row="1"
+                      Model="{Binding PlotModel}"
+                      />
+            <DataGrid Margin="2"
+                  Grid.Column="1"
                   ItemsSource="{Binding Path=Entities}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   FontSize="14"
                   IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, Converter= {StaticResource DatetimeConverter}}"/>
-                <DataGridTextColumn Header="From" Binding="{Binding Path=FromCurrency.Name}"/>
-                <DataGridTextColumn Header="To" Binding="{Binding Path=ToCurrency.Name}"/>
-                <DataGridTextColumn Header="Rate" Binding="{Binding Path=Rate}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, Converter= {StaticResource DatetimeConverter}}"/>
+                    <DataGridTextColumn Header="From" Binding="{Binding Path=FromCurrency.Name}"/>
+                    <DataGridTextColumn Header="To" Binding="{Binding Path=ToCurrency.Name}"/>
+                    <DataGridTextColumn Header="Rate" Binding="{Binding Path=Rate}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
     </Grid>
 </UserControl>

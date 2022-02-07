@@ -4,9 +4,9 @@ using System.Windows.Controls;
 namespace Financier.Desktop.Views.Controls
 {
     [ExcludeFromCodeCoverage]
-    public partial class EntityWithTitleControl : UserControl
+    public partial class TagControl : UserControl
     {
-        public EntityWithTitleControl()
+        public TagControl()
         {
             InitializeComponent();
         }

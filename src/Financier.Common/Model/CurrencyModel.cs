@@ -10,6 +10,9 @@ namespace Financier.Common.Model
         [Column("name")]
         public string Name { get; set; }
 
+        [Column("title")]
+        public string Title { get; set; }
+
         [Column("symbol")]
         public string Symbol { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using Financier.Common.Entities;
 using Financier.Common.Model;
@@ -15,7 +16,7 @@ namespace Financier.Desktop.ViewModel
 
         protected override Task RefreshData()
         {
-            Entities = new System.Collections.ObjectModel.ObservableCollection<CurrencyModel>(DbManual.Currencies);
+            Entities = new System.Collections.ObjectModel.ObservableCollection<CurrencyModel>(DbManual.Currencies.Where(x => x.Id.HasValue));
             return Task.CompletedTask;
         }
     }

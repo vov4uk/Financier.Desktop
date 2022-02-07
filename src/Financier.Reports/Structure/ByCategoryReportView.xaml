@@ -2,7 +2,6 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              xmlns:fcrd=      "clr-namespace:Financier.Common.Controls;assembly=Financier.Common"

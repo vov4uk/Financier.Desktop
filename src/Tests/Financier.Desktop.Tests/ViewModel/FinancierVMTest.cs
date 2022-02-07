@@ -261,7 +261,7 @@
             this.dbMock.Setup(x => x.GetOrCreateAsync<Project>(0)).ReturnsAsync(location);
 
             this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>())).Callback<IEnumerable<Project>>((x) => { actual = x.ToArray(); }).Returns(Task.CompletedTask);
-            this.dialogMock.Setup(x => x.ShowDialog<EntityWithTitleControl>(It.IsAny<EntityWithTitleVM>(), 180, 300, nameof(Project))).Returns(result);
+            this.dialogMock.Setup(x => x.ShowDialog<TagControl>(It.IsAny<TagVM>(), 180, 300, nameof(Project))).Returns(result);
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose()).Verifiable();
             this.projMock = new Mock<IBaseRepository<Project>>();
@@ -285,7 +285,7 @@
 
             this.dbMock.Setup(x => x.GetOrCreateAsync<Project>(0)).ReturnsAsync(location);
 
-            this.dialogMock.Setup(x => x.ShowDialog<EntityWithTitleControl>(It.IsAny<EntityWithTitleVM>(), 180, 300, nameof(Project))).Returns(null);
+            this.dialogMock.Setup(x => x.ShowDialog<TagControl>(It.IsAny<TagVM>(), 180, 300, nameof(Project))).Returns(null);
 
             this.projMock = new Mock<IBaseRepository<Project>>();
             this.SetupRepo(this.projMock);

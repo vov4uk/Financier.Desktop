@@ -149,7 +149,7 @@ ORDER  BY 1 DESC ");
 
         public static List<LocationModel> Location => _location;
 
-        public static void ResetManuals()
+        public static void ResetAllManuals()
         {
             _accounts = null;
             _category = null;
@@ -160,6 +160,18 @@ ORDER  BY 1 DESC ");
             _yearMonths = null;
             _years = null;
             _location = null;
+        }
+
+        public static void ReseManuals(string manual)
+        {
+            switch (manual)
+            {
+                case nameof(Payee): _payee = null; break;
+                case nameof(Location):_location = null; break;
+                case nameof(Project):_project = null; break;
+                default:
+                    break;
+            }
         }
     }
 }
