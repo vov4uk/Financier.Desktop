@@ -87,6 +87,10 @@ namespace Financier.Desktop.ViewModel
                 x => x.ToCurrency // include
                 );
 
+            if (items == null)
+            {
+                return;
+            }
             Entities = new ObservableCollection<ExchangeRateModel>(items.OrderByDescending(x => x.Date));
 
             var model = new PlotModel();

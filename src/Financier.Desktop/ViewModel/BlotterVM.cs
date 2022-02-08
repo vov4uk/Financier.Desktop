@@ -158,27 +158,27 @@
 
             Expression<Func<BlotterTransactions, bool>> predicate = x => x.datetime >= fromUnix && x.datetime <= toUnix;
 
-            if (Account.Id != null)
+            if (Account?.Id != null)
             {
                 predicate = predicate.And(x => x.from_account_id == _account.Id || x.to_account_id == _account.Id);
             }
 
-            if (Category.Id != null)
+            if (Category?.Id != null)
             {
                 predicate = predicate.And(x => x.category_id == _category.Id);
             }
 
-            if (Project.Id != null)
+            if (Project?.Id != null)
             {
                 predicate = predicate.And(x => x.project_id == _project.Id);
             }
 
-            if (Payee.Id != null)
+            if (Payee?.Id != null)
             {
                 predicate = predicate.And(x => x.payee_id == _payee.Id);
             }
 
-            if (Location.Id != null)
+            if (Location?.Id != null)
             {
                 predicate = predicate.And(x => x.location_id == _location.Id);
             }
@@ -226,8 +226,10 @@
                     }
                 },
                 includes: new Expression<Func<BlotterTransactions, object>>[] { x => x.from_account_currency, x => x.to_account_currency, x => x.original_currency });
-
-            Entities = new System.Collections.ObjectModel.ObservableCollection<BlotterModel>(items.OrderByDescending(x => x.Datetime));
+            if (items != null)
+            {
+                Entities = new System.Collections.ObjectModel.ObservableCollection<BlotterModel>(items.OrderByDescending(x => x.Datetime));
+            }
         }
     }
 }

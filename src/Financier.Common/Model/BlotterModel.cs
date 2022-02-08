@@ -47,7 +47,7 @@ namespace Financier.Common.Model
         {
             get
             {
-                if (ToAccountId > 0)
+                if (ToAccountId > 0 && CategoryId == 0 && FromAccountId > 0)
                 {
                     return "Transfer";
                 }

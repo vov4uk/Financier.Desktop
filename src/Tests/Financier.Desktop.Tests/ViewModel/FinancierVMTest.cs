@@ -7,6 +7,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Financier.Adapter;
+    using Financier.Common.Entities;
     using Financier.Common.Model;
     using Financier.DataAccess.Abstractions;
     using Financier.DataAccess.Data;
@@ -83,6 +84,7 @@
         [Fact]
         public async Task MenuNavigateCommand_ChangeCurrentPage_PropertiesUpdated()
         {
+            await this.SetupDbManual();
             var vm = this.GetFinancierVM();
 
             this.locMock = new Mock<IBaseRepository<Location>>();
@@ -97,15 +99,15 @@
             this.SetupRepo(this.projMock);
             this.SetupRepo(this.payeeMock);
 
-            await vm.MenuNavigateCommand.ExecuteAsync(typeof(BlotterTransactions));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(BlotterModel));
             Assert.True(vm.IsTransactionPageSelected);
-            await vm.MenuNavigateCommand.ExecuteAsync(typeof(Location));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(LocationModel));
             Assert.True(vm.IsLocationPageSelected);
-            await vm.MenuNavigateCommand.ExecuteAsync(typeof(Project));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(ProjectModel));
             Assert.True(vm.IsProjectPageSelected);
-            await vm.MenuNavigateCommand.ExecuteAsync(typeof(Payee));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(PayeeModel));
             Assert.True(vm.IsPayeePageSelected);
-            await vm.MenuNavigateCommand.ExecuteAsync(typeof(CurrencyExchangeRate));
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(ExchangeRateModel));
             Assert.True(vm.CurrentPage is ExchangeRatesVM);
         }
 
@@ -117,18 +119,12 @@
             BackupVersion backupVersion,
             Dictionary<string, List<string>> entityColumnsOrder)
         {
+            await this.SetupDbManual();
             var vm = this.GetFinancierVM();
             this.entityReaderMock.Setup(x => x.ParseBackupFile(backupPath)).Returns((entities, backupVersion, entityColumnsOrder));
 
             this.dialogMock.Setup(x => x.ShowMessageBox(It.IsAny<string>(), "Success", false)).Returns(true);
             this.dbMock.Setup(x => x.ImportEntitiesAsync(entities)).Returns(Task.CompletedTask).Verifiable();
-            this.dbMock.Setup(x => x.ExecuteQuery<AccountFilterModel>(It.IsAny<string>())).ReturnsAsync(new List<AccountFilterModel>());
-            this.dbMock.Setup(x => x.ExecuteQuery<CategoryModel>(It.IsAny<string>())).ReturnsAsync(new List<CategoryModel>());
-            this.dbMock.Setup(x => x.ExecuteQuery<CurrencyModel>(It.IsAny<string>())).ReturnsAsync(new List<CurrencyModel>());
-            this.dbMock.Setup(x => x.ExecuteQuery<PayeeModel>(It.IsAny<string>())).ReturnsAsync(new List<PayeeModel>());
-            this.dbMock.Setup(x => x.ExecuteQuery<ProjectModel>(It.IsAny<string>())).ReturnsAsync(new List<ProjectModel>());
-            this.dbMock.Setup(x => x.ExecuteQuery<YearMonths>(It.IsAny<string>())).ReturnsAsync(new List<YearMonths>());
-            this.dbMock.Setup(x => x.ExecuteQuery<Years>(It.IsAny<string>())).ReturnsAsync(new List<Years>());
             this.dbMock.Setup(x => x.Dispose());
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose()).Verifiable();
@@ -136,7 +132,7 @@
 
             await vm.OpenBackup(backupPath);
 
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
 
             Assert.True(vm.CurrentPage is BlotterVM);
             Assert.Equal(backupPath, vm.OpenBackupPath);
@@ -203,8 +199,9 @@
 
         [Theory]
         [AutoMoqData]
-        public void Locations_AddRaised_NewItemAdded(LocationDto result)
+        public async Task Locations_AddRaised_NewItemAdded(LocationDto result)
         {
+            await this.SetupDbManual();
             var location = new Location() { Id = 0 };
             Location[] actual = null;
 
@@ -220,7 +217,7 @@
             var vm = this.GetFinancierVM();
             vm.Locations.AddCommand.Execute();
 
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
             this.dbMock.Verify(x => x.GetOrCreateAsync<Location>(0), Times.Once);
             this.dbMock.Verify(x => x.InsertOrUpdateAsync(It.IsAny<Location[]>()), Times.Once);
             Assert.Equal(result.Address, actual[0].Address);
@@ -253,24 +250,22 @@
 
         [Theory]
         [AutoMoqData]
-        public void Projects_AddRaised_NewItemAdded(EntityWithTitleDto result)
+        public async Task Projects_AddRaised_NewItemAdded(EntityWithTitleDto result)
         {
             var location = new Project() { Id = 0 };
             Project[] actual = null;
 
             this.dbMock.Setup(x => x.GetOrCreateAsync<Project>(0)).ReturnsAsync(location);
-
+            await this.SetupDbManual();
             this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>())).Callback<IEnumerable<Project>>((x) => { actual = x.ToArray(); }).Returns(Task.CompletedTask);
             this.dialogMock.Setup(x => x.ShowDialog<TagControl>(It.IsAny<TagVM>(), 180, 300, nameof(Project))).Returns(result);
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.Dispose()).Verifiable();
+
             this.projMock = new Mock<IBaseRepository<Project>>();
             this.SetupRepo(this.projMock);
 
             var vm = this.GetFinancierVM();
             vm.Projects.AddCommand.Execute();
 
-            this.dbMock.VerifyAll();
             this.dbMock.Verify(x => x.GetOrCreateAsync<Project>(0), Times.Once);
             this.dbMock.Verify(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>()), Times.Once);
             Assert.Equal(result.IsActive, actual[0].IsActive);
@@ -301,6 +296,7 @@
         [Fact]
         public async Task MonoCommand_OpenWizard_AddNewTransaction()
         {
+            await this.SetupDbManual();
             var output = new List<Transaction>()
                 {
                     new Transaction()
@@ -335,12 +331,13 @@
             await vm.MonoCommand.ExecuteAsync();
 
             this.trMock.VerifyAll();
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
         }
 
         [Fact]
         public async Task MonoCommand_DuplicatesFound_NoTransactionsAdded()
         {
+            await this.SetupDbManual();
             var outputTransaction = new Transaction()
             {
                 Id = 0,
@@ -372,7 +369,7 @@
             await vm.MonoCommand.ExecuteAsync();
 
             this.trMock.VerifyAll();
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
         }
 
         [Fact]
@@ -397,15 +394,15 @@
 
         [Theory]
         [AutoMoqData]
-        public void OpenTransaction_ExistingTransaction_UpdateTransaction(
-            BlotterTransactions eventArgs,
+        public async Task OpenTransaction_ExistingTransaction_UpdateTransaction(
+            BlotterModel eventArgs,
             Transaction transaction,
             Account account,
             Currency currency,
             IEnumerable<Transaction> subTransactions)
         {
-            eventArgs.category_id = -1;
-
+            eventArgs.CategoryId = -1;
+            await this.SetupDbManual();
             var output = new TransactionDto(transaction, subTransactions);
             account.Currency = currency;
             output.Account = account;
@@ -414,7 +411,7 @@
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
             this.trMock = new Mock<IBaseRepository<Transaction>>(MockBehavior.Strict);
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs._id)).ReturnsAsync(transaction);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
             this.dbMock.Setup(x => x.GetOrCreateAsync<Transaction>(It.IsAny<int>())).ReturnsAsync(new Transaction());
             this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>())).ReturnsAsync(Array.Empty<Transaction>());
 
@@ -426,28 +423,30 @@
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
-           // vm.Blotter.SelectedValue = eventArgs;
+            vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.trMock.VerifyAll();
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
             this.dbMock.Verify(x => x.GetOrCreateAsync<Transaction>(It.IsAny<int>()), Times.Exactly(subTransactions.Count()));
         }
 
         [Theory]
         [AutoMoqData]
-        public void OpenTransaction_NoSubTransaction_UpdateTransaction(
-            BlotterTransactions eventArgs,
+        public async Task OpenTransaction_NoSubTransaction_UpdateTransaction(
+            BlotterModel eventArgs,
             Transaction transaction,
             TransactionDto output)
         {
-            eventArgs.category_id = -1;
+            eventArgs.CategoryId = -1;
+            eventArgs.ToAccountId = 0;
 
+            await this.SetupDbManual();
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
             this.trMock = new Mock<IBaseRepository<Transaction>>(MockBehavior.Strict);
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs._id)).ReturnsAsync(transaction);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
 
             this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>())).ReturnsAsync(Array.Empty<Transaction>());
 
@@ -459,19 +458,20 @@
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
-           // vm.Blotter.SelectedValue = eventArgs;
+            vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.trMock.VerifyAll();
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
         }
 
         [Theory]
         [AutoMoqData]
-        public void AddTransaction_NewItem_AddedToRepo(
+        public async Task AddTransaction_NewItem_AddedToRepo(
             Transaction transaction,
             TransactionDto output)
         {
+            await this.SetupDbManual();
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
@@ -491,19 +491,19 @@
             vm.Blotter.AddCommand.Execute();
 
             this.trMock.VerifyAll();
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
         }
 
         [Theory]
         [AutoMoqData]
-        public void OpenTransaction_Cancel_NoUpdateTransaction(BlotterTransactions eventArgs, Transaction transaction)
+        public async Task OpenTransaction_Cancel_NoUpdateTransaction(BlotterModel eventArgs, Transaction transaction)
         {
-            eventArgs.category_id = -1;
-
+            eventArgs.CategoryId = -1;
+            await this.SetupDbManual();
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
             this.trMock = new Mock<IBaseRepository<Transaction>>(MockBehavior.Strict);
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs._id)).ReturnsAsync(transaction);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.CategoryId.Value)).ReturnsAsync(transaction);
             this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>())).ReturnsAsync(Array.Empty<Transaction>());
 
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
@@ -512,28 +512,29 @@
                 .Returns(null);
 
             var vm = this.GetFinancierVM();
-          //  vm.Blotter.SelectedValue = eventArgs;
+            vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.trMock.VerifyAll();
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
         }
 
         [Theory]
         [AutoMoqData]
-        public void OpenTransfer_ExistingTransaction_UpdateTransaction(
-            BlotterTransactions eventArgs,
+        public async Task OpenTransfer_ExistingTransaction_UpdateTransaction(
+            BlotterModel eventArgs,
             Transaction transaction,
             TransferDto output)
         {
-            eventArgs.from_account_id = 1;
-            eventArgs.to_account_id = 2;
-            eventArgs.category_id = 0;
+            eventArgs.FromAccountId = 1;
+            eventArgs.ToAccountId = 2;
+            eventArgs.CategoryId = 0;
 
+            await this.SetupDbManual();
             this.SetupRepo(new Mock<IBaseRepository<Account>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
             this.trMock = new Mock<IBaseRepository<Transaction>>(MockBehavior.Strict);
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs._id)).ReturnsAsync(transaction);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
 
             this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Transaction[]>())).Returns(Task.CompletedTask);
             this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
@@ -545,20 +546,21 @@
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
-          //  vm.Blotter.SelectedValue = eventArgs;
+            vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.trMock.VerifyAll();
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
             this.dbMock.Verify(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()), Times.Exactly(2));
         }
 
         [Theory]
         [AutoMoqData]
-        public void AddTransfer_NewTransfer_AddedToDb(
+        public async Task AddTransfer_NewTransfer_AddedToDb(
             Transaction transaction,
             TransferDto output)
         {
+            await this.SetupDbManual();
             this.SetupRepo(new Mock<IBaseRepository<Account>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
 
@@ -574,21 +576,21 @@
             var vm = this.GetFinancierVM();
             vm.Blotter.AddTransferCommand.Execute();
 
-            this.dbMock.VerifyAll();
+            this.dbMock.Verify();
             this.dbMock.Verify(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()), Times.Exactly(2));
         }
 
         [Theory]
         [AutoMoqData]
-        public void OpenTransfer_Cancel_NoUpdateTransaction(BlotterTransactions eventArgs, Transaction transaction)
+        public void OpenTransfer_Cancel_NoUpdateTransaction(BlotterModel eventArgs, Transaction transaction)
         {
-            eventArgs.from_account_id = 1;
-            eventArgs.to_account_id = 2;
-            eventArgs.category_id = 0;
+            eventArgs.FromAccountId = 1;
+            eventArgs.ToAccountId = 2;
+            eventArgs.CategoryId = 0;
 
             this.SetupRepo(new Mock<IBaseRepository<Account>>());
 
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs._id)).ReturnsAsync(transaction);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
 
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
@@ -596,7 +598,7 @@
                 .Returns(null);
 
             var vm = this.GetFinancierVM();
-          //  vm.Blotter.SelectedValue = eventArgs;
+            vm.Blotter.SelectedValue = eventArgs;
             vm.Blotter.EditCommand.Execute();
 
             this.dbMock.VerifyAll();
@@ -618,6 +620,21 @@
         {
             this.uowMock.Setup(x => x.GetRepository<T>()).Returns(mock.Object);
             mock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<T, object>>[]>())).ReturnsAsync(new List<T>());
+        }
+
+        private async Task SetupDbManual()
+        {
+            this.dbMock.Setup(x => x.ExecuteQuery<AccountFilterModel>(It.IsAny<string>())).ReturnsAsync(new List<AccountFilterModel>() { new AccountFilterModel() });
+            this.dbMock.Setup(x => x.ExecuteQuery<CategoryModel>(It.IsAny<string>())).ReturnsAsync(new List<CategoryModel>() { new CategoryModel() });
+            this.dbMock.Setup(x => x.ExecuteQuery<CurrencyModel>(It.IsAny<string>())).ReturnsAsync(new List<CurrencyModel>() { new CurrencyModel() });
+            this.dbMock.Setup(x => x.ExecuteQuery<PayeeModel>(It.IsAny<string>())).ReturnsAsync(new List<PayeeModel>() { new PayeeModel() });
+            this.dbMock.Setup(x => x.ExecuteQuery<ProjectModel>(It.IsAny<string>())).ReturnsAsync(new List<ProjectModel>() { new ProjectModel() });
+            this.dbMock.Setup(x => x.ExecuteQuery<YearMonths>(It.IsAny<string>())).ReturnsAsync(new List<YearMonths>() { new YearMonths() });
+            this.dbMock.Setup(x => x.ExecuteQuery<Years>(It.IsAny<string>())).ReturnsAsync(new List<Years>() { new Years() });
+            this.dbMock.Setup(x => x.ExecuteQuery<LocationModel>(It.IsAny<string>())).ReturnsAsync(new List<LocationModel>() { new LocationModel() });
+
+            DbManual.ResetAllManuals();
+            await DbManual.SetupAsync(this.dbMock.Object);
         }
     }
 }
