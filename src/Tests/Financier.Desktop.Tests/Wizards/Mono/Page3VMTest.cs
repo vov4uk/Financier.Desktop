@@ -14,7 +14,6 @@
 
     public class Page3VMTest
     {
-
         [Theory]
         [AutoMoqData]
         public void MonoAccount_SetValue_AccountsNotContainsMonoAccount(
@@ -32,8 +31,7 @@
 
         [Theory]
         [AutoMoqData]
-        public void SetMonoTransactions_SetValue_TransformToFinancierTransactions(
-            AccountFilterModel monoAccount)
+        public void SetMonoTransactions_SetValue_TransformToFinancierTransactions(AccountFilterModel monoAccount)
         {
             List<BankTransaction> transactions = new List<BankTransaction>
             {

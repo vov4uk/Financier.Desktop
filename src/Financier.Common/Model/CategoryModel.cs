@@ -11,8 +11,6 @@ namespace Financier.Common.Model
         [Column("title")]
         public string Title { get; set; }
 
-        //public string Title => (title ?? string.Empty).PadLeft((title ?? string.Empty).Length + (int)Level, '-');
-
         [Column("level")]
         public long Level { get; set; }
 

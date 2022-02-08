@@ -46,6 +46,7 @@
             {
                 item.Title = Guid.NewGuid().ToString();
             }
+
             DbManual.SetupTests(accounts);
             var vm = new Page1VM();
 
