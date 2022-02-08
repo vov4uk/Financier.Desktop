@@ -15,20 +15,20 @@
         [AutoMoqData]
         public void Constructor_ReceiveParameters_AllPropertiesSeted(List<Category> categories, List<Project> projects, double totalAmount)
         {
-            var vm = new Page2VM(categories, projects, totalAmount);
+            var vm = new Page2VM(totalAmount);
 
             Assert.Equal(totalAmount, vm.TotalAmount);
             Assert.Equal("Transactions", vm.Title);
             Assert.True(vm.IsValid());
-            Assert.True(vm.Categories.SequenceEqual(categories));
-            Assert.True(vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id)));
+            //Assert.True(vm.Categories.SequenceEqual(categories));
+            //Assert.True(vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id)));
         }
 
         [Theory]
         [AutoMoqData]
         public void SetTransactions_ReceiveTransactions_TotalCalculated(List<Category> categories, List<Project> projects)
         {
-            var vm = new Page2VM(categories, projects, -100.0);
+            var vm = new Page2VM(-100.0);
 
             var transactions = new List<FinancierTransactionDto>
             {
@@ -49,7 +49,7 @@
         [AutoMoqData]
         public void AddRow_Execute_CorrectOrderSeted(List<Category> categories, List<Project> projects)
         {
-            var vm = new Page2VM(categories, projects, 0);
+            var vm = new Page2VM(0);
 
             vm.AddRowCommand.Execute();
 
@@ -61,7 +61,7 @@
         [AutoMoqData]
         public void Total_Execute_TotalCalculated(List<Category> categories, List<Project> projects)
         {
-            var vm = new Page2VM(categories, projects, -100);
+            var vm = new Page2VM(-100);
 
             Assert.Equal(0, vm.CalculatedAmount);
             vm.FinancierTransactions.Add(new () { FromAmount = -10000, Order = 1 });
@@ -74,7 +74,7 @@
         [AutoMoqData]
         public void Delete_Execute_OrderUpdated(List<Category> categories, List<Project> projects)
         {
-            var vm = new Page2VM(categories, projects, -100);
+            var vm = new Page2VM(-100);
 
             Assert.Equal(0, vm.CalculatedAmount);
             FinancierTransactionDto toDelete = new () { FromAmount = -10000, Order = 2 };
@@ -92,7 +92,7 @@
         [AutoMoqData]
         public void ClearAllNotes_Execute_NotesEmpty(List<Category> categories, List<Project> projects, List<FinancierTransactionDto> transactions)
         {
-            var vm = new Page2VM(categories, projects, -100);
+            var vm = new Page2VM(-100);
 
             Assert.Equal(0, vm.CalculatedAmount);
 

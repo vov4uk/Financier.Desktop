@@ -21,25 +21,7 @@ namespace Financier.Desktop.ViewModel
             var accountRepo = uow.GetRepository<Account>();
             var items = await accountRepo.FindManyAsync(
                 predicate: x => true,
-                projection: acc => new AccountModel
-                {
-                    Id = acc.Id,
-                    Title = acc.Title,
-                    CurrencyId = acc.CurrencyId,
-                    IsActive = acc.IsActive,
-                    IsIncludeIntoTotals = acc.IsIncludeIntoTotals,
-                    LastTransactionDate = acc.LastTransactionDate,
-                    SortOrder = acc.SortOrder,
-                    TotalAmount = acc.TotalAmount,
-                    Type = acc.Type,
-                    Currency = new CurrencyModel
-                    {
-                        Id = acc.Currency.Id,
-                        IsDefault = acc.Currency.IsDefault ? 1 : 0,
-                        Name = acc.Currency.Name,
-                        Symbol = acc.Currency.Symbol,
-                    }
-                },
+                projection: acc => new AccountModel(acc),
                 includes : x => x.Currency);
 
             Entities = new ObservableCollection<AccountModel>(items.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));

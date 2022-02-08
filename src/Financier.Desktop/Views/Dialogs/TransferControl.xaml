@@ -5,9 +5,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransferDialogVM}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransferDialogVM}, IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
@@ -97,7 +98,7 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                            Text="From Account"/>
                 <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                           ItemsSource="{Binding Accounts}"
+                           ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                            SelectedItem="{Binding Transfer.FromAccount}"
                            SelectedValuePath="Id"
                            SelectedValue="{Binding Transfer.FromAccountId}"
@@ -107,7 +108,7 @@
                 <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" 
                            Text="To Account"/>
                 <ComboBox  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
-                           ItemsSource="{Binding Accounts}"
+                           ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                            SelectedItem="{Binding Transfer.ToAccount}"
                            SelectedValuePath="Id"
                            SelectedValue="{Binding Transfer.ToAccountId}"
@@ -117,7 +118,7 @@
                 <TextBlock  Grid.Column="0" Grid.Row="5"
                             Grid.ColumnSpan="3"
                             x:Name="FromAmountBlock"
-                            Text="{Binding Path=Transfer.FromAccount.Currency.Name, StringFormat={}Amount Out ({0}), TargetNullValue=Amount}" />
+                            Text="{Binding Path=Transfer.FromAccountCurrency.Name, StringFormat={}Amount Out ({0}), TargetNullValue=Amount}" />
                 <xctk:IconButton    Grid.Column="0" Grid.Row="6"
                                     IsEnabled="False"
                                     Height="24"
@@ -135,7 +136,7 @@
 
                 <TextBlock  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3"
                             Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                            Text="{Binding Path=Transfer.ToAccount.Currency.Name, StringFormat={}Amount In ({0}), TargetNullValue=Amount}" />
+                            Text="{Binding Path=Transfer.ToAccountCurrency.Name, StringFormat={}Amount In ({0}), TargetNullValue=Amount}" />
                 <xctk:IconButton    Grid.Column="0" Grid.Row="8"
                                     Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                                     Height="24"

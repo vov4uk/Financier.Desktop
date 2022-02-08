@@ -1,8 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:convert="clr-namespace:Financier.Common.Converters;assembly=Financier.Common"
                     xmlns:data="clr-namespace:Financier.DataAccess.Data;assembly=Financier.DataAccess">
 
+    <convert:CategoryTitleConverter x:Key="categoryTitleConvert"/>
     <DataTemplate DataType="{x:Type data:IActive}" x:Key="IActive">
         <TextBlock x:Name="Txt" Text="{Binding Title}" Foreground="DarkGreen" />
         <DataTemplate.Triggers>
@@ -14,7 +16,14 @@
         </DataTemplate.Triggers>
     </DataTemplate>
     <DataTemplate DataType="{x:Type data:Category}" x:Key="CategoryTemplate">
-        <emoji:TextBlock x:Name="Txt" Text="{Binding Title}"/>
+        <emoji:TextBlock x:Name="Txt">
+            <emoji:TextBlock.Text>
+                <MultiBinding Converter="{StaticResource categoryTitleConvert}">
+                    <Binding Path="Title" />
+                    <Binding Path="Level" />
+                </MultiBinding>
+            </emoji:TextBlock.Text>
+        </emoji:TextBlock>
     </DataTemplate>
 
 </ResourceDictionary>

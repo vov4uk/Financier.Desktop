@@ -1,7 +1,5 @@
-﻿using Financier.DataAccess.Data;
-using Financier.Desktop.Data;
+﻿using Financier.Desktop.Data;
 using Prism.Commands;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Financier.Desktop.ViewModel.Dialog
@@ -16,19 +14,12 @@ namespace Financier.Desktop.ViewModel.Dialog
         private DelegateCommand _clearNotesCommand;
         private DelegateCommand _clearOriginalFromAmountCommand;
         private DelegateCommand _clearProjectCommand;
-        public SubTransactionDailogVM(
-            TransactionDto transaction,
-            List<Category> categories,
-            List<Project> projects)
+        public SubTransactionDailogVM(TransactionDto transaction)
         {
-            Categories = categories;
-            Projects = projects;
             Transaction = transaction;
             Transaction.PropertyChanged += Transaction_PropertyChanged;
         }
 
-        public List<Category> Categories { get; }
-        public List<Project> Projects { get; }
         public TransactionDto Transaction { get; }
 
         public DelegateCommand ChangeFromAmountSignCommand

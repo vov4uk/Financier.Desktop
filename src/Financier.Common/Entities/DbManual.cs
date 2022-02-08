@@ -23,12 +23,17 @@ namespace Financier.Common.Entities
             if (_accounts == null)
             {
                 var accounts = await financierDatabase.ExecuteQuery<AccountFilterModel>(@"
-SELECT _id,
-       title,
-       is_active,
-       sort_order
-FROM   account
-WHERE  title IS NOT NULL
+SELECT a._id,
+       a.title,
+       a.is_active,
+       a.sort_order,
+       a.currency_id,
+       a.total_amount,
+       a.type,
+       c.Name as currency_name
+FROM   account a
+INNER JOIN currency c ON a.currency_id = c._id
+WHERE  a.title IS NOT NULL
 ORDER  BY 3 DESC, 4 ASC"
 );
                 _accounts = new List<AccountFilterModel>(accounts);
@@ -57,6 +62,7 @@ SELECT _id,
        title,
        LEFT,
        [right],
+       type,
        (SELECT Count(*)
         FROM   category x
         WHERE  x.LEFT < ctx.LEFT
@@ -90,7 +96,7 @@ SELECT _id,
        is_active
 FROM   payee
 WHERE  title IS NOT NULL
-ORDER  BY 2 DESC");
+ORDER  BY is_active DESC, title ASC");
                 _payee = new List<PayeeModel>(payees);
                 _payee.Insert(0, new PayeeModel());
             }
@@ -103,7 +109,7 @@ SELECT _id,
        is_active
 FROM   project
 WHERE  title IS NOT NULL
-ORDER  BY 2 DESC");
+ORDER  BY is_active DESC, title ASC");
                 _project = new List<ProjectModel>(projects);
                 _project.Insert(0, new ProjectModel());
             }
@@ -172,6 +178,36 @@ ORDER  BY 1 DESC ");
                 default:
                     break;
             }
+        }
+
+        internal static void SetupTests(List<CategoryModel> categories)
+        {
+            _category = categories;
+        }
+
+        internal static void SetupTests(List<PayeeModel> payee)
+        {
+            _payee = payee;
+        }
+
+        internal static void SetupTests(List<LocationModel> loc)
+        {
+            _location = loc;
+        }
+
+        internal static void SetupTests(List<CurrencyModel> cur)
+        {
+            _currencies = cur;
+        }
+
+        internal static void SetupTests(List<AccountFilterModel> acc)
+        {
+            _accounts = acc;
+        }
+
+        internal static void SetupTests(List<ProjectModel> pj)
+        {
+            _project = pj;
         }
     }
 }

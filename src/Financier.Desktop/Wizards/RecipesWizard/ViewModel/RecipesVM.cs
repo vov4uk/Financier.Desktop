@@ -1,5 +1,4 @@
-﻿using Financier.DataAccess.Data;
-using Financier.Desktop.Data;
+﻿using Financier.Desktop.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,13 +6,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
     public class RecipesVM : WizardBaseVM
     {
-        private readonly List<Category> categories;
-        private readonly List<Project> projects;
-
-        public RecipesVM(double totalAmount, List<Category> categories, List<Project> projects)
+        public RecipesVM(double totalAmount)
         {
-            this.categories = categories;
-            this.projects = projects;
             TotalAmount = totalAmount;
             CreatePages();
         }
@@ -52,7 +46,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             _pages = new List<WizardPageBaseVM>()
             {
                 page1,
-                new Page2VM(categories, projects, this.TotalAmount),
+                new Page2VM(this.TotalAmount),
             }.AsReadOnly();
 
             CurrentPage = Pages[0];

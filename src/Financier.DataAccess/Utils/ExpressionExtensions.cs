@@ -31,7 +31,7 @@ namespace Financier.DataAccess.Utils
                 parameter);
         }
 
-        private class ReplaceVisitor : ExpressionVisitor
+        private sealed class ReplaceVisitor : ExpressionVisitor
         {
             private readonly Expression old;
             private readonly Expression newVal;

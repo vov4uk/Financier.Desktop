@@ -381,8 +381,7 @@
 
             var transaction = await db.GetOrCreateTransactionAsync(1);
 
-            Assert.NotNull(transaction.Category);
-            Assert.NotNull(transaction.OriginalCurrency);
+            Assert.NotNull(transaction.FromAccount);
             Assert.Equal(1, transaction.Id);
         }
 

@@ -156,7 +156,6 @@ namespace Financier.Desktop.ViewModel
             Logger.Info($"Duration : {duration}");
             dialogWrapper.ShowMessageBox($"Imported {entities.Count()} entities. Duration : {duration}","Success");
 
-            // TODO: DbManualReset entities then entities were updated
             DbManual.ResetAllManuals();
             await DbManual.SetupAsync(db);
 
@@ -404,11 +403,11 @@ namespace Financier.Desktop.ViewModel
             where T : Entity, IActive, new()
         {
             T selectedEntity = await db.GetOrCreateAsync<T>(e);
-            TagVM context = new TagVM(new EntityWithTitleDto(selectedEntity));
+            TagVM context = new TagVM(new TagDto(selectedEntity));
 
             var result = dialogWrapper.ShowDialog<TagControl>(context, 180, 300, typeof(T).Name);
 
-            var updatedItem = result as EntityWithTitleDto;
+            var updatedItem = result as TagDto;
             if (updatedItem != null)
             {
                 selectedEntity.IsActive = updatedItem.IsActive;
@@ -440,7 +439,6 @@ namespace Financier.Desktop.ViewModel
 
                 await db.InsertOrUpdateAsync(new[] { selectedValue });
 
-                // TODO : позбутись використання даних з таблиць, перейти на DTO
                 await sender.RefreshDataCommand.ExecuteAsync();
             }
         }
@@ -451,17 +449,10 @@ namespace Financier.Desktop.ViewModel
             Logger.Info($"{fileExtention} fileName -> {fileName}");
             if (!string.IsNullOrEmpty(fileName))
             {
-                using var uow = db.CreateUnitOfWork();
-                var accounts = await uow.GetAllOrderedByDefaultAsync<Account>( includes: x => x.Currency );
-                var currencies = await uow.GetAllAsync<Currency>();
-                var locations = await uow.GetAllOrderedByDefaultAsync<Location>();
-                var categories = await uow.GetAllAsync<Category>();
-                var projects = await uow.GetAllOrderedByDefaultAsync<Project>();
-
                 var csvHelper = this.bankFactory.CreateBankHelper(bank);
                 var csvTransactions = await csvHelper.ParseReport(fileName);
 
-                var vm = new MonoWizardVM(csvTransactions, accounts, currencies, locations, categories.OrderBy(x => x.Left), projects);
+                var vm = new MonoWizardVM(csvTransactions);
 
                 var output = dialogWrapper.ShowWizard(vm);
 
@@ -512,15 +503,7 @@ namespace Financier.Desktop.ViewModel
 
             using var uow = db.CreateUnitOfWork();
 
-            TransactionDialogVM dialogVm = new TransactionDialogVM(
-                transactionDto,
-                dialogWrapper,
-                (await uow.GetAllAsync<Category>()).OrderBy(x => x.Left).ToList(),
-                await uow.GetAllOrderedByDefaultAsync<Project>(),
-                await uow.GetAllOrderedByDefaultAsync<Account>(x => x.Currency),
-                await uow.GetAllAsync<Currency>(),
-                await uow.GetAllOrderedByDefaultAsync<Location>(),
-                await uow.GetAllOrderedByDefaultAsync<Payee>());
+            TransactionDialogVM dialogVm = new TransactionDialogVM(transactionDto, dialogWrapper);
 
             var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
 
@@ -576,9 +559,7 @@ namespace Financier.Desktop.ViewModel
         {
             Transaction transfer = await db.GetOrCreateTransactionAsync(id);
 
-            using var uow = db.CreateUnitOfWork();
-            var accounts = await uow.GetAllOrderedByDefaultAsync<Account>(x => x.Currency);
-            TransferDialogVM dialogVm = new TransferDialogVM(new TransferDto(transfer), accounts);
+            TransferDialogVM dialogVm = new TransferDialogVM(new TransferDto(transfer));
 
             var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
 

@@ -22,7 +22,7 @@ namespace Financier.Common.Utils
             AmountToString(sb, originalCurrency, originalAmount, addPlus);
             sb.Append(" (");
             AmountToString(sb, currency, amount, addPlus);
-            sb.Append(")");
+            sb.Append(')');
             return sb.ToString();
         }
 
@@ -40,7 +40,7 @@ namespace Financier.Common.Utils
         {
             if (amount.CompareTo(decimal.Zero) > 0 && addPlus)
             {
-                sb.Append("+");
+                sb.Append('+');
             }
             if (currency == null)
             {
@@ -59,7 +59,7 @@ namespace Financier.Common.Utils
             sb.Append(s);
             if (!string.IsNullOrEmpty(currency.Symbol))
             {
-                sb.Append(" ").Append(currency.Symbol);
+                sb.Append(' ').Append(currency.Symbol);
             }
             return sb;
         }

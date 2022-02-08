@@ -25,7 +25,7 @@
                 <MultiBinding StringFormat="{} Selected account {0} with balance {1} {2}">
                     <Binding Path="MonoAccount.Title"/>
                     <Binding Path="MonoAccount.TotalAmount" StringFormat="F2" Converter="{StaticResource AmountConverter}" />
-                    <Binding Path="MonoAccount.Currency.Name"/>
+                    <Binding Path="MonoAccount.CurrencyName"/>
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>

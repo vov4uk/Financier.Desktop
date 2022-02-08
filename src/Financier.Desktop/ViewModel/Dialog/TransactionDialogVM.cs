@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Financier.DataAccess.Data;
+using Financier.Common.Entities;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Views;
@@ -22,25 +22,11 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         public TransactionDialogVM(
             TransactionDto transaction,
-            IDialogWrapper dialogWrapper,
-            List<Category> categories,
-            List<Project> projects,
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Payee> payees)
-            :base(transaction, categories, projects)
+            IDialogWrapper dialogWrapper)
+            :base(transaction)
         {
             this.dialogWrapper = dialogWrapper;
-            Accounts = accounts;
-            Currencies = currencies;
-            Locations = locations;
-            Payees = payees;
         }
-        public List<Account> Accounts { get; }
-        public List<Currency> Currencies { get; }
-        public List<Location> Locations { get; }
-        public List<Payee> Payees { get; }
 
         public DelegateCommand AddSubTransactionCommand => _addSubTransactionCommand ??= new DelegateCommand(() => { ShowSubTransactionDialog(new TransactionDto(), true); });
 
@@ -66,7 +52,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private void CopySubTransaction(TransactionDto original, TransactionDto modifiedCopy)
         {
             original.CategoryId = modifiedCopy.CategoryId;
-            original.Category = Categories.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
+            original.Category = DbManual.Category?.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
             original.FromAmount = modifiedCopy.RealFromAmount;
             original.IsAmountNegative = modifiedCopy.IsAmountNegative;
             original.Note = modifiedCopy.Note;
@@ -75,10 +61,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private void ShowRecepiesDialog()
         {
-            var vm = new RecipesVM(
-                Transaction.RealFromAmount / 100.0,
-                Categories.Where(x => x.Id > 0).ToList(),
-                Projects.ToList());
+            var vm = new RecipesVM(Transaction.RealFromAmount / 100.0);
 
             var output = dialogWrapper.ShowWizard(vm);
 
@@ -87,7 +70,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             {
                 foreach (var item in outputTransactions)
                 {
-                    item.Category = Categories.FirstOrDefault(x => x.Id == item.CategoryId);
+                    item.Category = DbManual.Category?.FirstOrDefault(x => x.Id == item.CategoryId);
                     Transaction.SubTransactions.Add(item);
                 }
                 Transaction.RecalculateUnSplitAmount();
@@ -113,7 +96,7 @@ namespace Financier.Desktop.ViewModel.Dialog
                 workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount - Math.Abs(original.FromAmount);
             }
 
-            var viewModel = new SubTransactionDailogVM(workingCopy, Categories, Projects);
+            var viewModel = new SubTransactionDailogVM(workingCopy);
 
             var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, "Sub Transaction");
 

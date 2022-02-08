@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Financier.DataAccess.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Financier.Common.Model
 {
@@ -8,9 +9,9 @@ namespace Financier.Common.Model
         public long? Id { get; set; }
 
         [Column("title")]
-        public string title { get; set; }
+        public string Title { get; set; }
 
-        public string Title => (title ?? string.Empty).PadLeft((title ?? string.Empty).Length + (int)Level, '-');
+        //public string Title => (title ?? string.Empty).PadLeft((title ?? string.Empty).Length + (int)Level, '-');
 
         [Column("level")]
         public long Level { get; set; }
@@ -20,5 +21,19 @@ namespace Financier.Common.Model
 
         [Column("right")]
         public long Right { get; set; }
+
+        [Column("type")]
+        public long Type { get; set; }
+
+        public CategoryModel() { }
+
+        public CategoryModel(Category cat)
+        {
+            Id = cat.Id;
+            Title = cat.Title;
+            Type = cat.Type;
+            Left = cat.Left;
+            Right = cat.Right;
+        }
     }
 }

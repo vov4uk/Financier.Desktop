@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Financier.DataAccess.Data;
     using Financier.Desktop.Data;
     using Financier.Desktop.Helpers;
     using Financier.Desktop.ViewModel.Dialog;
@@ -24,44 +23,9 @@
 
         [Theory]
         [AutoMoqData]
-        public void Constructor_WithParameters_CollectionsHaveValues(
-            TransactionDto transaction,
-            List<Category> categories,
-            List<Project> projects,
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Payee> payees)
-        {
-            var vm = new TransactionDialogVM(
-                transaction,
-                this.dialogMock.Object,
-                categories,
-                projects,
-                accounts,
-                currencies,
-                locations,
-                payees);
-
-            Assert.NotEmpty(vm.Categories);
-            Assert.NotEmpty(vm.Projects);
-            Assert.NotEmpty(vm.Accounts);
-            Assert.NotEmpty(vm.Currencies);
-            Assert.NotEmpty(vm.Locations);
-            Assert.NotEmpty(vm.Payees);
-        }
-
-        [Theory]
-        [AutoMoqData]
         public void AddSubTransactionCommand_Execute_TransactionAdded(
             TransactionDto transaction,
-            TransactionDto subTransaction,
-            List<Category> categories,
-            List<Project> projects,
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Payee> payees)
+            TransactionDto subTransaction)
         {
             TransactionDto workingCopy = default;
             transaction.SubTransactions.Clear();
@@ -78,15 +42,7 @@
                 .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionDailogVM)a).Transaction; })
                 .Returns(subTransaction);
 
-            var vm = new TransactionDialogVM(
-                transaction,
-                this.dialogMock.Object,
-                categories,
-                projects,
-                accounts,
-                currencies,
-                locations,
-                payees);
+            var vm = new TransactionDialogVM(transaction, this.dialogMock.Object);
 
             vm.AddSubTransactionCommand.Execute();
 
@@ -103,13 +59,7 @@
         [AutoMoqData]
         public void OpenSubTransactionDialogCommand_Execute_TransactionUpdated(
             TransactionDto transaction,
-            TransactionDto subTransaction,
-            List<Category> categories,
-            List<Project> projects,
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Payee> payees)
+            TransactionDto subTransaction)
         {
             TransactionDto workingCopy = default;
             transaction.SubTransactions.Clear();
@@ -129,13 +79,7 @@
 
             var vm = new TransactionDialogVM(
                 transaction,
-                this.dialogMock.Object,
-                categories,
-                projects,
-                accounts,
-                currencies,
-                locations,
-                payees);
+                this.dialogMock.Object);
 
             vm.EditSubTransactionCommand.Execute(subTransaction);
 
@@ -149,13 +93,7 @@
         [AutoMoqData]
         public void OpenRecipesDialogCommand_Execute_TransactionsAdded(
             TransactionDto transaction,
-            List<TransactionDto> outputTransactions,
-            List<Category> categories,
-            List<Project> projects,
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Payee> payees)
+            List<TransactionDto> outputTransactions)
         {
             transaction.FromAmount = 1000;
             transaction.IsAmountNegative = true;
@@ -170,13 +108,7 @@
 
             var vm = new TransactionDialogVM(
                 transaction,
-                this.dialogMock.Object,
-                categories,
-                projects,
-                accounts,
-                currencies,
-                locations,
-                payees);
+                this.dialogMock.Object);
 
             vm.OpenRecipesDialogCommand.Execute();
 
@@ -187,23 +119,11 @@
         [Theory]
         [AutoMoqData]
         public void ClearCommand_Execute_SetDefaultValues(
-            TransactionDto transaction,
-            List<Category> categories,
-            List<Project> projects,
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Payee> payees)
+            TransactionDto transaction)
         {
             var vm = new TransactionDialogVM(
                 transaction,
-                this.dialogMock.Object,
-                categories,
-                projects,
-                accounts,
-                currencies,
-                locations,
-                payees);
+                this.dialogMock.Object);
 
             vm.ClearLocationCommand.Execute();
             vm.ClearNotesCommand.Execute();

@@ -1,7 +1,5 @@
-﻿using Financier.DataAccess.Data;
-using Financier.Desktop.Data;
+﻿using Financier.Desktop.Data;
 using Prism.Commands;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Financier.Desktop.ViewModel.Dialog
@@ -16,15 +14,13 @@ namespace Financier.Desktop.ViewModel.Dialog
         };
         private DelegateCommand _clearNotesCommand;
 
-        public TransferDialogVM(TransferDto transfer, List<Account> accounts)
+        public TransferDialogVM(TransferDto transfer)
         {
-            Accounts = accounts;
             Transfer = transfer;
             Transfer.PropertyChanged += TransferPropertyChanged;
         }
 
         public TransferDto Transfer { get; }
-        public List<Account> Accounts { get; }
 
         public DelegateCommand ClearNotesCommand => _clearNotesCommand ??= new DelegateCommand(() => { Transfer.Note = default; });
 

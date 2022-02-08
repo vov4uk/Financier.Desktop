@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using Financier.DataAccess.Data;
+    using Financier.Common.Entities;
     using Financier.Desktop.Data;
     using Financier.Desktop.Wizards.RecipesWizard.ViewModel;
     using Xunit;
@@ -12,6 +12,9 @@
         [Fact]
         public void MoveNextCommand_Executed2Times_ReceiveParsedTransactions()
         {
+            DbManual.SetupTests(new List<Common.Model.AccountFilterModel>());
+            DbManual.SetupTests(new List<Common.Model.CurrencyModel>());
+            DbManual.SetupTests(new List<Common.Model.CategoryModel>());
             double total = -100.0;
             List<TransactionDto> actual = default;
             List<TransactionDto> expected = new List<TransactionDto>
@@ -30,7 +33,7 @@
                 item.ProjectId = 0;
             }
 
-            var vm = new RecipesVM(total, new List<Category>(), new List<Project>());
+            var vm = new RecipesVM(total);
             vm.RequestClose += (o, args) =>
             {
                 if (args)
@@ -66,7 +69,7 @@ Discount -0.5 A";
             double total = -100.0;
             List<TransactionDto> actual = default;
             bool save = true;
-            var vm = new RecipesVM(total, new List<Category>(), new List<Project>());
+            var vm = new RecipesVM(total);
             vm.RequestClose += (o, args) =>
             {
                 save = args;
@@ -88,7 +91,7 @@ Discount -0.5 A";
         public void TotalCommand_Execute_CorrectTotalAmount()
         {
             double total = -100.0;
-            var vm = new RecipesVM(total, new List<Category>(), new List<Project>());
+            var vm = new RecipesVM(total);
             var page1 = vm.CurrentPage as Page1VM;
             page1.Text = @"
 Beer Baltyka 0 50,0 A

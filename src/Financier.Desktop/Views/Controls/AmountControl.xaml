@@ -100,7 +100,7 @@
         </xctk:IconButton>
 
         <TextBlock          Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" x:Name="FromAmountBlock"
-                            Text="{Binding Path=Transaction.Account.Currency.Name, StringFormat={}Amount ({0}), TargetNullValue=Amount}" />
+                            Text="{Binding Path=Transaction.AccountCurrency.Name, StringFormat={}Amount ({0}), TargetNullValue=Amount}" />
         <xctk:IconButton    Grid.Column="0" Grid.Row="3"
                             x:Name="FromAmountSign"
                             Height="24"
@@ -168,7 +168,7 @@
         <TextBlock          Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3"
                             Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                             Text="Rate"/>
-        <xctk:DecimalUpDown Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"
+        <xctk:DecimalUpDown Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3"
                             Value="{Binding Transaction.Rate}"
                             Increment="0.00001"
                             Minimum="0"

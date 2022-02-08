@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -97,10 +98,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
-                                                    ItemsSource="{Binding
-                                                                  RelativeSource={RelativeSource Mode=FindAncestor,
-                                                                  AncestorType={x:Type DataGrid}},
-                                                                  Path=DataContext.Categories}"
+                                                    ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}"
                                                     SelectedValue="{Binding
                                                                     Path=CategoryId,
                                                                     Mode=TwoWay,
@@ -118,13 +116,13 @@
                         <DataTemplate>
                             <TextBox HorizontalAlignment="Stretch"
                                      HorizontalContentAlignment="Right"
-                                       Text="{Binding
-                                              Path=FromAmount,
-                                              UpdateSourceTrigger=PropertyChanged,
-                                              Mode=TwoWay,
-                                              StringFormat=F2,
-                                              Converter={StaticResource AmountConverter},
-                                              ConverterParameter=false}">
+                                     Text="{Binding
+                                            Path=FromAmount,
+                                            UpdateSourceTrigger=PropertyChanged,
+                                            Mode=TwoWay,
+                                            StringFormat=F2,
+                                            Converter={StaticResource AmountConverter},
+                                            ConverterParameter=false}">
                             </TextBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -177,10 +175,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
-                                                    ItemsSource="{Binding
-                                                                  RelativeSource={RelativeSource Mode=FindAncestor,
-                                                                  AncestorType={x:Type DataGrid}},
-                                                                  Path=DataContext.Projects}"
+                                                    ItemsSource="{Binding Source={x:Static fcrd:DbManual.Project}, Mode=OneWay}"
                                                     SelectedValue="{Binding
                                                                     Path=ProjectId,
                                                                     Mode=TwoWay,

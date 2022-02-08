@@ -1,5 +1,5 @@
-﻿using Financier.DataAccess.Data;
-using Financier.DataAccess.Monobank;
+﻿using Financier.Common.Entities;
+using Financier.Common.Model;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -10,54 +10,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page3VM : WizardPageBaseVM
     {
-        private readonly List<Account> originalAccounts;
         private DelegateCommand<FinancierTransactionDto> _deleteCommand;
-        private Account _monoAccount;
-        private List<Account> accounts;
-        private List<Category> categories;
-        private List<Currency> currencies;
+        List<AccountFilterModel> accounts;
+        private AccountFilterModel _monoAccount;
         private ObservableCollection<FinancierTransactionDto> financierTransactions;
-        private List<Location> locations;
-        private List<Project> projects;
-        public Page3VM(List<Account> accounts, List<Currency> currencies, List<Location> locations, List<Category> categories, List<Project> projects)
-        {
-            Accounts = accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList();
-            originalAccounts = new List<Account>(accounts);
-            Currencies = currencies;
-            Locations = locations.DefaultOrder().ToList();
-            Categories = categories;
-            Projects = projects.DefaultOrder().ToList();
-            Categories.Insert(0, Category.None);
-        }
 
-        public List<Account> Accounts
+        public Page3VM()
         {
-            get => accounts;
-            private set
-            {
-                accounts = value;
-                RaisePropertyChanged(nameof(Accounts));
-            }
-        }
-
-        public List<Category> Categories
-        {
-            get => categories;
-            private set
-            {
-                categories = value;
-                RaisePropertyChanged(nameof(Categories));
-            }
-        }
-
-        public List<Currency> Currencies
-        {
-            get => currencies;
-            private set
-            {
-                currencies = value;
-                RaisePropertyChanged(nameof(Currencies));
-            }
+            Accounts = DbManual.Account.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList();
         }
 
         public DelegateCommand<FinancierTransactionDto> DeleteCommand
@@ -78,17 +38,17 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public List<Location> Locations
+        public List<AccountFilterModel> Accounts
         {
-            get => locations;
+            get => accounts;
             private set
             {
-                locations = value;
-                RaisePropertyChanged(nameof(Locations));
+                accounts = value;
+                RaisePropertyChanged(nameof(Accounts));
             }
         }
 
-        public Account MonoAccount
+        public AccountFilterModel MonoAccount
         {
             get => _monoAccount;
             set
@@ -97,19 +57,9 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 RaisePropertyChanged(nameof(MonoAccount));
                 if (_monoAccount != null)
                 {
-                    Accounts = new List<Account>(
-                        originalAccounts.Where(x => x.Id != _monoAccount.Id).OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
+                    Accounts = new List<AccountFilterModel>(
+                        DbManual.Account.Where(x => x.Id != _monoAccount.Id).OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder));
                 }
-            }
-        }
-
-        public List<Project> Projects
-        {
-            get => projects;
-            private set
-            {
-                projects = value;
-                RaisePropertyChanged(nameof(Projects));
             }
         }
 
@@ -124,15 +74,15 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             List<FinancierTransactionDto> transToAdd = new List<FinancierTransactionDto>();
             foreach (var x in transactions)
             {
-                var locationId = locations.FirstOrDefault(l => !string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
+                var locationId = DbManual.Location.FirstOrDefault(l => !string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
                                                             || !string.IsNullOrEmpty(l.Address) && l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
-                var categoryId = categories.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+                var categoryId = DbManual.Category.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var newTr = new FinancierTransactionDto
                 {
-                    MonoAccountId = MonoAccount.Id,
+                    MonoAccountId = (long)MonoAccount.Id,
                     FromAmount = Convert.ToInt64(x.CardCurrencyAmount * 100.0),
                     OriginalFromAmount = x.ExchangeRate == null ? null : Convert.ToInt64(x.OperationAmount * 100.0),
-                    OriginalCurrencyId = x.ExchangeRate == null ? 0 : currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0,
+                    OriginalCurrencyId = x.ExchangeRate == null ? 0 : (int)(DbManual.Currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0),
                     CategoryId = categoryId,
                     ToAccountId = 0,
                     FromAccountId = 0,

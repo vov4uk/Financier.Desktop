@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Financier.DataAccess.Monobank;
+using Financier.Desktop.Wizards;
 
 namespace Financier.Desktop.Helpers
 {

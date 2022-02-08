@@ -3,39 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Financier.DataAccess.Data;
-using Financier.DataAccess.Monobank;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class MonoWizardVM : WizardBaseVM
     {
-        private readonly List<Account> accounts;
-        private readonly List<Category> categories;
-        private readonly List<Currency> currencies;
-        private readonly List<Location> locations;
         private readonly List<BankTransaction> monoTransactions;
-        private readonly List<Project> projects;
-        public MonoWizardVM(
-            IEnumerable<BankTransaction> monoTransactions,
-            IEnumerable<Account> accounts,
-            IEnumerable<Currency> currencies,
-            IEnumerable<Location> locations,
-            IEnumerable<Category> categories,
-            IEnumerable<Project> projects)
+
+        public MonoWizardVM(IEnumerable<BankTransaction> monoTransactions)
         {
             this.monoTransactions = new(monoTransactions);
-            this.accounts = new(accounts);
-            this.currencies = new(currencies);
-            this.locations = new(locations);
-            this.categories = new(categories);
-            this.projects = new(projects);
 
             CreatePages();
             CurrentPage = Pages[0];
         }
-
-        //TODO - remove
-        public Account MonoBankAccount { get; set; }
 
         public override void AfterCurrentPageUpdated(WizardPageBaseVM newValue)
         {
@@ -55,13 +36,12 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             {
                 var monoAccount = page1.MonoAccount;
                 ((Page2VM)newValue).MonoAccount = monoAccount;
-                MonoBankAccount = monoAccount;
                 Logger.Info($"MonoBankAccount -> {JsonSerializer.Serialize(monoAccount)}");
             }
 
             if (old is Page2VM page2 && newValue is Page3VM)
             {
-                ((Page3VM)newValue).MonoAccount = MonoBankAccount;
+                ((Page3VM)newValue).MonoAccount = ((Page2VM)old).MonoAccount;
                 ((Page3VM)newValue).SetMonoTransactions(page2.GetMonoTransactions());
                 Logger.Info($"MonoTransactions count -> {page2.GetMonoTransactions().Count}");
             }
@@ -71,9 +51,9 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         {
             _pages = new List<WizardPageBaseVM>
                 {
-                    new Page1VM(accounts),
+                    new Page1VM(),
                     new Page2VM(monoTransactions),
-                    new Page3VM(accounts, currencies, locations, categories, projects)
+                    new Page3VM()
                 }.AsReadOnly();
         }
 
@@ -100,8 +80,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 OriginalFromAmount = x.OriginalFromAmount ?? 0,
                 OriginalCurrencyId = x.OriginalCurrencyId,
                 Note = x.Note,
-                LocationId = x.LocationId,
-                ProjectId = x.ProjectId,
+                LocationId = (int)x.LocationId,
+                ProjectId = (int)x.ProjectId,
                 CategoryId = 0,
                 Category = default,
                 DateTime = x.DateTime,
@@ -110,21 +90,21 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
             if (x.ToAccountId > 0) // Transfer From Mono
             {
-                result.FromAccountId = x.MonoAccountId;
-                result.ToAccountId = x.ToAccountId;
+                result.FromAccountId = (int)x.MonoAccountId;
+                result.ToAccountId = (int)x.ToAccountId;
                 result.ToAmount = Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
             }
             else if (x.FromAccountId > 0) // Transfer To Mono
             {
-                result.FromAccountId = x.FromAccountId;
-                result.ToAccountId = x.MonoAccountId;
+                result.FromAccountId = (int)x.FromAccountId;
+                result.ToAccountId = (int)x.MonoAccountId;
                 result.ToAmount = Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
                 result.FromAmount = -1 * Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
             }
             else // Expanse
             {
-                result.FromAccountId = x.MonoAccountId;
-                result.CategoryId = x.CategoryId;
+                result.FromAccountId = (int)x.MonoAccountId;
+                result.CategoryId = (int)x.CategoryId;
                 result.ToAccountId = 0;
                 result.ToAccount = default;
                 result.ToAmount = 0;

@@ -4,13 +4,14 @@ namespace Financier.Desktop.Wizards
 {
     public class FinancierTransactionDto : BindableBase
     {
-        private int categoryId;
-        private int locationId;
+        private long categoryId;
+        private long locationId;
         private string note;
         private int order;
-        private int projectId;
-        private int toAccountId;
-        public int CategoryId
+        private long projectId;
+        private long toAccountId;
+
+        public long CategoryId
         {
             get => categoryId;
             set
@@ -22,11 +23,11 @@ namespace Financier.Desktop.Wizards
 
         public long DateTime { get; set; }
 
-        public int FromAccountId { get; set; }
+        public long FromAccountId { get; set; }
 
         public long FromAmount { get; set; }
 
-        public int LocationId
+        public long LocationId
         {
             get => locationId;
             set
@@ -36,7 +37,7 @@ namespace Financier.Desktop.Wizards
             }
         }
 
-        public int MonoAccountId { get; set; }
+        public long? MonoAccountId { get; set; }
 
         public string Note
         {
@@ -61,7 +62,7 @@ namespace Financier.Desktop.Wizards
 
         public long? OriginalFromAmount { get; set; }
 
-        public int ProjectId
+        public long ProjectId
         {
             get => projectId;
             set
@@ -71,7 +72,7 @@ namespace Financier.Desktop.Wizards
             }
         }
 
-        public int ToAccountId
+        public long ToAccountId
         {
             get => toAccountId;
             set

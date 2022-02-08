@@ -11,7 +11,6 @@
     using Financier.Common.Model;
     using Financier.DataAccess.Abstractions;
     using Financier.DataAccess.Data;
-    using Financier.DataAccess.Monobank;
     using Financier.DataAccess.View;
     using Financier.Desktop.Data;
     using Financier.Desktop.Helpers;
@@ -19,6 +18,7 @@
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;
     using Financier.Desktop.Views.Controls;
+    using Financier.Desktop.Wizards;
     using Financier.Desktop.Wizards.MonoWizard.ViewModel;
     using Financier.Tests.Common;
     using Moq;
@@ -250,7 +250,7 @@
 
         [Theory]
         [AutoMoqData]
-        public async Task Projects_AddRaised_NewItemAdded(EntityWithTitleDto result)
+        public async Task Projects_AddRaised_NewItemAdded(TagDto result)
         {
             var location = new Project() { Id = 0 };
             Project[] actual = null;
@@ -380,8 +380,6 @@
             this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<MonoWizardVM>())).Returns(null);
             this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skiped 1 duplicates.", "Monobank CSV Import", false))
                 .Returns(true);
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.Dispose());
             this.SetupWizardRepos();
 
             this.csvMock.Setup(x => x.ParseReport(csvPath)).ReturnsAsync(Array.Empty<BankTransaction>());
@@ -397,14 +395,12 @@
         public async Task OpenTransaction_ExistingTransaction_UpdateTransaction(
             BlotterModel eventArgs,
             Transaction transaction,
-            Account account,
-            Currency currency,
+            AccountFilterModel account,
             IEnumerable<Transaction> subTransactions)
         {
             eventArgs.CategoryId = -1;
             await this.SetupDbManual();
             var output = new TransactionDto(transaction, subTransactions);
-            account.Currency = currency;
             output.Account = account;
 
             this.SetupWizardRepos();
@@ -592,7 +588,6 @@
 
             this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
 
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
             this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferDialogVM>(), 385, 340, "Transfer"))
                 .Returns(null);

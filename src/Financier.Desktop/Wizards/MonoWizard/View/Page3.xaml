@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -71,10 +72,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
-                                                    ItemsSource="{Binding
-                                                                  RelativeSource={RelativeSource Mode=FindAncestor,
-                                                                  AncestorType={x:Type DataGrid}},
-                                                                  Path=DataContext.Categories}"
+                                                    ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}"
                                                     SelectedValue="{Binding
                                                                     Path= CategoryId,
                                                                     Mode=TwoWay,
@@ -139,10 +137,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
-                                                    ItemsSource="{Binding
-                                                                  RelativeSource={RelativeSource Mode=FindAncestor,
-                                                                  AncestorType={x:Type DataGrid}},
-                                                                  Path=DataContext.Locations}"
+                                                    ItemsSource="{Binding Source={x:Static fcrd:DbManual.Location}, Mode=OneWay}"
                                                     SelectedValue="{Binding
                                                                     Path=LocationId,
                                                                     Mode=TwoWay,
@@ -176,12 +171,11 @@
                                                 Mode=TwoWay,
                                                 NotifyOnTargetUpdated=True,
                                                 UpdateSourceTrigger=PropertyChanged}"/>
-                                <xctk:IconButton
-                                    Margin="4,0"
-                                    Height="20"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Grid.Column="1">
+                                <xctk:IconButton Margin="4,0"
+                                                 Height="20"
+                                                 Background="Transparent"
+                                                 BorderThickness="0"
+                                                 Grid.Column="1">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <i:ChangePropertyAction
@@ -201,10 +195,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
-                                                    ItemsSource="{Binding
-                                                                  RelativeSource={RelativeSource Mode=FindAncestor,
-                                                                  AncestorType={x:Type DataGrid}},
-                                                                  Path=DataContext.Projects}"
+                                                    ItemsSource="{Binding Source={x:Static fcrd:DbManual.Project}, Mode=OneWay}"
                                                     SelectedValue="{Binding
                                                                     Path=ProjectId,
                                                                     Mode=TwoWay,

@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              mc:Ignorable="d"
@@ -17,7 +18,7 @@
         <TextBlock HorizontalAlignment="Center" FontWeight="Bold"
                    Text="Select account"/>
         <DataGrid Margin="5" Grid.Row="1" 
-                  ItemsSource="{Binding Accounts}"
+                  ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="false"
                   IsReadOnly="True"
@@ -49,7 +50,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency.Name}"/>
+                <DataGridTextColumn Header="Currency" Binding="{Binding Path=CurrencyName}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

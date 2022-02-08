@@ -5,8 +5,10 @@
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using Financier.Common.Entities;
+    using Financier.Common.Model;
     using Financier.DataAccess.Data;
-    using Financier.DataAccess.Monobank;
+    using Financier.Desktop.Wizards;
     using Financier.Desktop.Wizards.MonoWizard.ViewModel;
     using Financier.Tests.Common;
     using Newtonsoft.Json;
@@ -16,43 +18,20 @@
     {
         [Theory]
         [AutoMoqData]
-        public void Constructor_ReceiveParameters_CurrentPageNotEmpty(
-            List<BankTransaction> mono,
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Category> categories,
-            List<Project> projects)
+        public void Constructor_ReceiveParameters_CurrentPageNotEmpty(List<BankTransaction> mono)
         {
-            var vm = new MonoWizardVM(
-                mono,
-                accounts,
-                currencies,
-                locations,
-                categories,
-                projects);
+            DbManual.SetupTests(new List<AccountFilterModel>());
+            var vm = new MonoWizardVM(mono);
 
             Assert.NotNull(vm.CurrentPage);
         }
 
-        [Theory]
-        [AutoMoqData]
-        public async Task LoadTransactions_UkrHeaders_TransactionsLoaded(
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Category> categories,
-            List<Project> projects)
+        [Fact]
+        public async Task LoadTransactions_UkrHeaders_TransactionsLoaded()
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM(
-                mono,
-                accounts,
-                currencies,
-                locations,
-                categories,
-                projects);
+            var vm = new MonoWizardVM(mono);
 
             Assert.Equal(46, mono.Count());
             Assert.Equal(46, ((Page2VM)vm.Pages[1]).GetMonoTransactions().Count);
@@ -60,24 +39,13 @@
             Assert.Equal(3, vm.Pages.Count);
         }
 
-        [Theory]
-        [AutoMoqData]
-        public async Task LoadTransactions_EngHeaders_TransactionsLoaded(
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Category> categories,
-            List<Project> projects)
+        [Fact]
+        public async Task LoadTransactions_EngHeaders_TransactionsLoaded()
         {
+            DbManual.SetupTests(new List<AccountFilterModel>());
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
             IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM(
-                mono,
-                accounts,
-                currencies,
-                locations,
-                categories,
-                projects);
+            var vm = new MonoWizardVM(mono);
 
             Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
             Assert.NotNull(vm.CurrentPage);
@@ -158,33 +126,33 @@
         {
             List<Transaction> output = new ();
 
-            List<Account> accounts = new List<Account>
+            List<AccountFilterModel> accounts = new ()
             {
-                new Account { Id = 1, Title = "Monobank", TotalAmount = 189671, CurrencyId = 2, IsActive = true },
-                new Account { Id = 2, Title = "Cash", TotalAmount = 10000, CurrencyId = 2, IsActive = true },
+                new () { Id = 1, Title = "Monobank", TotalAmount = 189671, CurrencyId = 2, Is_Active = 1 },
+                new () { Id = 2, Title = "Cash", TotalAmount = 10000, CurrencyId = 2, Is_Active = 1 },
             };
-            List<Project> projects = new List<Project> { new Project { Id = 1, IsActive = true, Title = "My project" } };
-            List<Category> categories = new List<Category> { new Category { Title = "Комуналка", Id = 1 } };
-            List<Location> locations = new List<Location>
+            List<ProjectModel> projects = new () { new () { Id = 1, Is_Active = 1, Title = "My project" } };
+            List<CategoryModel> categories = new () { new () { Title = "Комуналка", Id = 1 } };
+            List<LocationModel> locations = new ()
             {
-                new Location { Id = 200, Title = "Internet", Address = "Київстар" },
-                new Location { Id = 201, Title = "Рошен", Address = "Roshen" },
-                new Location { Id = 202, Title = "Твій сир", Address = "Tvijsir" },
-                new Location { Id = 203, Title = "АТБ" },
-                new Location { Id = 204, Title = "Арсен" },
-                new Location { Id = 205, Title = "Сільпо" },
+                new () { Id = 200, Title = "Internet", Address = "Київстар" },
+                new () { Id = 201, Title = "Рошен", Address = "Roshen" },
+                new () { Id = 202, Title = "Твій сир", Address = "Tvijsir" },
+                new () { Id = 203, Title = "АТБ" },
+                new () { Id = 204, Title = "Арсен" },
+                new () { Id = 205, Title = "Сільпо" },
             };
-            List<Currency> currencies = new List<Currency> { new Currency { Id = 1, Name = "USD" }, new Currency { Id = 2, Name = "UAH" } };
+            List<CurrencyModel> currencies = new () { new () { Id = 1, Name = "USD" }, new () { Id = 2, Name = "UAH" } };
+
+            DbManual.SetupTests(categories);
+            DbManual.SetupTests(currencies);
+            DbManual.SetupTests(locations);
+            DbManual.SetupTests(accounts);
+            DbManual.SetupTests(projects);
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM(
-                mono,
-                accounts,
-                currencies,
-                locations,
-                categories,
-                projects);
+            var vm = new MonoWizardVM(mono);
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
 
@@ -244,6 +212,8 @@
             Assert.Equal(2, output.Count(x => x.LocationId == 204));
             Assert.Equal(5, output.Count(x => x.LocationId == 205));
             Assert.Equal(2, output.Count(x => x.OriginalCurrencyId == 1));
+
+            DbManual.ResetAllManuals();
         }
     }
 }

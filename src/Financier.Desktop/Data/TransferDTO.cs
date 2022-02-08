@@ -1,16 +1,19 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.Converters;
 using System;
+using Financier.Common.Model;
+using Financier.Common.Entities;
+using System.Linq;
 
 namespace Financier.Desktop.Data
 {
     public class TransferDto : BaseTransactionDto
     {
-        private Account fromAccount;
-        private int fromAccountId;
+        private AccountFilterModel fromAccount;
+        private long fromAccountId;
         private long fromAmount;
-        private Account toAccount;
-        private int toAccountId;
+        private AccountFilterModel toAccount;
+        private long toAccountId;
         private long toAmount;
 
         public TransferDto(Transaction transaction)
@@ -25,7 +28,7 @@ namespace Financier.Desktop.Data
             Time = UnixTimeConverter.Convert(transaction.DateTime);
         }
 
-        public Account FromAccount
+        public AccountFilterModel FromAccount
         {
             get => fromAccount;
             set
@@ -34,10 +37,16 @@ namespace Financier.Desktop.Data
                 RaisePropertyChanged(nameof(FromAccount));
                 RaisePropertyChanged(nameof(RateString));
                 RaisePropertyChanged(nameof(IsToAmountVisible));
+                RaisePropertyChanged(nameof(FromAccountCurrency));
             }
         }
 
-        public int FromAccountId
+        public CurrencyModel FromAccountCurrency
+        {
+            get => DbManual.Currencies.FirstOrDefault(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0));
+        }
+
+        public long FromAccountId
         {
             get => fromAccountId;
             set
@@ -67,13 +76,13 @@ namespace Financier.Desktop.Data
                 if (Rate != 0)
                 {
                     var d = 1.0 / Rate;
-                    return $"1{toAccount?.Currency.Name}={Rate:F5}{fromAccount?.Currency.Name}, 1{fromAccount?.Currency?.Name}={d:F5}{toAccount?.Currency.Name}";
+                    return $"1{ToAccountCurrency?.Name}={Rate:F5}{FromAccountCurrency?.Name}, 1{FromAccountCurrency?.Name}={d:F5}{ToAccountCurrency?.Name}";
                 }
                 return "N/A";
             }
         }
 
-        public Account ToAccount
+        public AccountFilterModel ToAccount
         {
             get => toAccount;
             set
@@ -82,10 +91,11 @@ namespace Financier.Desktop.Data
                 RaisePropertyChanged(nameof(ToAccount));
                 RaisePropertyChanged(nameof(RateString));
                 RaisePropertyChanged(nameof(IsToAmountVisible));
+                RaisePropertyChanged(nameof(ToAccountCurrency));
             }
         }
 
-        public int ToAccountId
+        public long ToAccountId
         {
             get => toAccountId;
             set
@@ -93,6 +103,11 @@ namespace Financier.Desktop.Data
                 toAccountId = value;
                 RaisePropertyChanged(nameof(ToAccountId));
             }
+        }
+
+        public CurrencyModel ToAccountCurrency
+        {
+            get => DbManual.Currencies.FirstOrDefault(x => x.Id == (ToAccount != null ? ToAccount.CurrencyId : 0));
         }
 
         public long ToAmount

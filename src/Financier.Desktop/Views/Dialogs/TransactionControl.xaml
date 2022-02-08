@@ -9,9 +9,10 @@
              xmlns:entities="clr-namespace:Financier.Desktop.Views"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.Data"
              xmlns:dialog="clr-namespace:Financier.Desktop.ViewModel.Dialog"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type dialog:TransactionDialogVM}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type dialog:TransactionDialogVM}, IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
@@ -113,7 +114,7 @@
                     <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
                                Text="Account"/>
                     <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                               ItemsSource="{Binding Accounts}"
+                               ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                                SelectedItem="{Binding Transaction.Account}"
                                SelectedValuePath="Id"
                                SelectedValue="{Binding Transaction.AccountId}"
@@ -124,7 +125,7 @@
                                Text="Payee"/>
                     <xctk:WatermarkComboBox  Grid.Row="4" Grid.Column="0"
                                              IsEditable="True"
-                                             ItemsSource="{Binding Payees}"
+                                             ItemsSource="{Binding Source={x:Static fcrd:DbManual.Payee}, Mode=OneWay}"
                                              SelectedValuePath="Id"
                                              TextSearch.TextPath="Title"
                                              SelectedValue="{Binding Transaction.PayeeId}"
@@ -148,7 +149,7 @@
                         </Grid.ColumnDefinitions>
                         <xctk:WatermarkComboBox  Grid.Column="0"
                                                  IsEditable="True"
-                                                 ItemsSource="{Binding Categories}"
+                                                 ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}"
                                                  SelectedValuePath="Id"
                                                  TextSearch.TextPath="Title"
                                                  ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"
@@ -178,7 +179,7 @@
                     <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
                                Text="Currency"/>
                     <xctk:WatermarkComboBox  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
-                                             ItemsSource="{Binding Currencies}"
+                                             ItemsSource="{Binding Source={x:Static fcrd:DbManual.Currencies}, Mode=OneWay}"
                                              SelectedItem="{Binding Transaction.OriginalCurrency}"
                                              SelectedValue="{Binding Transaction.OriginalCurrencyId}"
                                              SelectedValuePath="Id"
@@ -311,7 +312,7 @@
                                Text="Location"/>
                     <xctk:WatermarkComboBox   Grid.Row="14" Grid.Column="0"
                                               IsEditable="True"
-                                              ItemsSource="{Binding Locations}"
+                                               ItemsSource="{Binding Source={x:Static fcrd:DbManual.Location}, Mode=OneWay}"
                                               SelectedValue="{Binding Transaction.LocationId}"
                                               SelectedValuePath="Id"
                                               TextSearch.TextPath="Title"
@@ -343,7 +344,7 @@
                     <xctk:WatermarkComboBox  Grid.Row="18" Grid.Column="0"
                                              x:Name="ProjectIdBox"
                                              IsEditable="True"
-                                             ItemsSource="{Binding Projects}"
+                                             ItemsSource="{Binding Source={x:Static fcrd:DbManual.Project}, Mode=OneWay}"
                                              SelectedValue="{Binding Transaction.ProjectId}"
                                              SelectedValuePath="Id"
                                              TextSearch.TextPath="Title"

@@ -1,5 +1,4 @@
-﻿using Financier.DataAccess.Data;
-using Financier.DataAccess.Monobank;
+﻿using Financier.Common.Model;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
     public class Page2VM : WizardPageBaseVM
     {
         private DelegateCommand<BankTransaction> _deleteCommand;
-        private Account _monoAccount;
+        private AccountFilterModel _monoAccount;
 
         private BankTransaction _startTransaction;
 
@@ -39,7 +38,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public Account MonoAccount
+        public AccountFilterModel MonoAccount
         {
             get => _monoAccount;
             set

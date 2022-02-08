@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Financier.DataAccess.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Financier.Common.Model
 {
@@ -18,5 +19,16 @@ namespace Financier.Common.Model
 
         [Column("is_default")]
         public long IsDefault { get; set; }
+
+        public CurrencyModel() { }
+
+        public CurrencyModel(Currency currency)
+        {
+            Id = currency.Id;
+            IsDefault = currency.IsDefault ? 1 : 0;
+            Name = currency.Name;
+            Title = currency.Title;
+            Symbol = currency.Symbol;
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Financier.DataAccess.Data;
-using Prism.Commands;
+﻿using Prism.Commands;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,13 +12,10 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         private DelegateCommand _totalCommand;
         private DelegateCommand _clearAllNotesCommand;
 
-        private ObservableCollection<Category> categories;
         private ObservableCollection<FinancierTransactionDto> financierTransactions;
-        private ObservableCollection<Project> projects;
-        public Page2VM(List<Category> categories, List<Project> projects, double totalAmount)
+
+        public Page2VM(double totalAmount)
         {
-            Categories = new ObservableCollection<Category>(categories);
-            Projects = new ObservableCollection<Project>(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
             TotalAmount = totalAmount;
             financierTransactions = new();
         }
@@ -29,16 +25,6 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             get
             {
                 return _addRowCommand ??= new DelegateCommand(() => { financierTransactions.Add(new FinancierTransactionDto() { Order = financierTransactions.Count + 1 }); });
-            }
-        }
-
-        public ObservableCollection<Category> Categories
-        {
-            get => categories;
-            private set
-            {
-                categories = value;
-                RaisePropertyChanged(nameof(Categories));
             }
         }
 
@@ -64,16 +50,6 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             {
                 financierTransactions = value;
                 RaisePropertyChanged(nameof(FinancierTransactions));
-            }
-        }
-
-        public ObservableCollection<Project> Projects
-        {
-            get => projects;
-            private set
-            {
-                projects = value;
-                RaisePropertyChanged(nameof(Projects));
             }
         }
 

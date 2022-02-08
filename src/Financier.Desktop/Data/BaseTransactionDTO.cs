@@ -5,11 +5,11 @@ namespace Financier.Desktop.Data
 {
     public class BaseTransactionDto : BindableBase
     {
-        private DateTime date;
-        private DateTime time;
-        private int id;
-        private string note;
-        private double rate;
+        protected DateTime date;
+        protected DateTime time;
+        protected int id;
+        protected string note;
+        protected double rate;
 
         public DateTime Date
         {

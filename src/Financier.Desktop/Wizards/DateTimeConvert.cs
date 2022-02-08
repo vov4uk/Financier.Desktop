@@ -4,7 +4,7 @@ using CsvHelper.TypeConversion;
 using System;
 using System.Globalization;
 
-namespace Financier.DataAccess.Monobank
+namespace Financier.Desktop.Wizards
 {
     public class DateTimeConvert : DefaultTypeConverter
     {
