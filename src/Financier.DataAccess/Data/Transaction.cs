@@ -8,7 +8,7 @@ namespace Financier.DataAccess.Data
     [DebuggerDisplay("{Id}-FromAccountId:{FromAccountId} - ToAccountId:{ToAccountId} - FromAmount:{FromAmount}")]
     public class Transaction : Entity, IIdentity
     {
-        [Column(IdColumn)]
+        [Column(Backup.IdColumn)]
         public int Id { get; set; } = -1;
 
         [ForeignKey("FromAccount")]
@@ -67,7 +67,7 @@ namespace Financier.DataAccess.Data
         [Column("original_from_amount")]
         public long? OriginalFromAmount { get; set; }
 
-        [Column(UpdatedOnColumn)]
+        [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
 
         [Column("last_recurrence")]

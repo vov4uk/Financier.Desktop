@@ -8,7 +8,7 @@ namespace Financier.Desktop.Data
         private bool isActive;
         private string title;
 
-        public TagDto(IActive proj)
+        public TagDto(Tag proj)
         {
             this.Title = proj.Title;
             this.IsActive = proj.IsActive;

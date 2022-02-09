@@ -18,7 +18,7 @@ namespace Financier.DataAccess.Data
         [Column("rate")]
         public float Rate { get; set; }
 
-        [Column(UpdatedOnColumn)]
+        [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
 
         [Column("remote_key")]

@@ -13,10 +13,10 @@
                   FontSize="14"
                   IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Symbol" Binding="{Binding Path=Symbol}"></DataGridTextColumn>
-                <DataGridTextColumn Header="IsDefault" Binding="{Binding Path=IsDefault}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"/>
+                <DataGridTextColumn Header="Symbol" Binding="{Binding Path=Symbol}"/>
+                <DataGridTextColumn Header="IsDefault" Binding="{Binding Path=IsDefault}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

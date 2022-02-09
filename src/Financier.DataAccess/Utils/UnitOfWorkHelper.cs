@@ -18,12 +18,5 @@ namespace Financier.DataAccess.Utils
             var entities = await uow.GetRepository<T>().GetAllAsync(includes);
             return entities.ToList();
         }
-
-        public static async Task<List<T>> GetAllOrderedByDefaultAsync<T>(this IUnitOfWork uow, params Expression<Func<T, object>>[] includes)
-            where T : class, IActive
-        {
-            var entities = await uow.GetRepository<T>().GetAllAsync(includes);
-            return entities.Where(x => x.Id > 0).OrderByDescending(x => x.IsActive).ThenBy(x => x.Id).ToList();
-        }
     }
 }

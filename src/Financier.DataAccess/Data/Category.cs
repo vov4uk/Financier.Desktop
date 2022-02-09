@@ -7,13 +7,13 @@ namespace Financier.DataAccess.Data
     [Table(Backup.CATEGORY_TABLE)]
     public class Category : Entity, IIdentity
     {
-        [Column(IdColumn)]
+        [Column(Backup.IdColumn)]
         public int Id { get; set; } = -1;
 
-        [Column(TitleColumn)]
+        [Column(Backup.TitleColumn)]
         public string Title { get; set; }
 
-        [Column(IsActiveColumn)]
+        [Column(Backup.IsActiveColumn)]
         public bool IsActive { get; set; } = true;
 
         [Column("left")]
@@ -31,10 +31,10 @@ namespace Financier.DataAccess.Data
         [Column("last_project_id")]
         public int? LastProjectId { get; set; }
 
-        [Column(UpdatedOnColumn)]
+        [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
 
-        [Column(SortOrderColumn)]
+        [Column(Backup.SortOrderColumn)]
         public int SortOrder { get; set; }
 
         [NotMapped]

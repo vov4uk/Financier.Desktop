@@ -399,8 +399,8 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private async Task OpenEntityWithTitleDialogAsync<T>(IDataRefresh sender, int e)
-            where T : Entity, IActive, new()
+        private async Task OpenTagDialogAsync<T>(IDataRefresh sender, int e)
+            where T : Tag, new()
         {
             T selectedEntity = await db.GetOrCreateAsync<T>(e);
             TagVM context = new TagVM(new TagDto(selectedEntity));
@@ -580,22 +580,22 @@ namespace Financier.Desktop.ViewModel
 
         private async void Payees_AddRaised(object sender, EventArgs eventArgs)
         {
-            await OpenEntityWithTitleDialogAsync<Payee>(sender as IDataRefresh, 0);
+            await OpenTagDialogAsync<Payee>(sender as IDataRefresh, 0);
         }
 
         private async void Payees_EditRaised(object sender, PayeeModel eventArgs)
         {
-            await OpenEntityWithTitleDialogAsync<Payee>(sender as IDataRefresh, (int)eventArgs.Id);
+            await OpenTagDialogAsync<Payee>(sender as IDataRefresh, (int)eventArgs.Id);
         }
 
         private async void Projects_AddRaised(object sender, EventArgs eventArgs)
         {
-            await OpenEntityWithTitleDialogAsync<Project>(sender as IDataRefresh, 0);
+            await OpenTagDialogAsync<Project>(sender as IDataRefresh, 0);
         }
 
         private async void Projects_EditRaised(object sender, ProjectModel eventArgs)
         {
-            await OpenEntityWithTitleDialogAsync<Project>(sender as IDataRefresh, (int)eventArgs.Id);
+            await OpenTagDialogAsync<Project>(sender as IDataRefresh, (int)eventArgs.Id);
         }
 
         private async Task RefreshAccountsAndTransactionsViewModels(List<Transaction> transactions)

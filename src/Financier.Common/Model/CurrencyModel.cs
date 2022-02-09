@@ -18,14 +18,16 @@ namespace Financier.Common.Model
         public string Symbol { get; set; }
 
         [Column("is_default")]
-        public long IsDefault { get; set; }
+        public long Is_Default { get; set; }
+
+        public bool IsDefault => Is_Default == 1;
 
         public CurrencyModel() { }
 
         public CurrencyModel(Currency currency)
         {
             Id = currency.Id;
-            IsDefault = currency.IsDefault ? 1 : 0;
+            Is_Default = currency.IsDefault ? 1 : 0;
             Name = currency.Name;
             Title = currency.Title;
             Symbol = currency.Symbol;

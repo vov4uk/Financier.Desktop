@@ -18,10 +18,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <BitmapImage x:Key="IcActionCancel"
-                     UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
             <converters:AmountConverter x:Key="AmountConverter" />
-            <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"

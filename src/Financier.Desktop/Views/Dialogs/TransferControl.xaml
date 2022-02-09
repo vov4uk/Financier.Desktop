@@ -4,7 +4,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              mc:Ignorable="d"
@@ -16,12 +15,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <BitmapImage x:Key="IcActionCancel"   UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
-            <BitmapImage x:Key="IcActionAdd"      UriSource="pack://application:,,,/Images/ic_action_add.png" />
-            <BitmapImage x:Key="IcActionMinus"    UriSource="pack://application:,,,/Images/ic_action_minus.png" />
-            <BooleanToVisibilityConverter x:Key="BoolToVis" />
-            <converters:AmountConverter x:Key="AmountConverter" />
-            <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"

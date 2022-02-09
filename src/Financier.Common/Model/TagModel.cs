@@ -2,7 +2,7 @@
 
 namespace Financier.Common.Model
 {
-    public class TagModel : BaseModel
+    public class TagModel : BaseModel, IActive
     {
         [Column("_id")]
         public long? Id { get; set; }

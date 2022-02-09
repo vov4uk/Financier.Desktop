@@ -29,6 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Assets\Generic.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Filters\AccountFilter.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>

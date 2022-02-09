@@ -2,7 +2,7 @@
 
 namespace Financier.Common.Model
 {
-    public class AccountFilterModel : BaseModel
+    public class AccountFilterModel : BaseModel, IActive
     {
         [Column("_id")]
         public long? Id { get; set; }

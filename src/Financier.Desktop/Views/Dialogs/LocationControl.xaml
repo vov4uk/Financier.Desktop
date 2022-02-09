@@ -5,13 +5,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:LocationDialogVM}, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:LocationDialogVM}, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="400">
     <UserControl.Resources>
-        <BitmapImage x:Key="ic_action_cancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
-        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
               Header="Location details"
@@ -57,7 +60,7 @@
                              Width="24"
                              Command="{Binding ClearTitleCommand}" >
                 <xctk:IconButton.Icon>
-                    <Image Source="{StaticResource ic_action_cancel}" />
+                    <Image Source="{StaticResource IcActionCancel}" />
                 </xctk:IconButton.Icon>
             </xctk:IconButton>
 
@@ -76,7 +79,7 @@
                            Width="24"
                            Command="{Binding ClearAddressCommand}">
                 <xctk:IconButton.Icon>
-                    <Image Source="{StaticResource ic_action_cancel}" />
+                    <Image Source="{StaticResource IcActionCancel}" />
                 </xctk:IconButton.Icon>
             </xctk:IconButton>
 

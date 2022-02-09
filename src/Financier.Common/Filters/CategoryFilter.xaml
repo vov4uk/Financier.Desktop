@@ -5,17 +5,21 @@
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              xmlns:model="clr-namespace:Financier.Common.Model"
              MinWidth="140">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <GroupBox Header="Category"
               BorderThickness="0">
-        <ComboBox SelectedItem="{Binding Path=Category}"
-                  Margin="2 0"
+        <ComboBox Margin="2 0"
+                  IsEditable="True"
+                  ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"
                   TextSearch.TextPath="Title"
-                  ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type model:CategoryModel}">
-                    <emoji:TextBlock x:Name="Txt" Text="{Binding Title}"/>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+                  SelectedItem="{Binding Path=Category}"
+                  ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}"/>
+
     </GroupBox>
 </UserControl>

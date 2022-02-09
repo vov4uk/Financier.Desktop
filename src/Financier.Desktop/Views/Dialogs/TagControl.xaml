@@ -10,7 +10,11 @@
              d:DesignHeight="200"
              d:DesignWidth="400">
     <UserControl.Resources>
-        <BitmapImage x:Key="ic_action_cancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="/Assets/Generic.xaml" />
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
               Header="Details"
@@ -53,14 +57,15 @@
                            Width="24"
                            Command="{Binding ClearTitleCommand}" >
                 <xctk:IconButton.Icon>
-                    <Image Source="{StaticResource ic_action_cancel}" />
+                    <Image Source="{StaticResource IcActionCancel}" />
                 </xctk:IconButton.Icon>
             </xctk:IconButton>
 
             <CheckBox   Grid.Column="0"
-                    Grid.Row="2"
-                    Grid.ColumnSpan="2"
-                    IsChecked="{Binding Entity.IsActive}" >Is Active</CheckBox>
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        Content="Is Active"
+                        IsChecked="{Binding Entity.IsActive}" />
 
             <Grid Grid.Row="3"
               Margin="0 24 0 0"

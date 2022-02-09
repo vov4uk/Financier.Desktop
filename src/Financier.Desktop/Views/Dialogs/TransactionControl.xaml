@@ -20,15 +20,11 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <BitmapImage x:Key="IcActionCancel"   UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
-            <BitmapImage x:Key="IcActionAdd"      UriSource="pack://application:,,,/Images/ic_action_add.png" />
-            <BitmapImage x:Key="IcActionMinus"    UriSource="pack://application:,,,/Images/ic_action_minus.png" />
             <BitmapImage x:Key="IcActionTransfer" UriSource="pack://application:,,,/Images/ic_action_transfer.png" />
             <BitmapImage x:Key="IcActionShare"    UriSource="pack://application:,,,/Images/ic_action_share.png" />
             <BitmapImage x:Key="IcActionCopy"     UriSource="pack://application:,,,/Images/ic_action_copy.png" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:AmountConverter x:Key="AmountConverter" />
-            <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"

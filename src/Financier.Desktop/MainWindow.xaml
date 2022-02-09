@@ -5,13 +5,39 @@
                xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
                xmlns:reports="clr-namespace:Financier.Reports;assembly=Financier.Reports"
                Icon="pack://application:,,,/Images/ic_launcher.png"
+               xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel"
+               xmlns:View="clr-namespace:Financier.Desktop.Views"
                Title="Financier Desktop"
                Loaded="RibbonWindow_Loaded">
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Assets/Resource.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            <DataTemplate DataType="{x:Type ViewModel:AccountsVM}">
+                <View:AccountsView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:BlotterVM}">
+                <View:BlotterView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:CategoriesVM}">
+                <View:CategoriesView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:CurrenciesVM}">
+                <View:CurrenciesView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:ExchangeRatesVM}">
+                <View:ExchangeRatesView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:LocationsVM}">
+                <View:LocationsView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:PayeesVM}">
+                <View:TagView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:ProjectsVM}">
+                <View:TagView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type reports:ReportsControlVM}">
+                <reports:ReportsControl/>
+            </DataTemplate>
             <x:Type x:Key="AccountType" TypeName="data:AccountModel" />
             <x:Type x:Key="CategoryType" TypeName="data:CategoryTreeModel" />
             <x:Type x:Key="ProjectType" TypeName="data:ProjectModel" />

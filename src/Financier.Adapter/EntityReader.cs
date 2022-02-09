@@ -27,7 +27,7 @@ namespace Financier.Adapter
             var lines = reader.GetLines().Select(s => new Line(s));
             foreach (Line line in lines)
             {
-                if (line.Key == Entity.ENTITY)
+                if (line.Key == Backup.ENTITY)
                 {
                     prevField = string.Empty;
                     entityType = line.Value;
@@ -41,7 +41,7 @@ namespace Financier.Adapter
                         EntityColumnsOrder.Add(entityType, new List<string>());
                     }
                 }
-                else if (line.Key == Entity.END && entity != null)
+                else if (line.Key == Backup.ENTITY_END && entity != null)
                 {
                     entities.Add(entity);
                     entity = null;

@@ -165,7 +165,7 @@
 
             if (Category?.Id != null)
             {
-                predicate = predicate.And(x => x.category_id == _category.Id);
+                predicate = predicate.And(x => x.category_id == _category.Id && x.to_account_id == null);
             }
 
             if (Project?.Id != null)

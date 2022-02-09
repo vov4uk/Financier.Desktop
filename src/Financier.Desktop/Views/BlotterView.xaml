@@ -5,13 +5,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
-             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
              xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="480"
              d:DesignWidth="1000">
     <UserControl.Resources>
-        <converters:UnixTimeConverter x:Key="DatetimeConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -38,16 +41,24 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="Refresh"
-                        Height="24"
-                        Grid.Column="0"
-                        Command="{Binding RefreshDataCommand}"
-                        Margin="4"/>
-                    <Button Content="Clear"
-                        Height="24"
-                        Grid.Column="1"
-                        Command="{Binding ClearFiltersCommand}"
-                        Margin="4"/>
+                    <Button ToolTip="Refresh"
+                            Content="{StaticResource ResourceKey=IconRefresh}"
+                            Height="24"
+                            Width="24"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            Grid.Column="0"
+                            Command="{Binding RefreshDataCommand}"
+                            Margin="4"/>
+                    <Button ToolTip="Clear"
+                            Content="{StaticResource ResourceKey=IconClearFilters}"
+                            Height="24"
+                            Width="24"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            Grid.Column="1"
+                            Command="{Binding ClearFiltersCommand}"
+                            Margin="4"/>
                 </Grid>
 
             </StackPanel>
@@ -108,15 +119,29 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Amount"
-                                    Binding="{Binding Path=AmountTitle}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment"
-                                    Value="Right" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Amount"
+                                        dgx:DataGridFilterColumn.IsFilterVisible="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Name="MyText" Text="{Binding Path=AmountTitle}"
+                                       HorizontalAlignment="Right"/>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=Type}" Value="Transfer">
+                                    <Setter TargetName="MyText" Property="Foreground" Value="DarkOrange" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Type}" Value="Income">
+                                    <Setter TargetName="MyText" Property="Foreground" Value="DarkGreen" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Type}" Value="Share">
+                                    <Setter TargetName="MyText" Property="Foreground" Value="DarkRed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Type}" Value="Expense">
+                                    <Setter TargetName="MyText" Property="Foreground" Value="DarkRed" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Balance"
                                     Binding="{Binding Path=BalanceTitle}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False">
