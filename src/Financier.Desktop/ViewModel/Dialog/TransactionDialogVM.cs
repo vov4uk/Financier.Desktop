@@ -49,7 +49,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             return Transaction.Account != null && Transaction.FromAmount != 0;
         }
 
-        private void CopySubTransaction(TransactionDto original, TransactionDto modifiedCopy)
+        private static void CopySubTransaction(TransactionDto original, TransactionDto modifiedCopy)
         {
             original.CategoryId = modifiedCopy.CategoryId;
             original.Category = DbManual.Category?.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
