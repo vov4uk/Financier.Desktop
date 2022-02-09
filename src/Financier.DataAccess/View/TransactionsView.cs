@@ -1,14 +1,10 @@
 ﻿using Financier.DataAccess.Data;
 using System.ComponentModel.DataAnnotations.Schema;
-using Financier.DataAccess.Utils;
 
 namespace Financier.DataAccess.View
 {
     public abstract class TransactionsView : Entity
     {
-        [NotMapped]
-        public const string TRANSFER_DELIMITER = " \u00BB ";
-
         public int _id { get; set; }
         public int parent_id { get; set; }
         public int from_account_id { get; set; }
@@ -62,78 +58,5 @@ namespace Financier.DataAccess.View
         public virtual Currency to_account_currency { get; set; }
         public virtual Currency original_currency { get; set; }
         public virtual Category category { get; set; }
-
-        [NotMapped]
-        public string Type
-        {
-            get
-            {
-                if (this.to_account_id > 0)
-                {
-                    return "Transfer";
-                }
-                else if (category_id == -1)
-                {
-                    return "Share";
-                }
-                else if (from_amount > 0)
-                {
-                    return "Income";
-                }
-                return "Expense";
-            }
-        }
-
-        [NotMapped]
-        public string AccountTitle
-        {
-            get
-            {
-                if (this.to_account_id > 0)
-                {
-                    return $"{from_account_title}{TRANSFER_DELIMITER}{to_account_title}";
-                }
-                return from_account_title;
-            }
-        }
-
-        [NotMapped]
-        public string TransactionTitle => TransactionTitleUtils.GenerateTransactionTitle(payee, note, location_id > 0 ? location : string.Empty, category_id, category_title, to_account_id);
-
-        [NotMapped]
-        public string AmountTitle
-        {
-            get
-            {
-                if (to_account_id > 0)
-                {
-                    return Utils.Utils.GetTransferAmountText(from_account_currency, from_amount, to_account_currency,
-                        to_amount);
-                }
-
-                if (original_currency_id > 0)
-                {
-                    return Utils.Utils.SetAmountText(original_currency, original_from_amount, from_account_currency,
-                        from_amount, true);
-                }
-                return Utils.Utils.SetAmountText(from_account_currency, from_amount, true);
-            }
-        }
-
-        [NotMapped]
-        public string BalanceTitle
-        {
-            get
-            {
-                if (this.to_account_id > 0)
-                {
-                    return Utils.Utils.SetTransferBalanceText(from_account_currency, from_account_balance, to_account_currency, to_account_balance);
-                }
-                return Utils.Utils.SetAmountText(from_account_currency, from_account_balance ?? 0, false);
-            }
-        }
-
-        [NotMapped]
-        public bool HasNoCategory => Type != "Transfer" && category_id == 0;
     }
 }

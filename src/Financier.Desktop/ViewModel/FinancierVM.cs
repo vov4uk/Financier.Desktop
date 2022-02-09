@@ -543,7 +543,7 @@ namespace Financier.Desktop.ViewModel
 
                     // check if sum of all subtransaction == parentTransaction.FromAmount
                     // if not - add diference to last transaction
-                    if (fromAmount != 0)
+                    if (resultVm.IsOriginalFromAmountVisible && fromAmount != 0)
                     {
                         resultTransactions.Last().FromAmount += fromAmount;
                     }

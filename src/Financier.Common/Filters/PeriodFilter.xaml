@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
-             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
+             xmlns:converters="clr-namespace:Financier.Converters"
              xmlns:ent=       "clr-namespace:Financier.Common.Entities"
              x:Name="PeriodFilterInstance"
              mc:Ignorable="d"

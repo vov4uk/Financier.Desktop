@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:oxy="http://oxyplot.org/wpf"
-             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:fcrd=      "clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
              xmlns:ent=       "clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:filters=   "clr-namespace:Financier.Common.Filters;assembly=Financier.Common">

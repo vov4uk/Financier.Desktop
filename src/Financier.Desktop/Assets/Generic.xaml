@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Converters">
+                    xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common">
         <ResourceDictionary.MergedDictionaries>
             <ResourceDictionary Source="Pack://application:,,,/Financier.Common;component/Assets/Generic.xaml" />
         </ResourceDictionary.MergedDictionaries>

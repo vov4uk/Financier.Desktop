@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Financier.DataAccess.Utils
+namespace Financier.Common
 {
     public static class TransactionTitleUtils
     {
@@ -39,7 +39,7 @@ namespace Financier.DataAccess.Utils
                 sb.Append(cat);
                 if (!string.IsNullOrEmpty(secondPart))
                 {
-                    sb.Append(" (").Append(secondPart).Append(")");
+                    sb.Append(" (").Append(secondPart).Append(')');
                 }
 
                 return sb.ToString();
@@ -60,10 +60,10 @@ namespace Financier.DataAccess.Utils
             {
                 if (!string.IsNullOrEmpty(secondPart))
                 {
-                    return sb.Append("[").Append(payee).Append("...] ").Append(secondPart).ToString();
+                    return sb.Append('[').Append(payee).Append("...] ").Append(secondPart).ToString();
                 }
 
-                return sb.Append("[").Append(payee).Append("...]").ToString();
+                return sb.Append('[').Append(payee).Append("...]").ToString();
             }
 
             if (!string.IsNullOrEmpty(secondPart))

@@ -1,5 +1,4 @@
 ﻿using Financier.Common.Utils;
-using Financier.DataAccess.Utils;
 
 namespace Financier.Common.Model
 {

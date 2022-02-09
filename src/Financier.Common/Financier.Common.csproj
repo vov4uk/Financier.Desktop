@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Financier.Converters\Financier.Converters.csproj" />
     <ProjectReference Include="..\Financier.DataAccess\Financier.DataAccess.csproj" />
   </ItemGroup>
 

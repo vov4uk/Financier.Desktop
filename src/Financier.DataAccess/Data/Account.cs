@@ -69,8 +69,5 @@ namespace Financier.DataAccess.Data
         public long UpdatedOn { get; set; }
 
         public virtual Currency Currency { get; set; }
-
-        [NotMapped]
-        public string AmountTitle => Utils.Utils.SetAmountText(Currency, TotalAmount, false);
     }
 }
