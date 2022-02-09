@@ -1,11 +1,13 @@
 ﻿using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Financier.Common.Entities
 {
+    [ExcludeFromCodeCoverage]
     public static class DbManual
     {
         private static List<AccountFilterModel> _accounts;

@@ -1,10 +1,12 @@
 ﻿using Financier.Common.Attribute;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Financier.Common.Controls
 {
+    [ExcludeFromCodeCoverage]
     public class DataGridAutoHeaders : DataGrid
     {
         public DataGridAutoHeaders()

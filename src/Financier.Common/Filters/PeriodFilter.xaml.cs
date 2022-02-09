@@ -1,10 +1,12 @@
 ﻿using Financier.Common.Entities;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Financier.Common.Filters
 {
+    [ExcludeFromCodeCoverage]
     public partial class PeriodFilter : UserControl
     {
         public PeriodFilter()
