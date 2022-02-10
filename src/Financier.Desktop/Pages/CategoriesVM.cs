@@ -4,11 +4,13 @@ using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Helpers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Financier.Desktop.ViewModel
 {
+    [ExcludeFromCodeCoverage]
     public class CategoriesVM : EntityBaseVM<CategoryTreeModel>
     {
         private readonly List<CategoryTreeModel> _nodes = new List<CategoryTreeModel>();

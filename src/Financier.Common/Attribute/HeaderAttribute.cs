@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Common.Attribute
 {
+    [ExcludeFromCodeCoverage]
     [AttributeUsage(AttributeTargets.Class)]
     public class HeaderAttribute : System.Attribute
     {

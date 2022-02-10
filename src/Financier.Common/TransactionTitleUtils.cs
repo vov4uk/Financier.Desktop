@@ -1,7 +1,9 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace Financier.Common
 {
+    [ExcludeFromCodeCoverage]
     public static class TransactionTitleUtils
     {
         public static string GenerateTransactionTitle(string payee, string note, string location, int? categoryId, string category, int? toAccount)

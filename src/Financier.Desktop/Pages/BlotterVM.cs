@@ -14,10 +14,12 @@
     using Mvvm.Async;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    [ExcludeFromCodeCoverage]
     public class BlotterVM : EntityBaseVM<BlotterModel>
     {
         private IAsyncCommand _addTemplateCommand;
@@ -352,6 +354,7 @@
                     }
                 },
                 includes: new Expression<Func<BlotterTransactions, object>>[] { x => x.from_account_currency, x => x.to_account_currency, x => x.original_currency });
+
             if (items != null)
             {
                 Entities = new System.Collections.ObjectModel.ObservableCollection<BlotterModel>(items.OrderByDescending(x => x.Datetime));
