@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.DataAccess.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.Reports", "src\Financier.Reports\Financier.Reports.csproj", "{906EEAEE-8086-4697-BE44-4FF4759F8D33}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.Converters.Test", "src\Tests\Financier.Converter.Test\Financier.Converters.Test.csproj", "{330A7BDA-6A0D-4918-97F4-233857D68801}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.Common.Test", "src\Tests\Financier.Converter.Test\Financier.Common.Test.csproj", "{330A7BDA-6A0D-4918-97F4-233857D68801}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Financier.Common", "src\Financier.Common\Financier.Common.csproj", "{F9B2E5D7-BCFA-49BD-A908-BCED2A9CAACD}"
 EndProject
