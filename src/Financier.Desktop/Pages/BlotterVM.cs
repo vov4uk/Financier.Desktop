@@ -131,7 +131,7 @@
 
         public IAsyncCommand AddTransferCommand => _addTransferCommand ??= new AsyncCommand(AddTransfer);
 
-        public IAsyncCommand DuplicateCommand => _duplicateCommand ??= new AsyncCommand(() => Task.CompletedTask, () => false);
+        public IAsyncCommand DuplicateCommand => _duplicateCommand ??= new AsyncCommand(() => OnDuplicate(SelectedValue), () => SelectedValue != null);
 
         public IAsyncCommand ClearFiltersCommand => _clearFiltersCommand ??= new AsyncCommand(ClearFilters);
 
@@ -170,27 +170,50 @@
         {
             if (item.Type == "Transfer")
             {
-                return OpenTransferDialogAsync(item.Id);
+                return OpenTransferDialogAsync(item.Id, false);
             }
             else
             {
-                return OpenTransactionDialogAsync(item.Id);
+                return OpenTransactionDialogAsync(item.Id, false);
             }
         }
 
         private Task AddTransfer()
         {
-            return OpenTransferDialogAsync(0);
+            return OpenTransferDialogAsync(0, false);
+        }
+
+        private Task OnDuplicate(BlotterModel item)
+        {
+            if (item.Type == "Transfer")
+            {
+                return OpenTransferDialogAsync(item.Id, true);
+            }
+            else
+            {
+                return OpenTransactionDialogAsync(item.Id, true);
+            }
+        }
+
+        protected override void OnSelectedValueChanged()
+        {
+            DuplicateCommand.RaiseCanExecuteChanged();
+            base.OnSelectedValueChanged();
         }
 
         protected override Task OnAdd()
         {
-            return OpenTransactionDialogAsync(0);
+            return OpenTransactionDialogAsync(0, false);
         }
 
-        private async Task OpenTransferDialogAsync(int id)
+        private async Task OpenTransferDialogAsync(int id, bool isDuplicate)
         {
             Transaction transfer = await db.GetOrCreateTransactionAsync(id);
+            if (isDuplicate)
+            {
+                transfer.Id = 0;
+                transfer.DateTime = UnixTimeConverter.ConvertBack(DateTime.Now);
+            }
 
             TransferControlVM dialogVm = new TransferControlVM(new TransferDto(transfer));
 
@@ -208,10 +231,17 @@
             }
         }
 
-        private async Task OpenTransactionDialogAsync(int id)
+        private async Task OpenTransactionDialogAsync(int id, bool isDuplicate)
         {
             Transaction transaction = await db.GetOrCreateTransactionAsync(id);
             IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(id);
+
+            if (isDuplicate)
+            {
+                transaction.Id = 0;
+                transaction.DateTime = UnixTimeConverter.ConvertBack(DateTime.Now);
+            }
+
             var transactionDto = new TransactionDto(transaction, subTransactions);
 
             // if transaction not in home currency, replace FromAmount with OriginalFromAmount to show correct values

@@ -74,9 +74,9 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             List<FinancierTransactionDto> transToAdd = new List<FinancierTransactionDto>();
             foreach (var x in transactions)
             {
-                var locationId = DbManual.Location.FirstOrDefault(l => !string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
+                var locationId = DbManual.Location.Where(x => x.Id > 0).FirstOrDefault(l => !string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
                                                             || !string.IsNullOrEmpty(l.Address) && l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
-                var categoryId = DbManual.Category.FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
+                var categoryId = DbManual.Category.Where(x => x.Id > 0).FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var newTr = new FinancierTransactionDto
                 {
                     MonoAccountId = (long)MonoAccount.Id,

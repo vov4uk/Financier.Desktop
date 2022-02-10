@@ -27,7 +27,7 @@ namespace Financier.Desktop.ViewModel
 
         public IAsyncCommand DeleteCommand => _deleteCommand ??= new AsyncCommand(() => OnDelete(SelectedValue), () => SelectedValue != null);
 
-        public IAsyncCommand EditCommand => _editCommand ??= new AsyncCommand(() => OnEdit( SelectedValue), () => SelectedValue != null);
+        public IAsyncCommand EditCommand => _editCommand ??= new AsyncCommand(() => OnEdit(SelectedValue), () => SelectedValue != null);
 
         public T SelectedValue
         {
@@ -35,8 +35,7 @@ namespace Financier.Desktop.ViewModel
             set
             {
                 SetProperty(ref _selectedValue, value);
-                EditCommand.RaiseCanExecuteChanged();
-                DeleteCommand.RaiseCanExecuteChanged();
+                OnSelectedValueChanged();
             }
         }
 
@@ -45,5 +44,11 @@ namespace Financier.Desktop.ViewModel
         protected abstract Task OnEdit(T item);
 
         protected abstract Task OnAdd();
+
+        protected virtual void OnSelectedValueChanged()
+        {
+            EditCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
+        }
     }
 }

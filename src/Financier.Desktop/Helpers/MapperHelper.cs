@@ -10,10 +10,12 @@ namespace Financier.Desktop.Helpers
         public static void MapTransfer(TransferDto dto, Transaction tr)
         {
             tr.FromAccountId = (int)dto.FromAccountId;
+            tr.FromAccount = null;
             tr.ToAccountId = (int)dto.ToAccountId;
+            tr.ToAccount = null;
             tr.Note = dto.Note;
             tr.FromAmount = Math.Abs(dto.FromAmount) * -1;
-            tr.ToAmount = Math.Abs(dto.ToAmount == 0 ? dto.FromAmount : dto.ToAmount);
+            tr.ToAmount = Math.Abs(dto.ToAccountCurrency.Id == dto.ToAccountCurrency.Id ? dto.FromAmount : dto.ToAmount);
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.LastRecurrence = UnixTimeConverter.ConvertBack(DateTime.Now);
             tr.OriginalCurrencyId = (int)dto.FromAccount.CurrencyId;
