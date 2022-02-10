@@ -12,10 +12,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             Entity = location;
         }
 
-        public DelegateCommand ClearAddressCommand
-        {
-            get { return _clearAddressCommand ??= new DelegateCommand(() => { Entity.Address = default; }); }
-        }
+        public DelegateCommand ClearAddressCommand => _clearAddressCommand ??= new DelegateCommand(() => { Entity.Address = default; });
 
         public new LocationDto Entity { get; }
     }

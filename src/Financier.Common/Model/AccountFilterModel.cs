@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Common.Model
 {
+    [ExcludeFromCodeCoverage]
     public class AccountFilterModel : BaseModel, IActive
     {
         [Column("_id")]

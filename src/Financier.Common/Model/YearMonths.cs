@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Financier.Common.Model
 {
+    [ExcludeFromCodeCoverage]
     public class YearMonths : BaseModel
     {
         [Column("year")]

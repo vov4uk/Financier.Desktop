@@ -1,9 +1,11 @@
 ﻿using Financier.Common.Attribute;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Common.Model
 {
+    [ExcludeFromCodeCoverage]
     public class TreeNode
     {
         public string Name { get; private set; }

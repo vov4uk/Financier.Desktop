@@ -12,10 +12,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             this.Entity = entity;
         }
 
-        public DelegateCommand ClearTitleCommand
-        {
-            get { return _clearTitleCommand ??= new DelegateCommand(() => { Entity.Title = default; }); }
-        }
+        public DelegateCommand ClearTitleCommand => _clearTitleCommand ??= new DelegateCommand(() => { Entity.Title = default; });
 
         public TagDto Entity { get; }
         public override object OnRequestSave()

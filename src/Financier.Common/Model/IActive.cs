@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Financier.Common.Model
@@ -10,14 +11,5 @@ namespace Financier.Common.Model
         bool IsActive { get; }
 
         string Title { get; set; }
-    }
-
-    public static class IEnumerableExtentions
-    {
-        public static IEnumerable<T> DefaultOrder<T>(this IEnumerable<T> collection)
-            where T : IActive
-        {
-            return collection.Where(x => x.Id > 0).OrderByDescending(x => x.IsActive).ThenBy(x => x.Id);
-        }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Financier.DataAccess.Data;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Common.Model
 {
+    [ExcludeFromCodeCoverage]
     public class CategoryModel : BaseModel
     {
         [Column("_id")]

@@ -1,7 +1,9 @@
 ﻿using Financier.Common.Utils;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Common.Model
 {
+    [ExcludeFromCodeCoverage]
     public class BlotterModel : BaseModel
     {
         public int Id { get; set; }

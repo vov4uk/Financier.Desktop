@@ -1,8 +1,10 @@
 ﻿using Financier.Common.Utils;
 using Financier.DataAccess.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Common.Model
 {
+    [ExcludeFromCodeCoverage]
     public class AccountModel : AccountFilterModel
     {
         public long LastTransactionDate { get; set; }

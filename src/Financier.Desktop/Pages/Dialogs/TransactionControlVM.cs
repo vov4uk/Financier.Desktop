@@ -44,10 +44,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         public DelegateCommand OpenRecipesDialogCommand => _openRecipesDialogCommand ??= new DelegateCommand(ShowRecepiesDialog);
 
-        protected override bool CanSaveCommandExecute()
-        {
-            return Transaction.Account != null && Transaction.FromAmount != 0;
-        }
+        protected override bool CanSaveCommandExecute() => Transaction.Account != null && Transaction.FromAmount != 0;
 
         private static void CopySubTransaction(TransactionDto original, TransactionDto modifiedCopy)
         {

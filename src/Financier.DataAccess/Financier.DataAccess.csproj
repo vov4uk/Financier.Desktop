@@ -97,7 +97,6 @@
     <EmbeddedResource Include="DataBase\Scripts\view\064[v_report_payee].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\084[v_report_transactions].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\083[v_account].sql" />
-    <EmbeddedResource Include="DataBase\Scripts\view\082[v_report_category_v2].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\081[v_currency_exchange_rate].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\080[v_transaction_attributes].sql" />
   </ItemGroup>

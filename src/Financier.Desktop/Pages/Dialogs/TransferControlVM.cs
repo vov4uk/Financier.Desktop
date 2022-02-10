@@ -24,15 +24,10 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         public DelegateCommand ClearNotesCommand => _clearNotesCommand ??= new DelegateCommand(() => { Transfer.Note = default; });
 
-        public override object OnRequestSave()
-        {
-            return Transfer;
-        }
+        public override object OnRequestSave() => Transfer;
 
         protected override bool CanSaveCommandExecute()
-        {
-            return Transfer.FromAccount != null && Transfer.ToAccount != null && Transfer.FromAccountId != Transfer.ToAccountId;
-        }
+            => Transfer.FromAccount != null && Transfer.ToAccount != null && Transfer.FromAccountId != Transfer.ToAccountId;
 
         private void TransferPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

@@ -23,44 +23,26 @@ namespace Financier.Desktop.ViewModel.Dialog
         public TransactionDto Transaction { get; }
 
         public DelegateCommand ChangeFromAmountSignCommand
-        {
-            get { return _changeFromAmountSignCommand ??= new DelegateCommand(() => { Transaction.IsAmountNegative = !Transaction.IsAmountNegative; }); }
-        }
+            => _changeFromAmountSignCommand ??= new DelegateCommand(() => { Transaction.IsAmountNegative = !Transaction.IsAmountNegative; });
 
-        public DelegateCommand<int?> ClearCategoryCommand
-        {
-            get { return _clearCategoryCommand ??= new DelegateCommand<int?>(i => { Transaction.CategoryId = i; }); }
-        }
+        public DelegateCommand<int?> ClearCategoryCommand 
+            => _clearCategoryCommand ??= new DelegateCommand<int?>(i => { Transaction.CategoryId = i; });
 
         public DelegateCommand ClearFromAmountCommand
-        {
-            get { return _clearFromAmountCommand ??= new DelegateCommand(() => { Transaction.FromAmount = 0; }); }
-        }
+            => _clearFromAmountCommand ??= new DelegateCommand(() => { Transaction.FromAmount = 0; });
 
         public DelegateCommand ClearNotesCommand
-        {
-            get { return _clearNotesCommand ??= new DelegateCommand(() => { Transaction.Note = default; }); }
-        }
+            => _clearNotesCommand ??= new DelegateCommand(() => { Transaction.Note = default; });
 
         public DelegateCommand ClearOriginalFromAmountCommand
-        {
-            get { return _clearOriginalFromAmountCommand ??= new DelegateCommand(() => { Transaction.OriginalFromAmount = 0; }); }
-        }
+            => _clearOriginalFromAmountCommand ??= new DelegateCommand(() => { Transaction.OriginalFromAmount = 0; });
 
         public DelegateCommand ClearProjectCommand
-        {
-            get { return _clearProjectCommand ??= new DelegateCommand(() => { Transaction.ProjectId = default; }); }
-        }
+            => _clearProjectCommand ??= new DelegateCommand(() => { Transaction.ProjectId = default; });
 
-        public override object OnRequestSave()
-        {
-            return Transaction;
-        }
+        public override object OnRequestSave() => Transaction;
 
-        protected override bool CanSaveCommandExecute()
-        {
-            return !Transaction.IsSplitCategory || Transaction.UnsplitAmount == 0;
-        }
+        protected override bool CanSaveCommandExecute() => !Transaction.IsSplitCategory || Transaction.UnsplitAmount == 0;
 
         private void Transaction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
