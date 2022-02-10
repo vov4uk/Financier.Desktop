@@ -225,13 +225,13 @@ namespace Financier.Desktop.ViewModel
                 case nameof(CurrencyModel):
                     return GetOrCreatePage<CurrencyModel, CurrenciesVM>();
                 case nameof(ProjectModel):
-                    return Projects ??= GetOrCreatePage<ProjectModel, ProjectsVM>(); ;
+                    return Projects ??= GetOrCreatePage<ProjectModel, ProjectsVM>();
                 case nameof(LocationModel):
-                    return Locations ??= GetOrCreatePage<LocationModel, LocationsVM>(); ;
+                    return Locations ??= GetOrCreatePage<LocationModel, LocationsVM>();
                 case nameof(PayeeModel):
-                    return Payees ??= GetOrCreatePage<PayeeModel, PayeesVM>(); ;
+                    return Payees ??= GetOrCreatePage<PayeeModel, PayeesVM>();
                 case nameof(BlotterModel):
-                    return Blotter ??= GetOrCreatePage<BlotterModel, BlotterVM>(); ;
+                    return Blotter ??= GetOrCreatePage<BlotterModel, BlotterVM>();
                 case nameof(CategoryTreeModel):
                     return GetOrCreatePage<CategoryTreeModel, CategoriesVM>();
                 case nameof(ExchangeRateModel):

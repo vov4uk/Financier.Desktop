@@ -203,8 +203,6 @@
                 await db.RebuildAccountBalanceAsync(transfer.FromAccountId);
                 await db.RebuildAccountBalanceAsync(transfer.ToAccountId);
                 await RefreshData();
-
-                //await RefreshViewModelAsync<AccountModel>();
             }
         }
 
