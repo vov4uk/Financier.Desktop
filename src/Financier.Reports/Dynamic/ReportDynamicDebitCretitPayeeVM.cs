@@ -74,9 +74,9 @@ order by
             return string.Format(BaseSqlText, categoryId.HasValue ? 1 : 0, str);
         }
 
-        protected override PlotModel GetPlotModel(List<ReportDynamicDebitCretitPayeeModel> list)
+        protected override SafePlotModel GetPlotModel(List<ReportDynamicDebitCretitPayeeModel> list)
         {
-            var model = new PlotModel();
+            var model = new SafePlotModel();
 
             var dateTimeAxis = new DateTimeAxis();
 

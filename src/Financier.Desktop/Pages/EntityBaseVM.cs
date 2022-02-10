@@ -1,9 +1,10 @@
 ﻿using Financier.Common;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
-using Prism.Commands;
-using System;
+using Financier.Desktop.Helpers;
+using Mvvm.Async;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -11,26 +12,22 @@ namespace Financier.Desktop.ViewModel
     public abstract class EntityBaseVM<T> : BaseViewModel<T> 
         where T : BaseModel, new ()
     {
-        private DelegateCommand _addCommand;
-        private DelegateCommand _deleteCommand;
-        private DelegateCommand _editCommand;
+        private IAsyncCommand _addCommand;
+        private IAsyncCommand _deleteCommand;
+        private IAsyncCommand _editCommand;
         private T _selectedValue;
+        protected readonly IDialogWrapper dialogWrapper;
 
-        protected EntityBaseVM(IFinancierDatabase financierDatabase)
-            : base(financierDatabase)
+        protected EntityBaseVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db)
         {
+            this.dialogWrapper = dialogWrapper;
         }
-        public event EventHandler AddRaised;
+        public IAsyncCommand AddCommand => _addCommand ??= new AsyncCommand(OnAdd);
 
-        public event EventHandler<T> DeleteRaised;
+        public IAsyncCommand DeleteCommand => _deleteCommand ??= new AsyncCommand(() => OnDelete(SelectedValue), () => SelectedValue != null);
 
-        public event EventHandler<T> EditRaised;
-
-        public DelegateCommand AddCommand => _addCommand ??= new DelegateCommand(() => AddRaised?.Invoke(this, EventArgs.Empty));
-
-        public DelegateCommand DeleteCommand => _deleteCommand ??= new DelegateCommand(() => DeleteRaised?.Invoke(this, SelectedValue), () => SelectedValue != null);
-
-        public DelegateCommand EditCommand => _editCommand ??= new DelegateCommand(() => EditRaised?.Invoke(this, SelectedValue), () => SelectedValue != null);
+        public IAsyncCommand EditCommand => _editCommand ??= new AsyncCommand(() => OnEdit( SelectedValue), () => SelectedValue != null);
 
         public T SelectedValue
         {
@@ -42,5 +39,11 @@ namespace Financier.Desktop.ViewModel
                 DeleteCommand.RaiseCanExecuteChanged();
             }
         }
+
+        protected abstract Task OnDelete(T item);
+
+        protected abstract Task OnEdit(T item);
+
+        protected abstract Task OnAdd();
     }
 }

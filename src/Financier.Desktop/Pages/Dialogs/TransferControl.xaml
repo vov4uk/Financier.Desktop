@@ -7,7 +7,7 @@
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransferDialogVM}, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:TransferControlVM}, IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>

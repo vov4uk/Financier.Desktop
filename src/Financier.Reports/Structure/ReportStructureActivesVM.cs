@@ -68,9 +68,9 @@ ORDER BY account_is_active DESC, sort_order ASC";
             return string.Format(BaseSqlText, GetStandartTrnFilter());
         }
 
-        protected override PlotModel GetPlotModel(List<ReportStructureActivesModel> list)
+        protected override SafePlotModel GetPlotModel(List<ReportStructureActivesModel> list)
         {
-            var model = new PlotModel();
+            var model = new SafePlotModel();
             var ps = new PieSeries
             {
                 StrokeThickness = 0.0,

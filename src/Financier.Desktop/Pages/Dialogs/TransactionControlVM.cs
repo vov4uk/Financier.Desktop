@@ -10,7 +10,7 @@ using Prism.Commands;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class TransactionDialogVM : SubTransactionDailogVM
+    public class TransactionControlVM : SubTransactionControlVM
     {
         private readonly IDialogWrapper dialogWrapper;
         private DelegateCommand _addSubTransactionCommand;
@@ -20,7 +20,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private DelegateCommand _openRecipesDialogCommand;
         private DelegateCommand<TransactionDto> _openSubTransactionDialogCommand;
 
-        public TransactionDialogVM(
+        public TransactionControlVM(
             TransactionDto transaction,
             IDialogWrapper dialogWrapper)
             :base(transaction)
@@ -96,7 +96,7 @@ namespace Financier.Desktop.ViewModel.Dialog
                 workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount - Math.Abs(original.FromAmount);
             }
 
-            var viewModel = new SubTransactionDailogVM(workingCopy);
+            var viewModel = new SubTransactionControlVM(workingCopy);
 
             var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, "Sub Transaction");
 

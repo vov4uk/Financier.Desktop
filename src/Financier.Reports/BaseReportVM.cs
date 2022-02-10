@@ -27,11 +27,11 @@ namespace Financier.Reports
         private DateTime? _from;
         private DateTime? _to;
 
-        private PlotModel plotModel;
+        private SafePlotModel plotModel;
 
         public string Header { get; set; }
 
-        public PlotModel PlotModel
+        public SafePlotModel PlotModel 
         {
             get => plotModel;
             private set
@@ -44,7 +44,7 @@ namespace Financier.Reports
         protected BaseReportVM(IFinancierDatabase financierDatabase)
             : base(financierDatabase)
         {
-            PlotModel = new PlotModel();
+            PlotModel = new SafePlotModel();
         }
 
         public ProjectModel Project
@@ -168,7 +168,7 @@ namespace Financier.Reports
             string sql = GetSql();
             if (!string.IsNullOrEmpty(sql))
             {
-                var data = await base.financierDatabase.ExecuteQuery<T>(sql);
+                var data = await base.db.ExecuteQuery<T>(sql);
                 Entities = new ObservableCollection<T>(data);
                 PlotModel = GetPlotModel(data);
             }
@@ -176,7 +176,7 @@ namespace Financier.Reports
 
         protected abstract string GetSql();
 
-        protected abstract PlotModel GetPlotModel(List<T> list);
+        protected abstract SafePlotModel GetPlotModel(List<T> list);
 
         protected string GetStandartTrnFilter()
         {

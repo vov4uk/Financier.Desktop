@@ -38,11 +38,11 @@
             subTransaction.OriginalCurrencyId = 0;
             subTransaction.OriginalCurrency = default;
 
-            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionDailogVM>(), 340, 340, "Sub Transaction"))
-                .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionDailogVM)a).Transaction; })
+            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionControlVM>(), 340, 340, "Sub Transaction"))
+                .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionControlVM)a).Transaction; })
                 .Returns(subTransaction);
 
-            var vm = new TransactionDialogVM(transaction, this.dialogMock.Object);
+            var vm = new TransactionControlVM(transaction, this.dialogMock.Object);
 
             vm.AddSubTransactionCommand.Execute();
 
@@ -73,11 +73,11 @@
             subTransaction.OriginalCurrency = default;
             subTransaction.IsSubTransaction = true;
 
-            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionDailogVM>(), 340, 340, "Sub Transaction"))
-                .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionDailogVM)a).Transaction; })
+            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionControlVM>(), 340, 340, "Sub Transaction"))
+                .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionControlVM)a).Transaction; })
                 .Returns(subTransaction);
 
-            var vm = new TransactionDialogVM(
+            var vm = new TransactionControlVM(
                 transaction,
                 this.dialogMock.Object);
 
@@ -106,7 +106,7 @@
             this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<RecipesVM>())).Callback<WizardBaseVM>(x => recipesVM = (RecipesVM)x)
                 .Returns(outputTransactions);
 
-            var vm = new TransactionDialogVM(
+            var vm = new TransactionControlVM(
                 transaction,
                 this.dialogMock.Object);
 
@@ -121,7 +121,7 @@
         public void ClearCommand_Execute_SetDefaultValues(
             TransactionDto transaction)
         {
-            var vm = new TransactionDialogVM(
+            var vm = new TransactionControlVM(
                 transaction,
                 this.dialogMock.Object);
 

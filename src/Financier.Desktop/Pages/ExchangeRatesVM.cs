@@ -2,6 +2,7 @@
 using Financier.Converters;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
+using Financier.Desktop.Helpers;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -18,9 +19,6 @@ namespace Financier.Desktop.ViewModel
     {
         private CurrencyModel _from;
         private CurrencyModel _to;
-        public ExchangeRatesVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
-        {
-        }
 
         public CurrencyModel From
         {
@@ -48,6 +46,11 @@ namespace Financier.Desktop.ViewModel
 
         private PlotModel plotModel;
 
+        public ExchangeRatesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
+        {
+        }
+
         public PlotModel PlotModel
         {
             get => plotModel;
@@ -60,7 +63,7 @@ namespace Financier.Desktop.ViewModel
 
         protected override async Task RefreshData()
         {
-            using var uow = financierDatabase.CreateUnitOfWork();
+            using var uow = db.CreateUnitOfWork();
             var accountRepo = uow.GetRepository<CurrencyExchangeRate>();
             var items = await accountRepo.FindManyAsync(
                 x => x.FromCurrencyId == (_from != null ? _from.Id : 0) && x.ToCurrencyId == (_to != null ? _to.Id : 0), // where
@@ -123,5 +126,11 @@ namespace Financier.Desktop.ViewModel
             PlotModel = model;
 
         }
+
+        protected override Task OnDelete(ExchangeRateModel item) => throw new NotImplementedException();
+
+        protected override Task OnEdit(ExchangeRateModel item) => throw new NotImplementedException();
+
+        protected override Task OnAdd() => throw new NotImplementedException();
     }
 }

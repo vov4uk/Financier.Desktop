@@ -3,11 +3,11 @@ using Prism.Commands;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class TagVM : DialogBaseVM
+    public class TagControlVM : DialogBaseVM
     {
         private DelegateCommand _clearTitleCommand;
 
-        public TagVM(TagDto entity)
+        public TagControlVM(TagDto entity)
         {
             this.Entity = entity;
         }

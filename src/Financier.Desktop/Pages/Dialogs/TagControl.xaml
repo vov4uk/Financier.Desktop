@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
-             d:DataContext="{d:DesignInstance {x:Type viewmodel:TagVM}, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:TagControlVM}, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="400">

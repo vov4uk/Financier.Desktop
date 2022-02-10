@@ -12,7 +12,7 @@
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type dialog:TransactionDialogVM}, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance {x:Type dialog:TransactionControlVM}, IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>

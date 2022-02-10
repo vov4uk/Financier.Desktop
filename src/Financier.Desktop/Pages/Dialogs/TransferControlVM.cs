@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class TransferDialogVM : DialogBaseVM
+    public class TransferControlVM : DialogBaseVM
     {
         private readonly string[] TrackingProperies = new string[]
         {
@@ -14,7 +14,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         };
         private DelegateCommand _clearNotesCommand;
 
-        public TransferDialogVM(TransferDto transfer)
+        public TransferControlVM(TransferDto transfer)
         {
             Transfer = transfer;
             Transfer.PropertyChanged += TransferPropertyChanged;

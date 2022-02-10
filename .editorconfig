@@ -35,3 +35,6 @@ dotnet_diagnostic.CS8612.severity = none
 
 # CS8603: Possible null reference return.
 dotnet_diagnostic.CS8603.severity = none
+
+# Default severity for all analyzer diagnostics
+dotnet_analyzer_diagnostic.severity = none

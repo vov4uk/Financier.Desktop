@@ -10,7 +10,7 @@ namespace Financier.Common
     public abstract class BaseViewModel<T> : BindableBase, IDataRefresh
         where T : BaseModel, new()
     {
-        protected readonly IFinancierDatabase financierDatabase;
+        protected readonly IFinancierDatabase db;
         private IAsyncCommand _refreshDataCommand;
         private ObservableCollection<T> _entities;
 
@@ -35,7 +35,7 @@ namespace Financier.Common
 
         protected BaseViewModel(IFinancierDatabase financierDatabase)
         {
-            this.financierDatabase = financierDatabase;
+            this.db = financierDatabase;
         }
 
         public IAsyncCommand RefreshDataCommand => _refreshDataCommand ?? (_refreshDataCommand = new AsyncCommand(RefreshData));

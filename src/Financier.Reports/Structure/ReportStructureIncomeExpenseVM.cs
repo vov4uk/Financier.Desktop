@@ -25,9 +25,9 @@ namespace Financier.Reports
             }
         }
 
-        private PlotModel barChartModel;
+        private SafePlotModel barChartModel;
 
-        public PlotModel BarChartModel
+        public SafePlotModel BarChartModel
         {
             get => barChartModel;
             private set
@@ -79,15 +79,15 @@ ORDER  BY total ASC ";
             return string.Format(BaseSqlText, sign, str);
         }
 
-        protected override PlotModel GetPlotModel(List<ReportStructureIncomeExpenseModel> list)
+        protected override SafePlotModel GetPlotModel(List<ReportStructureIncomeExpenseModel> list)
         {
             BarChartModel = GetBarChartModel(list);
             return GetPieChartModel(list);
         }
 
-        private static PlotModel GetPieChartModel(List<ReportStructureIncomeExpenseModel> list)
+        private static SafePlotModel GetPieChartModel(List<ReportStructureIncomeExpenseModel> list)
         {
-            var model = new PlotModel();
+            var model = new SafePlotModel();
             var ps = new PieSeries
             {
                 StrokeThickness = 0.0,
@@ -107,9 +107,9 @@ ORDER  BY total ASC ";
             return model;
         }
 
-        protected PlotModel GetBarChartModel(List<ReportStructureIncomeExpenseModel> list)
+        protected SafePlotModel GetBarChartModel(List<ReportStructureIncomeExpenseModel> list)
         {
-            var plotModel1 = new PlotModel
+            var plotModel1 = new SafePlotModel
             {
             };
             var categoryAxis1 = new CategoryAxis

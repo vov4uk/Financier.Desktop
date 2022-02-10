@@ -51,9 +51,9 @@ WHERE  {1}
 GROUP  BY parent_id,  parent_title , is_expense
 ORDER  BY total ASC ";
 
-        private PlotModel pieChartModel;
+        private SafePlotModel pieChartModel;
 
-        public PlotModel PieChartModel
+        public SafePlotModel PieChartModel
         {
             get => pieChartModel;
             private set
@@ -68,15 +68,15 @@ ORDER  BY total ASC ";
         {
         }
 
-        protected override PlotModel GetPlotModel(List<ByCategoryReportModel> list)
+        protected override SafePlotModel GetPlotModel(List<ByCategoryReportModel> list)
         {
             PieChartModel = GetPieChartModel(list);
             return GetBarChart(list);
         }
 
-        private static PlotModel GetPieChartModel(List<ByCategoryReportModel> list)
+        private static SafePlotModel GetPieChartModel(List<ByCategoryReportModel> list)
         {
-            var model = new PlotModel();
+            var model = new SafePlotModel();
             var ps = new PieSeries
             {
                 StrokeThickness = 0.0,
@@ -96,9 +96,9 @@ ORDER  BY total ASC ";
             return model;
         }
 
-        private static PlotModel GetBarChart(List<ByCategoryReportModel> list)
+        private static SafePlotModel GetBarChart(List<ByCategoryReportModel> list)
         {
-            var plotModel1 = new PlotModel();
+            var plotModel1 = new SafePlotModel();
             var categoryAxis1 = new CategoryAxis
             {
                 MinorStep = 1,

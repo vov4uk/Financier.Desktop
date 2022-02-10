@@ -1,6 +1,7 @@
 ﻿using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
+using Financier.Desktop.Helpers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,9 +13,16 @@ namespace Financier.Desktop.ViewModel
     {
         private readonly List<CategoryTreeModel> _nodes = new List<CategoryTreeModel>();
 
-        public CategoriesVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
+        public CategoriesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
+
+        protected override Task OnAdd() => throw new System.NotImplementedException();
+
+        protected override Task OnDelete(CategoryTreeModel item) => throw new System.NotImplementedException();
+
+        protected override Task OnEdit(CategoryTreeModel item) => throw new System.NotImplementedException();
 
         protected override Task RefreshData()
         {

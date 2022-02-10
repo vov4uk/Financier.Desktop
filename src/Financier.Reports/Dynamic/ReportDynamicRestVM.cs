@@ -73,9 +73,9 @@ ORDER BY year, month, day";
             return string.Format(BaseSqlText, !string.IsNullOrEmpty(standartTrnFilter) ? " and " + standartTrnFilter : string.Empty);
         }
 
-        protected override PlotModel GetPlotModel(List<ReportDynamicRestModel> list)
+        protected override SafePlotModel GetPlotModel(List<ReportDynamicRestModel> list)
         {
-            var model = new PlotModel();
+            var model = new SafePlotModel();
             var dateTimeAxis = new DateTimeAxis();
 
             var linearAxis = new LinearAxis

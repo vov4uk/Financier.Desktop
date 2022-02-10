@@ -57,7 +57,7 @@ order by
             return string.Format(BaseSqlText, CurentCurrency.Id.HasValue ? 1 : 0, str);
         }
 
-        protected override PlotModel GetPlotModel(List<ReportByPeriodMonthCrcModel> list)
+        protected override SafePlotModel GetPlotModel(List<ReportByPeriodMonthCrcModel> list)
         {
             var saldo = new LineSeries
             {
@@ -116,7 +116,7 @@ order by
                 saldo.Points.Add(new DataPoint(i++, c.Saldo ?? 0));
             }
 
-            var plotModel = new PlotModel();
+            var plotModel = new SafePlotModel();
 
             plotModel.Series.Add(credit);
             plotModel.Series.Add(debit);

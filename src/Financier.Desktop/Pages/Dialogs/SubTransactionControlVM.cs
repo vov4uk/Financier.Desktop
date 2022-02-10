@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class SubTransactionDailogVM : DialogBaseVM
+    public class SubTransactionControlVM : DialogBaseVM
     {
         private readonly string[] TrackingProperies = new string[] { nameof(TransactionDto.FromAmount), nameof(TransactionDto.Account) };
 
@@ -14,7 +14,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private DelegateCommand _clearNotesCommand;
         private DelegateCommand _clearOriginalFromAmountCommand;
         private DelegateCommand _clearProjectCommand;
-        public SubTransactionDailogVM(TransactionDto transaction)
+        public SubTransactionControlVM(TransactionDto transaction)
         {
             Transaction = transaction;
             Transaction.PropertyChanged += Transaction_PropertyChanged;

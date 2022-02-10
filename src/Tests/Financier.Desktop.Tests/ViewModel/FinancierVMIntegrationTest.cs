@@ -19,7 +19,7 @@
             var dialogMock = new Mock<IDialogWrapper>();
             dialogMock.Setup(x => x.ShowMessageBox(It.IsAny<string>(), "Success", false)).Returns(true);
             var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
-            var vm = new FinancierVM(dialogMock.Object, new FinancierDatabaseFactory(), new EntityReader(), null, null);
+            var vm = new MainWindowVM(dialogMock.Object, new FinancierDatabaseFactory(), new EntityReader(), null, null);
 
             await vm.OpenBackup(backupPath);
 
@@ -33,7 +33,7 @@
             var dialogMock = new Mock<IDialogWrapper>();
             dialogMock.Setup(x => x.ShowMessageBox(It.IsAny<string>(), "Success", false)).Returns(true);
             var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
-            var vm = new FinancierVM(dialogMock.Object, new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new BankHelperFactory());
+            var vm = new MainWindowVM(dialogMock.Object, new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new BankHelperFactory());
 
             await vm.OpenBackup(backupPath);
 

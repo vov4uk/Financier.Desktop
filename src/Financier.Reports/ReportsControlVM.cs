@@ -60,15 +60,15 @@ namespace Financier.Reports
             };
         }
 
-        private DelegateCommand<object> _closeReportCommand;
+        private DelegateCommand<BindableBase> _closeReportCommand;
         private DelegateCommand<string> _openReportCommand;
-        private ObservableCollection<object> _reportsVM;
+        private ObservableCollection<BindableBase> _reportsVM;
         private List<TreeNode> reportsInfo;
-        private object _selectedReport;
+        private BindableBase _selectedReport;
 
-        public ICommand CloseReportCommand => _closeReportCommand ?? (_closeReportCommand = new DelegateCommand<object>(CloseReport));
+        public ICommand CloseReportCommand => _closeReportCommand ??= new DelegateCommand<BindableBase>(CloseReport);
 
-        public ICommand OpenReportCommand => _openReportCommand ?? (_openReportCommand = new DelegateCommand<string>(OpenReport));
+        public ICommand OpenReportCommand => _openReportCommand ??= new DelegateCommand<string>(OpenReport);
 
         public List<TreeNode> ReportsInfo
         {
@@ -78,9 +78,9 @@ namespace Financier.Reports
             }
         }
 
-        public ObservableCollection<object> ReportsVM
+        public ObservableCollection<BindableBase> ReportsVM
         {
-            get => _reportsVM ?? (_reportsVM = new ObservableCollection<object>());
+            get => _reportsVM ??= new ObservableCollection<BindableBase>();
             set
             {
                 if (_reportsVM == value)
@@ -90,7 +90,7 @@ namespace Financier.Reports
             }
         }
 
-        public object SelectedReport
+        public BindableBase SelectedReport
         {
             get => _selectedReport;
             set
@@ -103,7 +103,7 @@ namespace Financier.Reports
             }
         }
 
-        public void CloseReport(object selected)
+        public void CloseReport(BindableBase selected)
         {
             if (selected != null)
             {
@@ -114,7 +114,7 @@ namespace Financier.Reports
 
         public void OpenReport(string reportType)
         {
-            object existingReport = ReportsVM.FirstOrDefault(p => p.GetType().ToString() == reportType);
+            BindableBase existingReport = ReportsVM.FirstOrDefault(p => p.GetType().ToString() == reportType);
             if (existingReport != null)
             {
                 SelectedReport = existingReport;
@@ -127,7 +127,7 @@ namespace Financier.Reports
                     ConstructorInfo constructor = type.GetConstructors().First();
                     if (constructor != null)
                     {
-                        object newReport = constructor.Invoke(new[] { financierDatabase });
+                        BindableBase newReport = (BindableBase)constructor.Invoke(new[] { financierDatabase });
                         HeaderAttribute customAttribute = (HeaderAttribute)Attribute.GetCustomAttribute(type, typeof(HeaderAttribute));
                         newReport.GetType().GetProperty("Header").SetValue(newReport, customAttribute.Header, null);
                         ReportsVM.Add(newReport);

@@ -3,11 +3,11 @@ using Prism.Commands;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
-    public class LocationDialogVM : TagVM
+    public class LocationControlVM : TagControlVM
     {
         private DelegateCommand _clearAddressCommand;
 
-        public LocationDialogVM(LocationDto location) : base(location)
+        public LocationControlVM(LocationDto location) : base(location)
         {
             Entity = location;
         }
