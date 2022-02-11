@@ -33,7 +33,7 @@
                 Assert.NotNull(uow.GetRepository<SmsTemplate>());
                 Assert.NotNull(uow.GetRepository<CurrencyExchangeRate>());
                 Assert.NotNull(uow.GetRepository<RunningBalance>());
-                Assert.NotNull(uow.GetRepository<BlotterTransactionsForAccountWithSplits>());
+                Assert.NotNull(uow.GetRepository<BlotterTransactions>());
             }
         }
 

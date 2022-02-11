@@ -14,7 +14,7 @@
         [AutoMoqData]
         public void Constructor_HasMonoAccount_SelectedMonoAccount(List<AccountFilterModel> accounts)
         {
-            var monoAcc = new AccountFilterModel { Title = "Monobank", Is_Active = 1 };
+            var monoAcc = new AccountFilterModel { Title = "Monobank", IsActive = true };
             accounts.Add(monoAcc);
             DbManual.SetupTests(accounts);
             var vm = new Page1VM();
@@ -29,7 +29,7 @@
         [AutoMoqData]
         public void Constructor_MonoAccountInactive_MonoAccountNotSelected(List<AccountFilterModel> accounts)
         {
-            var monoAcc = new AccountFilterModel { Title = "Monobank", Is_Active = 0 };
+            var monoAcc = new AccountFilterModel { Title = "Monobank", IsActive = false };
             accounts.Add(monoAcc);
             DbManual.SetupTests(accounts);
             var vm = new Page1VM();

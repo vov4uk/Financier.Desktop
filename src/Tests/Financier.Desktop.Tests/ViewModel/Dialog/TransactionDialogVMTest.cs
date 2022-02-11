@@ -29,12 +29,13 @@
         {
             TransactionDto workingCopy = default;
             transaction.SubTransactions.Clear();
-            subTransaction.FromAmount = 100;
             transaction.FromAmount = 100;
             transaction.IsAmountNegative = true;
             transaction.IsSubTransaction = false;
             transaction.OriginalCurrencyId = 0;
             transaction.OriginalCurrency = default;
+            subTransaction.FromAmount = 100;
+            subTransaction.IsAmountNegative = true;
             subTransaction.OriginalCurrencyId = 0;
             subTransaction.OriginalCurrency = default;
 

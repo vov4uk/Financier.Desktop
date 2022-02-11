@@ -80,8 +80,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 OriginalFromAmount = x.OriginalFromAmount ?? 0,
                 OriginalCurrencyId = x.OriginalCurrencyId,
                 Note = x.Note,
-                LocationId = (int)x.LocationId,
-                ProjectId = (int)x.ProjectId,
+                LocationId = x.LocationId,
+                ProjectId = x.ProjectId,
                 CategoryId = 0,
                 Category = default,
                 DateTime = x.DateTime,
@@ -90,21 +90,21 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
             if (x.ToAccountId > 0) // Transfer From Mono
             {
-                result.FromAccountId = (int)x.MonoAccountId;
-                result.ToAccountId = (int)x.ToAccountId;
+                result.FromAccountId = x.MonoAccountId ?? 0;
+                result.ToAccountId = x.ToAccountId;
                 result.ToAmount = Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
             }
             else if (x.FromAccountId > 0) // Transfer To Mono
             {
-                result.FromAccountId = (int)x.FromAccountId;
-                result.ToAccountId = (int)x.MonoAccountId;
+                result.FromAccountId = x.FromAccountId;
+                result.ToAccountId = x.MonoAccountId ?? 0;
                 result.ToAmount = Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
                 result.FromAmount = -1 * Math.Abs(x.OriginalFromAmount ?? x.FromAmount);
             }
             else // Expanse
             {
-                result.FromAccountId = (int)x.MonoAccountId;
-                result.CategoryId = (int)x.CategoryId;
+                result.FromAccountId = x.MonoAccountId ?? 0;
+                result.CategoryId = x.CategoryId;
                 result.ToAccountId = 0;
                 result.ToAccount = default;
                 result.ToAmount = 0;

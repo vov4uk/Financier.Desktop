@@ -22,13 +22,13 @@ namespace Financier.Common.Model
             Id = acc.Id;
             Title = acc.Title;
             CurrencyId = acc.CurrencyId;
-            Is_Active = acc.IsActive ? 1 : 0;
+            IsActive = acc.IsActive;
             IsIncludeIntoTotals = acc.IsIncludeIntoTotals;
             LastTransactionDate = acc.LastTransactionDate;
             SortOrder = acc.SortOrder;
             TotalAmount = acc.TotalAmount;
             Type = acc.Type;
-            Currency = acc.Currency  != null ? new CurrencyModel(acc.Currency) : default;
+            Currency = acc.Currency != null ? new CurrencyModel(acc.Currency) : default;
         }
     }
 }

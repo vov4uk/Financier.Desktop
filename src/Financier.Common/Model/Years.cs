@@ -7,6 +7,6 @@ namespace Financier.Common.Model
     public class Years : BaseModel
     {
         [Column("year")]
-        public long? Year { get; set; }
+        public int? Year { get; set; }
     }
 }

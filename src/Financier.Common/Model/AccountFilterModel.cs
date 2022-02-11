@@ -7,15 +7,13 @@ namespace Financier.Common.Model
     public class AccountFilterModel : BaseModel, IActive
     {
         [Column("_id")]
-        public long? Id { get; set; }
+        public int? Id { get; set; }
 
         [Column("is_active")]
-        public long Is_Active { get; set; }
-
-        public bool IsActive => Is_Active == 1;
+        public bool IsActive { get; set; }
 
         [Column("sort_order")]
-        public long SortOrder { get; set; }
+        public int SortOrder { get; set; }
 
         [Column("title")]
         public string Title { get; set; }
@@ -27,7 +25,7 @@ namespace Financier.Common.Model
         public string CurrencyName { get; set; }
 
         [Column("currency_id")]
-        public long CurrencyId { get; set; }
+        public int CurrencyId { get; set; }
 
         [Column("total_amount")]
         public long TotalAmount { get; set; }

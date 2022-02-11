@@ -123,31 +123,31 @@ namespace Financier.DataAccess
                 await context.Database.ExecuteSqlRawAsync("delete from running_balance where account_id=@p0", accountId);
                 await context.SaveChangesAsync();
 
-                var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.from_account_id == accountId).OrderBy(x => x.datetime).ToListAsync();
+                var transactions = await context.BlotterTransactions.Where(x => x.FromAccountId == accountId).OrderBy(x => x.DateTime).ToListAsync();
                 long balance = 0;
 
                 foreach (var transaction in transactions)
                 {
-                    if (transaction.parent_id > 0 && transaction.is_transfer >= 0)
+                    if (transaction.ParentId > 0 && transaction.IsTransfer >= 0)
                     {
                         // we only interested in the second part of the transfer-split
                         // which is marked with is_transfer=-1 (see v_blotter_for_account_with_splits)
                         continue;
                     }
-                    var toAccountId = transaction.to_account_id;
-                    if (toAccountId > 0 && toAccountId == transaction.from_account_id)
+                    var toAccountId = transaction.ToAccountId;
+                    if (toAccountId > 0 && toAccountId == transaction.FromAccountId)
                     {
                         // weird bug when a transfer is done from an account to the same account
                         continue;
                     }
-                    balance += transaction.from_amount;
-                    await context.RunningBalance.AddAsync(new RunningBalance { Balance = (int)balance, AccountId = accountId, TransactionId = transaction._id });
+                    balance += transaction.FromAmount;
+                    await context.RunningBalance.AddAsync(new RunningBalance { Balance = balance, AccountId = accountId, TransactionId = transaction.Id });
                 }
 
                 var acc = context.Accounts.FirstOrDefault(x => x.Id == accountId);
                 acc.TotalAmount = balance;
                 var lastTransaction = transactions.LastOrDefault();
-                acc.LastTransactionDate = lastTransaction?.datetime ?? 0;
+                acc.LastTransactionDate = lastTransaction?.DateTime ?? 0;
                 context.Accounts.Update(acc);
                 await context.SaveChangesAsync();
             }
@@ -247,8 +247,11 @@ namespace Financier.DataAccess
                                 object obj = ordinal != -1 ?
                                     reader.GetValue(ordinal) :
                                     throw new Exception(string.Format("Class [{0}] have attribute of field [{1}] which not exist in reader", this.GetType(), customAttribute.Name));
+
                                 if (obj != DBNull.Value)
-                                    property.SetValue(newObject, obj, null);
+                                {
+                                    property.SetValue(newObject, Unbox(obj, property.PropertyType), null);
+                                }
                             }
                         }
                         lst.Add(newObject);
@@ -288,6 +291,16 @@ namespace Financier.DataAccess
             }
 
             this.isDisposed = true;
+        }
+
+        static object Unbox(object x, Type t)
+        {
+            var underlyingType = Nullable.GetUnderlyingType(t);
+            if (Nullable.GetUnderlyingType(t) != null)
+            {
+                return Convert.ChangeType(x, underlyingType);
+            }
+            return Convert.ChangeType(x, t);
         }
     }
 }

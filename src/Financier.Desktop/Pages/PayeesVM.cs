@@ -22,7 +22,7 @@ namespace Financier.Desktop.ViewModel
 
         protected override Task OnDelete(PayeeModel item) => throw new System.NotImplementedException();
 
-        protected override Task OnEdit(PayeeModel item) => OpenTagDialogAsync<Payee>((int)item.Id);
+        protected override Task OnEdit(PayeeModel item) => OpenTagDialogAsync<Payee>(item.Id ?? 0);
 
         protected override async Task RefreshData()
         {

@@ -79,10 +79,10 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 var categoryId = DbManual.Category.Where(x => x.Id > 0).FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
                 var newTr = new FinancierTransactionDto
                 {
-                    MonoAccountId = (long)MonoAccount.Id,
+                    MonoAccountId = MonoAccount.Id,
                     FromAmount = Convert.ToInt64(x.CardCurrencyAmount * 100.0),
                     OriginalFromAmount = x.ExchangeRate == null ? null : Convert.ToInt64(x.OperationAmount * 100.0),
-                    OriginalCurrencyId = x.ExchangeRate == null ? 0 : (int)(DbManual.Currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0),
+                    OriginalCurrencyId = x.ExchangeRate == null ? 0 : (DbManual.Currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0),
                     CategoryId = categoryId,
                     ToAccountId = 0,
                     FromAccountId = 0,

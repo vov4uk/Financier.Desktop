@@ -7,14 +7,12 @@ namespace Financier.Common.Model
     public class TagModel : BaseModel, IActive
     {
         [Column("_id")]
-        public long? Id { get; set; }
+        public int? Id { get; set; }
 
         [Column("title")]
         public string Title { get; set; }
 
         [Column("is_active")]
-        public long Is_Active { get; set; }
-
-        public bool IsActive => Is_Active == 1;
+        public bool IsActive { get; set; }
     }
 }

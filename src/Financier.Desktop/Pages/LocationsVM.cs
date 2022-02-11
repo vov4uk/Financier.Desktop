@@ -23,7 +23,7 @@ namespace Financier.Desktop.ViewModel
 
         protected override Task OnDelete(LocationModel item) => throw new System.NotImplementedException();
 
-        protected override Task OnEdit(LocationModel item) => OpenLocationDialogAsync((int)item.Id);
+        protected override Task OnEdit(LocationModel item) => OpenLocationDialogAsync(item.Id ?? 0);
 
         protected override async Task RefreshData()
         {

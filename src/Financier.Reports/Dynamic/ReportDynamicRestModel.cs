@@ -7,13 +7,13 @@ namespace Financier.Reports
     public class ReportDynamicRestModel : BaseModel
     {
         [Column("year")]
-        public long Year { get; protected set; }
+        public int Year { get; protected set; }
 
         [Column("month")]
-        public long Month { get; protected set; }
+        public int Month { get; protected set; }
 
         [Column("day")]
-        public long Day { get; protected set; }
+        public int Day { get; protected set; }
 
         [DisplayName("Date")]
         public string Title => $"{Year}.{Month:00}.{Day:00}";

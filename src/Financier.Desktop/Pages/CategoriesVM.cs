@@ -41,9 +41,9 @@ namespace Financier.Desktop.ViewModel
                 {
                     var subNode = new CategoryTreeModel
                     {
-                        Id = (int)category.Id,
+                        Id = category.Id ?? 0,
                         Title = new string('-', level) + category.Title,
-                        Right = (int)category.Right,
+                        Right = category.Right,
                         SubCategoties = new()
                     };
                     nodes.Add(subNode);

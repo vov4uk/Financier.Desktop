@@ -10,10 +10,10 @@ namespace Financier.Desktop.Data
     public class TransferDto : BaseTransactionDto
     {
         private AccountFilterModel fromAccount;
-        private long fromAccountId;
+        private int fromAccountId;
         private long fromAmount;
         private AccountFilterModel toAccount;
-        private long toAccountId;
+        private int toAccountId;
         private long toAmount;
 
         public TransferDto(Transaction transaction)
@@ -46,7 +46,7 @@ namespace Financier.Desktop.Data
             get => DbManual.Currencies.FirstOrDefault(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0));
         }
 
-        public long FromAccountId
+        public int FromAccountId
         {
             get => fromAccountId;
             set
@@ -95,7 +95,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public long ToAccountId
+        public int ToAccountId
         {
             get => toAccountId;
             set

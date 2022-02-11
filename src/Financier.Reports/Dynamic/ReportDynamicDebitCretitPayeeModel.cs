@@ -8,11 +8,11 @@ namespace Financier.Reports
     {
         [DisplayName("Year")]
         [Column("date_year")]
-        public long Year { get; protected set; }
+        public int Year { get; protected set; }
 
         [DisplayName("Month")]
         [Column("date_month")]
-        public long Month { get; protected set; }
+        public int Month { get; protected set; }
 
         public string PeriodDesr => string.Format("{0} {1}", Month, Year);
 

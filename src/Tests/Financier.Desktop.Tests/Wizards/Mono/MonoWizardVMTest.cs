@@ -128,10 +128,10 @@
 
             List<AccountFilterModel> accounts = new ()
             {
-                new () { Id = 1, Title = "Monobank", TotalAmount = 189671, CurrencyId = 2, Is_Active = 1 },
-                new () { Id = 2, Title = "Cash", TotalAmount = 10000, CurrencyId = 2, Is_Active = 1 },
+                new () { Id = 1, Title = "Monobank", TotalAmount = 189671, CurrencyId = 2, IsActive = true },
+                new () { Id = 2, Title = "Cash", TotalAmount = 10000, CurrencyId = 2, IsActive = true },
             };
-            List<ProjectModel> projects = new () { new () { Id = 1, Is_Active = 1, Title = "My project" } };
+            List<ProjectModel> projects = new () { new () { Id = 1, IsActive = true, Title = "My project" } };
             List<CategoryModel> categories = new () { new () { Title = "Комуналка", Id = 1 } };
             List<LocationModel> locations = new ()
             {

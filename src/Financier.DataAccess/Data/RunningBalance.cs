@@ -24,6 +24,6 @@ namespace Financier.DataAccess.Data
         public long Datetime { get; set; }
 
         [Column("balance")]
-        public int Balance { get; set; }
+        public long Balance { get; set; }
     }
 }

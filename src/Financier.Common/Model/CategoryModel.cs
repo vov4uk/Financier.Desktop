@@ -8,22 +8,22 @@ namespace Financier.Common.Model
     public class CategoryModel : BaseModel
     {
         [Column("_id")]
-        public long? Id { get; set; }
+        public int? Id { get; set; }
 
         [Column("title")]
         public string Title { get; set; }
 
         [Column("level")]
-        public long Level { get; set; }
+        public int Level { get; set; }
 
         [Column("left")]
-        public long Left { get; set; }
+        public int Left { get; set; }
 
         [Column("right")]
-        public long Right { get; set; }
+        public int Right { get; set; }
 
         [Column("type")]
-        public long Type { get; set; }
+        public int Type { get; set; }
 
         public CategoryModel() { }
 

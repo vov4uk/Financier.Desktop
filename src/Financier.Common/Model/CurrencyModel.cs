@@ -8,7 +8,7 @@ namespace Financier.Common.Model
     public class CurrencyModel : BaseModel
     {
         [Column("_id")]
-        public long? Id { get; set; }
+        public int? Id { get; set; }
 
         [Column("name")]
         public string Name { get; set; }
@@ -20,16 +20,14 @@ namespace Financier.Common.Model
         public string Symbol { get; set; }
 
         [Column("is_default")]
-        public long Is_Default { get; set; }
-
-        public bool IsDefault => Is_Default == 1;
+        public bool IsDefault { get; set; }
 
         public CurrencyModel() { }
 
         public CurrencyModel(Currency currency)
         {
             Id = currency.Id;
-            Is_Default = currency.IsDefault ? 1 : 0;
+            IsDefault = currency.IsDefault;
             Name = currency.Name;
             Title = currency.Title;
             Symbol = currency.Symbol;

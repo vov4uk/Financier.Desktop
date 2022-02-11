@@ -6,7 +6,7 @@ namespace Financier.Common.Model
 {
     public interface IActive
     {
-        public long? Id { get; set; }
+        public int? Id { get; set; }
 
         bool IsActive { get; }
 

@@ -28,8 +28,8 @@ namespace Financier.Common.Model
 
         public string Note { get; set; }
 
-        public int FromAmount { get; set; }
-        public int ToAmount { get; set; }
+        public long FromAmount { get; set; }
+        public long ToAmount { get; set; }
 
         public long Datetime { get; set; }
 

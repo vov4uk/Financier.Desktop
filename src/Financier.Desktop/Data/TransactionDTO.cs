@@ -13,18 +13,18 @@ namespace Financier.Desktop.Data
     public class TransactionDto : BaseTransactionDto
     {
         private AccountFilterModel account;
-        private long accountId;
+        private int accountId;
         private CategoryModel category;
-        private long? categoryId;
+        private int? categoryId;
         private CurrencyModel currency;
-        private long? originalCurrencyId;
+        private int? originalCurrencyId;
         private long fromAmount;
         private bool isAmountNegative;
-        private long? locationId;
+        private int? locationId;
         private long? originalFromAmount;
         private long parentTransactionSplitAmount;
-        private long? payeeId;
-        private long? projectId;
+        private int? payeeId;
+        private int? projectId;
         private ObservableCollection<TransactionDto> subTransactions = new ObservableCollection<TransactionDto>();
         private long unSplitAmount;
 
@@ -80,7 +80,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public long AccountId
+        public int AccountId
         {
             get => accountId;
             set
@@ -110,7 +110,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public long? CategoryId
+        public int? CategoryId
         {
             get => categoryId;
             set
@@ -150,7 +150,7 @@ namespace Financier.Desktop.Data
 
         public bool IsSubTransaction { get; set; }
 
-        public long? LocationId
+        public int? LocationId
         {
             get => locationId;
             set
@@ -172,7 +172,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public long? OriginalCurrencyId
+        public int? OriginalCurrencyId
         {
             get => originalCurrencyId;
             set
@@ -204,7 +204,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public long? PayeeId
+        public int? PayeeId
         {
             get => payeeId;
             set
@@ -214,7 +214,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public long? ProjectId
+        public int? ProjectId
         {
             get => projectId;
             set

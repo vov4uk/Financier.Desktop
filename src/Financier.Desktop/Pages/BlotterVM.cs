@@ -314,76 +314,76 @@
             var fromUnix = UnixTimeConverter.ConvertBack(From ?? DateTime.MinValue.ToLocalTime());
             var toUnix = UnixTimeConverter.ConvertBack(To ?? DateTime.MaxValue.ToLocalTime());
 
-            Expression<Func<BlotterTransactions, bool>> predicate = x => x.datetime >= fromUnix && x.datetime <= toUnix;
+            Expression<Func<BlotterTransactions, bool>> predicate = x => x.DateTime >= fromUnix && x.DateTime <= toUnix;
 
             if (Account?.Id != null)
             {
-                predicate = predicate.And(x => x.from_account_id == _account.Id || x.to_account_id == _account.Id);
+                predicate = predicate.And(x => x.FromAccountId == _account.Id || x.ToAccountId == _account.Id);
             }
 
             if (Category?.Id != null)
             {
-                predicate = predicate.And(x => x.category_id == _category.Id && x.to_account_id == null);
+                predicate = predicate.And(x => x.CategoryId == _category.Id && x.ToAccountId == null);
             }
 
             if (Project?.Id != null)
             {
-                predicate = predicate.And(x => x.project_id == _project.Id);
+                predicate = predicate.And(x => x.ProjectId == _project.Id);
             }
 
             if (Payee?.Id != null)
             {
-                predicate = predicate.And(x => x.payee_id == _payee.Id);
+                predicate = predicate.And(x => x.PayeeId == _payee.Id);
             }
 
             if (Location?.Id != null)
             {
-                predicate = predicate.And(x => x.location_id == _location.Id);
+                predicate = predicate.And(x => x.LocationId == _location.Id);
             }
 
             var items = await repo.FindManyAsync(
                 predicate: predicate,
                 projection: x => new BlotterModel
                 {
-                    Id = x._id,
-                    FromAccountId  = x.from_account_id,
-                    FromAccountTitle = x.from_account_title,
-                    ToAccountId = x.to_account_id,
-                    ToAccountTitle = x.to_account_title,
-                    FromAccountCurrencyId = x.from_account_currency_id,
-                    CategoryId = x.category_id,
-                    CategoryTitle = x.category_title,
-                    LocationId = x.location_id,
-                    Location = x.location,
-                    Payee = x.payee,
-                    Note = x.note,
-                    FromAmount = x.from_amount,
-                    ToAmount = x.to_amount,
-                    Datetime = x.datetime,
-                    OriginalCurrencyId = x.original_currency_id,
-                    OriginalFromAmount = x.original_from_amount,
-                    FromAccountBalance = x.from_account_balance,
-                    ToAccountBalance = x.to_account_balance,
+                    Id = x.Id,
+                    FromAccountId  = x.FromAccountId,
+                    FromAccountTitle = x.FromAccountTitle,
+                    ToAccountId = x.ToAccountId,
+                    ToAccountTitle = x.ToAccountTitle,
+                    FromAccountCurrencyId = x.FromAccountCurrencyId,
+                    CategoryId = x.CategoryId,
+                    CategoryTitle = x.CategoryTitle,
+                    LocationId = x.LocationId,
+                    Location = x.Location,
+                    Payee = x.Payee,
+                    Note = x.Note,
+                    FromAmount = x.FromAmount,
+                    ToAmount = x.ToAmount,
+                    Datetime = x.DateTime,
+                    OriginalCurrencyId = x.OriginalCurrencyId,
+                    OriginalFromAmount = x.OriginalFromAmount,
+                    FromAccountBalance = x.FromAccountBalance,
+                    ToAccountBalance = x.ToAccountBalance,
                     FromAccountCurrency = new CurrencyModel
                     {
-                        Id = x.from_account_currency.Id,
-                        Name = x.from_account_currency.Name,
-                        Symbol = x.from_account_currency.Symbol,
+                        Id = x.FromAccountCurrency.Id,
+                        Name = x.FromAccountCurrency.Name,
+                        Symbol = x.FromAccountCurrency.Symbol,
                     },
-                    ToAccountCurrency = x.to_account_currency == null ? default : new CurrencyModel
+                    ToAccountCurrency = x.ToAccountCurrency == null ? default : new CurrencyModel
                     {
-                        Id = x.to_account_currency.Id,
-                        Name = x.to_account_currency.Name,
-                        Symbol = x.to_account_currency.Symbol,
+                        Id = x.ToAccountCurrency.Id,
+                        Name = x.ToAccountCurrency.Name,
+                        Symbol = x.ToAccountCurrency.Symbol,
                     },
-                    OriginalCurrency = x.original_currency == null ? default : new CurrencyModel
+                    OriginalCurrency = x.OriginalCurrency == null ? default : new CurrencyModel
                     {
-                        Id = x.original_currency.Id,
-                        Name = x.original_currency.Name,
-                        Symbol = x.original_currency.Symbol,
+                        Id = x.OriginalCurrency.Id,
+                        Name = x.OriginalCurrency.Name,
+                        Symbol = x.OriginalCurrency.Symbol,
                     }
                 },
-                includes: new Expression<Func<BlotterTransactions, object>>[] { x => x.from_account_currency, x => x.to_account_currency, x => x.original_currency });
+                includes: new Expression<Func<BlotterTransactions, object>>[] { x => x.FromAccountCurrency, x => x.ToAccountCurrency, x => x.OriginalCurrency });
 
             if (items != null)
             {
