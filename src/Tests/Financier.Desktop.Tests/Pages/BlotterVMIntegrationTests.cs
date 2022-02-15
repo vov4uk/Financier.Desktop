@@ -176,7 +176,7 @@ namespace Financier.Desktop.Tests.Pages
             await vm.DuplicateCommand.ExecuteAsync();
 
             var result = await GetResults();
-            Console.WriteLine(JsonConvert.SerializeObject(result.Balances.OrderByDescending(x => x.TransactionId))));
+            Console.WriteLine(JsonConvert.SerializeObject(result.Balances.OrderByDescending(x => x.TransactionId)));
             Assert.Equal(2, result.Balances.Count);
             Assert.Equal(balanceJson, JsonConvert.SerializeObject(result.Balances.OrderByDescending(x => x.TransactionId)));
             Assert.Equal(fromAmount, result.Transactions[1].FromAmount);
