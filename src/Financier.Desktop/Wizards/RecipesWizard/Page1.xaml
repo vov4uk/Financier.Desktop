@@ -6,15 +6,19 @@
              xmlns:local="clr-namespace:Financier.Desktop.Wizards.RecipesWizard.View"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450"
+             d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="34"/>
+            <RowDefinition Height="34"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
+        <TextBlock Grid.Row="0">Paste recipes text. Make recipes photo and parse text via Google Lens or other ORC. I'll look for numbers with article symbol.
+        <LineBreak/> For example: "123.45 A", "-54,32-A", "100 Б", "123.01 a"
+        </TextBlock>
         <Grid Grid.Column="0"
-              Grid.Row="0"
+              Grid.Row="1"
               Margin="10 10 0 0"
               Height="24">
             <Grid.ColumnDefinitions>
@@ -53,7 +57,7 @@
         </Grid>
 
         <xctk:RichTextBox x:Name="_richTextBox"
-                          Grid.Row="1"
+                          Grid.Row="2"
                           Margin="10"
                           BorderBrush="Gray"
                           Padding="10"

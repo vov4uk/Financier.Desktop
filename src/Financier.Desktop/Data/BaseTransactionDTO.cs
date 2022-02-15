@@ -3,7 +3,7 @@ using System;
 
 namespace Financier.Desktop.Data
 {
-    public class BaseTransactionDto : BindableBase
+    public abstract class BaseTransactionDto : BindableBase
     {
         protected DateTime date;
         protected DateTime time;
@@ -16,8 +16,10 @@ namespace Financier.Desktop.Data
             get => date;
             set
             {
-                date = value;
-                RaisePropertyChanged(nameof(Date));
+                if (SetProperty(ref date, value))
+                {
+                    RaisePropertyChanged(nameof(Date));
+                }
             }
         }
 
@@ -26,8 +28,10 @@ namespace Financier.Desktop.Data
             get => time;
             set
             {
-                time = value;
-                RaisePropertyChanged(nameof(Time));
+                if (SetProperty(ref time, value))
+                {
+                    RaisePropertyChanged(nameof(Time));
+                }
             }
         }
 
@@ -41,8 +45,10 @@ namespace Financier.Desktop.Data
             get => id;
             set
             {
-                id = value;
-                RaisePropertyChanged(nameof(Id));
+                if (SetProperty(ref id, value))
+                {
+                    RaisePropertyChanged(nameof(Id));
+                }
             }
         }
 
@@ -51,19 +57,31 @@ namespace Financier.Desktop.Data
             get => note;
             set
             {
-                note = value;
-                RaisePropertyChanged(nameof(Note));
+                if (SetProperty(ref note, value))
+                {
+                    RaisePropertyChanged(nameof(Note));
+                }
             }
         }
+
+        public bool IsSubTransaction { get; set; }
+
+        public virtual long RealFromAmount { get; }
+
+        public virtual string SubTransactionTitle { get; }
+
+        public virtual bool IsAmountNegative { get; set; }
 
         public double Rate
         {
             get => rate;
             set
             {
-                rate = value;
-                RaisePropertyChanged(nameof(Rate));
-                RaisePropertyChanged("RateString");
+                if (SetProperty(ref rate, value))
+                {
+                    RaisePropertyChanged(nameof(Rate));
+                    RaisePropertyChanged("RateString");
+                }
             }
         }
     }

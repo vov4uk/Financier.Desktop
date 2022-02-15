@@ -12,8 +12,8 @@ namespace Financier.Desktop.Data
 {
     public class TransactionDto : BaseTransactionDto
     {
-        private AccountFilterModel account;
-        private int accountId;
+        private AccountFilterModel fromAccount;
+        private int fromAccountId;
         private CategoryModel category;
         private int? categoryId;
         private CurrencyModel currency;
@@ -25,7 +25,7 @@ namespace Financier.Desktop.Data
         private long parentTransactionSplitAmount;
         private int? payeeId;
         private int? projectId;
-        private ObservableCollection<TransactionDto> subTransactions = new ObservableCollection<TransactionDto>();
+        private ObservableCollection<BaseTransactionDto> subTransactions = new ObservableCollection<BaseTransactionDto>();
         private long unSplitAmount;
 
         public TransactionDto() { }
@@ -35,8 +35,8 @@ namespace Financier.Desktop.Data
             id = 0;
             fromAmount = x.FromAmount;
             isAmountNegative = x.FromAmount < 0;
-            originalFromAmount = x.OriginalFromAmount ?? 0;
-            originalCurrencyId = x.OriginalCurrencyId;
+            OriginalFromAmount = x.OriginalFromAmount ?? 0;
+            OriginalCurrencyId = x.OriginalCurrencyId;
             note = x.Note;
             locationId = x.LocationId;
             projectId = x.ProjectId;
@@ -47,13 +47,27 @@ namespace Financier.Desktop.Data
         public TransactionDto(Transaction transaction, IEnumerable<Transaction> subTransactions)
             : this(transaction)
         {
-            SubTransactions = new ObservableCollection<TransactionDto>(subTransactions.Select(x => new TransactionDto(x)));
+            var list = new List<BaseTransactionDto>();
+            foreach (var t in subTransactions)
+            {
+                if (t.ToAccountId > 0 && t.CategoryId == 0 && t.FromAccountId > 0)
+                {
+                    list.Add(new TransferDto(t));
+                }
+                else
+                {
+                    list.Add(new TransactionDto(t));
+                }
+            }
+
+
+            SubTransactions = new ObservableCollection<BaseTransactionDto>(list);
         }
 
         public TransactionDto(Transaction transaction)
         {
             id = transaction.Id;
-            accountId = transaction.FromAccountId;
+            fromAccountId = transaction.FromAccountId;
             categoryId = transaction.CategoryId;
             payeeId = transaction.PayeeId;
             originalCurrencyId = transaction.OriginalCurrencyId;
@@ -67,32 +81,36 @@ namespace Financier.Desktop.Data
             time = UnixTimeConverter.Convert(transaction.DateTime);
         }
 
-        public AccountFilterModel Account
+        public AccountFilterModel FromAccount
         {
-            get => account ??= DbManual.Account?.FirstOrDefault(x => x.Id == AccountId);
+            get => fromAccount ??= DbManual.Account?.FirstOrDefault(x => x.Id == FromAccountId);
             set
             {
-                account = value;
-                RaisePropertyChanged(nameof(Account));
-                RaisePropertyChanged(nameof(IsOriginalFromAmountVisible));
-                RaisePropertyChanged(nameof(RateString));
-                RaisePropertyChanged(nameof(AccountCurrency));
+                if (SetProperty(ref fromAccount, value))
+                {
+                    RaisePropertyChanged(nameof(FromAccount));
+                    RaisePropertyChanged(nameof(IsOriginalFromAmountVisible));
+                    RaisePropertyChanged(nameof(RateString));
+                    RaisePropertyChanged(nameof(FromAccountCurrency));
+                }
             }
         }
 
-        public int AccountId
+        public int FromAccountId
         {
-            get => accountId;
+            get => fromAccountId;
             set
             {
-                accountId = value;
-                RaisePropertyChanged(nameof(AccountId));
+                if (SetProperty(ref fromAccountId, value))
+                {
+                    RaisePropertyChanged(nameof(FromAccountId));
+                }
             }
         }
 
-        public CurrencyModel AccountCurrency
+        public CurrencyModel FromAccountCurrency
         {
-            get => DbManual.Currencies?.FirstOrDefault(x => x.Id == (Account != null ? Account.CurrencyId : 0));
+            get => DbManual.Currencies?.FirstOrDefault(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0));
         }
 
         public CategoryModel Category
@@ -100,9 +118,10 @@ namespace Financier.Desktop.Data
             get => category ??= DbManual.Category?.FirstOrDefault(x => x.Id == CategoryId);
             set
             {
-                category = value;
-                RaisePropertyChanged(nameof(Category));
-
+                if (SetProperty(ref category, value))
+                {
+                    RaisePropertyChanged(nameof(Category));
+                }
                 if (category != null && category.Id > 0)
                 {
                     IsAmountNegative = category.Type == 0;
@@ -115,9 +134,11 @@ namespace Financier.Desktop.Data
             get => categoryId;
             set
             {
-                categoryId = value;
-                RaisePropertyChanged(nameof(CategoryId));
-                RaisePropertyChanged(nameof(IsSplitCategory));
+                if (SetProperty(ref categoryId, value))
+                {
+                    RaisePropertyChanged(nameof(CategoryId));
+                    RaisePropertyChanged(nameof(IsSplitCategory));
+                }
             }
         }
 
@@ -126,37 +147,41 @@ namespace Financier.Desktop.Data
             get => fromAmount;
             set
             {
-                fromAmount = value;
-                RaisePropertyChanged(nameof(FromAmount));
-                RecalculateRate();
-                RecalculateUnSplitAmount();
+                if (SetProperty(ref fromAmount, value))
+                {
+                    RaisePropertyChanged(nameof(FromAmount));
+                    RecalculateRate();
+                    RecalculateUnSplitAmount();
+                }
             }
         }
 
-        public bool IsAmountNegative
+        public override bool IsAmountNegative
         {
             get => isAmountNegative;
             set
             {
-                isAmountNegative = value;
-                RaisePropertyChanged(nameof(IsAmountNegative));
-                RecalculateUnSplitAmount();
+                if (SetProperty(ref isAmountNegative, value))
+                {
+                    RaisePropertyChanged(nameof(IsAmountNegative));
+                    RecalculateUnSplitAmount();
+                }
             }
         }
 
-        public bool IsOriginalFromAmountVisible => OriginalCurrency != null && Account != null && OriginalCurrency.Id != Account.CurrencyId;
+        public bool IsOriginalFromAmountVisible => OriginalCurrency != null && OriginalCurrency.Id != null && FromAccount != null && OriginalCurrency.Id != FromAccount.CurrencyId;
 
         public bool IsSplitCategory => categoryId == -1;
-
-        public bool IsSubTransaction { get; set; }
 
         public int? LocationId
         {
             get => locationId;
             set
             {
-                locationId = value;
-                RaisePropertyChanged(nameof(LocationId));
+                if (SetProperty(ref locationId, value))
+                {
+                    RaisePropertyChanged(nameof(LocationId));
+                }
             }
         }
 
@@ -165,10 +190,12 @@ namespace Financier.Desktop.Data
             get => currency ??= DbManual.Currencies?.FirstOrDefault(x => x.Id == OriginalCurrencyId);
             set
             {
-                currency = value;
-                RaisePropertyChanged(nameof(OriginalCurrency));
-                RaisePropertyChanged(nameof(IsOriginalFromAmountVisible));
-                RaisePropertyChanged(nameof(RateString));
+                if (SetProperty(ref currency, value))
+                {
+                    RaisePropertyChanged(nameof(OriginalCurrency));
+                    RaisePropertyChanged(nameof(IsOriginalFromAmountVisible));
+                    RaisePropertyChanged(nameof(RateString));
+                }
             }
         }
 
@@ -177,8 +204,10 @@ namespace Financier.Desktop.Data
             get => originalCurrencyId;
             set
             {
-                originalCurrencyId = value;
-                RaisePropertyChanged(nameof(OriginalCurrencyId));
+                if (SetProperty(ref originalCurrencyId, value))
+                {
+                    RaisePropertyChanged(nameof(OriginalCurrencyId));
+                }
             }
         }
 
@@ -187,9 +216,11 @@ namespace Financier.Desktop.Data
             get => originalFromAmount;
             set
             {
-                originalFromAmount = value;
-                RaisePropertyChanged(nameof(OriginalFromAmount));
-                RecalculateRate();
+                if (SetProperty(ref originalFromAmount, value))
+                {
+                    RaisePropertyChanged(nameof(OriginalFromAmount));
+                    RecalculateRate();
+                }
             }
         }
 
@@ -198,9 +229,11 @@ namespace Financier.Desktop.Data
             get => parentTransactionSplitAmount;
             set
             {
-                parentTransactionSplitAmount = value;
-                RaisePropertyChanged(nameof(ParentTransactionUnSplitAmount));
-                RecalculateUnSplitAmount();
+                if (SetProperty(ref parentTransactionSplitAmount, value))
+                {
+                    RaisePropertyChanged(nameof(ParentTransactionUnSplitAmount));
+                    RecalculateUnSplitAmount();
+                }
             }
         }
 
@@ -209,8 +242,10 @@ namespace Financier.Desktop.Data
             get => payeeId;
             set
             {
-                payeeId = value;
-                RaisePropertyChanged(nameof(PayeeId));
+                if (SetProperty(ref payeeId, value))
+                {
+                    RaisePropertyChanged(nameof(PayeeId));
+                }
             }
         }
 
@@ -219,8 +254,10 @@ namespace Financier.Desktop.Data
             get => projectId;
             set
             {
-                projectId = value;
-                RaisePropertyChanged(nameof(ProjectId));
+                if (SetProperty(ref projectId, value))
+                {
+                    RaisePropertyChanged(nameof(ProjectId));
+                }
             }
         }
 
@@ -231,7 +268,7 @@ namespace Financier.Desktop.Data
                 if (Rate != 0)
                 {
                     var d = 1.0 / Rate;
-                    var localCurrency = DbManual.Currencies?.FirstOrDefault(x => x.Id == account?.Id);
+                    var localCurrency = DbManual.Currencies?.FirstOrDefault(x => x.Id == fromAccount?.Id);
                     return $"1{currency?.Name}={Rate:F5}{localCurrency?.Name}, 1{localCurrency?.Name}={d:F5}{currency?.Name}";
                 }
 
@@ -239,21 +276,22 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public long RealFromAmount => Math.Abs(IsOriginalFromAmountVisible ? (OriginalFromAmount ?? 0 ): FromAmount) * (IsAmountNegative ? -1 : 1);
+        public override long RealFromAmount => Math.Abs(IsOriginalFromAmountVisible ? (OriginalFromAmount ?? 0 ): FromAmount) * (IsAmountNegative ? -1 : 1);
 
-        public long SplitAmount
-        {
-            get { return subTransactions?.Sum(x => x.RealFromAmount) ?? 0; }
-        }
+        public override string SubTransactionTitle => Category?.Title ?? string.Empty;
 
-        public ObservableCollection<TransactionDto> SubTransactions
+        public long SplitAmount => subTransactions?.Sum(x => x.RealFromAmount) ?? 0;
+
+        public ObservableCollection<BaseTransactionDto> SubTransactions
         {
             get => subTransactions;
             private set
             {
-                subTransactions = value;
-                RaisePropertyChanged(nameof(SubTransactions));
-                RecalculateUnSplitAmount();
+                if (SetProperty(ref subTransactions, value))
+                {
+                    RaisePropertyChanged(nameof(SubTransactions));
+                    RecalculateUnSplitAmount();
+                }
             }
         }
 
@@ -262,8 +300,10 @@ namespace Financier.Desktop.Data
             get => unSplitAmount;
             private set
             {
-                unSplitAmount = value;
-                RaisePropertyChanged(nameof(UnsplitAmount));
+                if (SetProperty(ref unSplitAmount, value))
+                {
+                    RaisePropertyChanged(nameof(UnsplitAmount));
+                }
             }
         }
 
@@ -279,7 +319,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        private void RecalculateRate()
+        internal void RecalculateRate()
         {
             if (originalFromAmount != null && originalFromAmount != 0)
                 Rate = Math.Abs(fromAmount / 100.0 / (originalFromAmount.Value / 100.0));

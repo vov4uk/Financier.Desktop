@@ -12,16 +12,18 @@
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;
     using Mvvm.Async;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
 
-    [ExcludeFromCodeCoverage]
     public class BlotterVM : EntityBaseVM<BlotterModel>
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private IAsyncCommand _addTemplateCommand;
         private IAsyncCommand _addTransferCommand;
         private IAsyncCommand _duplicateCommand;
@@ -152,17 +154,23 @@
         {
             if (this.dialogWrapper.ShowMessageBox("Are you sure you want to delete transaction?", "Delete", true))
             {
-                using (var uow = db.CreateUnitOfWork())
-                {
-                    var repo = uow.GetRepository<Transaction>();
-                    var transaction = await repo.FindByAsync(x => x.Id == item.Id);
-
-                    await repo.DeleteAsync(transaction);
-                    await uow.SaveChangesAsync();
-                }
+                await DeleteTransaction(item.Id);
                 await db.RebuildAccountBalanceAsync(item.FromAccountId);
                 await db.RebuildAccountBalanceAsync(item.ToAccountId ?? 0);
                 await RefreshData();
+            }
+        }
+
+        private async Task DeleteTransaction(int id)
+        {
+            Logger.Info($"On Transaction delete id : {id}");
+            using (var uow = db.CreateUnitOfWork())
+            {
+                var repo = uow.GetRepository<Transaction>();
+                var transaction = await repo.FindByAsync(x => x.Id == id);
+
+                await repo.DeleteAsync(transaction);
+                await uow.SaveChangesAsync();
             }
         }
 
@@ -208,6 +216,7 @@
 
         private async Task OpenTransferDialogAsync(int id, bool isDuplicate)
         {
+            Logger.Info($"OpenTransferDialog : id {id} ; isDuplicate {isDuplicate}");
             Transaction transfer = await db.GetOrCreateTransactionAsync(id);
             if (isDuplicate)
             {
@@ -222,6 +231,7 @@
             var output = result as TransferDto;
             if (output != null)
             {
+                Logger.Debug(JsonConvert.SerializeObject(output));
                 MapperHelper.MapTransfer(result as TransferDto, transfer);
                 await db.InsertOrUpdateAsync(new[] { transfer });
 
@@ -233,9 +243,12 @@
 
         private async Task OpenTransactionDialogAsync(int id, bool isDuplicate)
         {
+            Logger.Info($"OpenTransactionDialog: id {id} ; isDuplicate {isDuplicate}");
             Transaction transaction = await db.GetOrCreateTransactionAsync(id);
             IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(id);
 
+            Logger.Debug(JsonConvert.SerializeObject(transaction));
+            Logger.Debug(JsonConvert.SerializeObject(subTransactions));
             if (isDuplicate)
             {
                 transaction.Id = 0;
@@ -247,13 +260,11 @@
             // if transaction not in home currency, replace FromAmount with OriginalFromAmount to show correct values
             if (transactionDto.IsOriginalFromAmountVisible)
             {
-                foreach (var item in transactionDto.SubTransactions)
+                foreach (var item in transactionDto.SubTransactions.OfType<TransactionDto>())
                 {
                     item.FromAmount = item.OriginalFromAmount ?? 0;
                 }
             }
-
-            using var uow = db.CreateUnitOfWork();
 
             TransactionControlVM dialogVm = new TransactionControlVM(transactionDto, dialogWrapper);
 
@@ -262,15 +273,16 @@
             var resultVm = result as TransactionDto;
             if (resultVm != null)
             {
+                Logger.Debug(JsonConvert.SerializeObject(resultVm));
                 var resultTransactions = new List<Transaction>();
 
                 MapperHelper.MapTransaction(resultVm, transaction);
-                long fromAmount = transaction.FromAmount;
+                long totalFromAmountHomeCurrency = transaction.FromAmount;
                 resultTransactions.Add(transaction);
                 if (resultVm?.SubTransactions?.Any() == true)
                 {
                     // TODO : Add Unit Test for code below
-                    foreach (var subTransactionDto in resultVm.SubTransactions)
+                    foreach (var subTransactionDto in resultVm.SubTransactions.OfType<TransactionDto>())
                     {
                         var subTransaction = await db.GetOrCreateAsync<Transaction>(subTransactionDto.Id);
                         subTransactionDto.Date = resultVm.Date;
@@ -284,25 +296,55 @@
                         //Set FromAmount in home currency
                         if (resultVm.IsOriginalFromAmountVisible)
                         {
-                            var originalFromAmount = subTransactionDto.FromAmount;
+                            var originalFromAmount = (subTransactionDto).RealFromAmount;
                             subTransaction.FromAmount = (long)(originalFromAmount * resultVm.Rate);
                             subTransaction.OriginalFromAmount = originalFromAmount;
-                            fromAmount -= subTransaction.FromAmount;
+                            totalFromAmountHomeCurrency -= subTransaction.FromAmount;
                         }
 
                         resultTransactions.Add(subTransaction);
                     }
 
+                    if (!resultVm.IsOriginalFromAmountVisible)
+                    {
+                        foreach (var subTranfer in resultVm.SubTransactions.OfType<TransferDto>())
+                        {
+                            var subTransaction = await db.GetOrCreateAsync<Transaction>(subTranfer.Id);
+
+                            subTranfer.Date = resultVm.Date;
+                            subTranfer.Time = resultVm.Time;
+                            MapperHelper.MapTransfer(subTranfer, subTransaction);
+                            subTransaction.Parent = transaction;
+                            subTransaction.FromAccountId = transaction.FromAccountId;
+
+                            resultTransactions.Add(subTransaction);
+                        }
+                    }
+
                     // check if sum of all subtransaction == parentTransaction.FromAmount
                     // if not - add diference to last transaction
-                    if (resultVm.IsOriginalFromAmountVisible && fromAmount != 0)
+                    if (resultVm.IsOriginalFromAmountVisible && totalFromAmountHomeCurrency != 0)
                     {
-                        resultTransactions.Last().FromAmount += fromAmount;
+                        resultTransactions.Last().FromAmount += totalFromAmountHomeCurrency;
                     }
                 }
 
+                Logger.Debug(JsonConvert.SerializeObject(resultTransactions));
                 await db.InsertOrUpdateAsync(resultTransactions);
+
+                var transactionsIds = resultTransactions.Select(x => x.Id).Distinct().ToList();
+                var deletedSubTransaction = subTransactions.Select(x => x.Id).Where(x => !transactionsIds.Contains(x));
+                foreach (var t in deletedSubTransaction)
+                {
+                    await DeleteTransaction(t);
+                }
+
                 await db.RebuildAccountBalanceAsync(transaction.FromAccountId);
+                var toAccounts = resultTransactions.Select(x => x.ToAccountId).Where(x => x > 0).Distinct().ToList();
+                foreach (var account in toAccounts)
+                {
+                    await db.RebuildAccountBalanceAsync(account);
+                }
                 await RefreshData();
             }
         }

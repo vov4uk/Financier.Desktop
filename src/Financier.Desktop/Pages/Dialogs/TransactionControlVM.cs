@@ -14,11 +14,12 @@ namespace Financier.Desktop.ViewModel.Dialog
     {
         private readonly IDialogWrapper dialogWrapper;
         private DelegateCommand _addSubTransactionCommand;
+        private DelegateCommand _addSubTransferCommand;
         private DelegateCommand _clearLocationCommand;
         private DelegateCommand _clearPayeeCommand;
-        private DelegateCommand<TransactionDto> _deleteSubTransactionCommand;
+        private DelegateCommand<BaseTransactionDto> _deleteSubTransactionCommand;
         private DelegateCommand _openRecipesDialogCommand;
-        private DelegateCommand<TransactionDto> _openSubTransactionDialogCommand;
+        private DelegateCommand<BaseTransactionDto> _editSubTransaction;
 
         public TransactionControlVM(
             TransactionDto transaction,
@@ -29,22 +30,23 @@ namespace Financier.Desktop.ViewModel.Dialog
         }
 
         public DelegateCommand AddSubTransactionCommand => _addSubTransactionCommand ??= new DelegateCommand(() => { ShowSubTransactionDialog(new TransactionDto(), true); });
+        public DelegateCommand AddSubTransferCommand => _addSubTransferCommand ??= new DelegateCommand(() => { ShowSubTransferDialog(new TransferDto(), true); });
 
         public DelegateCommand ClearLocationCommand => _clearLocationCommand ??= new DelegateCommand(() => { Transaction.LocationId = default; });
 
         public DelegateCommand ClearPayeeCommand => _clearPayeeCommand ??= new DelegateCommand(() => { Transaction.PayeeId = default; });
 
-        public DelegateCommand<TransactionDto> DeleteSubTransactionCommand => _deleteSubTransactionCommand ??= new DelegateCommand<TransactionDto>(tr =>
+        public DelegateCommand<BaseTransactionDto> DeleteSubTransactionCommand => _deleteSubTransactionCommand ??= new DelegateCommand<BaseTransactionDto>(tr =>
                                                                                             {
                                                                                                 Transaction.SubTransactions.Remove(tr);
                                                                                                 Transaction.RecalculateUnSplitAmount();
                                                                                             });
 
-        public DelegateCommand<TransactionDto> EditSubTransactionCommand => _openSubTransactionDialogCommand ??= new DelegateCommand<TransactionDto>(tr => ShowSubTransactionDialog(tr, false));
+        public DelegateCommand<BaseTransactionDto> EditSubTransactionCommand => _editSubTransaction ??= new DelegateCommand<BaseTransactionDto>(EditSubTransaction);
 
         public DelegateCommand OpenRecipesDialogCommand => _openRecipesDialogCommand ??= new DelegateCommand(ShowRecepiesDialog);
 
-        protected override bool CanSaveCommandExecute() => Transaction.Account != null && Transaction.FromAmount != 0;
+        protected override bool CanSaveCommandExecute() => Transaction.FromAccount != null && Transaction.FromAmount != 0;
 
         private static void CopySubTransaction(TransactionDto original, TransactionDto modifiedCopy)
         {
@@ -54,6 +56,20 @@ namespace Financier.Desktop.ViewModel.Dialog
             original.IsAmountNegative = modifiedCopy.IsAmountNegative;
             original.Note = modifiedCopy.Note;
             original.ProjectId = modifiedCopy.ProjectId;
+        }
+
+        private static void CopySubTransfer(TransferDto original, TransferDto modifiedCopy)
+        {
+            original.Id = modifiedCopy.Id;
+            original.FromAccountId = modifiedCopy.FromAccountId;
+            original.FromAccount = modifiedCopy.FromAccount;
+            original.ToAccountId = modifiedCopy.ToAccountId;
+            original.ToAccount = modifiedCopy.ToAccount;
+            original.Note = modifiedCopy.Note;
+            original.FromAmount = modifiedCopy.RealFromAmount;
+            original.ToAmount = Math.Abs(modifiedCopy.FromAmount);
+            original.Date =modifiedCopy.DateTime.Date;
+            original.Time = modifiedCopy.DateTime;
         }
 
         private void ShowRecepiesDialog()
@@ -70,6 +86,56 @@ namespace Financier.Desktop.ViewModel.Dialog
                     item.Category = DbManual.Category?.FirstOrDefault(x => x.Id == item.CategoryId);
                     Transaction.SubTransactions.Add(item);
                 }
+                Transaction.RecalculateUnSplitAmount();
+                SaveCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        private void EditSubTransaction(BaseTransactionDto original)
+        {
+            if (original is TransactionDto)
+            {
+                ShowSubTransactionDialog(original as TransactionDto, false);
+            }
+            else if (original is TransferDto)
+            {
+                ShowSubTransferDialog(original as TransferDto, false);
+            }
+        }
+
+        private void ShowSubTransferDialog(TransferDto original, bool isNewItem)
+        {
+            if (Transaction.IsOriginalFromAmountVisible)
+            {
+                this.dialogWrapper.ShowMessageBox("Split-transfers with a currency differ from account's currency are not yet supported", "Not supported");
+                return;
+            }
+
+            Transaction.RecalculateUnSplitAmount();
+            var workingCopy = new TransferDto()
+            {
+                FromAccountId = Transaction.FromAccountId,
+                IsSubTransaction = true,
+                FromAmount = Transaction.UnsplitAmount,
+                Date = Transaction.Date,
+                Time = Transaction.Time,
+            };
+            if (!isNewItem)
+            {
+                CopySubTransfer(workingCopy, original);
+            }
+
+            var viewModel = new TransferControlVM(workingCopy);
+
+            var dialogResult = dialogWrapper.ShowDialog<TransferControl>(viewModel, 385, 340, "Transfer");
+
+            var modifiedCopy = dialogResult as TransferDto;
+            if (modifiedCopy != null)
+            {
+                CopySubTransfer(original, modifiedCopy);
+
+                if (isNewItem) Transaction.SubTransactions.Add(original);
                 Transaction.RecalculateUnSplitAmount();
                 SaveCommand.RaiseCanExecuteChanged();
             }

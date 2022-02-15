@@ -402,7 +402,7 @@
             eventArgs.CategoryId = -1;
             await this.SetupDbManual();
             var output = new TransactionDto(transaction, subTransactions);
-            output.Account = account;
+            output.FromAccount = account;
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
@@ -528,6 +528,7 @@
             eventArgs.CategoryId = 0;
 
             await this.SetupDbManual();
+
             this.SetupRepo(new Mock<IBaseRepository<Account>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
             this.trMock = new Mock<IBaseRepository<Transaction>>(MockBehavior.Strict);

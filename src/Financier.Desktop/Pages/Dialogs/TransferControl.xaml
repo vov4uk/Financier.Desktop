@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
-             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
+             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog" xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewmodel:TransferControlVM}, IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
@@ -15,6 +15,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
@@ -67,7 +68,8 @@
                     <ColumnDefinition Width="24" />
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                      IsEnabled="{Binding Transfer.IsSubTransaction, Converter={StaticResource InverseBooleanConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="24" />
                         <ColumnDefinition Width="*" />
@@ -96,6 +98,8 @@
                            SelectedValuePath="Id"
                            SelectedValue="{Binding Transfer.FromAccountId}"
                            TextSearch.TextPath="Title"
+                           IsEditable="True"
+                           IsEnabled="{Binding Transfer.IsSubTransaction, Converter={StaticResource InverseBooleanConverter}}"
                            ItemTemplate="{StaticResource ResourceKey=IActive}"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" 
@@ -106,6 +110,7 @@
                            SelectedValuePath="Id"
                            SelectedValue="{Binding Transfer.ToAccountId}"
                            TextSearch.TextPath="Title"
+                           IsEditable="True"
                            ItemTemplate="{StaticResource ResourceKey=IActive}" />
 
                 <TextBlock  Grid.Column="0" Grid.Row="5"

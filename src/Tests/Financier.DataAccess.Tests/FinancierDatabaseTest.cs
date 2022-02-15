@@ -41,7 +41,7 @@
         public async Task AddTransactionsAsync_TtransacrionsInvalid_CatchException()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             await PredefineData(db);
             List<Transaction> transactions = new List<Transaction>()
             {
@@ -61,7 +61,7 @@
         public async Task AddTransactionsAsync_TtransacrionsValid_TransactionsAdded()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             var initData = await PredefineData(db);
 
             List<Transaction> transactions = new List<Transaction>()
@@ -112,7 +112,7 @@
         public async Task RebuildRunningBalanceForAccount_Have3Transactions_BalanceUpdated()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
 
             var initData = await PredefineData(db);
 
@@ -231,7 +231,7 @@
         public async Task GetOrCreate_NewItem_CreateItem()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             var account = await db.GetOrCreateAsync<Account>(0);
 
             Assert.Equal(0, account.Id);
@@ -241,7 +241,7 @@
         public async Task GetOrCreate_ItemNotExist_ReturnNull()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             var account = await db.GetOrCreateAsync<Account>(1);
 
             Assert.Null(account);
@@ -251,7 +251,7 @@
         public async Task GetOrCreate_ItemExist_GetItem()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             await PredefineData(db);
 
             var account = await db.GetOrCreateAsync<Account>(1);
@@ -267,7 +267,7 @@
         public async Task GetSubTransactions_IdIs0_EmptyCollection()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             var transactions = await db.GetSubTransactionsAsync(0);
 
             Assert.Empty(transactions);
@@ -277,7 +277,7 @@
         public async Task GetSubTransactions_ItemNotExist_EmptyCollection()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             var transactions = await db.GetSubTransactionsAsync(1);
 
             Assert.Empty(transactions);
@@ -339,7 +339,7 @@
         public async Task GetOrCreateTransaction_IdIs0_CreateItem()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             var transaction = await db.GetOrCreateTransactionAsync(0);
 
             Assert.Equal(0, transaction.Id);
@@ -351,7 +351,7 @@
         public async Task GetOrCreateTransaction_ItemNotExist_ReturnNull()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             var transaction = await db.GetOrCreateTransactionAsync(1);
 
             Assert.Null(transaction);
@@ -389,7 +389,7 @@
         public async Task InsertOrUpdate_IdIs0_CreateItem()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             await db.InsertOrUpdateAsync(new[] { new Currency() { Id = 0, Title = "Dollar", IsDefault = true, IsActive = true, Name = "USD", Decimals = 2, Symbol = "$", SymbolFormat = "." } });
 
             using (var uow = db.CreateUnitOfWork())
@@ -404,7 +404,7 @@
         public async Task InsertOrUpdate_ItemExist_UpdateItem()
         {
             var db = new FinancierDatabase();
-            await db.Seed();
+            await db.SeedAsync();
             var initData = await PredefineData(db);
 
             initData.currency.Name = "UAH";

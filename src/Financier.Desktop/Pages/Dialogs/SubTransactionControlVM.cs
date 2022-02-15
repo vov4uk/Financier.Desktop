@@ -6,7 +6,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 {
     public class SubTransactionControlVM : DialogBaseVM
     {
-        private readonly string[] TrackingProperies = new string[] { nameof(TransactionDto.FromAmount), nameof(TransactionDto.Account) };
+        private readonly string[] TrackingProperies = new string[] { nameof(TransactionDto.FromAmount), nameof(TransactionDto.FromAccount) };
 
         private DelegateCommand _changeFromAmountSignCommand;
         private DelegateCommand<int?> _clearCategoryCommand;
@@ -18,6 +18,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             Transaction = transaction;
             Transaction.PropertyChanged += Transaction_PropertyChanged;
+            Transaction.RecalculateRate();
         }
 
         public TransactionDto Transaction { get; }

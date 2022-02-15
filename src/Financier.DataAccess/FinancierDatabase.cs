@@ -59,7 +59,7 @@ namespace Financier.DataAccess
 
         protected DbContextOptions<FinancierDataContext> ContextOptions { get; }
 
-        internal async Task Seed()
+        internal async Task SeedAsync()
         {
             using var context = new FinancierDataContext(ContextOptions);
 
@@ -94,7 +94,7 @@ namespace Financier.DataAccess
 
         public async Task ImportEntitiesAsync(IEnumerable<Entity> entities)
         {
-            await Seed();
+            await SeedAsync();
 
             await using (var context = new FinancierDataContext(ContextOptions))
             {
@@ -123,7 +123,7 @@ namespace Financier.DataAccess
                 await context.Database.ExecuteSqlRawAsync("delete from running_balance where account_id=@p0", accountId);
                 await context.SaveChangesAsync();
 
-                var transactions = await context.BlotterTransactions.Where(x => x.FromAccountId == accountId).OrderBy(x => x.DateTime).ToListAsync();
+                var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.FromAccountId == accountId).OrderBy(x => x.DateTime).ToListAsync();
                 long balance = 0;
 
                 foreach (var transaction in transactions)

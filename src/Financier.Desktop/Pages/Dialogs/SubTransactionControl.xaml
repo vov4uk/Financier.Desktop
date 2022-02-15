@@ -74,7 +74,7 @@
                 <xctk:WatermarkComboBox  Grid.Column="0"
                                          Grid.Row="1"
                                          IsEditable="True"
-                                         ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}"
+                                         ItemsSource="{Binding Source={x:Static fcrd:DbManual.SubCategory}, Mode=OneWay}"
                                          SelectedValuePath="Id"
                                          TextSearch.TextPath="Title"
                                          ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"

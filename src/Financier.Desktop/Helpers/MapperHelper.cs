@@ -18,7 +18,7 @@ namespace Financier.Desktop.Helpers
             tr.ToAmount = Math.Abs(dto.IsToAmountVisible ? dto.ToAmount : dto.FromAmount);
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.LastRecurrence = UnixTimeConverter.ConvertBack(DateTime.Now);
-            tr.OriginalCurrencyId = dto.FromAccount.CurrencyId;
+            tr.OriginalCurrencyId = dto.FromAccountCurrency?.Id;
             tr.OriginalFromAmount = Math.Abs(dto.FromAmount) * -1;
             tr.CategoryId = 0;
             tr.Category = default;
@@ -26,9 +26,9 @@ namespace Financier.Desktop.Helpers
 
         public static void MapTransaction(TransactionDto dto, Transaction tr)
         {
-            tr.FromAccountId = dto.AccountId;
+            tr.FromAccountId = dto.FromAccountId;
 
-            if (dto.OriginalCurrencyId > 0 && dto.Account?.CurrencyId == dto.OriginalCurrencyId)
+            if (dto.OriginalCurrencyId > 0 && dto.FromAccount?.CurrencyId == dto.OriginalCurrencyId)
             {
                 tr.FromAmount = dto.RealFromAmount;
                 tr.OriginalCurrencyId = 0;
@@ -37,20 +37,20 @@ namespace Financier.Desktop.Helpers
             else
             {
                 tr.FromAmount = Math.Abs(dto.FromAmount) * (dto.IsAmountNegative ? -1 : 1);
-                tr.OriginalFromAmount = dto.OriginalFromAmount;
-                tr.OriginalCurrencyId = dto.OriginalCurrencyId;
+                tr.OriginalFromAmount = Math.Abs(dto.OriginalFromAmount ?? 0) * (dto.IsAmountNegative ? -1 : 1);
+                tr.OriginalCurrencyId = dto.OriginalCurrencyId ?? 0;
             }
 
-            tr.CategoryId = (dto.CategoryId ?? 0);
+            tr.CategoryId = dto.CategoryId ?? 0;
             tr.Category = default;
             tr.Location = default;
             tr.Project = default;
             tr.OriginalCurrency = default;
             tr.FromAccount = default;
             tr.ToAccount = default;
-            tr.PayeeId = (dto.PayeeId ?? 0);
-            tr.LocationId = (dto.LocationId ?? 0);
-            tr.ProjectId = (dto.CategoryId == Category.Split.Id ? 0 : (dto.ProjectId ?? 0));
+            tr.PayeeId = dto.PayeeId ?? 0;
+            tr.LocationId = dto.LocationId ?? 0;
+            tr.ProjectId = dto.CategoryId == -1 ? 0 : (dto.ProjectId ?? 0); // parent transaction don't have Project
             tr.Note = dto.Note;
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.LastRecurrence = UnixTimeConverter.ConvertBack(DateTime.Now);

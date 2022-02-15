@@ -4,6 +4,7 @@ using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Xceed.Wpf.Toolkit;
 
@@ -37,31 +38,29 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         public void CalculateCurrentAmount()
         {
             Amounts.Clear();
+            var pattern = RecipesFormatter.Pattern + @"(\t|\n|\r|$)"; // fix 100600 Балтика case then it calculates (100600 Б), no mere symbols after a|b
             if (!string.IsNullOrEmpty(text))
             {
                 double tmp = 0.0;
                 int order = 1;
-                var lines = text.Split(Environment.NewLine);
+                var lines = text.Split(Environment.NewLine).Where(line => !string.IsNullOrWhiteSpace(line));
                 foreach (var line in lines)
                 {
-                    if (!string.IsNullOrWhiteSpace(line))
+                    var res = Regex.Match(line, pattern, RegexOptions.IgnoreCase);
+                    if (res.Success)
                     {
-                        var res = Regex.Match(line, RecipesFormatter.Pattern, RegexOptions.IgnoreCase);
-                        if (res.Success)
+                        var number = res.Value.Substring(0, res.Value.Length - 2);
+                        var amount = GetDouble(number.Replace(",", ".").Trim());
+                        tmp += amount;
+                        if (amount != 0.0)
                         {
-                            var number = res.Value.Substring(0, res.Value.Length - 2);
-                            var amount = GetDouble(number.Replace(",", ".").Trim());
-                            tmp += amount;
-                            if (amount != 0.0)
+                            var note = line.Replace(res.Value, string.Empty);
+                            Amounts.Add(new FinancierTransactionDto
                             {
-                                var note = line.Replace(res.Value, string.Empty);
-                                Amounts.Add(new FinancierTransactionDto
-                                {
-                                    FromAmount = Convert.ToInt64(amount * -100.0),
-                                    Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
-                                    Order = order++
-                                });
-                            }
+                                FromAmount = Convert.ToInt64(amount * -100.0),
+                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
+                                Order = order++
+                            });
                         }
                     }
                 }
@@ -75,12 +74,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         private static double GetDouble(string value, double defaultValue = 0.0)
         {
             double result;
-
-            // Try parsing in the current culture
             if (!double.TryParse(value, NumberStyles.Any, CultureInfo.CurrentCulture, out result) &&
-                // Then try in US english
                 !double.TryParse(value, NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), out result) &&
-                // Then in neutral language
                 !double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
             {
                 result = defaultValue;

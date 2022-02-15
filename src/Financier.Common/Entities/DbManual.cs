@@ -143,6 +143,8 @@ ORDER  BY 1 DESC ");
 
         public static List<CategoryModel> Category => _category;
 
+        public static List<CategoryModel> SubCategory => _category?.Where(x => x.Id > 0).ToList();
+
         public static List<CategoryModel> TopCategories => _topCategory;
 
         public static List<CurrencyModel> Currencies => _currencies;

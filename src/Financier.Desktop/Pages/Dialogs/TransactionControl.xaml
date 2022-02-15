@@ -111,10 +111,11 @@
                                Text="Account"/>
                     <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
-                               SelectedItem="{Binding Transaction.Account}"
+                               SelectedItem="{Binding Transaction.FromAccount}"
                                SelectedValuePath="Id"
-                               SelectedValue="{Binding Transaction.AccountId}"
+                               SelectedValue="{Binding Transaction.FromAccountId}"
                                TextSearch.TextPath="Title"
+                               IsEditable="True"
                                ItemTemplate="{StaticResource ResourceKey=IActive}"/>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
@@ -205,31 +206,34 @@
                                        Text="Un-split amount"/>
                             <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
                                        Text="{Binding Transaction.UnsplitAmount, Converter={StaticResource AmountConverter}, ConverterParameter=false, StringFormat=F2, Mode=OneWay}" />
-                            <xctk:IconButton Grid.Column="2"
+                            <xctk:IconButton Grid.Column="1"
                                              Grid.Row="0"
                                              Grid.RowSpan="2"
                                              Margin="0,3,0,0"
                                              VerticalAlignment="Top"
+                                             ToolTip="Open recipes wizard. Transform recipes text to Financisto transactions"
                                              Command="{Binding OpenRecipesDialogCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource IcActionCopy}" />
                                 </xctk:IconButton.Icon>
                             </xctk:IconButton>
-                            <xctk:IconButton Grid.Column="3"
+                            <xctk:IconButton Grid.Column="2"
                                              Grid.Row="0"
                                              Grid.RowSpan="2"
                                              Margin="0,3,0,0"
                                              VerticalAlignment="Top"
-                                             IsEnabled="False">
+                                             ToolTip="Add Split-transfers"
+                                             Command="{Binding AddSubTransferCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource IcActionTransfer}" />
                                 </xctk:IconButton.Icon>
                             </xctk:IconButton>
                             <xctk:IconButton  Grid.Row="0"
-                                              Grid.Column="4"
+                                              Grid.Column="3"
                                               Grid.RowSpan="2"
                                               Margin="0,3,0,0"
                                               VerticalAlignment="Top"
+                                              ToolTip="Add Split-transactions"
                                               Command="{Binding AddSubTransactionCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource IcActionAdd}" />
@@ -282,7 +286,8 @@
                                         </Style>
                                     </Grid.Style>
                                     <emoji:TextBlock Grid.Column="0"
-                                                     Text="{Binding Category.Title}"
+                                                     Text="{Binding SubTransactionTitle}"
+                                                     TextTrimming="CharacterEllipsis"
                                                      HorizontalAlignment="Stretch"
                                                      VerticalAlignment="Center"
                                                      Margin="5 0 0 0" />
