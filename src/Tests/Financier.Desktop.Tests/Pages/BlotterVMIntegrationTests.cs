@@ -159,9 +159,7 @@ namespace Financier.Desktop.Tests.Pages
             Assert.Equal(originFromAmount, result.Transactions[0].OriginalFromAmount);
         }
 
-
         [Theory]
-        [InlineData(DuplicateTransactionHomeCurrency, CreateTransactionHomeCurrencyDto, DuplicateTransactionHomeCurrencyRunningBalancesJson, -10000, 0)]
         [InlineData(DuplicateTransactionDiffCurrency, CreateTransactionDiffCurrencyDto, DuplicateTransactionDiffCurrencyRunningBalancesJson, -54703, -1933)]
         public async Task DuplicateTransaction_DifferentCurrency_BalancesUpdated(string transactionJson, string resultVmJson, string balanceJson, long fromAmount, long originFromAmount)
         {
@@ -179,6 +177,31 @@ namespace Financier.Desktop.Tests.Pages
 
             var result = await GetResults();
 
+            Assert.Equal(2, result.Balances.Count);
+            Assert.Equal(balanceJson, JsonConvert.SerializeObject(result.Balances));
+            Assert.Equal(fromAmount, result.Transactions[1].FromAmount);
+            Assert.Equal(originFromAmount, result.Transactions[1].OriginalFromAmount);
+        }
+
+        [Theory]
+        [InlineData(DuplicateTransactionHomeCurrency, CreateTransactionHomeCurrencyDto, DuplicateTransactionHomeCurrencyRunningBalancesJson, -10000, 0)]
+        public async Task DuplicateTransaction_HomeCurrency_BalancesUpdated(string transactionJson, string resultVmJson, string balanceJson, long fromAmount, long originFromAmount)
+        {
+            var transaction = JsonDeserializer.Deserialize<Transaction>(transactionJson);
+            await SetupDb(transaction);
+
+            var resultVm = JsonConvert.DeserializeObject<TransactionDto>(resultVmJson);
+            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.Is<TransactionControlVM>(x => x.Transaction.Id == 0), 640, 340, nameof(Transaction)))
+                .Returns(resultVm);
+
+            var vm = new BlotterVM(db, dialogMock.Object);
+
+            vm.SelectedValue = new Common.Model.BlotterModel { Id = 1, CategoryId = 37, FromAccountId = 2 };
+            await vm.DuplicateCommand.ExecuteAsync();
+
+            var result = await GetResults();
+
+            Assert.Equal(2, result.Balances.Count);
             Assert.Equal(balanceJson, JsonConvert.SerializeObject(result.Balances));
             Assert.Equal(fromAmount, result.Transactions[1].FromAmount);
             Assert.Equal(originFromAmount, result.Transactions[1].OriginalFromAmount);
