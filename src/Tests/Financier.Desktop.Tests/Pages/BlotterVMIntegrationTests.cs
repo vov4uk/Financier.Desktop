@@ -178,7 +178,7 @@ namespace Financier.Desktop.Tests.Pages
             var result = await GetResults();
 
             Assert.Equal(2, result.Balances.Count);
-            Assert.Equal(balanceJson, JsonConvert.SerializeObject(result.Balances));
+            Assert.Equal(balanceJson, JsonConvert.SerializeObject(result.Balances.OrderByDescending(x => x.TransactionId)));
             Assert.Equal(fromAmount, result.Transactions[1].FromAmount);
             Assert.Equal(originFromAmount, result.Transactions[1].OriginalFromAmount);
         }
