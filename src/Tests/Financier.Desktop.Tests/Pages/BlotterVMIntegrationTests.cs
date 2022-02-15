@@ -172,7 +172,7 @@ namespace Financier.Desktop.Tests.Pages
 
             var vm = new BlotterVM(db, dialogMock.Object);
 
-            vm.SelectedValue = new Common.Model.BlotterModel { Id = 1, CategoryId = 37, FromAccountId = 2 };
+            vm.SelectedValue = new Common.Model.BlotterModel { Id = 1, CategoryId = 37, FromAmount = -1, FromAccountId = 2, ToAccountId = 0 };
             await vm.DuplicateCommand.ExecuteAsync();
 
             var result = await GetResults();
