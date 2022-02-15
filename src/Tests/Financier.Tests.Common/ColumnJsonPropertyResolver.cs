@@ -1,5 +1,4 @@
-﻿using AutoMapper.Internal;
-using Financier.DataAccess.Data;
+﻿using Financier.DataAccess.Data;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
