@@ -251,7 +251,7 @@
             Logger.Debug(JsonConvert.SerializeObject(subTransactions));
             if (isDuplicate)
             {
-                Console.WriteLine(transaction);
+                Console.WriteLine(JsonConvert.SerializeObject(transaction));
                 transaction.Id = 0;
                 transaction.DateTime = UnixTimeConverter.ConvertBack(DateTime.Now);
             }
