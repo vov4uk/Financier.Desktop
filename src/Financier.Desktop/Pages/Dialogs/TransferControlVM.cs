@@ -18,6 +18,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             Transfer = transfer;
             Transfer.PropertyChanged += TransferPropertyChanged;
+            transfer.RecalculateRate();
         }
 
         public TransferDto Transfer { get; }

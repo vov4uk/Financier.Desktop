@@ -142,7 +142,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        private void RecalculateRate()
+        internal void RecalculateRate()
         {
             if (fromAmount != 0 && toAmount != 0)
             {

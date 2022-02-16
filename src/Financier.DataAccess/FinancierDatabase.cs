@@ -118,38 +118,41 @@ namespace Financier.DataAccess
 
         public async Task RebuildAccountBalanceAsync(int accountId)
         {
-            await using (var context = new FinancierDataContext(ContextOptions))
+            if (accountId > 0)
             {
-                await context.Database.ExecuteSqlRawAsync("delete from running_balance where account_id=@p0", accountId);
-                await context.SaveChangesAsync();
-
-                var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.FromAccountId == accountId).OrderBy(x => x.DateTime).ToListAsync();
-                long balance = 0;
-
-                foreach (var transaction in transactions)
+                await using (var context = new FinancierDataContext(ContextOptions))
                 {
-                    if (transaction.ParentId > 0 && transaction.IsTransfer >= 0)
-                    {
-                        // we only interested in the second part of the transfer-split
-                        // which is marked with is_transfer=-1 (see v_blotter_for_account_with_splits)
-                        continue;
-                    }
-                    var toAccountId = transaction.ToAccountId;
-                    if (toAccountId > 0 && toAccountId == transaction.FromAccountId)
-                    {
-                        // weird bug when a transfer is done from an account to the same account
-                        continue;
-                    }
-                    balance += transaction.FromAmount;
-                    context.RunningBalance.Add(new RunningBalance { Balance = balance, AccountId = accountId, TransactionId = transaction.Id });
-                }
+                    await context.Database.ExecuteSqlRawAsync("delete from running_balance where account_id=@p0", accountId);
+                    await context.SaveChangesAsync();
 
-                var acc = context.Accounts.FirstOrDefault(x => x.Id == accountId);
-                acc.TotalAmount = balance;
-                var lastTransaction = transactions.LastOrDefault();
-                acc.LastTransactionDate = lastTransaction?.DateTime ?? 0;
-                context.Accounts.Update(acc);
-                await context.SaveChangesAsync();
+                    var transactions = await context.BlotterTransactionsForAccountWithSplits.Where(x => x.FromAccountId == accountId).OrderBy(x => x.DateTime).ToListAsync();
+                    long balance = 0;
+
+                    foreach (var transaction in transactions)
+                    {
+                        if (transaction.ParentId > 0 && transaction.IsTransfer >= 0)
+                        {
+                            // we only interested in the second part of the transfer-split
+                            // which is marked with is_transfer=-1 (see v_blotter_for_account_with_splits)
+                            continue;
+                        }
+                        var toAccountId = transaction.ToAccountId;
+                        if (toAccountId > 0 && toAccountId == transaction.FromAccountId)
+                        {
+                            // weird bug when a transfer is done from an account to the same account
+                            continue;
+                        }
+                        balance += transaction.FromAmount;
+                        context.RunningBalance.Add(new RunningBalance { Balance = balance, AccountId = accountId, TransactionId = transaction.Id });
+                    }
+
+                    var acc = context.Accounts.FirstOrDefault(x => x.Id == accountId);
+                    acc.TotalAmount = balance;
+                    var lastTransaction = transactions.LastOrDefault();
+                    acc.LastTransactionDate = lastTransaction?.DateTime ?? 0;
+                    context.Accounts.Update(acc);
+                    await context.SaveChangesAsync();
+                }
             }
         }
 

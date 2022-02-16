@@ -161,8 +161,8 @@ ORDER  BY total ASC ";
 
         protected override string GetSql()
         {
-            var fromUnix = UnixTimeConverter.ConvertBack(From ?? DateTime.MinValue);
-            var toUnix = UnixTimeConverter.ConvertBack(To ?? DateTime.MaxValue);
+            var fromUnix = UnixTimeConverter.ConvertBack(From ?? DateTime.MinValue.ToLocalTime());
+            var toUnix = UnixTimeConverter.ConvertBack(To ?? DateTime.MaxValue.ToLocalTime());
 
             var dateFilter = $"AND t.datetime BETWEEN {fromUnix} AND {toUnix}";
             string str = this.TopCategory?.Id == null

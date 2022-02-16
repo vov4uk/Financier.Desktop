@@ -14,7 +14,7 @@
             <RowDefinition Height="34"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0">Paste recipes text. Make recipes photo and parse text via Google Lens or other ORC. I'll look for numbers with article symbol.
+        <TextBlock Grid.Row="0">Paste recipes text. Make recipes photo and parse text via Google Lens or other OCR. I'll look for numbers with article symbol.
         <LineBreak/> For example: "123.45 A", "-54,32-A", "100 Б", "123.01 a"
         </TextBlock>
         <Grid Grid.Column="0"
