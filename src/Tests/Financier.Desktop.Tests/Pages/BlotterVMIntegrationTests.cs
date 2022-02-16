@@ -222,7 +222,7 @@ namespace Financier.Desktop.Tests.Pages
                     await uow.GetRepository<Transaction>().AddRangeAsync(transactions);
                 }
 
-                await uow.SaveChangesAsync();
+                uow.SaveChanges();
             }
             DbManual.ResetAllManuals();
             await DbManual.SetupAsync(db);
@@ -456,7 +456,7 @@ namespace Financier.Desktop.Tests.Pages
 "[{\"_id\":1,\"from_account_id\":1,\"to_account_id\":3,\"category_id\":0,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-28000,\"to_amount\":1000,\"datetime\":1446967346062,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1447247991064,\"payee_id\":0,\"parent_id\":0,\"updated_on\":0,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,\"blob_key\":null}]";
 
         private const string DuplicateTransactionDiffCurrency =
-"[{\"_id\":1,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-54703,\"to_amount\":0,\"datetime\":1644157337000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,\"payee_id\":0,\"parent_id\":0,\"updated_on\":0,\"remote_key\":null,\"original_currency_id\":2,\"original_from_amount\":-1933,\"blob_key\":null}]";
+"[{\"_id\":1,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-54703,\"to_amount\":0,\"datetime\":1644060576000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,\"payee_id\":0,\"parent_id\":0,\"updated_on\":0,\"remote_key\":null,\"original_currency_id\":2,\"original_from_amount\":-1933,\"blob_key\":null}]";
 
         private const string DuplicateTransactionHomeCurrency =
 "[{\"_id\":1,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-10000,\"to_amount\":0,\"datetime\":1644060576000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,\"payee_id\":0,\"parent_id\":0,\"updated_on\":0,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,\"blob_key\":null}]";

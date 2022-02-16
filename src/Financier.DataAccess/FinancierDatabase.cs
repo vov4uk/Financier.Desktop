@@ -141,7 +141,7 @@ namespace Financier.DataAccess
                         continue;
                     }
                     balance += transaction.FromAmount;
-                    await context.RunningBalance.AddAsync(new RunningBalance { Balance = balance, AccountId = accountId, TransactionId = transaction.Id });
+                    context.RunningBalance.Add(new RunningBalance { Balance = balance, AccountId = accountId, TransactionId = transaction.Id });
                 }
 
                 var acc = context.Accounts.FirstOrDefault(x => x.Id == accountId);
