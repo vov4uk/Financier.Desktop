@@ -1,4 +1,5 @@
 ﻿using Financier.Common.Entities;
+using Financier.Converters;
 using Financier.DataAccess;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
@@ -181,6 +182,79 @@ namespace Financier.Desktop.Tests.Pages
             Assert.Equal(balanceJson, JsonConvert.SerializeObject(result.Balances.OrderByDescending(x => x.TransactionId)));
             Assert.Equal(fromAmount, result.Transactions[1].FromAmount);
             Assert.Equal(originFromAmount, result.Transactions[1].OriginalFromAmount);
+        }
+
+        [Fact]
+        public async Task Filter_ApplyFilter_ReturnFilteredTransaction()
+        {
+            db = new FinancierDatabase();
+            await db.SeedAsync();
+            using (var uow = db.CreateUnitOfWork())
+            {
+                await uow.GetRepository<Currency>().AddRangeAsync(Currencies());
+                await uow.GetRepository<Account>().AddRangeAsync(Accounts());
+                await uow.GetRepository<Category>().AddRangeAsync(Categoires());
+                await uow.GetRepository<Location>().AddRangeAsync(Locations());
+                await uow.GetRepository<Payee>().AddRangeAsync(Payees());
+                await uow.GetRepository<Project>().AddRangeAsync(Projects());
+                await uow.GetRepository<Transaction>().AddRangeAsync(FilterTransactions());
+
+                uow.SaveChanges();
+            }
+            DbManual.ResetAllManuals();
+            await DbManual.SetupAsync(db);
+
+            var vm = new BlotterVM(db, dialogMock.Object);
+
+           // await db.SaveAsFile(@"c:\\test.db");
+            await vm.RefreshDataCommand.ExecuteAsync();
+            Assert.Equal(18, vm.Entities.Count);
+
+            await vm.ClearFiltersCommand.ExecuteAsync();
+            vm.PeriodType = PeriodType.Custom;
+            vm.From = UnixTimeConverter.Convert(1644825373000);
+            await vm.RefreshDataCommand.ExecuteAsync();
+            Assert.Equal(7, vm.Entities.Count);
+
+            await vm.ClearFiltersCommand.ExecuteAsync();
+            vm.Category = DbManual.Category.FirstOrDefault(x => x.Id == 37);
+            await vm.RefreshDataCommand.ExecuteAsync();
+            Assert.Equal(5, vm.Entities.Count);
+
+            await vm.ClearFiltersCommand.ExecuteAsync();
+            vm.Account = DbManual.Account.FirstOrDefault(x => x.Id == 1);
+            await vm.RefreshDataCommand.ExecuteAsync();
+            Assert.Equal(5, vm.Entities.Count);
+
+            await vm.ClearFiltersCommand.ExecuteAsync();
+            vm.Project = DbManual.Project.FirstOrDefault(x => x.Id == 1);
+            await vm.RefreshDataCommand.ExecuteAsync();
+            Assert.Equal(1, vm.Entities.Count);
+
+            await vm.ClearFiltersCommand.ExecuteAsync();
+            vm.Location = DbManual.Location.FirstOrDefault(x => x.Id == 1);
+            await vm.RefreshDataCommand.ExecuteAsync();
+            Assert.Equal(4, vm.Entities.Count);
+
+            await vm.ClearFiltersCommand.ExecuteAsync();
+            vm.Payee = DbManual.Payee.FirstOrDefault(x => x.Id == 1);
+            await vm.RefreshDataCommand.ExecuteAsync();
+            Assert.Equal(1, vm.Entities.Count);
+
+            await vm.ClearFiltersCommand.ExecuteAsync();
+            vm.From = UnixTimeConverter.Convert(1645004465000);
+            await vm.RefreshDataCommand.ExecuteAsync();
+            Assert.Empty(vm.Entities);
+
+            await vm.ClearFiltersCommand.ExecuteAsync();
+            vm.Payee = DbManual.Payee.FirstOrDefault(x => x.Id == 2);
+            vm.Location = DbManual.Location.FirstOrDefault(x => x.Id == 1);
+            vm.Project = DbManual.Project.FirstOrDefault(x => x.Id == 1);
+            vm.Account = DbManual.Account.FirstOrDefault(x => x.Id == 2);
+            vm.Category = DbManual.Category.FirstOrDefault(x => x.Id == 37);
+            vm.From = UnixTimeConverter.Convert(1644825372000);
+            await vm.RefreshDataCommand.ExecuteAsync();
+            Assert.Equal(1, vm.Entities.Count);
         }
 
         private async Task SetupDb(List<Transaction> transactions = null)
@@ -390,11 +464,30 @@ namespace Financier.Desktop.Tests.Pages
         private List<Account> Accounts()
         {
             return JsonDeserializer.Deserialize<Account>(
-"[" +
-"{\"_id\":1,\"title\":\"Мій Гаманець\",\"creation_date\":1640014165164,\"currency_id\":1,\"total_amount\":0,\"type\":\"CASH\",\"issuer\":null,\"number\":null,\"sort_order\":1,\"is_active\":1,\"is_include_into_totals\":1,\"last_category_id\":0,\"last_account_id\":12,\"total_limit\":0,\"card_issuer\":null,\"closing_day\":0,\"payment_day\":0,\"note\":null,\"last_transaction_date\":1644826445000,\"updated_on\":0,\"remote_key\":null}," +
-"{\"_id\":2,\"title\":\"Мій Monobank\",\"creation_date\":1640014146783,\"currency_id\":1,\"total_amount\":0,\"type\":\"BANK\",\"issuer\":\"Monobank\",\"number\":null,\"sort_order\":2,\"is_active\":0,\"is_include_into_totals\":1,\"last_category_id\":0,\"last_account_id\":8,\"total_limit\":0,\"card_issuer\":null,\"closing_day\":0,\"payment_day\":0,\"note\":null,\"last_transaction_date\":1468056119365,\"updated_on\":0,\"remote_key\":null}," +
-"{\"_id\":3,\"title\":\"USD\",         \"creation_date\":1640013732451,\"currency_id\":2,\"total_amount\":0,\"type\":\"CASH\",\"issuer\":null,\"number\":null,\"sort_order\":3,\"is_active\":0,\"is_include_into_totals\":1,\"last_category_id\":0,\"last_account_id\":25,\"total_limit\":0,\"card_issuer\":null,\"closing_day\":0,\"payment_day\":0,\"note\":null,\"last_transaction_date\":1643471070411,\"updated_on\":0,\"remote_key\":null}" +
-"]");
+"[{\"_id\":1,\"title\":\"Мій Гаманець\",\"creation_date\":1640014165164,\"currency_id\":1,\"total_amount\":0,\"type\":\"CASH\",\"issuer\":null,\"number\":null,\"sort_order\":1,\"is_active\":1,\"is_include_into_totals\":1,\"last_category_id\":0,\"last_account_id\":12,\"total_limit\":0,\"card_issuer\":null,\"closing_day\":0,\"payment_day\":0,\"note\":null,\"last_transaction_date\":1644826445000,\"updated_on\":0,\"remote_key\":null}," +
+ "{\"_id\":2,\"title\":\"Мій Monobank\",\"creation_date\":1640014146783,\"currency_id\":1,\"total_amount\":0,\"type\":\"BANK\",\"issuer\":\"Monobank\",\"number\":null,\"sort_order\":2,\"is_active\":0,\"is_include_into_totals\":1,\"last_category_id\":0,\"last_account_id\":8,\"total_limit\":0,\"card_issuer\":null,\"closing_day\":0,\"payment_day\":0,\"note\":null,\"last_transaction_date\":1468056119365,\"updated_on\":0,\"remote_key\":null}," +
+ "{\"_id\":3,\"title\":\"USD\",         \"creation_date\":1640013732451,\"currency_id\":2,\"total_amount\":0,\"type\":\"CASH\",\"issuer\":null,\"number\":null,\"sort_order\":3,\"is_active\":0,\"is_include_into_totals\":1,\"last_category_id\":0,\"last_account_id\":25,\"total_limit\":0,\"card_issuer\":null,\"closing_day\":0,\"payment_day\":0,\"note\":null,\"last_transaction_date\":1643471070411,\"updated_on\":0,\"remote_key\":null}]");
+        }
+
+        private List<Location> Locations()
+        {
+            return JsonDeserializer.Deserialize<Location>(
+"[{\"_id\":1,\"name\":\"Ашан\",    \"datetime\":1509007949,\"provider\":\"manual\",\"accuracy\":0.0,\"latitude\":49.8122,\"longitude\":23.9859,\"is_payee\":0,\"resolved_address\":null,\"count\":0,\"updated_on\":0,\"remote_key\":null,\"title\":\"Ашан\",\"sort_order\":0,\"is_active\":1}," +
+ "{\"_id\":2,\"name\":\"MusicLab\",\"datetime\":1509007949,\"provider\":\"manual\",\"accuracy\":0.0,\"latitude\":49.8409,\"longitude\":24.0336,\"is_payee\":0,\"resolved_address\":null,\"count\":0,\"updated_on\":0,\"remote_key\":null,\"title\":\"MusicLab\",\"sort_order\":0,\"is_active\":0}]");
+        }
+
+        private List<Project> Projects()
+        {
+            return JsonDeserializer.Deserialize<Project>(
+"[{\"_id\":1,\"title\":\"Ремонт\",    \"is_active\":1,\"updated_on\":0,\"remote_key\":null,\"sort_order\":0}," +
+ "{\"_id\":2,\"title\":\"Автомобіль\",\"is_active\":0,\"updated_on\":0,\"remote_key\":null,\"sort_order\":0}]");
+        }
+
+        private List<Payee> Payees()
+        {
+            return JsonDeserializer.Deserialize<Payee>(
+"[{\"_id\":1,\"title\":\"Work\",\"last_category_id\":37,\"updated_on\":0,\"remote_key\":null,\"sort_order\":0,\"is_active\":0}," +
+ "{\"_id\":2,\"title\":\"Wife\",\"last_category_id\":37,\"updated_on\":0,\"remote_key\":null,\"sort_order\":0,\"is_active\":1}]");
         }
 
         private List<Category> Categoires()
@@ -423,6 +516,38 @@ namespace Financier.Desktop.Tests.Pages
 "{\"_id\":27171,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":43,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-3269,\"to_amount\":0,\"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044157,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,\"blob_key\":null}," +
 "{\"_id\":27172,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-2729,\"to_amount\":0,\"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044157,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,\"blob_key\":null}" +
 "]");
+        }
+
+        private List<Transaction> FilterTransactions()
+        {
+            return JsonDeserializer.Deserialize<Transaction>(
+"[" +
+"{\"_id\":27185,\"from_account_id\":1,\"to_account_id\":0,\"category_id\":37, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-1000,   \"to_amount\":0,     \"datetime\":1644826445000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644826455270,\"payee_id\":0,\"parent_id\":0,    \"updated_on\":1644826455270,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27184,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37, \"project_id\":1,\"location_id\":1,\"note\":null,\"from_amount\":25000,   \"to_amount\":0,     \"datetime\":1644826403000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644826437796,\"payee_id\":2,\"parent_id\":0,    \"updated_on\":1644826437796,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27183,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-10000,  \"to_amount\":0,     \"datetime\":1644825688000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825702055,\"payee_id\":0,\"parent_id\":0,    \"updated_on\":1644825702055,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27182,\"from_account_id\":1,\"to_account_id\":2,\"category_id\":0,  \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-100000, \"to_amount\":100000,\"datetime\":1644825630000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825646822,\"payee_id\":0,\"parent_id\":0,    \"updated_on\":1644825646822,\"remote_key\":null,\"original_currency_id\":1,\"original_from_amount\":-100000,\"blob_key\":null}," +
+"{\"_id\":27181,\"from_account_id\":1,\"to_account_id\":0,\"category_id\":76, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":3789548, \"to_amount\":0,     \"datetime\":1644825556000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825621767,\"payee_id\":0,\"parent_id\":0,    \"updated_on\":1644825621767,\"remote_key\":null,\"original_currency_id\":2,\"original_from_amount\":135341, \"blob_key\":null}," +
+"{\"_id\":27180,\"from_account_id\":1,\"to_account_id\":0,\"category_id\":43, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-65180,  \"to_amount\":0,     \"datetime\":1644825471000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825832437,\"payee_id\":0,\"parent_id\":0,    \"updated_on\":1644825832437,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27179,\"from_account_id\":3,\"to_account_id\":0,\"category_id\":37, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":86000,   \"to_amount\":0,     \"datetime\":1644825373000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825419946,\"payee_id\":1,\"parent_id\":0,    \"updated_on\":1644825419946,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27178,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":76, \"project_id\":0,\"location_id\":2,\"note\":null,\"from_amount\":-9650,   \"to_amount\":0,     \"datetime\":1644243112000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,            \"payee_id\":0,\"parent_id\":0,    \"updated_on\":0,            \"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27177,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":43, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-15000,  \"to_amount\":0,     \"datetime\":1644321216000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,            \"payee_id\":0,\"parent_id\":0,    \"updated_on\":0,            \"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27176,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":43, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-15000,  \"to_amount\":0,     \"datetime\":1644321311000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,            \"payee_id\":0,\"parent_id\":0,    \"updated_on\":0,            \"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27175,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":76, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-34000,  \"to_amount\":0,     \"datetime\":1644401178000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,            \"payee_id\":0,\"parent_id\":0,    \"updated_on\":0,            \"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27174,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":84, \"project_id\":0,\"location_id\":1,\"note\":null,\"from_amount\":-1450,   \"to_amount\":0,     \"datetime\":1644504538000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,            \"payee_id\":0,\"parent_id\":0,    \"updated_on\":0,            \"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27173,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":76, \"project_id\":0,\"location_id\":1,\"note\":null,\"from_amount\":-5800,   \"to_amount\":0,     \"datetime\":1644567051000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,            \"payee_id\":0,\"parent_id\":0,    \"updated_on\":0,            \"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27172,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-2729,   \"to_amount\":0,     \"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044157,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27171,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":84, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-3269,   \"to_amount\":0,     \"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044157,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27170,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":84, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-834,    \"to_amount\":0,     \"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044157,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27169,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":84, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-834,    \"to_amount\":0,     \"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044157,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27168,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":68, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-3718,   \"to_amount\":0,     \"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044157,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27167,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-5499,   \"to_amount\":0,     \"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044157,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27166,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-3892,   \"to_amount\":0,     \"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044157,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27165,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-3455,   \"to_amount\":0,     \"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044156,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":1644825044156,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27164,\"from_account_id\":2,\"to_account_id\":1,\"category_id\":0,  \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-840000, \"to_amount\":840000,\"datetime\":1644743069000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,            \"payee_id\":0,\"parent_id\":0,    \"updated_on\":0,            \"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27163,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":84, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-10790,  \"to_amount\":0,     \"datetime\":1644744548000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,            \"payee_id\":0,\"parent_id\":0,    \"updated_on\":0,            \"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27162,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-19000,  \"to_amount\":0,     \"datetime\":1644744623000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825079059,\"payee_id\":2,\"parent_id\":0,    \"updated_on\":1644825079060,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27161,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":76, \"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-10440,  \"to_amount\":0,     \"datetime\":1644744934000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,            \"payee_id\":0,\"parent_id\":0,    \"updated_on\":0,            \"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}," +
+"{\"_id\":27160,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":-1, \"project_id\":0,\"location_id\":1,\"note\":null,\"from_amount\":-24230,  \"to_amount\":0,     \"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":1644825044154,\"payee_id\":0,\"parent_id\":0,    \"updated_on\":1644825044156,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,      \"blob_key\":null}]");
         }
 
         private const string DuplicateTransferHomeCurrency =

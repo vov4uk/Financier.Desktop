@@ -142,6 +142,8 @@
         private async Task ClearFilters()
         {
             PeriodType = PeriodType.AllTime;
+            _from = null;
+            _to = null;
             Account = default;
             Category = default;
             Payee = default;
