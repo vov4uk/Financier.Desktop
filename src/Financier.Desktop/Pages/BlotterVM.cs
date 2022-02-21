@@ -12,7 +12,6 @@
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;
     using Mvvm.Async;
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -225,6 +224,10 @@
                 transfer.Id = 0;
                 transfer.DateTime = UnixTimeConverter.ConvertBack(DateTime.Now);
             }
+            if (id == 0 && Account?.Id != null)
+            {
+                transfer.FromAccountId = (int)Account.Id;
+            }
 
             TransferControlVM dialogVm = new TransferControlVM(new TransferDto(transfer));
 
@@ -233,7 +236,6 @@
             var output = result as TransferDto;
             if (output != null)
             {
-                Logger.Debug(JsonConvert.SerializeObject(output));
                 MapperHelper.MapTransfer(result as TransferDto, transfer);
                 await db.InsertOrUpdateAsync(new[] { transfer });
 
@@ -249,12 +251,14 @@
             Transaction transaction = await db.GetOrCreateTransactionAsync(id);
             IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(id);
 
-            Logger.Debug(JsonConvert.SerializeObject(transaction));
-            Logger.Debug(JsonConvert.SerializeObject(subTransactions));
             if (isDuplicate)
             {
                 transaction.Id = 0;
                 transaction.DateTime = UnixTimeConverter.ConvertBack(DateTime.Now);
+            }
+            if (id == 0 && Account?.Id != null)
+            {
+                transaction.FromAccountId = (int)Account.Id;
             }
 
             var transactionDto = new TransactionDto(transaction, subTransactions);
@@ -275,7 +279,6 @@
             var resultVm = result as TransactionDto;
             if (resultVm != null)
             {
-                Logger.Debug(JsonConvert.SerializeObject(resultVm));
                 var resultTransactions = new List<Transaction>();
 
                 MapperHelper.MapTransaction(resultVm, transaction);
@@ -331,7 +334,6 @@
                     }
                 }
 
-                Logger.Debug(JsonConvert.SerializeObject(resultTransactions));
                 await db.InsertOrUpdateAsync(resultTransactions);
 
                 var transactionsIds = resultTransactions.Select(x => x.Id).Distinct().ToList();
