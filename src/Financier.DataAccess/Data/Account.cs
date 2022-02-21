@@ -5,15 +5,15 @@ namespace Financier.DataAccess.Data
 {
     [DebuggerDisplay("{Title}")]
     [Table(Backup.ACCOUNT_TABLE)]
-    public class Account : Entity, IActive
+    public class Account : Entity, IIdentity
     {
-        [Column(IdColumn)]
+        [Column(Backup.IdColumn)]
         public int Id { get; set; } = -1;
 
-        [Column(IsActiveColumn)]
+        [Column(Backup.IsActiveColumn)]
         public bool IsActive { get; set; } = true;
 
-        [Column(TitleColumn)]
+        [Column(Backup.TitleColumn)]
         public string Title { get; set; }
 
         [Column("creation_date")]
@@ -44,7 +44,7 @@ namespace Financier.DataAccess.Data
         [Column("total_limit")]
         public long LimitAmount { get; set; }
 
-        [Column(SortOrderColumn)]
+        [Column(Backup.SortOrderColumn)]
         public int SortOrder { get; set; }
 
         [Column("is_include_into_totals")]
@@ -65,12 +65,9 @@ namespace Financier.DataAccess.Data
         [Column("note")]
         public string Note { get; set; }
 
-        [Column(UpdatedOnColumn)]
+        [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
 
         public virtual Currency Currency { get; set; }
-
-        [NotMapped]
-        public string AmountTitle => Utils.Utils.SetAmountText(Currency, TotalAmount, false);
     }
 }

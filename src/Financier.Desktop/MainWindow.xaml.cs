@@ -9,6 +9,7 @@ using Financier.Desktop.Helpers;
 using Financier.DataAccess;
 using Financier.Adapter;
 using Financier.DataAccess.View;
+using Financier.Common.Model;
 
 namespace Financier.Desktop
 {
@@ -27,12 +28,12 @@ namespace Financier.Desktop
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
         }
 
-        FinancierVM ViewModel { get; }
+        MainWindowVM ViewModel { get; }
 
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new FinancierVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new BankHelperFactory());
+            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new BankHelperFactory());
 
             DataContext = ViewModel;
             Logger.Info("App started");
@@ -48,7 +49,6 @@ namespace Financier.Desktop
                 {
                     Logger.Info($"Loaded backup : {backupFile}");
                     await ViewModel.OpenBackup(backupFile);
-                    await ViewModel.MenuNavigateCommand.ExecuteAsync(typeof(BlotterTransactions));
                 }
             }
         }

@@ -26,7 +26,7 @@ Beer Baltyka 0 50,0 A
 Milk Molokia 2.5% 25.0 A
 25.50 A
 100500.0
-100600
+100600 Балтика
 Discount -0.5 A";
             vm.CalculateCurrentAmount();
 
@@ -49,6 +49,7 @@ Milk Molokia 2.5%
 
 
 100500.0
+Балтика
 100600
 Discount
 -0.5-б 
@@ -57,7 +58,7 @@ Total
             string expected = @"Beer Baltyka 0 50,0-A
 Milk Molokia 2.5% 25.0-а
 Milk Molokia 2.5% 25.50-A
-100500.0 100600 Discount -0.5-б
+100500.0 Балтика 100600 Discount -0.5-б
 Total 100500";
 
             var actual = RecipiesHelper.FormatText(text);

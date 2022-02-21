@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Financier.Desktop.Views.TagView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="400">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <DataGrid Margin="5"
+                  ItemsSource="{Binding Path=Entities}"
+                  SelectedItem="{Binding SelectedValue}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  FontSize="14"
+                  IsReadOnly="True">
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick"
+                              Command="{Binding EditCommand}"
+                              CommandParameter="{Binding SelectedValue}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
+                <DataGridTemplateColumn Header="Active" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

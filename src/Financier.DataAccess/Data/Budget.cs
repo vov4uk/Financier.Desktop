@@ -7,10 +7,10 @@ namespace Financier.DataAccess.Data
     [Table(Backup.BUDGET_TABLE)]
     public class Budget : Entity, IIdentity
     {
-        [Column(IdColumn)]
+        [Column(Backup.IdColumn)]
         public int Id { get; set; } = -1;
 
-        [Column(TitleColumn)]
+        [Column(Backup.TitleColumn)]
         public string Title { get; set; }
 
         [Column("category_id")]
@@ -58,7 +58,7 @@ namespace Financier.DataAccess.Data
         [Column("parent_budget_id")]
         public long ParentBudgetId { get; set; }
 
-        [Column(UpdatedOnColumn)]
+        [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
 
         [Column("remote_key")]

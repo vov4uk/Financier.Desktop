@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Financier.Common.Filters.LocationFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities"
+             MinWidth="140">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <GroupBox Header="Location"
+              BorderThickness="0">
+        <ComboBox ItemTemplate="{StaticResource ResourceKey=IActive}"
+                  TextSearch.TextPath="Title"
+                  IsEditable="True"
+                  Margin="2 0"
+                  SelectedItem="{Binding Path=Location}"
+                  ItemsSource="{Binding Source={x:Static fcrd:DbManual.Location}, Mode=OneWay}" />
+    </GroupBox>
+</UserControl>

@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using Financier.DataAccess.Data;
-    using Financier.DataAccess.Monobank;
+    using Financier.Common.Model;
+    using Financier.Desktop.Wizards;
     using Financier.Desktop.Wizards.MonoWizard.ViewModel;
     using Financier.Tests.Common;
     using Xunit;
@@ -24,7 +24,7 @@
         [Fact]
         public void MonoAccount_BalanceMatch_StartTransactionSetted()
         {
-            var account = new Account() { TotalAmount = 10000 };
+            var account = new AccountFilterModel() { TotalAmount = 10000 };
             var startTr = new BankTransaction() { Balance = 100.0 };
             var transactions = new List<BankTransaction>()
             {
@@ -41,7 +41,7 @@
         [Fact]
         public void MonoAccount_BalanceNotMatch_StartTransactionNotSetted()
         {
-            var account = new Account() { TotalAmount = 10001 };
+            var account = new AccountFilterModel() { TotalAmount = 10001 };
             var transactions = new List<BankTransaction>()
             {
                 new BankTransaction() { Balance = 99.0 },

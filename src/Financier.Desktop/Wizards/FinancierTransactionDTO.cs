@@ -10,6 +10,7 @@ namespace Financier.Desktop.Wizards
         private int order;
         private int projectId;
         private int toAccountId;
+
         public int CategoryId
         {
             get => categoryId;
@@ -36,7 +37,7 @@ namespace Financier.Desktop.Wizards
             }
         }
 
-        public int MonoAccountId { get; set; }
+        public int? MonoAccountId { get; set; }
 
         public string Note
         {

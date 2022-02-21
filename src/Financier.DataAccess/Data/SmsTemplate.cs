@@ -3,15 +3,15 @@
 namespace Financier.DataAccess.Data
 {
     [Table(Backup.SMS_TEMPLATES_TABLE)]
-    public class SmsTemplate : Entity, IActive
+    public class SmsTemplate : Entity
     {
-        [Column(IdColumn)]
+        [Column(Backup.IdColumn)]
         public int Id { get; set; } = -1;
 
-        [Column(IsActiveColumn)]
+        [Column(Backup.IsActiveColumn)]
         public bool IsActive { get; set; } = true;
 
-        [Column(TitleColumn)]
+        [Column(Backup.TitleColumn)]
         public string Title { get; set; }
 
         [ForeignKey("Category")]
@@ -28,7 +28,7 @@ namespace Financier.DataAccess.Data
         [Column("is_income")]
         public bool IsIncome { get; set; }
 
-        [Column(UpdatedOnColumn)]
+        [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
 
         public Account Account { get; set; }

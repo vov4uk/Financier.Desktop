@@ -7,13 +7,13 @@ namespace Financier.DataAccess.Data
     [Table(Backup.CURRENCY_TABLE)]
     public class Currency : Entity, IIdentity
     {
-        [Column(IdColumn)]
+        [Column(Backup.IdColumn)]
         public int Id { get; set; } = -1;
 
-        [Column(IsActiveColumn)]
+        [Column(Backup.IsActiveColumn)]
         public bool IsActive { get; set; } = true;
 
-        [Column(TitleColumn)]
+        [Column(Backup.TitleColumn)]
         public string Title { get; set; }
 
         [Column("name")]
@@ -37,20 +37,7 @@ namespace Financier.DataAccess.Data
         [Column("group_separator")]
         public string GroupSeparator { get; set; }
 
-        [Column(UpdatedOnColumn)]
+        [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
-
-        [NotMapped]
-        public static Currency Empty => new Currency
-        {
-            Id = 0,
-            Name = "",
-            Title = "Default",
-            Symbol = "",
-            SymbolFormat = "RS",
-            Decimals = 2,
-            DecimalSeparator = "'.'",
-            GroupSeparator = "','"
-        };
     }
 }

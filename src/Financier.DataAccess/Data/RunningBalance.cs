@@ -4,9 +4,9 @@ using System.Diagnostics;
 
 namespace Financier.DataAccess.Data
 {
-    [DebuggerDisplay("(TranId = {Transaction.Id}) : {Balance}")]
+    [DebuggerDisplay("(TranId = {TransactionId}) : {Balance}")]
     [Table("running_balance")]
-    public class RunningBalance
+    public class RunningBalance : Entity
     {
         [ForeignKey("Transaction")]
         [Key, Column("transaction_id")]
@@ -24,6 +24,6 @@ namespace Financier.DataAccess.Data
         public long Datetime { get; set; }
 
         [Column("balance")]
-        public int Balance { get; set; }
+        public long Balance { get; set; }
     }
 }

@@ -1,0 +1,77 @@
+<UserControl x:Class="Financier.Reports.ReportStructureIncomeExpense"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
+             xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="boolToVis" />
+            <converters:InvertedBooleanToVisibilityConverter x:Key="invBoolToVis"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Row="0">
+            <DockPanel>
+                <GroupBox Header="Type"
+                          BorderThickness="0">
+                    <DockPanel Width="56">
+                        <RadioButton ToolTip="Expense"
+                                     Style="{StaticResource IconRadioButton}"
+                                     IsChecked="True" >
+                            <Image Source="{StaticResource report_expense}"/>
+                        </RadioButton>
+                        <RadioButton ToolTip="Income"
+                                     IsChecked="{Binding IsIncome, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource IconRadioButton}">
+                            <Image Source="{StaticResource report_income}"/>
+                        </RadioButton>
+                    </DockPanel>
+                </GroupBox>
+                <GroupBox Header="View"
+                          BorderThickness="0">
+                    <DockPanel Width="84">
+                        <RadioButton ToolTip="Pie chart"
+                                     x:Name="PieBtn"
+                                     Style="{StaticResource IconRadioButton}">
+                            <Image Source="{StaticResource pie_icon}"/>
+                        </RadioButton>
+                        <RadioButton ToolTip="Bar chart"
+                                     x:Name="BarBtn"
+                                     IsChecked="True"
+                                     Style="{StaticResource IconRadioButton}" >
+                            <Image Source="{StaticResource bar_icon}"/>
+                        </RadioButton>
+                        <RadioButton ToolTip="Grid"
+                                     x:Name="GridBtn"
+                                     Style="{StaticResource IconRadioButton}">
+                            <Image Source="{StaticResource grid_icon}"/>
+                        </RadioButton>
+                    </DockPanel>
+                </GroupBox>
+                <filters:StartYearMonthFilter Margin="4 2" />
+                <filters:EndYearMonthFilter   Margin="4 2" />
+                <Button Grid.Column="1"
+                        Style="{StaticResource RefreshButton}" />
+            </DockPanel>
+        </Grid>
+        <oxy:PlotView Grid.Row="1"
+                      Model="{Binding PlotModel}"
+                      Visibility="{Binding ElementName=PieBtn, Path=IsChecked, Converter={StaticResource boolToVis}}" />
+        <oxy:PlotView Grid.Row="1"
+                      Model="{Binding BarChartModel}"
+                      Visibility="{Binding ElementName=BarBtn, Path=IsChecked, Converter={StaticResource boolToVis}}" />
+        <fcrd:DataGridAutoHeaders Grid.Row="1"
+                                  x:Name="dataGrid"
+                                  Visibility="{Binding ElementName=GridBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"
+                                  ItemsSource="{Binding Path=Entities}" />
+    </Grid>
+</UserControl>

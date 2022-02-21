@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Financier.DataAccess.Data;
     using Financier.Desktop.Wizards;
     using Financier.Desktop.Wizards.RecipesWizard.ViewModel;
     using Financier.Tests.Common;
@@ -13,22 +12,19 @@
     {
         [Theory]
         [AutoMoqData]
-        public void Constructor_ReceiveParameters_AllPropertiesSeted(List<Category> categories, List<Project> projects, double totalAmount)
+        public void Constructor_ReceiveParameters_AllPropertiesSeted(double totalAmount)
         {
-            var vm = new Page2VM(categories, projects, totalAmount);
+            var vm = new Page2VM(totalAmount);
 
             Assert.Equal(totalAmount, vm.TotalAmount);
             Assert.Equal("Transactions", vm.Title);
             Assert.True(vm.IsValid());
-            Assert.True(vm.Categories.SequenceEqual(categories));
-            Assert.True(vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id)));
         }
 
-        [Theory]
-        [AutoMoqData]
-        public void SetTransactions_ReceiveTransactions_TotalCalculated(List<Category> categories, List<Project> projects)
+        [Fact]
+        public void SetTransactions_ReceiveTransactions_TotalCalculated()
         {
-            var vm = new Page2VM(categories, projects, -100.0);
+            var vm = new Page2VM(-100.0);
 
             var transactions = new List<FinancierTransactionDto>
             {
@@ -45,11 +41,10 @@
             Assert.True(vm.FinancierTransactions.SequenceEqual(transactions));
         }
 
-        [Theory]
-        [AutoMoqData]
-        public void AddRow_Execute_CorrectOrderSeted(List<Category> categories, List<Project> projects)
+        [Fact]
+        public void AddRow_Execute_CorrectOrderSeted()
         {
-            var vm = new Page2VM(categories, projects, 0);
+            var vm = new Page2VM(0);
 
             vm.AddRowCommand.Execute();
 
@@ -57,11 +52,10 @@
             Assert.Equal(1, vm.FinancierTransactions[0].Order);
         }
 
-        [Theory]
-        [AutoMoqData]
-        public void Total_Execute_TotalCalculated(List<Category> categories, List<Project> projects)
+        [Fact]
+        public void Total_Execute_TotalCalculated()
         {
-            var vm = new Page2VM(categories, projects, -100);
+            var vm = new Page2VM(-100);
 
             Assert.Equal(0, vm.CalculatedAmount);
             vm.FinancierTransactions.Add(new () { FromAmount = -10000, Order = 1 });
@@ -70,11 +64,10 @@
             Assert.Equal(0, vm.Diff);
         }
 
-        [Theory]
-        [AutoMoqData]
-        public void Delete_Execute_OrderUpdated(List<Category> categories, List<Project> projects)
+        [Fact]
+        public void Delete_Execute_OrderUpdated()
         {
-            var vm = new Page2VM(categories, projects, -100);
+            var vm = new Page2VM(-100);
 
             Assert.Equal(0, vm.CalculatedAmount);
             FinancierTransactionDto toDelete = new () { FromAmount = -10000, Order = 2 };
@@ -90,9 +83,9 @@
 
         [Theory]
         [AutoMoqData]
-        public void ClearAllNotes_Execute_NotesEmpty(List<Category> categories, List<Project> projects, List<FinancierTransactionDto> transactions)
+        public void ClearAllNotes_Execute_NotesEmpty(List<FinancierTransactionDto> transactions)
         {
-            var vm = new Page2VM(categories, projects, -100);
+            var vm = new Page2VM(-100);
 
             Assert.Equal(0, vm.CalculatedAmount);
 

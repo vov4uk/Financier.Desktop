@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="Financier.Desktop.MonoWizard.View.Page1"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:AmountConverter x:Key="AmountConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock HorizontalAlignment="Center" FontWeight="Bold"
+                   Text="Select account"/>
+        <DataGrid Margin="5" Grid.Row="1" 
+                  ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="false"
+                  IsReadOnly="True"
+                  SelectedItem="{Binding MonoAccount}">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Active">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Ellipse Name="MyImage" Fill="Green" Width="14" Height="14" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsActive}" Value="False">
+                                    <Setter TargetName="MyImage" Property="Fill" Value="Red" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
+                <DataGridTemplateColumn Header="Total Amount">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Right"
+                                       Text="{Binding
+                                              Path=TotalAmount,
+                                              StringFormat=F2,
+                                              Converter={StaticResource AmountConverter}}">
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Currency" Binding="{Binding Path=CurrencyName}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

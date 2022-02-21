@@ -1,0 +1,82 @@
+<UserControl x:Class="Financier.Reports.ReportsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ct="clr-namespace:ChromeTabs;assembly=ChromeTabs"
+             xmlns:fcrd="clr-namespace:Financier.Reports"
+             Name="ReportsCtrl">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Expander Margin="5"
+                  IsExpanded="True"
+                  Background="Transparent"
+                  ExpandDirection="Right">
+            <TreeView Background="Transparent"
+                      Width="250"
+                      ItemsSource="{Binding Path=ReportsInfo, Mode=OneWay}">
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="True" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Path=Child}">
+                        <TextBlock Text="{Binding Path=Name}">
+                             <UIElement.InputBindings>
+                               <MouseBinding Gesture="LeftDoubleClick"
+                                             Command="{Binding ElementName=ReportsCtrl, Path=DataContext.OpenReportCommand}"
+                                             CommandParameter="{Binding Type}" />
+                             </UIElement.InputBindings>
+                        </TextBlock>
+                    </HierarchicalDataTemplate>
+                </ItemsControl.ItemTemplate>
+            </TreeView>
+        </Expander>
+
+        <ct:ChromeTabControl Grid.Column="1"
+                             MinimumTabWidth="200"
+                             CloseTabCommand="{Binding CloseReportCommand}"
+                             ItemsSource="{Binding Path=ReportsVM}"
+                             IsAddButtonVisible="False"
+                             SelectedItem="{Binding Path=SelectedReport}">
+            <FrameworkElement.Resources>
+                <DataTemplate DataType="{x:Type fcrd:ReportByPeriodMonthCrcVM}">
+                    <fcrd:ReportByPeriodMonthCrc />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type fcrd:ReportStructureActivesVM}">
+                    <fcrd:ReportStructureActives />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type fcrd:ReportStructureIncomeExpenseVM}">
+                    <fcrd:ReportStructureIncomeExpense />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type fcrd:ReportDynamicDebitCretitPayeeVM}">
+                    <fcrd:ReportDynamicDebitCretitPayee />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type fcrd:ByCategoryReportVM}">
+                    <fcrd:ByCategoryReportView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type fcrd:ReportDynamicRestVM}">
+                    <fcrd:ReportDynamicRest />
+                </DataTemplate>
+            </FrameworkElement.Resources>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=Header}"
+                               VerticalAlignment="Center"
+                               ToolTip="{Binding Path=Header}"
+                               TextTrimming="WordEllipsis"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ct:ChromeTabControl>
+    </Grid>
+</UserControl>

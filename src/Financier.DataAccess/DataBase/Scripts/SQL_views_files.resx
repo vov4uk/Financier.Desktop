@@ -166,9 +166,6 @@
   <data name="_081_v_currency_exchange_rate_" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>view\081[v_currency_exchange_rate].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="_082_v_report_category_v2_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\082[v_report_category_v2].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
-  </data>
   <data name="_083_v_account_" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>view\083[v_account].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>

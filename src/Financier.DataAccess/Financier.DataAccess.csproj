@@ -97,7 +97,6 @@
     <EmbeddedResource Include="DataBase\Scripts\view\064[v_report_payee].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\084[v_report_transactions].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\083[v_account].sql" />
-    <EmbeddedResource Include="DataBase\Scripts\view\082[v_report_category_v2].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\081[v_currency_exchange_rate].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\080[v_transaction_attributes].sql" />
   </ItemGroup>
@@ -105,6 +104,7 @@
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="5.0.0-rc2" />
   </ItemGroup>
 
@@ -141,9 +141,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Financier.DataAccess.Tests</_Parameter1>
     </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+        <_Parameter1>Financier.Desktop.Tests</_Parameter1>
+      </AssemblyAttribute>
   </ItemGroup>
-
 </Project>

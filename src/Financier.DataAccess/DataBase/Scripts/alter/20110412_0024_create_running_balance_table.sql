@@ -3,7 +3,7 @@ create table if not exists running_balance
     account_id integer not null,
     transaction_id integer not null,
     datetime long not null,
-    balance integer not null,
+    balance long not null,
     PRIMARY KEY (account_id, transaction_id)
 );
 

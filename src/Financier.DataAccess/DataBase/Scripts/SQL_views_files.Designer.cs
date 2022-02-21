@@ -65,18 +65,18 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///SELECT
         ///    t._id as _id,
         ///    t.parent_id as parent_id,
-        ///    a1._id as from_account_id,		
+        ///    a1._id as from_account_id,
         ///    a1.title as from_account_title,
         ///    a1.is_include_into_totals as from_account_is_include_into_totals,
         ///    c1._id as from_account_currency_id,
-        ///    a2._id as to_account_id,		
+        ///    a2._id as to_account_id,
         ///    a2.title as to_account_title,
         ///    c2._id as to_account_currency_id,
         ///    cat._id as category_id,
         ///    cat.title as category_title,
         ///    cat.left as category_left,
         ///    cat.right as category_right,
-        /// [rest of string was truncated]&quot;;.
+        ///     [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string _010_v_all_transactions_ {
             get {
@@ -389,43 +389,14 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///                      AND t1.to_currency_id = t.to_currency_id
         ///                      AND t1.rate_date &gt; t.rate_date
         ///               ORDER  BY rate_date
-        ///               LIMIT  1), 253402293599000) rate_date_end,
+        ///               LIMIT  1), 253402293599000) AS rate_date_end,
         ///       rate,
         ///       updated_on,
-        ///       re [rest of string was truncated]&quot;;.
+        ///       [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string _081_v_currency_exchange_rate_ {
             get {
                 return ResourceManager.GetString("_081_v_currency_exchange_rate_", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CREATE VIEW v_report_category_v2 AS
-        ///SELECT t._id,
-        ///       t.parent_id,
-        ///       t.name,
-        ///       t.datetime,
-        ///       t.from_account_currency_id,
-        ///       t.from_amount,
-        ///       t.to_account_currency_id,
-        ///       t.to_amount,
-        ///       t.original_currency_id,
-        ///       t.original_from_amount,
-        ///       t.is_transfer,
-        ///       t.from_account_id,
-        ///       t.to_account_id,
-        ///       t.category_id,
-        ///       t.category_left,
-        ///       t.category_right,
-        ///       t.project_id,
-        ///       t.location_id,
-        ///       t.payee_id,
-        ///       t.st [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string _082_v_report_category_v2_ {
-            get {
-                return ResourceManager.GetString("_082_v_report_category_v2_", resourceCulture);
             }
         }
         
@@ -464,11 +435,11 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///   Looks up a localized string similar to CREATE VIEW v_report_transactions AS
         ///SELECT t._id,
         ///       t.from_account_id,
+        ///       fc.is_include_into_totals as from_account_is_include_into_totals,
         ///       t.to_account_id,
         ///       t.category_id,
         ///       t.project_id,
         ///       t.location_id,
-        ///       t.note,
         ///       t.from_amount,
         ///       t.to_amount,
         ///       t.datetime,
@@ -481,9 +452,7 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///       t.template_name,
         ///       t.recurrence,
         ///       t.notification_options,
-        ///       t.status,
-        ///       t.attached_picture,
-        ///       t.is_c [rest of string was truncated]&quot;;.
+        ///  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string _084_v_report_transactions_ {
             get {

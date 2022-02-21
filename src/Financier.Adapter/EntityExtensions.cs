@@ -22,7 +22,7 @@ namespace Financier.Adapter
                 return string.Empty;
             }
 
-            sb.AppendLine($"{Entity.ENTITY}:{classArttr.Name}");
+            sb.AppendLine($"{Backup.ENTITY}:{classArttr.Name}");
 
             var dict = new List<KeyValuePair<int, string>>();
             List<string> columnsOrder = entityColumnsOrder[classArttr.Name];
@@ -49,7 +49,7 @@ namespace Financier.Adapter
             {
                 sb.AppendLine(pair.Value);
             }
-            sb.AppendLine(Entity.END);
+            sb.AppendLine(Backup.ENTITY_END);
             return sb.ToString();
         }
     }

@@ -1,40 +1,56 @@
 ﻿using Financier.DataAccess.Data;
-using Financier.Desktop.Converters;
+using Financier.Converters;
 using System;
+using Financier.Common.Model;
+using Financier.Common.Entities;
+using System.Linq;
+using Financier.Common.Utils;
 
 namespace Financier.Desktop.Data
 {
     public class TransferDto : BaseTransactionDto
     {
-        private Account fromAccount;
+        private AccountFilterModel fromAccount;
         private int fromAccountId;
         private long fromAmount;
-        private Account toAccount;
+        private AccountFilterModel toAccount;
         private int toAccountId;
         private long toAmount;
 
+        public TransferDto() { }
+
         public TransferDto(Transaction transaction)
         {
-            Id = transaction.Id;
-            FromAccountId = transaction.FromAccountId;
-            ToAccountId = transaction.ToAccountId;
-            Note = transaction.Note;
-            FromAmount = transaction.FromAmount;
-            ToAmount = transaction.ToAmount;
-            Date = UnixTimeConverter.Convert(transaction.DateTime).Date;
-            Time = UnixTimeConverter.Convert(transaction.DateTime);
+            id = transaction.Id;
+            fromAccountId = transaction.FromAccountId;
+            toAccountId = transaction.ToAccountId;
+            note = transaction.Note;
+            fromAmount = transaction.FromAmount;
+            toAmount = transaction.ToAmount;
+            date = UnixTimeConverter.Convert(transaction.DateTime).Date;
+            time = UnixTimeConverter.Convert(transaction.DateTime);
+            fromAccount = DbManual.Account.FirstOrDefault(x => x.Id == fromAccountId);
+            toAccount = DbManual.Account.FirstOrDefault(x => x.Id == toAccountId);
         }
 
-        public Account FromAccount
+        public AccountFilterModel FromAccount
         {
             get => fromAccount;
             set
             {
-                fromAccount = value;
-                RaisePropertyChanged(nameof(FromAccount));
-                RaisePropertyChanged(nameof(RateString));
-                RaisePropertyChanged(nameof(IsToAmountVisible));
+                if (SetProperty(ref fromAccount, value))
+                {
+                    RaisePropertyChanged(nameof(FromAccount));
+                    RaisePropertyChanged(nameof(RateString));
+                    RaisePropertyChanged(nameof(IsToAmountVisible));
+                    RaisePropertyChanged(nameof(FromAccountCurrency));
+                }
             }
+        }
+
+        public CurrencyModel FromAccountCurrency
+        {
+            get => DbManual.Currencies?.FirstOrDefault(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0));
         }
 
         public int FromAccountId
@@ -42,19 +58,27 @@ namespace Financier.Desktop.Data
             get => fromAccountId;
             set
             {
-                fromAccountId = value;
-                RaisePropertyChanged(nameof(FromAccountId));
+                if (SetProperty(ref fromAccountId, value))
+                {
+                    RaisePropertyChanged(nameof(FromAccountId));
+                }
             }
         }
+
+        public override long RealFromAmount => -1 * Math.Abs(FromAmount);
+        public override bool IsAmountNegative => true;
+        public override string SubTransactionTitle => $"{FromAccount?.Title}{BlotterUtils.TRANSFER_DELIMITER}{ToAccount?.Title}";
 
         public long FromAmount
         {
             get => fromAmount;
             set
             {
-                fromAmount = value;
-                RaisePropertyChanged(nameof(FromAmount));
-                RecalculateRate();
+                if (SetProperty(ref fromAmount, value))
+                {
+                    RaisePropertyChanged(nameof(FromAmount));
+                    RecalculateRate();
+                }
             }
         }
 
@@ -67,21 +91,24 @@ namespace Financier.Desktop.Data
                 if (Rate != 0)
                 {
                     var d = 1.0 / Rate;
-                    return $"1{toAccount?.Currency.Name}={Rate:F5}{fromAccount?.Currency.Name}, 1{fromAccount?.Currency?.Name}={d:F5}{toAccount?.Currency.Name}";
+                    return $"1{ToAccountCurrency?.Name}={Rate:F5}{FromAccountCurrency?.Name}, 1{FromAccountCurrency?.Name}={d:F5}{ToAccountCurrency?.Name}";
                 }
                 return "N/A";
             }
         }
 
-        public Account ToAccount
+        public AccountFilterModel ToAccount
         {
             get => toAccount;
             set
             {
-                toAccount = value;
-                RaisePropertyChanged(nameof(ToAccount));
-                RaisePropertyChanged(nameof(RateString));
-                RaisePropertyChanged(nameof(IsToAmountVisible));
+                if (SetProperty(ref toAccount, value))
+                {
+                    RaisePropertyChanged(nameof(ToAccount));
+                    RaisePropertyChanged(nameof(RateString));
+                    RaisePropertyChanged(nameof(IsToAmountVisible));
+                    RaisePropertyChanged(nameof(ToAccountCurrency));
+                }
             }
         }
 
@@ -90,9 +117,16 @@ namespace Financier.Desktop.Data
             get => toAccountId;
             set
             {
-                toAccountId = value;
-                RaisePropertyChanged(nameof(ToAccountId));
+                if (SetProperty(ref toAccountId, value))
+                {
+                    RaisePropertyChanged(nameof(ToAccountId));
+                }
             }
+        }
+
+        public CurrencyModel ToAccountCurrency
+        {
+            get => DbManual.Currencies?.FirstOrDefault(x => x.Id == (ToAccount != null ? ToAccount.CurrencyId : 0));
         }
 
         public long ToAmount
@@ -100,13 +134,15 @@ namespace Financier.Desktop.Data
             get => toAmount;
             set
             {
-                toAmount = value;
-                RaisePropertyChanged(nameof(ToAmount));
-                RecalculateRate();
+                if (SetProperty(ref toAmount, value))
+                {
+                    RaisePropertyChanged(nameof(ToAmount));
+                    RecalculateRate();
+                }
             }
         }
 
-        private void RecalculateRate()
+        internal void RecalculateRate()
         {
             if (fromAmount != 0 && toAmount != 0)
             {

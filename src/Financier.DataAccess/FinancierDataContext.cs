@@ -1,5 +1,6 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.View;
+using Financier.DataAccess.View.Financier.DataAccess.View;
 using Microsoft.EntityFrameworkCore;
 
 namespace Financier.DataAccess
@@ -18,9 +19,8 @@ namespace Financier.DataAccess
             modelBuilder.Entity<CurrencyExchangeRate>().HasKey(x => new { x.FromCurrencyId, x.ToCurrencyId, x.Date });
             modelBuilder.Entity<RunningBalance>().HasKey(x => new { x.TransactionId, x.AccountId });
             modelBuilder.Entity<CategoryAttribute>().HasNoKey();
-            modelBuilder.Entity<AllTransactions>().ToView("v_all_transactions").HasKey(x => x._id);
-            modelBuilder.Entity<BlotterTransactions>().ToView("v_blotter").HasKey(x => x._id);
-            modelBuilder.Entity<BlotterTransactionsForAccountWithSplits>().ToView("v_blotter_for_account_with_splits").HasKey(x => x._id);
+            modelBuilder.Entity<BlotterTransactions>().ToView("v_blotter").HasKey(x => x.Id);
+            modelBuilder.Entity<BlotterTransactionsForAccountWithSplits>().ToView("v_blotter_for_account_with_splits").HasKey(x => x.Id);
         }
 
         public DbSet<Account> Accounts { get; set; }
@@ -38,7 +38,7 @@ namespace Financier.DataAccess
         public DbSet<SmsTemplate> SmsTemplates { get; set; }
         public DbSet<CurrencyExchangeRate> ExchangeRates { get; set; }
         public DbSet<RunningBalance> RunningBalance { get; set; }
-
+        public DbSet<BlotterTransactions> BlotterTransactions { get; set; }
         public DbSet<BlotterTransactionsForAccountWithSplits> BlotterTransactionsForAccountWithSplits { get; set; }
     }
 }

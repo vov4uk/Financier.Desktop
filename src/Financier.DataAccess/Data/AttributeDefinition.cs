@@ -13,16 +13,16 @@ namespace Financier.DataAccess.Data
         public const int TYPE_LIST = 3;
         public const int TYPE_CHECKBOX = 4;
 
-        [Column(IdColumn)]
+        [Column(Backup.IdColumn)]
         public int Id { get; set; } = -1;
 
         [Column("type")]
         public int Type { get; set; }
 
-        [Column(IsActiveColumn)]
+        [Column(Backup.IsActiveColumn)]
         public bool IsActive { get; set; } = true;
 
-        [Column(TitleColumn)]
+        [Column(Backup.TitleColumn)]
         public string Title { get; set; }
 
         [Column("list_values")]

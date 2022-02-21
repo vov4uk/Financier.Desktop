@@ -24,6 +24,11 @@ namespace Financier.DataAccess.Abstractions
 
         Task<List<T>> FindManyAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
+        Task<List<TResult>> FindManyAsync<TResult>(
+            Expression<Func<T, bool>> predicate,
+            Expression<Func<T, TResult>> projection,
+            params Expression<Func<T, object>>[] includes);
+
         Task<bool> UpdateAsync(T entity);
 
         Task<bool> DeleteAsync(Expression<Func<T, bool>> identity, params Expression<Func<T, object>>[] includes);

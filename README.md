@@ -6,16 +6,19 @@
 | Sonar | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vov4uk_Financier.Desktop&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=vov4uk_Financier.Desktop)|
 
 # Financier Desktop
-WORK IN PROGRESS
+MVP (minimum viable product) application, with enough functions to work with Financier .backup on Windows.
+More info on [Github pages](https://vov4uk.github.io/Financier.Desktop/)
 ## About
  Desktop version of [Financier](https://github.com/handydevcom/financier "Financier") which is a fork of the great [Financisto](https://github.com/dsolonenko/financisto) app. Financisto is an open-source personal finance tracker for Android platform.
 
-## Features
+## Supported features
 
 - Open/save Financier (Financisto) .backup files
 - View transactions list
+- Transactions search and filtering
 - Edit transactions/transfers
-- Edit entities (projects, locations ..)
+- Duplicate transactions/transfers
+- Edit entities (projects, locations, payees...)
 - Import CSV report from Monobank
 - Import PDF report from A-Bank
 - Parse recipiet text to SPLIT transaction

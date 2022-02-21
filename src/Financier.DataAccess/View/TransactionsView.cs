@@ -1,139 +1,128 @@
 ﻿using Financier.DataAccess.Data;
 using System.ComponentModel.DataAnnotations.Schema;
-using Financier.DataAccess.Utils;
 
 namespace Financier.DataAccess.View
 {
     public abstract class TransactionsView : Entity
     {
-        [NotMapped]
-        public const string TRANSFER_DELIMITER = " \u00BB ";
+        [Column(Backup.IdColumn)]
+        public int Id { get; set; }
 
-        public int _id { get; set; }
-        public int parent_id { get; set; }
-        public int from_account_id { get; set; }
-        public string from_account_title { get; set; }
-        public bool from_account_is_include_into_totals { get; set; }
+        [Column("parent_id")]
+        public int ParentId { get; set; }
 
-        [ForeignKey("from_account_currency")]
-        public int from_account_currency_id { get; set; }
+        [Column("from_account_id")]
+        public int FromAccountId { get; set; }
 
-        public int? to_account_id { get; set; }
-        public string to_account_title { get; set; }
+        [Column("from_account_title")]
+        public string FromAccountTitle { get; set; }
 
-        [ForeignKey("to_account_currency")]
-        public int? to_account_currency_id { get; set; }
+        [Column("from_account_is_include_into_totals")]
+        public bool FromAccountIsIncludeIntoTotals { get; set; }
 
-        [ForeignKey("category")]
-        public int? category_id { get; set; }
+        [ForeignKey("FromAccountCurrency")]
+        [Column("from_account_currency_id")]
+        public int FromAccountCurrencyId { get; set; }
 
-        public string category_title { get; set; }
-        public int category_left { get; set; }
-        public int category_right { get; set; }
-        public int category_type { get; set; }
-        public int? project_id { get; set; }
-        public string project { get; set; }
-        public int? location_id { get; set; }
-        public string location { get; set; }
-        public int? payee_id { get; set; }
-        public string payee { get; set; }
-        public string note { get; set; }
-        public int from_amount { get; set; }
-        public int to_amount { get; set; }
-        public long datetime { get; set; }
+        [Column("to_account_id")]
+        public int? ToAccountId { get; set; }
 
-        [ForeignKey("original_currency")]
-        public int? original_currency_id { get; set; }
+        [Column("to_account_title")]
+        public string ToAccountTitle { get; set; }
 
-        public long original_from_amount { get; set; }
-        public int is_template { get; set; }
-        public string template_name { get; set; }
-        public string recurrence { get; set; }
-        public string notification_options { get; set; }
-        public string status { get; set; }
-        public int is_ccard_payment { get; set; }
-        public long last_recurrence { get; set; }
-        public string attached_picture { get; set; }
-        public int? from_account_balance { get; set; }
-        public int? to_account_balance { get; set; }
-        public long is_transfer { get; set; }
+        [ForeignKey("ToAccountCurrency")]
+        [Column("to_account_currency_id")]
+        public int? ToAccountCurrencyId { get; set; }
 
-        public virtual Currency from_account_currency { get; set; }
-        public virtual Currency to_account_currency { get; set; }
-        public virtual Currency original_currency { get; set; }
-        public virtual Category category { get; set; }
+        [ForeignKey("Category")]
+        [Column("category_id")]
+        public int? CategoryId { get; set; }
 
-        [NotMapped]
-        public string Type
-        {
-            get
-            {
-                if (this.to_account_id > 0)
-                {
-                    return "Transfer";
-                }
-                else if (category_id == -1)
-                {
-                    return "Share";
-                }
-                else if (from_amount > 0)
-                {
-                    return "Income";
-                }
-                return "Expense";
-            }
-        }
+        [Column("category_title")]
+        public string CategoryTitle { get; set; }
 
-        [NotMapped]
-        public string AccountTitle
-        {
-            get
-            {
-                if (this.to_account_id > 0)
-                {
-                    return $"{from_account_title}{TRANSFER_DELIMITER}{to_account_title}";
-                }
-                return from_account_title;
-            }
-        }
+        [Column("category_left")]
+        public int CategoryLeft { get; set; }
 
-        [NotMapped]
-        public string TransactionTitle => TransactionTitleUtils.GenerateTransactionTitle(payee, note, location_id > 0 ? location : string.Empty, category_id, category_title, to_account_id);
+        [Column("category_right")]
+        public int CategoryRight { get; set; }
 
-        [NotMapped]
-        public string AmountTitle
-        {
-            get
-            {
-                if (to_account_id > 0)
-                {
-                    return Utils.Utils.GetTransferAmountText(from_account_currency, from_amount, to_account_currency,
-                        to_amount);
-                }
+        [Column("category_type")]
+        public int CategoryType { get; set; }
 
-                if (original_currency_id > 0)
-                {
-                    return Utils.Utils.SetAmountText(original_currency, original_from_amount, from_account_currency,
-                        from_amount, true);
-                }
-                return Utils.Utils.SetAmountText(from_account_currency, from_amount, true);
-            }
-        }
+        [Column("project_id")]
+        public int? ProjectId { get; set; }
 
-        [NotMapped]
-        public string BalanceTitle
-        {
-            get
-            {
-                if (this.to_account_id > 0)
-                {
-                    return Utils.Utils.SetTransferBalanceText(from_account_currency, from_account_balance, to_account_currency, to_account_balance);
-                }
-                return Utils.Utils.SetAmountText(from_account_currency, from_account_balance ?? 0, false);
-            }
-        }
+        [Column("project")]
+        public string Project { get; set; }
 
-        [NotMapped]
-        public bool HasNoCategory => Type != "Transfer" && category_id == 0;
+        [Column("location_id")]
+        public int? LocationId { get; set; }
+
+        [Column("location")]
+        public string Location { get; set; }
+
+        [Column("payee_id")]
+        public int? PayeeId { get; set; }
+
+        [Column("payee")]
+        public string Payee { get; set; }
+
+        [Column("note")]
+        public string Note { get; set; }
+
+        [Column("from_amount")]
+        public long FromAmount { get; set; }
+
+        [Column("to_amount")]
+        public long ToAmount { get; set; }
+
+        [Column("datetime")]
+        public long DateTime { get; set; }
+
+        [ForeignKey("OriginalCurrency")]
+        [Column("original_currency_id")]
+        public int? OriginalCurrencyId { get; set; }
+
+        [Column("original_from_amount")]
+        public long OriginalFromAmount { get; set; }
+
+        [Column("is_template")]
+        public int IsTemplate { get; set; }
+
+        [Column("template_name")]
+        public string TemplateName { get; set; }
+
+        [Column("recurrence")]
+        public string Recurrence { get; set; }
+
+        [Column("notification_options")]
+        public string NotificationOptions { get; set; }
+
+        [Column("status")]
+        public string Status { get; set; }
+
+        [Column("is_ccard_payment")]
+        public int IsCcardPayment { get; set; }
+
+        [Column("last_recurrence")]
+        public long LastRecurrence { get; set; }
+
+        [Column("attached_picture")]
+        public string AttachedPicture { get; set; }
+
+        [Column("from_account_balance")]
+        public int? FromAccountBalance { get; set; }
+
+        [Column("to_account_balance")]
+        public int? ToAccountBalance { get; set; }
+
+        [Column("is_transfer")]
+        public long IsTransfer { get; set; }
+
+        public virtual Currency FromAccountCurrency { get; set; }
+        public virtual Currency ToAccountCurrency { get; set; }
+        public virtual Currency OriginalCurrency { get; set; }
+        public virtual Category Category { get; set; }
     }
 }

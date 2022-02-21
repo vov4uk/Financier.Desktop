@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using Financier.DataAccess.Data;
-    using Financier.DataAccess.Monobank;
+    using Financier.Common.Entities;
+    using Financier.Common.Model;
     using Financier.Desktop.Wizards;
     using Financier.Desktop.Wizards.MonoWizard.ViewModel;
     using Financier.Tests.Common;
@@ -16,37 +16,12 @@
     {
         [Theory]
         [AutoMoqData]
-        public void Constructor_ReceiveParameters_AllPropertiesSeted(
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Category> categories,
-            List<Project> projects)
-        {
-            var vm = new Page3VM(accounts, currencies, locations, categories, projects);
-            categories.Insert(0, Category.None);
-            Assert.True(vm.Currencies.All(x => currencies.Contains(x)));
-            Assert.True(vm.Categories.All(x => categories.Contains(x)));
-
-            Assert.True(vm.Accounts.SequenceEqual(accounts.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder)));
-            Assert.True(vm.Locations.SequenceEqual(locations.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id)));
-            Assert.True(vm.Projects.SequenceEqual(projects.OrderByDescending(x => x.IsActive).ThenBy(x => x.Id)));
-            Assert.Equal("Please select categories", vm.Title);
-            Assert.True(vm.IsValid());
-        }
-
-        [Theory]
-        [AutoMoqData]
         public void MonoAccount_SetValue_AccountsNotContainsMonoAccount(
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Category> categories,
-            List<Project> projects)
+            List<AccountFilterModel> accounts)
         {
             var monoAccount = accounts.FirstOrDefault();
-
-            var vm = new Page3VM(accounts, currencies, locations, categories, projects);
+            DbManual.SetupTests(accounts);
+            var vm = new Page3VM();
 
             vm.MonoAccount = monoAccount;
 
@@ -56,9 +31,7 @@
 
         [Theory]
         [AutoMoqData]
-        public void SetMonoTransactions_SetValue_TransformToFinancierTransactions(
-            List<Account> accounts,
-            List<Project> projects)
+        public void SetMonoTransactions_SetValue_TransformToFinancierTransactions(AccountFilterModel monoAccount)
         {
             List<BankTransaction> transactions = new List<BankTransaction>
             {
@@ -128,7 +101,7 @@
                     MCC = "1000",
                 },
             };
-            var monoAccount = accounts.FirstOrDefault();
+
             var expected = new ObservableCollection<FinancierTransactionDto>()
             {
                 new FinancierTransactionDto
@@ -198,26 +171,26 @@
                 },
             };
 
-            List<Category> categories = new List<Category> { new Category { Title = "Hot water", Id = 100 } };
-            List<Location> locations = new List<Location> { new Location { Id = 200, Title = "Google", Address = "Google Store" } };
-            List<Currency> currencies = new List<Currency> { new Currency { Id = 1, Name = "USD" }, new Currency { Id = 2, Name = "UAH" } };
-
-            var vm = new Page3VM(accounts, currencies, locations, categories, projects);
+            List<CategoryModel> categories = new List<CategoryModel> { new CategoryModel { Title = "Hot water", Id = 100 } };
+            List<LocationModel> locations = new List<LocationModel> { new LocationModel { Id = 200, Title = "Google", Address = "Google Store" } };
+            List<CurrencyModel> currencies = new List<CurrencyModel> { new CurrencyModel { Id = 1, Name = "USD" }, new CurrencyModel { Id = 2, Name = "UAH" } };
+            DbManual.SetupTests(categories);
+            DbManual.SetupTests(locations);
+            DbManual.SetupTests(currencies);
+            DbManual.SetupTests(new List<AccountFilterModel>() { monoAccount });
+            var vm = new Page3VM();
 
             vm.MonoAccount = monoAccount;
             vm.SetMonoTransactions(transactions);
 
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(vm.FinancierTransactions));
+            DbManual.ResetAllManuals();
         }
 
         [Theory]
         [AutoMoqData]
         public void DeleteCommand_Execute_TransactionsRemoved(
-            List<Account> accounts,
-            List<Currency> currencies,
-            List<Location> locations,
-            List<Category> categories,
-            List<Project> projects)
+            AccountFilterModel account)
         {
             List<BankTransaction> transactions = new List<BankTransaction>
             {
@@ -249,14 +222,18 @@
                 },
             };
 
-            var vm = new Page3VM(accounts, currencies, locations, categories, projects);
+            DbManual.SetupTests(new List<AccountFilterModel>() { account });
+            DbManual.SetupTests(new List<LocationModel>());
+            DbManual.SetupTests(new List<CategoryModel>());
+            var vm = new Page3VM();
 
-            vm.MonoAccount = accounts.FirstOrDefault();
+            vm.MonoAccount = account;
             vm.SetMonoTransactions(transactions);
 
             vm.DeleteCommand.Execute(vm.FinancierTransactions.FirstOrDefault());
 
             Assert.Single(vm.FinancierTransactions);
+            DbManual.ResetAllManuals();
         }
     }
 }
