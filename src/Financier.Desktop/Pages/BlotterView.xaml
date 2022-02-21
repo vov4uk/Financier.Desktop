@@ -28,7 +28,7 @@
                   ExpandDirection="Left">
             <StackPanel Orientation="Vertical">
                 <filters:PeriodFilter  Margin="0"
-                                       SelectedPeriodType="{Binding PeriodType, Mode=TwoWay}"
+                                       SelectedPeriodType="{Binding PeriodType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        DataContext="{Binding}"
                                        Orientation="Vertical"/>
                 <filters:AccountFilter Margin="4" />

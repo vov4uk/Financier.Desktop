@@ -40,7 +40,7 @@ FROM   (
                            (select count(*) from category x where x.left < parent.left and x.[right] > parent.[right] ) as parent_level
                 FROM   category AS node,
                        category AS parent
-                WHERE  node.LEFT BETWEEN parent.LEFT AND parent.right
+                WHERE  node.LEFT BETWEEN parent.LEFT AND parent.right AND parent.right != node._id
                 ORDER  BY parent.LEFT ASC ) ctgr
                 on ctgr.node_id = t.category_id
         WHERE  t.category_id > 0 AND from_account_is_include_into_totals = 1
