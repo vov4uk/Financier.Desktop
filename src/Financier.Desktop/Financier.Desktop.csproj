@@ -7,6 +7,10 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Images\ic_launcher.ico</ApplicationIcon>
     <StartupObject>Financier.Desktop.App</StartupObject>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>

@@ -10,6 +10,7 @@ using Financier.DataAccess;
 using Financier.Adapter;
 using Financier.DataAccess.View;
 using Financier.Common.Model;
+using System.Reflection;
 
 namespace Financier.Desktop
 {
@@ -36,6 +37,8 @@ namespace Financier.Desktop
             ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new BankHelperFactory());
 
             DataContext = ViewModel;
+            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            Title = $"Financier Desktop v.{version}";
             Logger.Info("App started");
         }
 
