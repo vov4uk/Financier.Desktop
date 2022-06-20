@@ -10,6 +10,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page3VM : WizardPageBaseVM
     {
+        private DelegateCommand _clearAllNotesCommand;
         private DelegateCommand<FinancierTransactionDto> _deleteCommand;
         List<AccountFilterModel> accounts;
         private AccountFilterModel _monoAccount;
@@ -25,6 +26,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             get
             {
                 return _deleteCommand ??= new DelegateCommand<FinancierTransactionDto>(tr => { financierTransactions.Remove(tr); });
+            }
+        }
+
+        public DelegateCommand ClearAllNotesCommand
+        {
+            get
+            {
+                return _clearAllNotesCommand ??= new DelegateCommand(ClearAllNotes);
             }
         }
 
@@ -94,6 +103,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
 
             FinancierTransactions = new ObservableCollection<FinancierTransactionDto>(transToAdd);
+        }
+
+        private void ClearAllNotes()
+        {
+            foreach (var item in FinancierTransactions)
+            {
+                item.Note = null;
+            }
         }
     }
 }

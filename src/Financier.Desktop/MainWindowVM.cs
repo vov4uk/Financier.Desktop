@@ -338,6 +338,9 @@ namespace Financier.Desktop.ViewModel
             {
                 await db.RebuildAccountBalanceAsync(accId);
             }
+
+            DbManual.ResetManuals(nameof(DbManual.Account));
+            await DbManual.SetupAsync(db);
         }
 
         private async Task RefreshCurrentPage()

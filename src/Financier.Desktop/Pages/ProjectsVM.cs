@@ -26,7 +26,7 @@ namespace Financier.Desktop.ViewModel
 
         protected override async Task RefreshData()
         {
-            DbManual.ReseManuals(nameof(DbManual.Project));
+            DbManual.ResetManuals(nameof(DbManual.Project));
             await DbManual.SetupAsync(db);
             Entities = new ObservableCollection<ProjectModel>(DbManual.Project.Where(x => x.Id > 0).OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
         }

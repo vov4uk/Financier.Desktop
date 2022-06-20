@@ -9,7 +9,8 @@
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300"
+             d:DesignWidth="900">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,16 +23,43 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="24"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" FontSize="12"
+        <Grid Grid.Column="0"
+              Grid.Row="0"
+              Height="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" FontSize="12"
                    Text="Please select Category, From\To Account, Location ..."/>
-        <DataGrid Grid.Row="1"
+            <Button Grid.Column="1"
+                    Margin="2"
+                    Width="65"
+                    HorizontalAlignment="Stretch"
+                    Content="Delete row"
+                    ToolTip="Delete selected row (Del)"
+                    Command="{Binding Path=DeleteCommand}"
+                    CommandParameter="{Binding SelectedItem, ElementName=MainGrid}"
+                />
+            <Button Grid.Column="2"
+                    Margin="2"
+                    Width="65"
+                    HorizontalAlignment="Stretch"
+                    Content="Clear notes"
+                    ToolTip="Clear note for all transactions"
+                    Command="{Binding Path=ClearAllNotesCommand}"
+                />
+        </Grid>
+        <DataGrid Grid.Row="2"
                   ItemsSource="{Binding Path=FinancierTransactions}"
                   AutoGenerateColumns="False"
                   ScrollViewer.CanContentScroll="True"
                   DataContext="{Binding}"
+                  x:Name="MainGrid"
                   CanUserAddRows="false">
             <DataGrid.InputBindings>
                 <KeyBinding Key="Delete"

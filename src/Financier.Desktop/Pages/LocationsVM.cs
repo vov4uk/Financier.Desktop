@@ -27,7 +27,7 @@ namespace Financier.Desktop.ViewModel
 
         protected override async Task RefreshData()
         {
-            DbManual.ReseManuals(nameof(DbManual.Location));
+            DbManual.ResetManuals(nameof(DbManual.Location));
             await DbManual.SetupAsync(db);
             Entities = new System.Collections.ObjectModel.ObservableCollection<LocationModel>(DbManual.Location.Where(x => x.Id > 0).OrderByDescending(x => x.IsActive).ThenBy(x => x.Id));
         }
