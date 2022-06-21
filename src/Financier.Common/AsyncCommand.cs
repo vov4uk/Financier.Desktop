@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Financier.Common
 {
+    [ExcludeFromCodeCoverage]
     public class AsyncCommand : ICommand, IAsyncCommand
     {
         private readonly Func<Task> _action;
@@ -78,16 +80,16 @@ namespace Financier.Common
             _context = SynchronizationContext.Current;
         }
 
-        public async Task ExecuteAsync(T value)
+        public async Task ExecuteAsync(T parameter)
         {
-            if (CanExecute(value))
+            if (CanExecute(parameter))
             {
-                await _parameterizedAction(value);
+                await _parameterizedAction(parameter);
             }
         }
-        public bool CanExecute(T value)
+        public bool CanExecute(T parameter)
         {
-            return _canExecute == null || _canExecute(value);
+            return _canExecute == null || _canExecute(parameter);
         }
         public void RaiseCanExecuteChanged()
         {
