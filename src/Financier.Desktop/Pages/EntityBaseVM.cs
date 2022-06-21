@@ -2,7 +2,6 @@
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Helpers;
-using Mvvm.Async;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 

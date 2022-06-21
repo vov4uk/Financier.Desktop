@@ -15,7 +15,6 @@ using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using System.IO;
 using System.Collections.Concurrent;
 using Financier.Desktop.Data;
-using Mvvm.Async;
 using Financier.Reports;
 using Financier.Common.Entities;
 using Financier.Common.Model;
