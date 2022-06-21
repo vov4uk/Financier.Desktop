@@ -192,6 +192,47 @@
         public void DeleteCommand_Execute_TransactionsRemoved(
             AccountFilterModel account)
         {
+            List<BankTransaction> transactions = GetBankTransactions();
+
+            DbManual.SetupTests(new List<AccountFilterModel>() { account });
+            DbManual.SetupTests(new List<LocationModel>());
+            DbManual.SetupTests(new List<CategoryModel>());
+            var vm = new Page3VM();
+
+            vm.MonoAccount = account;
+            vm.SetMonoTransactions(transactions);
+
+            vm.DeleteCommand.Execute(vm.FinancierTransactions.FirstOrDefault());
+
+            Assert.Single(vm.FinancierTransactions);
+            DbManual.ResetAllManuals();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void ClearAllNotes_Execute_NotesEmpty(
+            AccountFilterModel account)
+        {
+            List<BankTransaction> transactions = GetBankTransactions();
+
+            DbManual.SetupTests(new List<AccountFilterModel>() { account });
+            DbManual.SetupTests(new List<LocationModel>());
+            DbManual.SetupTests(new List<CategoryModel>());
+            var vm = new Page3VM();
+
+            vm.MonoAccount = account;
+            vm.SetMonoTransactions(transactions);
+
+            vm.ClearAllNotesCommand.Execute();
+
+            foreach (var item in vm.FinancierTransactions)
+            {
+                Assert.Null(item.Note);
+            }
+        }
+
+        private static List<BankTransaction> GetBankTransactions()
+        {
             List<BankTransaction> transactions = new List<BankTransaction>
             {
                 new BankTransaction // Description -> Location.Title
@@ -221,19 +262,7 @@
                     MCC = "1000",
                 },
             };
-
-            DbManual.SetupTests(new List<AccountFilterModel>() { account });
-            DbManual.SetupTests(new List<LocationModel>());
-            DbManual.SetupTests(new List<CategoryModel>());
-            var vm = new Page3VM();
-
-            vm.MonoAccount = account;
-            vm.SetMonoTransactions(transactions);
-
-            vm.DeleteCommand.Execute(vm.FinancierTransactions.FirstOrDefault());
-
-            Assert.Single(vm.FinancierTransactions);
-            DbManual.ResetAllManuals();
+            return transactions;
         }
     }
 }

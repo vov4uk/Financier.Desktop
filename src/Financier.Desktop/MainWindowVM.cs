@@ -15,7 +15,6 @@ using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using System.IO;
 using System.Collections.Concurrent;
 using Financier.Desktop.Data;
-using Mvvm.Async;
 using Financier.Reports;
 using Financier.Common.Entities;
 using Financier.Common.Model;
@@ -338,6 +337,9 @@ namespace Financier.Desktop.ViewModel
             {
                 await db.RebuildAccountBalanceAsync(accId);
             }
+
+            DbManual.ResetManuals(nameof(DbManual.Account));
+            await DbManual.SetupAsync(db);
         }
 
         private async Task RefreshCurrentPage()

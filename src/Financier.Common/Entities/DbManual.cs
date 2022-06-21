@@ -172,13 +172,14 @@ ORDER  BY 1 DESC ");
             _location = null;
         }
 
-        public static void ReseManuals(string manual)
+        public static void ResetManuals(string manual)
         {
             switch (manual)
             {
-                case nameof(Payee): _payee = null; break;
-                case nameof(Location):_location = null; break;
-                case nameof(Project):_project = null; break;
+                case nameof(Payee):    _payee = null; break;
+                case nameof(Location): _location = null; break;
+                case nameof(Project):  _project = null; break;
+                case nameof(Account):  _accounts = null; break;
                 default:
                     break;
             }

@@ -7,7 +7,6 @@
                Icon="pack://application:,,,/Images/ic_launcher.png"
                xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel"
                xmlns:View="clr-namespace:Financier.Desktop.Views"
-               Title="Financier Desktop"
                Loaded="RibbonWindow_Loaded">
     <Window.Resources>
         <ResourceDictionary>

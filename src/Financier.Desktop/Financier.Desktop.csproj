@@ -7,6 +7,10 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Images\ic_launcher.ico</ApplicationIcon>
     <StartupObject>Financier.Desktop.App</StartupObject>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -87,7 +91,6 @@
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
     <PackageReference Include="Emoji.Wpf" Version="0.3.3" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-    <PackageReference Include="Mvvm.Async" Version="0.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="5.0.0-rc2" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />

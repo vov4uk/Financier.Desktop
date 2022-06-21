@@ -8,7 +8,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="900">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -20,23 +20,25 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
             <RowDefinition Height="20"/>
-            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" FontSize="12"
-                   Text="Please select Category, Project..."/>
-        <Grid Grid.Column="0"
-              Grid.Row="1"
+
+        <Grid Grid.Column="1"
+              Grid.Row="0"
               Height="24">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0"
+            <TextBlock Grid.Row="0" FontSize="12"
+                   VerticalAlignment="Center"
+                   Text="Please select Category, Project..."/>
+            <Button Grid.Column="1"
                     MinWidth="65"
                     Margin="2"
                     HorizontalAlignment="Stretch"
@@ -44,7 +46,7 @@
                     ToolTip="Calculate totals"
                     Command="{Binding Path=TotalCommand}"
                     />
-            <Button Grid.Column="1"
+            <Button Grid.Column="2"
                     MinWidth="65"
                     Margin="2"
                     HorizontalAlignment="Stretch"
@@ -52,15 +54,16 @@
                     ToolTip="Add new transaction"
                     Command="{Binding Path=AddRowCommand}"
                 />
-            <Button Grid.Column="2"
+            <Button Grid.Column="3"
                     Margin="2"
                     Width="65"
                     HorizontalAlignment="Stretch"
                     Content="Delete row"
                     ToolTip="Delete selected row (Del)"
                     Command="{Binding Path=DeleteRowCommand}"
+                    CommandParameter="{Binding SelectedItem, ElementName=MainGrid}"
                 />
-            <Button Grid.Column="3"
+            <Button Grid.Column="4"
                     Margin="2"
                     Width="65"
                     HorizontalAlignment="Stretch"
@@ -68,22 +71,23 @@
                     ToolTip="Clear note for all transactions"
                     Command="{Binding Path=ClearAllNotesCommand}"
                 />
-            <TextBlock Grid.Column="4"
-                       HorizontalAlignment="Right">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{} Total : {0:F2} Current : {1:F2} Diff : {2:F2}">
-                        <Binding Path="TotalAmount" Mode="OneTime" />
-                        <Binding Path="CalculatedAmount" UpdateSourceTrigger="PropertyChanged"/>
-                        <Binding Path="Diff" UpdateSourceTrigger="PropertyChanged" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
         </Grid>
+        <TextBlock Grid.Row="1"
+                   HorizontalAlignment="Left">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{} Total : {0:F2} Current : {1:F2} Diff : {2:F2}">
+                    <Binding Path="TotalAmount" Mode="OneTime" />
+                    <Binding Path="CalculatedAmount" UpdateSourceTrigger="PropertyChanged"/>
+                    <Binding Path="Diff" UpdateSourceTrigger="PropertyChanged" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
         <DataGrid Grid.Row="2"
                   ItemsSource="{Binding Path=FinancierTransactions}"
                   AutoGenerateColumns="False"
                   ScrollViewer.CanContentScroll="True"
                   DataContext="{Binding}"
+                  x:Name="MainGrid"
                   CanUserAddRows="false">
             <DataGrid.InputBindings>
                 <KeyBinding Key="Delete"

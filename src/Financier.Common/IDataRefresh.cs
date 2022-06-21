@@ -1,6 +1,4 @@
-﻿using Mvvm.Async;
-
-namespace Financier.Common
+﻿namespace Financier.Common
 {
     public interface IDataRefresh
     {

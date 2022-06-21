@@ -1,6 +1,5 @@
 ﻿using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
-using Mvvm.Async;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;

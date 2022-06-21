@@ -1,5 +1,6 @@
 ﻿namespace Financier.Desktop.ViewModel
 {
+    using Financier.Common;
     using Financier.Common.Entities;
     using Financier.Common.Model;
     using Financier.Converters;
@@ -11,7 +12,6 @@
     using Financier.Desktop.Helpers;
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;
-    using Mvvm.Async;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
