@@ -143,7 +143,7 @@ namespace Financier.DataAccess
                             continue;
                         }
                         balance += transaction.FromAmount;
-                        context.RunningBalance.Add(new RunningBalance { Balance = balance, AccountId = accountId, Datetime = transaction.DateTime, TransactionId = transaction.Id });
+                        context.RunningBalance.Add(new RunningBalance { Balance = balance, AccountId = accountId, TransactionId = transaction.Id });
                     }
 
                     var acc = context.Accounts.FirstOrDefault(x => x.Id == accountId);

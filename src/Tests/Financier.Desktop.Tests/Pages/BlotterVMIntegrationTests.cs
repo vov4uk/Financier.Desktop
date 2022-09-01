@@ -293,51 +293,51 @@ namespace Financier.Desktop.Tests.Pages
         }
 
         private string EditSplitTransactionRunningBalancesJson =>
-"[{\"TransactionId\":27160,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644745608000,\"Balance\":-24230}," +
-"{\"TransactionId\":27173,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":1644745608000,\"Balance\":834}]";
+"[{\"TransactionId\":27160,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-24230}," +
+"{\"TransactionId\":27173,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":834}]";
 
-        private string CreateSplitTransactionRunningBalancesJson => "[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":1644940039000,\"Balance\":-100300}," +
-"{\"TransactionId\":3,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644940039000,\"Balance\":100000}]";
+        private string CreateSplitTransactionRunningBalancesJson => "[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-100300}," +
+"{\"TransactionId\":3,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":100000}]";
 
         private const string CreateTransferDiffCurrencyRunningBalancesJson =
-"[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":1644955524000,\"Balance\":-28000}," +
-                    "{\"TransactionId\":1,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":1644955524000,\"Balance\":1000}]";
+"[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-28000}," +
+                    "{\"TransactionId\":1,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":1000}]";
 
-        private const string CreateTransferHomeCurrencyRunningBalancesJson = "[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":1644955524000,\"Balance\":-28000}," +
-"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644955524000,\"Balance\":28000}]";
+        private const string CreateTransferHomeCurrencyRunningBalancesJson = "[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-28000}," +
+"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":28000}]";
 
         private const string DuplicateTransferHomeCurrencyRunningBalancesJson = "[" +
-"{\"TransactionId\":2,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":1644955524000,\"Balance\":-56000}," +
-"{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":1446967346062,\"Balance\":-28000}," +
-"{\"TransactionId\":2,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644955524000,\"Balance\":56000}," +
-"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1446967346062,\"Balance\":28000}" +
+"{\"TransactionId\":2,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-56000}," +
+"{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-28000}," +
+"{\"TransactionId\":2,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":56000}," +
+"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":28000}" +
 "]";
 
         private const string DuplicateTransferDiffCurrencyRunningBalancesJson = "[" +
-"{\"TransactionId\":2,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":1644955524000,\"Balance\":-56000}," +
-"{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":1446967346062,\"Balance\":-28000}," +
-"{\"TransactionId\":2,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":1644955524000,\"Balance\":2000}," +
-"{\"TransactionId\":1,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":1446967346062,\"Balance\":1000}" +
+"{\"TransactionId\":2,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-56000}," +
+"{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-28000}," +
+"{\"TransactionId\":2,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":2000}," +
+"{\"TransactionId\":1,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":1000}" +
 "]";
 
         private const string DuplicateTransactionHomeCurrencyRunningBalancesJson = "[" +
-"{\"TransactionId\":2,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644959149000,\"Balance\":-20000}," +
-"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644060576000,\"Balance\":-10000}" +
+"{\"TransactionId\":2,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-20000}," +
+"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-10000}" +
 "]";
 
         private const string DuplicateTransactionDiffCurrencyRunningBalancesJson = "[" +
-"{\"TransactionId\":2,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644157337000,\"Balance\":-109406}," +
-"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644060576000,\"Balance\":-54703}" +
+"{\"TransactionId\":2,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-109406}," +
+"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-54703}" +
 "]";
 
         private string CreateSplitTransactionDifferentCurrenciesRunningBalancesJson =>
- "[{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644157337000,\"Balance\":-54703}]";
+ "[{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-54703}]";
 
         private const string CreateTransactionHomeCurrencyRunningBalancesJson =
- "[{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644959149000,\"Balance\":-10000}]";
+ "[{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-10000}]";
 
         private const string CreateTransactionDiffCurrencyRunningBalancesJson =
- "[{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":1644157337000,\"Balance\":-54703}]";
+ "[{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-54703}]";
 
         private TransactionDto EditSplitTransactionDto()
         {
