@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Financier.Common.Model;
 using Financier.DataAccess.Data;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
@@ -9,11 +10,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
     public class MonoWizardVM : WizardBaseVM
     {
         private readonly List<BankTransaction> monoTransactions;
+        private readonly Dictionary<int, BlotterModel> lastTransactions;
+        private readonly string Bank;
 
-        public MonoWizardVM(IEnumerable<BankTransaction> monoTransactions)
+        public MonoWizardVM(string bank, IEnumerable<BankTransaction> monoTransactions, Dictionary<int, BlotterModel> lastTransactions)
         {
             this.monoTransactions = new(monoTransactions);
-
+            this.Bank = bank;
+            this.lastTransactions = lastTransactions;
             CreatePages();
             CurrentPage = Pages[0];
         }
@@ -51,8 +55,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         {
             _pages = new List<WizardPageBaseVM>
                 {
-                    new Page1VM(),
-                    new Page2VM(monoTransactions),
+                    new Page1VM(Bank),
+                    new Page2VM(monoTransactions, lastTransactions),
                     new Page3VM()
                 }.AsReadOnly();
         }

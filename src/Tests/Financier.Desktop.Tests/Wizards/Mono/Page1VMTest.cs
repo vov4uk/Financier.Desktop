@@ -17,7 +17,7 @@
             var monoAcc = new AccountFilterModel { Title = "Monobank", IsActive = true };
             accounts.Add(monoAcc);
             DbManual.SetupTests(accounts);
-            var vm = new Page1VM();
+            var vm = new Page1VM("Monobank");
 
             Assert.Equal(monoAcc, vm.MonoAccount);
             Assert.Equal("Please select account", vm.Title);
@@ -32,7 +32,7 @@
             var monoAcc = new AccountFilterModel { Title = "Monobank", IsActive = false };
             accounts.Add(monoAcc);
             DbManual.SetupTests(accounts);
-            var vm = new Page1VM();
+            var vm = new Page1VM("Monobank");
 
             Assert.Equal(accounts[0], vm.MonoAccount);
             DbManual.ResetAllManuals();
@@ -48,7 +48,7 @@
             }
 
             DbManual.SetupTests(accounts);
-            var vm = new Page1VM();
+            var vm = new Page1VM("Monobank");
 
             Assert.NotNull(vm.MonoAccount);
             DbManual.ResetAllManuals();

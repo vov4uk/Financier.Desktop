@@ -21,7 +21,7 @@
         public void Constructor_ReceiveParameters_CurrentPageNotEmpty(List<BankTransaction> mono)
         {
             DbManual.SetupTests(new List<AccountFilterModel>());
-            var vm = new MonoWizardVM(mono);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.NotNull(vm.CurrentPage);
         }
@@ -31,7 +31,7 @@
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM(mono);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Equal(46, mono.Count());
             Assert.Equal(46, ((Page2VM)vm.Pages[1]).GetMonoTransactions().Count);
@@ -45,7 +45,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>());
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
             IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM(mono);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
             Assert.NotNull(vm.CurrentPage);
@@ -152,7 +152,7 @@
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM(mono);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
 

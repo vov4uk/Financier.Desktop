@@ -45,7 +45,7 @@ namespace Financier.Adapter.Tests
             var expectedText = File.ReadAllText(expectedTextPath);
 
             Assert.True(File.Exists(actualPath));
-            Assert.Equal(actualText, expectedText);
+            Assert.Equal(expectedText, actualText);
 
             File.Delete(actualPath);
             File.Delete(fileWithoutExt);

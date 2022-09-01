@@ -32,6 +32,8 @@ SELECT a._id,
        a.currency_id,
        a.total_amount,
        a.type,
+       a.last_transaction_id,
+       a.number,
        c.Name as currency_name
 FROM   account a
 INNER JOIN currency c ON a.currency_id = c._id

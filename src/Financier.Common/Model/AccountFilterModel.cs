@@ -29,5 +29,11 @@ namespace Financier.Common.Model
 
         [Column("total_amount")]
         public long TotalAmount { get; set; }
+
+        [Column("last_transaction_id")]
+        public int LastTransactionId { get; set; }
+
+        [Column("number")]
+        public string Number { get; set; }
     }
 }

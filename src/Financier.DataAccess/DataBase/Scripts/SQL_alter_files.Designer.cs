@@ -19,7 +19,7 @@ namespace Financier.DataAccess.DataBase.Scripts {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class SQL_alter_files {
@@ -802,6 +802,15 @@ namespace Financier.DataAccess.DataBase.Scripts {
         internal static string _20190209_alter_entities_add_is_active {
             get {
                 return ResourceManager.GetString("_20190209_alter_entities_add_is_active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE account ADD COLUMN last_transaction_id integer not null default 0;.
+        /// </summary>
+        internal static string _20220901_1220_add_lastaccounttransactionid {
+            get {
+                return ResourceManager.GetString("_20220901_1220_add_lastaccounttransactionid", resourceCulture);
             }
         }
     }

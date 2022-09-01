@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
+using Financier.DataAccess.Utils;
 
 namespace Financier.Adapter
 {
@@ -83,15 +84,19 @@ namespace Financier.Adapter
                     entities[attr.Name] = info;
                     foreach (PropertyInfo p in t.GetProperties())
                     {
-                        ColumnAttribute pattr = (ColumnAttribute)p.GetCustomAttribute(typeof(ColumnAttribute));
-                        if (pattr != null)
+                        IgnoreAttribute ignoreAttr = p.GetCustomAttribute(typeof(IgnoreAttribute)) as IgnoreAttribute;
+                        if (ignoreAttr == null)
                         {
-                            EntityPropertyInfo pInfo = new EntityPropertyInfo(p)
+                            ColumnAttribute pattr = p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute;
+                            if (pattr != null)
                             {
-                                Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))
-                            };
-                            pInfo.Converter.PropertyType = p.PropertyType;
-                            info.Properties[pattr.Name] = pInfo;
+                                EntityPropertyInfo pInfo = new EntityPropertyInfo(p)
+                                {
+                                    Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))
+                                };
+                                pInfo.Converter.PropertyType = p.PropertyType;
+                                info.Properties[pattr.Name] = pInfo;
+                            }
                         }
                     }
                 }

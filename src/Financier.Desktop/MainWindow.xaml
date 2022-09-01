@@ -7,6 +7,7 @@
                Icon="pack://application:,,,/Images/ic_launcher.png"
                xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel"
                xmlns:View="clr-namespace:Financier.Desktop.Views"
+               AllowDrop="True"
                Loaded="RibbonWindow_Loaded">
     <Window.Resources>
         <ResourceDictionary>
@@ -51,7 +52,7 @@
             <converters:InverseBooleanConverter x:Key="InverseBool" />
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
+    <Grid AllowDrop="True">
         <!-- TODO : USE istead of (ImageSource="pack) <BitmapImage x:Key="ic_action_cancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -144,6 +145,9 @@
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/abank.png"
                                   Label="A-Bank PDF"
                                   Command="{Binding Path=AbankCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/raifaisenbank.png"
+                                  Label="Raiffeisen PDF"
+                                  Command="{Binding Path=RaiffeisenCommand}" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Transaction"
