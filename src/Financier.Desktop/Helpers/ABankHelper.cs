@@ -13,46 +13,18 @@ using System.Threading.Tasks;
 
 namespace Financier.Desktop.Helpers
 {
-    public class ABankHelper : IBankHelper
+    public class ABankHelper : BankHelperBase
     {
         private const string CsvHeader = "\"Date and time\",Description,MCC,\"Card currency amount, (UAH)\",\"Operation amount\",\"Operation currency\",\"Exchange rate\",\"Commission, (UAH)\",\"Cashback amount, (UAH)\",Balance";
         private const string DateRegexPattern = @"[0-3][0-9]\.[0-1][0-9]\.[0-9]{4} [0-2][0-9]:[0-5][0-9]";
         private const string DoubleRegexPattern = "[+-]?\\d*\\.?\\d+";
-        private const string Space = " ";
 
         private readonly Regex dateRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
         private readonly Regex numberRegex = new Regex(DoubleRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
-        public async Task<IEnumerable<BankTransaction>> ParseReport(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine(CsvHeader);
-                using (var docReader = DocLib.Instance.GetDocReader(filePath, new PageDimensions()))
-                {
-                    for (var i = 0; i < docReader.GetPageCount(); i++)
-                    {
-                        using (var pageReader = docReader.GetPageReader(i))
-                        {
-                            var pageText = ParseTransactionsTable(pageReader.GetText().Replace(Environment.NewLine, Space));
-                            sb.AppendLine(pageText);
-                        }
-                    }
-                }
+        protected override string Header { get => CsvHeader; }
 
-                using (TextReader streamReader = new StringReader(sb.ToString()))
-                {
-                    using (var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture))
-                    {
-                        return await csv.GetRecordsAsync<BankTransaction>().ToListAsync();
-                    }
-                }
-            }
-            return Array.Empty<BankTransaction>();
-        }
-
-        private string ParseTransactionsTable(string pageText)
+        protected override string ParseTransactionsTable(string pageText)
         {
             StringBuilder sb = new StringBuilder();
 
