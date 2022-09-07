@@ -11,16 +11,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\mono.eng.transfer.csv" />
+    <None Remove="Assets\raiffeisen.pdf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Assets\abank.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\min.backup">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\mono.eng.transfer.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\mono.eng.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\mono.ukr.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\raiffeisen.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

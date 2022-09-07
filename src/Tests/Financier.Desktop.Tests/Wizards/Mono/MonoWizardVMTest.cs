@@ -113,12 +113,43 @@
                 Cashback = 0.0,
             };
 
-            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
-            IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(csvPath);
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
+            IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(path);
 
             Assert.Equal(8, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
+        }
+
+        [Fact]
+        public async Task LoadTransactions_Raiffaisen_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2022, 08, 30, 0, 0, 0, DateTimeKind.Local),
+                Description = "MAGAZYN 644 UKR LVIV",
+                CardCurrencyAmount = -148.74,
+                OperationAmount = -148.74,
+                OperationCurrency = "UAH",
+                Balance = 0.0
+            };   
+            
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2022, 08, 2, 0, 0, 0, DateTimeKind.Local),
+                Description = "UKR Visa Direct",
+                CardCurrencyAmount = 150.0,
+                OperationAmount = 150.0,
+                OperationCurrency = "UAH",
+                Balance = 0.0
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "raiffeisen.pdf");
+            IEnumerable<BankTransaction> bank = await new Helpers.RaiffeisenHelper().ParseReport(path);
+
+            Assert.Equal(25, bank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
         }
 
         [Fact]
@@ -212,6 +243,51 @@
             Assert.Equal(2, output.Count(x => x.LocationId == 204));
             Assert.Equal(5, output.Count(x => x.LocationId == 205));
             Assert.Equal(2, output.Count(x => x.OriginalCurrencyId == 1));
+
+            DbManual.ResetAllManuals();
+        }
+        
+        [Fact]
+        public async Task MoveNextCommand_ParseDescription_TransactionsImpoted()
+        {
+            List<Transaction> output = new ();
+
+            List<AccountFilterModel> accounts = new ()
+            {
+                new () { Id = 1, Title = "Monobank", TotalAmount = 189671, CurrencyId = 2, IsActive = true },
+                new () { Id = 2, Title = "Cash", TotalAmount = 10000, CurrencyId = 2, IsActive = true },
+                new () { Id = 3, Title = "Bank1", Number = "0544", TotalAmount = 10000, CurrencyId = 2, IsActive = true },
+                new () { Id = 4, Title = "Bank2", Number = "7134", TotalAmount = 10000, CurrencyId = 2, IsActive = true },
+            };
+            List<ProjectModel> projects = new () { new () { Id = 1, IsActive = true, Title = "My project" } };
+            List<CategoryModel> categories = new () { new () { Title = "Комуналка", Id = 1 } };
+            List<CurrencyModel> currencies = new () { new () { Id = 1, Name = "USD" }, new () { Id = 2, Name = "UAH" } };
+
+            DbManual.SetupTests(categories);
+            DbManual.SetupTests(currencies);
+            DbManual.SetupTests(accounts);
+            DbManual.SetupTests(projects);
+
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.transfer.csv");
+            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
+
+            vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
+            vm.MoveNextCommand.Execute();
+            vm.MoveNextCommand.Execute();
+            vm.MoveNextCommand.Execute();
+
+            // Transfer From Mono
+            var fromMono = output[0];
+            var toMono = output[5];
+
+            Assert.Equal(1, fromMono.FromAccountId);
+            Assert.Equal(3, fromMono.ToAccountId);
+
+            // Transfer To Mono
+            Assert.Equal(4, toMono.FromAccountId);
+            Assert.Equal(1, toMono.ToAccountId);
+
 
             DbManual.ResetAllManuals();
         }
