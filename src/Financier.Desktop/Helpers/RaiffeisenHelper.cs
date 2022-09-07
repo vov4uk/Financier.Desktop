@@ -14,14 +14,14 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Financier.Desktop.Helpers
 {
-    public class RaiffeisenHelper : BankHelperBase
+    public class RaiffeisenHelper : BankPdfHelperBase
     {
         private const string CsvHeader = "\"Date and time\",Description,\"Card currency amount, (UAH)\",\"Operation amount\",\"Operation currency\"";
         private const string DateRegexPattern = @"(([0-3][0-9]\.[0-1][0-9]\.[0-9]{4})\/  ([0-3][0-9]\.[0-1][0-9]\.[0-9]{4}))";
-        private const string currencyRegexPattern = "(UAH|USD|EUR)";
+        private const string CurrencyRegexPattern = "(UAH|USD|EUR)";
 
         private readonly Regex lineStartRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-        private readonly Regex lineEndRegex = new Regex(currencyRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        private readonly Regex lineEndRegex = new Regex(CurrencyRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
         protected override string Header => CsvHeader;
 
@@ -29,14 +29,21 @@ namespace Financier.Desktop.Helpers
         {
             StringBuilder sb = new ();
 
-            Match firstMatch = this.lineStartRegex.Matches(pageText).FirstOrDefault();
-            Match lastMatch = this.lineEndRegex.Matches(pageText).LastOrDefault();
+            Match firstMatch = this.lineStartRegex
+                .Matches(pageText)
+                .FirstOrDefault();
+            Match lastMatch = this.lineEndRegex
+                .Matches(pageText)
+                .LastOrDefault();
 
             if (firstMatch != null && lastMatch != null)
             {
                 string tableText = pageText.Substring(firstMatch.Index, lastMatch.Index + lastMatch.Length - firstMatch.Index);
 
-                List<int> tableLines = lineStartRegex.Matches(tableText).Select(x => x.Index).ToList();
+                List<int> tableLines = lineStartRegex
+                    .Matches(tableText)
+                    .Select(x => x.Index)
+                    .ToList();
                 tableLines.Add(tableText.Length);
 
                 for (int j = 1; j < tableLines.Count; j++)
@@ -55,29 +62,32 @@ namespace Financier.Desktop.Helpers
 
         private static string AddSeparators(string line)
         {
-            var words = line.Replace(",", ".").Replace("/","").Trim().Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            var words = line
+                .Replace(",", ".")
+                .Replace("/", string.Empty)
+                .Replace("торговельна", string.Empty, StringComparison.InvariantCultureIgnoreCase)
+                .Replace("точка", string.Empty, StringComparison.InvariantCultureIgnoreCase)
+                .Trim()
+                .Split(Space)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToArray();
 
-            StringBuilder sb = new ();
-
-            sb.Append($"\"{words[0]} 00:00:00\",");
-
-            string end = string.Empty;
+            string end = string.Empty, details = string.Empty;
             int caret = 3;
-            string details = string.Empty;
             for (int i = words.Length - 1; i > 5; i--)
             {
-                string word = words[i];
                 if (caret > 0)
                 {
-                    end = $",{word}{end}";
+                    end = $",{words[i]}{end}";
                     caret--;
                 }
                 else
                 {
-                    details = $"{word} {details}";
+                    details = $"{words[i]} {details}";
                 }
             }
-
+            StringBuilder sb = new();
+            sb.Append($"\"{words[0]} 00:00:00\",");
             sb.Append($"\"{details.Trim()}\"");
             sb.Append(end);
             return sb.ToString();

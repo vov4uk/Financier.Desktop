@@ -13,7 +13,7 @@ using Financier.Desktop.Wizards;
 
 namespace Financier.Desktop.Helpers
 {
-    public abstract class BankHelperBase : IBankHelper
+    public abstract class BankPdfHelperBase : IBankHelper
     {
         protected const string Space = " ";
         protected abstract string Header { get; }

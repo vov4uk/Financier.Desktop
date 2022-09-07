@@ -1,5 +1,6 @@
 ﻿using Financier.Common.Entities;
 using Financier.Common.Model;
+using Financier.DataAccess.Data;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         List<AccountFilterModel> accounts;
         private AccountFilterModel _monoAccount;
         private ObservableCollection<FinancierTransactionDto> financierTransactions;
-        private readonly Regex CardNumberRegex = new Regex(@"(\*\*\*\*)([0-9]{4})");
+        private static readonly Regex CardNumberRegex = new Regex(@"(\*\*\*\*)([0-9]{4})");
 
         public Page3VM()
         {
-            Accounts = DbManual.Account.OrderByDescending(x => x.IsActive).ThenBy(x => x.SortOrder).ToList();
+            Accounts = DbManual.Account
+                .OrderByDescending(x => x.IsActive)
+                .ThenBy(x => x.SortOrder)
+                .ToList();
         }
 
         public DelegateCommand<FinancierTransactionDto> DeleteCommand
@@ -85,30 +89,10 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             List<FinancierTransactionDto> transToAdd = new List<FinancierTransactionDto>();
             foreach (var x in transactions)
             {
-                var locationId = DbManual.Location.Where(x => x.Id > 0).FirstOrDefault(l => !string.IsNullOrEmpty(l.Title) && l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase)
-                                                            || !string.IsNullOrEmpty(l.Address) && l.Address.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
-                var categoryId = DbManual.Category.Where(x => x.Id > 0).FirstOrDefault(l => l.Title.Contains(x.Description, StringComparison.OrdinalIgnoreCase))?.Id ?? 0;
-
+                var desc = ParseDescription(x.Description);
                 long amount = Convert.ToInt64(x.CardCurrencyAmount * 100.0);
-                int toAccountId = 0;
-                int fromAccountId = 0;
-
-
-                if (CardNumberRegex.IsMatch(x.Description))
-                {
-                    var acc = DbManual.Account.FirstOrDefault(y => !string.IsNullOrWhiteSpace(y.Number) && x.Description.EndsWith(y.Number));
-                    if (acc != null)
-                    {
-                        if (amount < 0)
-                        {
-                            toAccountId = acc.Id.Value;
-                        }
-                        else
-                        {
-                            fromAccountId = acc.Id.Value;
-                        }
-                    }
-                }
+                int toAccountId = amount < 0 ? desc.accountId : 0;
+                int fromAccountId = amount > 0 ? desc.accountId : 0;
 
                 var newTr = new FinancierTransactionDto
                 {
@@ -116,11 +100,11 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     FromAmount = amount,
                     OriginalFromAmount = x.ExchangeRate == null ? null : Convert.ToInt64(x.OperationAmount * 100.0),
                     OriginalCurrencyId = x.ExchangeRate == null ? 0 : (DbManual.Currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0),
-                    CategoryId = categoryId,
+                    CategoryId = desc.categoryId,
                     ToAccountId = toAccountId,
                     FromAccountId = fromAccountId,
-                    LocationId = locationId,
-                    Note = (locationId > 0 || categoryId > 0 || toAccountId > 0 || fromAccountId > 0) ? null : x.Description,
+                    LocationId = desc.locationId,
+                    Note = desc.description,
                     DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
                 };
                 transToAdd.Add(newTr);
@@ -135,6 +119,66 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             {
                 item.Note = null;
             }
+        }
+
+        private (int categoryId, int locationId, int accountId, string description) ParseDescription(string description)
+        {
+            int accountId = 0, locationId = 0, categoryId = 0;
+
+            bool parsed = TryParseLocation(description, out locationId)
+                || TryParseCategory(description, out categoryId)
+                || TryParseAccount(description, out accountId);
+            return (categoryId, locationId, accountId, parsed ? null : description);
+        }
+
+        private static bool ContainsString(string str, string desc)
+        {
+            return str?.Contains(desc, StringComparison.OrdinalIgnoreCase) == true;
+        }
+
+        private static bool TryParseLocation(string desc, out int locationId)
+        {
+              var location = DbManual.Location
+                .Where(x => x.Id > 0)
+                .FirstOrDefault(l => ContainsString(l.Title, desc) || ContainsString(l.Address, desc));
+            if (location != null)
+            {
+                locationId = location.Id.Value;
+                return true;
+            }
+            locationId = 0;
+            return false;
+        }
+
+        private static bool TryParseCategory(string desc, out int categoryId)
+        {
+            var category = DbManual.Category
+                    .Where(x => x.Id > 0)
+                    .FirstOrDefault(l => ContainsString(l.Title, desc));
+            if (category != null)
+            {
+                categoryId = category.Id.Value;
+                return true;
+            }
+            categoryId = 0;
+            return false;
+        }
+
+        private static bool TryParseAccount(string desc, out int accountId)
+        {
+            if (CardNumberRegex.IsMatch(desc))
+            {
+                var acc = DbManual.Account
+                    .FirstOrDefault(y => !string.IsNullOrWhiteSpace(y.Number) && desc.EndsWith(y.Number));
+                
+                if (acc != null)
+                {
+                    accountId = acc.Id.Value;
+                    return true;
+                }
+            }
+            accountId = 0;
+            return false;
         }
     }
 }

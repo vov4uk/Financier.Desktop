@@ -17,7 +17,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private BlotterModel _lastAccountTransaction;
 
         private ObservableCollection<BankTransaction> allTransactions;
-        private Dictionary<int, BlotterModel> lastTransactions;
+        private readonly Dictionary<int, BlotterModel> lastTransactions;
         public Page2VM(List<BankTransaction> records, Dictionary<int, BlotterModel> lastTransactions)
         {
             AllTransactions = new ObservableCollection<BankTransaction>(records);
