@@ -15,6 +15,8 @@ namespace Financier.Desktop.Helpers
 {
     public class ABankHelper : BankPdfHelperBase
     {
+        private const int WordsCountAfterDescription = 8;
+        private const int DescriptionStartIndex = 1;
         private const string CsvHeader = "\"Date and time\",Description,MCC,\"Card currency amount, (UAH)\",\"Operation amount\",\"Operation currency\",\"Exchange rate\",\"Commission, (UAH)\",\"Cashback amount, (UAH)\",Balance";
         private const string DateRegexPattern = @"[0-3][0-9]\.[0-1][0-9]\.[0-9]{4} [0-2][0-9]:[0-5][0-9]";
         private const string DoubleRegexPattern = "[+-]?\\d*\\.?\\d+";
@@ -66,8 +68,8 @@ namespace Financier.Desktop.Helpers
                 .Split(Space);
 
             string end = string.Empty, details = string.Empty;
-            int caret = 8;
-            for (int i = words.Length - 1; i > 1; i--)
+            int caret = WordsCountAfterDescription;
+            for (int i = words.Length - 1; i > DescriptionStartIndex; i--)
             {
                 if (caret > 0)
                 {
@@ -81,7 +83,7 @@ namespace Financier.Desktop.Helpers
             }
 
             StringBuilder sb = new();
-            sb.Append($"\"{words[0]} {words[1]}:00\",");
+            sb.Append($"\"{words[0]} {words[1]}:00\","); // datetime
             sb.Append($"\"{details.Trim()}\"");
             sb.Append(end);
             return sb.ToString();

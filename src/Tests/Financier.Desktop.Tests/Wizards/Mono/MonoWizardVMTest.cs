@@ -126,28 +126,28 @@
         {
             var first = new BankTransaction
             {
-                Date = new DateTime(2022, 08, 30, 0, 0, 0, DateTimeKind.Local),
-                Description = "MAGAZYN 644 UKR LVIV",
-                CardCurrencyAmount = -148.74,
-                OperationAmount = -148.74,
+                Date = new DateTime(2022, 11, 25, 0, 0, 0, DateTimeKind.Local),
+                Description = "PR644 UA LVOV",
+                CardCurrencyAmount = -342.57,
+                OperationAmount = -342.57,
                 OperationCurrency = "UAH",
-                Balance = 0.0
+                Balance = 560.2
             };   
             
             var last = new BankTransaction
             {
-                Date = new DateTime(2022, 08, 2, 0, 0, 0, DateTimeKind.Local),
-                Description = "UKR Visa Direct",
-                CardCurrencyAmount = 150.0,
-                OperationAmount = 150.0,
+                Date = new DateTime(2022, 10, 28, 0, 0, 0, DateTimeKind.Local),
+                Description = "SHOP ATB PR644 UA LVIV",
+                CardCurrencyAmount = -196.2,
+                OperationAmount = -196.2,
                 OperationCurrency = "UAH",
-                Balance = 0.0
+                Balance = 880.3
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "raiffeisen.pdf");
             IEnumerable<BankTransaction> bank = await new Helpers.RaiffeisenHelper().ParseReport(path);
 
-            Assert.Equal(25, bank.Count());
+            Assert.Equal(11, bank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
         }

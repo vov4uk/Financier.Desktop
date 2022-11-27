@@ -16,12 +16,14 @@ namespace Financier.Desktop.Helpers
 {
     public class RaiffeisenHelper : BankPdfHelperBase
     {
-        private const string CsvHeader = "\"Date and time\",Description,\"Card currency amount, (UAH)\",\"Operation amount\",\"Operation currency\"";
+        private const int WordsCountAfterDescription = 4;
+        private const int DescriptionStartIndex = 5;
+        private const string CsvHeader = "\"Date and time\",Description,\"Card currency amount, (UAH)\",\"Operation amount\",\"Operation currency\",Balance";
         private const string DateRegexPattern = @"(([0-3][0-9]\.[0-1][0-9]\.[0-9]{4})\/  ([0-3][0-9]\.[0-1][0-9]\.[0-9]{4}))";
-        private const string CurrencyRegexPattern = "(UAH|USD|EUR)";
+        private const string CurrencyRegexPattern = "(UAH|USD|EUR) [0-9| ]+\\,[0-9]+";
 
-        private readonly Regex lineStartRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-        private readonly Regex lineEndRegex = new Regex(CurrencyRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        private static Regex lineStartRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        private static Regex lineEndRegex = new Regex(CurrencyRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
         protected override string Header => CsvHeader;
 
@@ -29,10 +31,10 @@ namespace Financier.Desktop.Helpers
         {
             StringBuilder sb = new ();
 
-            Match firstMatch = this.lineStartRegex
+            Match firstMatch = lineStartRegex
                 .Matches(pageText)
                 .FirstOrDefault();
-            Match lastMatch = this.lineEndRegex
+            Match lastMatch = lineEndRegex
                 .Matches(pageText)
                 .LastOrDefault();
 
@@ -70,12 +72,12 @@ namespace Financier.Desktop.Helpers
                 .Trim()
                 .Split(Space)
                 .Where(x => !string.IsNullOrWhiteSpace(x))
-                .ToArray();
+                .ToList();
 
             string end = string.Empty, details = string.Empty;
-            int caret = 3;
-            for (int i = words.Length - 1; i > 5; i--)
-            {
+            int caret = WordsCountAfterDescription;
+            for (int i = words.Count - 1; i > DescriptionStartIndex; i--) // start from end of line, and take last "WordsCountAfterDescription" words ("Card currency amount, (UAH)","Operation amount","Operation currency",Balance")
+            {                                                             // words in middle - became "Description"
                 if (caret > 0)
                 {
                     end = $",{words[i]}{end}";

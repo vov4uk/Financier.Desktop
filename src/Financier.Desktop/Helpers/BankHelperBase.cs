@@ -31,7 +31,7 @@ namespace Financier.Desktop.Helpers
                         using (var pageReader = docReader.GetPageReader(i))
                         {
                             var pageText = ParseTransactionsTable(pageReader.GetText().Replace(Environment.NewLine, Space));
-                            sb.AppendLine(pageText);
+                            sb.AppendLine(pageText.TrimEnd());
                         }
                     }
                 }
