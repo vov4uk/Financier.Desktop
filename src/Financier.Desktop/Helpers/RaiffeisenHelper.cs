@@ -54,7 +54,7 @@ namespace Financier.Desktop.Helpers
                     int prevLine = tableLines[j - 1];
                     string lineText = tableText.Substring(prevLine, line - prevLine);
                     string result = Regex.Replace(lineText, @"\s{1}([+-]?\d{1,3})\s(\d{3}\,\d{2})", @" $1$2");
-                    string csvText = AddSeparators(result);
+                    string csvText = AddSeparators(result.TrimEnd());
                     sb.AppendLine(csvText);
                 }
             }
@@ -64,6 +64,12 @@ namespace Financier.Desktop.Helpers
 
         private static string AddSeparators(string line)
         {
+            // Sometimes balance is empty, add 0.0 as default value
+            if(line.EndsWith("UAH") || line.EndsWith("USD") || line.EndsWith("EUR"))
+            {
+                line = line + " 0.0"; 
+            }
+
             var words = line
                 .Replace(",", ".")
                 .Replace("/", string.Empty)
