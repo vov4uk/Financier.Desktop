@@ -53,6 +53,8 @@ namespace Financier.Desktop.Helpers
                 }
             }
 
+            sb.AppendLine(singleLine.Substring(currentPosition).Trim());
+
             return sb.ToString();
         }
     }

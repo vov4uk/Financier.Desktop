@@ -32,6 +32,7 @@ namespace Financier.Desktop.Helpers
 
             Match firstMatch = this.dateRegex
                 .Matches(pageText)
+                .Skip(1)
                 .FirstOrDefault();
             Match lastMatch = this.numberRegex
                 .Matches(pageText)

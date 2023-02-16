@@ -89,34 +89,34 @@
         {
             var first = new BankTransaction
             {
-                Date = new DateTime(2022, 1, 19, 15, 55, 0, DateTimeKind.Local),
-                Description = "McDonald’s",
-                Balance = 10360.00,
-                MCC = "5814",
+                Date = new DateTime(2023, 2, 15, 9, 36, 0, DateTimeKind.Local),
+                Description = "АТБ",
+                Balance = 386.78,
+                MCC = "5411",
                 Commission = 0.0,
-                CardCurrencyAmount = -119.00,
-                OperationAmount = -119.00,
+                CardCurrencyAmount = -71.8,
+                OperationAmount = -71.8,
                 OperationCurrency = "UAH",
-                Cashback = 3.57,
+                Cashback = 0.5,
             };
 
             var last = new BankTransaction
             {
-                Date = new DateTime(2022, 1, 1, 0, 1, 0, DateTimeKind.Local),
-                Description = "Відсотки на залишок власних коштів",
-                Balance = 10315.12,
+                Date = new DateTime(2023, 2, 3, 13, 54, 0, DateTimeKind.Local),
+                Description = "АТБ",
+                Balance = 115.81,
                 Commission = 0.0,
-                MCC = "4829",
-                CardCurrencyAmount = 3.12,
-                OperationAmount = 3.12,
+                MCC = "5411",
+                CardCurrencyAmount = -129.7,
+                OperationAmount = -129.7,
                 OperationCurrency = "UAH",
-                Cashback = 0.0,
+                Cashback = 0.91,
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
             IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(path);
 
-            Assert.Equal(8, abank.Count());
+            Assert.Equal(5, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
         }
