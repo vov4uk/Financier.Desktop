@@ -22,8 +22,8 @@ namespace Financier.Desktop.Helpers
         private const string DateRegexPattern = @"(([0-3][0-9]\.[0-1][0-9]\.[0-9]{4})\/  ([0-3][0-9]\.[0-1][0-9]\.[0-9]{4}))";
         private const string CurrencyRegexPattern = "(UAH|USD|EUR) [0-9| ]+\\,[0-9]+";
 
-        private static Regex lineStartRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-        private static Regex lineEndRegex = new Regex(CurrencyRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        private static Regex lineStartRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+        private static Regex lineEndRegex = new Regex(CurrencyRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
 
         protected override string Header => CsvHeader;
 
@@ -53,7 +53,7 @@ namespace Financier.Desktop.Helpers
                     int line = tableLines[j];
                     int prevLine = tableLines[j - 1];
                     string lineText = tableText.Substring(prevLine, line - prevLine);
-                    string result = Regex.Replace(lineText, @"\s{1}([+-]?\d{1,3})\s(\d{3}\,\d{2})", @" $1$2");
+                    string result = Regex.Replace(lineText, @"\s{1}([+-]?\d{1,3})\s(\d{3}\,\d{2})", @" $1$2", RegexOptions.None, TimeSpan.FromMilliseconds(1000));
                     string csvText = AddSeparators(result.TrimEnd());
                     sb.AppendLine(csvText);
                 }

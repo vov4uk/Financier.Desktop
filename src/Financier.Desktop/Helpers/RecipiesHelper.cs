@@ -21,7 +21,7 @@ namespace Financier.Desktop.Helpers
             var array = text.Split(new[] { Environment.NewLine }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
             var singleLine = string.Join(' ', array);
-            Regex numberRegex = new Regex(RecipesFormatter.Pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            Regex numberRegex = new Regex(RecipesFormatter.Pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
 
             var matches = numberRegex.Matches(singleLine);
 

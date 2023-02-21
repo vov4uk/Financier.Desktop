@@ -17,7 +17,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         List<AccountFilterModel> accounts;
         private AccountFilterModel _monoAccount;
         private ObservableCollection<FinancierTransactionDto> financierTransactions;
-        private static readonly Regex CardNumberRegex = new Regex(@"(\*\*\*\*)([0-9]{4})");
+        private static readonly Regex CardNumberRegex = new Regex(@"(\*\*\*\*)([0-9]{4})", RegexOptions.None, TimeSpan.FromMilliseconds(1000));
 
         public Page3VM()
         {

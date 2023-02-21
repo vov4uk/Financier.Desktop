@@ -15,7 +15,6 @@ namespace Financier.Desktop
             base.OnStartup(e);
 
             SetupExceptionHandling();
-            AppDomain.CurrentDomain.SetData("REGEX_DEFAULT_MATCH_TIMEOUT", TimeSpan.FromMilliseconds(1000));
         }
 
         private void SetupExceptionHandling()
