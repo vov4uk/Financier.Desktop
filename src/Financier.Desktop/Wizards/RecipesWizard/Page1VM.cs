@@ -46,7 +46,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 var lines = text.Split(Environment.NewLine).Where(line => !string.IsNullOrWhiteSpace(line));
                 foreach (var line in lines)
                 {
-                    var res = Regex.Match(line, pattern, RegexOptions.IgnoreCase);
+                    var res = Regex.Match(line, pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
                     if (res.Success)
                     {
                         var number = res.Value.Substring(0, res.Value.Length - 2);
