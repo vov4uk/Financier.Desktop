@@ -1,4 +1,5 @@
-﻿using Financier.Common.Model;
+﻿using Financier.Common.Entities;
+using Financier.Common.Model;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private AccountFilterModel _monoAccount;
 
         private BankTransaction _startTransaction;
+        private BlotterModel _lastAccountTransaction;
 
         private ObservableCollection<BankTransaction> allTransactions;
-        public Page2VM(List<BankTransaction> records)
+        private readonly Dictionary<int, BlotterModel> lastTransactions;
+        public Page2VM(List<BankTransaction> records, Dictionary<int, BlotterModel> lastTransactions)
         {
             AllTransactions = new ObservableCollection<BankTransaction>(records);
+            this.lastTransactions = lastTransactions;
         }
 
         public ObservableCollection<BankTransaction> AllTransactions
@@ -47,6 +51,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 RaisePropertyChanged(nameof(MonoAccount));
                 double balance = _monoAccount.TotalAmount / 100.0;
                 StartTransaction = allTransactions.FirstOrDefault(x => Math.Abs(x.Balance - balance) < 0.01);
+                LastAccountTransaction = lastTransactions.ContainsKey(_monoAccount.Id ?? 0) ? lastTransactions[_monoAccount.Id.Value] : null;
             }
         }
 
@@ -63,6 +68,16 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             {
                 _startTransaction = value;
                 RaisePropertyChanged(nameof(StartTransaction));
+            }
+        }
+
+        public BlotterModel LastAccountTransaction
+        {
+            get => _lastAccountTransaction;
+            set
+            {
+                _lastAccountTransaction = value;
+                RaisePropertyChanged(nameof(LastAccountTransaction));
             }
         }
 

@@ -21,7 +21,7 @@
         public void Constructor_ReceiveParameters_CurrentPageNotEmpty(List<BankTransaction> mono)
         {
             DbManual.SetupTests(new List<AccountFilterModel>());
-            var vm = new MonoWizardVM(mono);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.NotNull(vm.CurrentPage);
         }
@@ -31,7 +31,7 @@
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM(mono);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Equal(46, mono.Count());
             Assert.Equal(46, ((Page2VM)vm.Pages[1]).GetMonoTransactions().Count);
@@ -45,7 +45,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>());
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
             IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM(mono);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
             Assert.NotNull(vm.CurrentPage);
@@ -89,36 +89,67 @@
         {
             var first = new BankTransaction
             {
-                Date = new DateTime(2022, 1, 19, 15, 55, 0, DateTimeKind.Local),
-                Description = "McDonald’s",
-                Balance = 10360.00,
-                MCC = "5814",
+                Date = new DateTime(2023, 2, 15, 9, 36, 0, DateTimeKind.Local),
+                Description = "АТБ",
+                Balance = 386.78,
+                MCC = "5411",
                 Commission = 0.0,
-                CardCurrencyAmount = -119.00,
-                OperationAmount = -119.00,
+                CardCurrencyAmount = -71.8,
+                OperationAmount = -71.8,
                 OperationCurrency = "UAH",
-                Cashback = 3.57,
+                Cashback = 0.5,
             };
 
             var last = new BankTransaction
             {
-                Date = new DateTime(2022, 1, 1, 0, 1, 0, DateTimeKind.Local),
-                Description = "Відсотки на залишок власних коштів",
-                Balance = 10315.12,
+                Date = new DateTime(2023, 2, 3, 13, 54, 0, DateTimeKind.Local),
+                Description = "АТБ",
+                Balance = 115.81,
                 Commission = 0.0,
-                MCC = "4829",
-                CardCurrencyAmount = 3.12,
-                OperationAmount = 3.12,
+                MCC = "5411",
+                CardCurrencyAmount = -129.7,
+                OperationAmount = -129.7,
                 OperationCurrency = "UAH",
-                Cashback = 0.0,
+                Cashback = 0.91,
             };
 
-            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
-            IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(csvPath);
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
+            IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(path);
 
-            Assert.Equal(8, abank.Count());
+            Assert.Equal(5, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
+        }
+
+        [Fact]
+        public async Task LoadTransactions_Raiffaisen_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2022, 11, 25, 0, 0, 0, DateTimeKind.Local),
+                Description = "PR644 UA LVOV",
+                CardCurrencyAmount = -342.57,
+                OperationAmount = -342.57,
+                OperationCurrency = "UAH",
+                Balance = 560.2
+            };   
+            
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2022, 10, 28, 0, 0, 0, DateTimeKind.Local),
+                Description = "SHOP ATB PR644 UA LVIV",
+                CardCurrencyAmount = -196.2,
+                OperationAmount = -196.2,
+                OperationCurrency = "UAH",
+                Balance = 880.3
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "raiffeisen.pdf");
+            IEnumerable<BankTransaction> bank = await new Helpers.RaiffeisenHelper().ParseReport(path);
+
+            Assert.Equal(11, bank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
         }
 
         [Fact]
@@ -152,7 +183,7 @@
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM(mono);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
 
@@ -212,6 +243,51 @@
             Assert.Equal(2, output.Count(x => x.LocationId == 204));
             Assert.Equal(5, output.Count(x => x.LocationId == 205));
             Assert.Equal(2, output.Count(x => x.OriginalCurrencyId == 1));
+
+            DbManual.ResetAllManuals();
+        }
+        
+        [Fact]
+        public async Task MoveNextCommand_ParseDescription_TransactionsImpoted()
+        {
+            List<Transaction> output = new ();
+
+            List<AccountFilterModel> accounts = new ()
+            {
+                new () { Id = 1, Title = "Monobank", TotalAmount = 189671, CurrencyId = 2, IsActive = true },
+                new () { Id = 2, Title = "Cash", TotalAmount = 10000, CurrencyId = 2, IsActive = true },
+                new () { Id = 3, Title = "Bank1", Number = "0544", TotalAmount = 10000, CurrencyId = 2, IsActive = true },
+                new () { Id = 4, Title = "Bank2", Number = "7134", TotalAmount = 10000, CurrencyId = 2, IsActive = true },
+            };
+            List<ProjectModel> projects = new () { new () { Id = 1, IsActive = true, Title = "My project" } };
+            List<CategoryModel> categories = new () { new () { Title = "Комуналка", Id = 1 } };
+            List<CurrencyModel> currencies = new () { new () { Id = 1, Name = "USD" }, new () { Id = 2, Name = "UAH" } };
+
+            DbManual.SetupTests(categories);
+            DbManual.SetupTests(currencies);
+            DbManual.SetupTests(accounts);
+            DbManual.SetupTests(projects);
+
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.transfer.csv");
+            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
+
+            vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
+            vm.MoveNextCommand.Execute();
+            vm.MoveNextCommand.Execute();
+            vm.MoveNextCommand.Execute();
+
+            // Transfer From Mono
+            var fromMono = output[0];
+            var toMono = output[5];
+
+            Assert.Equal(1, fromMono.FromAccountId);
+            Assert.Equal(3, fromMono.ToAccountId);
+
+            // Transfer To Mono
+            Assert.Equal(4, toMono.FromAccountId);
+            Assert.Equal(1, toMono.ToAccountId);
+
 
             DbManual.ResetAllManuals();
         }

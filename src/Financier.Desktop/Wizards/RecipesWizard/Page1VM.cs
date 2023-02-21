@@ -38,7 +38,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         public void CalculateCurrentAmount()
         {
             Amounts.Clear();
-            var pattern = RecipesFormatter.Pattern + @"(\t|\n|\r|$)"; // fix '100600 Балтика' case then it calculates (100600 Б), no more symbols after a|b
+            var pattern = RecipesFormatter.Pattern + @"(\t|\n|\r|$)"; //TODO fix '100600 Балтика' case then it calculates (100600 Б), no more symbols after a|b
             if (!string.IsNullOrEmpty(text))
             {
                 double tmp = 0.0;
@@ -46,7 +46,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 var lines = text.Split(Environment.NewLine).Where(line => !string.IsNullOrWhiteSpace(line));
                 foreach (var line in lines)
                 {
-                    var res = Regex.Match(line, pattern, RegexOptions.IgnoreCase);
+                    var res = Regex.Match(line, pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
                     if (res.Success)
                     {
                         var number = res.Value.Substring(0, res.Value.Length - 2);

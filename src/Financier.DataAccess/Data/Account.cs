@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
+using Financier.DataAccess.Utils;
 
 namespace Financier.DataAccess.Data
 {
@@ -21,6 +22,9 @@ namespace Financier.DataAccess.Data
 
         [Column("last_transaction_date")]
         public long LastTransactionDate { get; set; }
+
+        [Column("last_transaction_id"), Ignore]
+        public int LastTransactionId { get; set; }
 
         [ForeignKey("Currency")]
         [Column("currency_id")]

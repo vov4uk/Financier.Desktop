@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Financier.DataAccess.Utils;
 
 namespace Financier.Adapter
 {
@@ -28,19 +29,23 @@ namespace Financier.Adapter
             List<string> columnsOrder = entityColumnsOrder[classArttr.Name];
             foreach (var propertyInfo in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                ColumnAttribute pattr = (ColumnAttribute)propertyInfo.GetCustomAttribute(typeof(ColumnAttribute));
-                if (pattr != null)
+                IgnoreAttribute ignoreAttr = propertyInfo.GetCustomAttribute(typeof(IgnoreAttribute)) as IgnoreAttribute;
+                if (ignoreAttr == null)
                 {
-                    EntityPropertyInfo pInfo = new EntityPropertyInfo(propertyInfo)
+                    ColumnAttribute pattr = propertyInfo.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute;
+                    if (pattr != null)
                     {
-                        Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))
-                    };
-                    pInfo.Converter.PropertyType = propertyInfo.PropertyType;
+                        EntityPropertyInfo pInfo = new EntityPropertyInfo(propertyInfo)
+                        {
+                            Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))
+                        };
+                        pInfo.Converter.PropertyType = propertyInfo.PropertyType;
 
-                    object val = propertyInfo.GetValue(entity);
-                    if (val != null)
-                    {
-                        dict.Add(new KeyValuePair<int, string>(columnsOrder.IndexOf(pattr.Name), $"{pattr.Name}:{pInfo.Converter.ConvertBack(val)}"));
+                        object val = propertyInfo.GetValue(entity);
+                        if (val != null)
+                        {
+                            dict.Add(new KeyValuePair<int, string>(columnsOrder.IndexOf(pattr.Name), $"{pattr.Name}:{pInfo.Converter.ConvertBack(val)}"));
+                        }
                     }
                 }
             }

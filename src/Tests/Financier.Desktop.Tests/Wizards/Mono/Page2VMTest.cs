@@ -12,9 +12,9 @@
     {
         [Theory]
         [AutoMoqData]
-        public void Constructor_ReceiveTransactions_AllTransactionsSeted(List<BankTransaction> transactions)
+        public void Constructor_ReceiveTransactions_AllTransactionsSeted(List<BankTransaction> transactions, Dictionary<int, BlotterModel> lastTransactions)
         {
-            var vm = new Page2VM(transactions);
+            var vm = new Page2VM(transactions, lastTransactions);
 
             Assert.Equal(transactions, vm.AllTransactions);
             Assert.Equal("Please select transaction", vm.Title);
@@ -32,7 +32,7 @@
                 startTr,
             };
 
-            var vm = new Page2VM(transactions);
+            var vm = new Page2VM(transactions, new Dictionary<int, BlotterModel>());
             vm.MonoAccount = account;
 
             Assert.Equal(startTr, vm.StartTransaction);
@@ -48,7 +48,7 @@
                 new BankTransaction() { Balance = 100.0 },
             };
 
-            var vm = new Page2VM(transactions);
+            var vm = new Page2VM(transactions, new Dictionary<int, BlotterModel>());
             vm.MonoAccount = account;
 
             Assert.Equal(default, vm.StartTransaction);
@@ -63,7 +63,7 @@
                 new BankTransaction() { Balance = 100.0, Date = new DateTime(2017, 11, 16) },
             };
 
-            var vm = new Page2VM(transactions);
+            var vm = new Page2VM(transactions, new Dictionary<int, BlotterModel>());
 
             Assert.Single(vm.GetMonoTransactions());
         }
@@ -83,7 +83,7 @@
                 new BankTransaction() { Balance = 104.0, Date = new DateTime(2019, 11, 16) },
             };
 
-            var vm = new Page2VM(transactions);
+            var vm = new Page2VM(transactions, new Dictionary<int, BlotterModel>());
             vm.StartTransaction = startTr;
 
             Assert.Equal(3, vm.GetMonoTransactions().Count);
@@ -91,11 +91,11 @@
 
         [Theory]
         [AutoMoqData]
-        public void DeleteCommand_Execute_TransactionsRemoved(List<BankTransaction> transactions)
+        public void DeleteCommand_Execute_TransactionsRemoved(List<BankTransaction> transactions, Dictionary<int, BlotterModel> lastTransactions)
         {
             var trToremove = new BankTransaction();
             transactions.Add(trToremove);
-            var vm = new Page2VM(transactions);
+            var vm = new Page2VM(transactions, lastTransactions);
             vm.DeleteCommand.Execute(trToremove);
 
             Assert.DoesNotContain(trToremove, vm.AllTransactions);

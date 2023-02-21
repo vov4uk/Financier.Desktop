@@ -150,6 +150,7 @@ namespace Financier.DataAccess
                     acc.TotalAmount = balance;
                     var lastTransaction = transactions.LastOrDefault();
                     acc.LastTransactionDate = lastTransaction?.DateTime ?? 0;
+                    acc.LastTransactionId = lastTransaction?.Id ?? 0;
                     context.Accounts.Update(acc);
                     await context.SaveChangesAsync();
                 }

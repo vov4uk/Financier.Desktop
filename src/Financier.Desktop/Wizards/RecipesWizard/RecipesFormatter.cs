@@ -28,7 +28,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
                 for (int i = 0; i < words.Length; i++)
                 {
                     string word = words[i];
-                    if (Regex.IsMatch(word, Pattern, RegexOptions.IgnoreCase))
+                    if (Regex.IsMatch(word, Pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000)))
                     {
                         p.Inlines.Add(GetRun(word, Brushes.DarkRed, Brushes.Yellow));
                         if (i != words.Length - 1) //not last word
@@ -55,7 +55,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
 
         private static Run GetRun(string word, Brush foreground, Brush background)
         {
-            if (Regex.IsMatch(word, NumbersRegex, RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(word, NumbersRegex, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000)))
             {
                 return GetHiglightedRun(word, foreground, background);
             }

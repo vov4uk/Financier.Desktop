@@ -32,6 +32,8 @@ SELECT a._id,
        a.currency_id,
        a.total_amount,
        a.type,
+       a.last_transaction_id,
+       a.number,
        c.Name as currency_name
 FROM   account a
 INNER JOIN currency c ON a.currency_id = c._id
@@ -139,25 +141,25 @@ ORDER  BY 1 DESC ");
             }
         }
 
-        public static List<AccountFilterModel> Account => _accounts;
+        public static List<AccountFilterModel> Account => _accounts ?? new();
 
-        public static List<CategoryModel> Category => _category;
+        public static List<CategoryModel> Category => _category ?? new();
 
-        public static List<CategoryModel> SubCategory => _category?.Where(x => x.Id > 0).ToList();
+        public static List<CategoryModel> SubCategory => _category?.Where(x => x.Id > 0).ToList() ?? new();
 
-        public static List<CategoryModel> TopCategories => _topCategory;
+        public static List<CategoryModel> TopCategories => _topCategory ?? new();
 
-        public static List<CurrencyModel> Currencies => _currencies;
+        public static List<CurrencyModel> Currencies => _currencies ?? new();
 
-        public static List<PayeeModel> Payee => _payee;
+        public static List<PayeeModel> Payee => _payee ?? new ();
 
-        public static List<ProjectModel> Project => _project;
+        public static List<ProjectModel> Project => _project ?? new();
 
-        public static List<YearMonths> YearMonths => _yearMonths;
+        public static List<YearMonths> YearMonths => _yearMonths ?? new();
 
-        public static List<Years> Years => _years;
+        public static List<Years> Years => _years ?? new();
 
-        public static List<LocationModel> Location => _location;
+        public static List<LocationModel> Location => _location ?? new();
 
         public static void ResetAllManuals()
         {

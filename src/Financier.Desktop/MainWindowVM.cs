@@ -36,6 +36,7 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand<Type> _menuNavigateCommand;
         private IAsyncCommand _monoCommand;
         private IAsyncCommand _abankCommand;
+        private IAsyncCommand _raiffeisenCommand;
         private IAsyncCommand _openBackupCommand;
         private IAsyncCommand _saveBackupCommand;
         private IAsyncCommand _saveBackupAsDbCommand;
@@ -123,6 +124,8 @@ namespace Financier.Desktop.ViewModel
         public IAsyncCommand MonoCommand => _monoCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("Monobank", "csv"));
 
         public IAsyncCommand AbankCommand => _abankCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("A-Bank", "pdf"));
+
+        public IAsyncCommand RaiffeisenCommand => _raiffeisenCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("Raiffeisen", "pdf"));
 
         public IAsyncCommand OpenBackupCommand => _openBackupCommand ??= new AsyncCommand(OpenBackup_Click);
 
@@ -288,7 +291,14 @@ namespace Financier.Desktop.ViewModel
                 var csvHelper = this.bankFactory.CreateBankHelper(bank);
                 var csvTransactions = await csvHelper.ParseReport(fileName);
 
-                var vm = new MonoWizardVM(csvTransactions);
+                Dictionary<int, BlotterModel> lastTransactions = new();
+                foreach (var acc in DbManual.Account.Where(x => x.Id.HasValue))
+                {
+                    var last = Blotter.Entities.FirstOrDefault(x => x.Id == acc.LastTransactionId);
+                    lastTransactions.Add(acc.Id.Value, last);
+                }
+
+                var vm = new MonoWizardVM(bank, csvTransactions, lastTransactions);
 
                 var output = dialogWrapper.ShowWizard(vm);
 

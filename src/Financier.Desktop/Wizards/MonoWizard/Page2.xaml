@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
+             xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -18,6 +19,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Left" FontWeight="Bold">
@@ -29,9 +31,17 @@
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
-        <TextBlock Grid.Row="1" FontSize="12"
+        <emoji:TextBlock Grid.Row="1" HorizontalAlignment="Left" FontWeight="Bold">
+            <emoji:TextBlock.Text>
+                <MultiBinding StringFormat="{} Last transaction {0} {1}">
+                    <Binding Path="LastAccountTransaction.TransactionTitle"/>
+                    <Binding Path="LastAccountTransaction.AmountTitle" />
+                </MultiBinding>
+            </emoji:TextBlock.Text>
+        </emoji:TextBlock>
+        <TextBlock Grid.Row="2" FontSize="12"
                    Text="Please select transaction with same balance as selected account, otherwise all transactions will be imported"/>
-        <DataGrid Grid.Row="2"
+        <DataGrid Grid.Row="3"
                   ItemsSource="{Binding Path=AllTransactions}"
                   AutoGenerateColumns="False"
                   ScrollViewer.CanContentScroll="True"
