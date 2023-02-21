@@ -34,23 +34,20 @@ namespace Financier.Desktop.Helpers
                 var line = singleLine.Substring(currentPosition, match.Index - currentPosition);
                 currentPosition = match.Index + match.Length;
 
-                var lines = line.Chunk(maxLineLength)
+                string[] lines = line.Chunk(maxLineLength)
                     .Select(x => new string(x))
                     .ToArray();
 
                 if (lines.Any())
                 {
-                    lines[lines.Length - 1] = lines[lines.Length - 1] + match.Value.Replace(" ", "-");
-
-                    foreach (var item in lines)
+                    foreach (var item in lines.SkipLast(1))
                     {
                         sb.AppendLine(item.Trim());
                     }
+                    sb.Append(lines.Last().TrimStart());
                 }
-                else
-                {
-                    sb.AppendLine(match.Value.Replace(" ", "-"));
-                }
+
+                sb.AppendLine(match.Value.Replace(" ", "-"));
             }
 
             sb.AppendLine(singleLine.Substring(currentPosition).Trim());
