@@ -27,6 +27,8 @@ namespace Financier.Desktop.Wizards
 
         public long FromAmount { get; set; }
 
+        public int MCC { get; set; }
+
         public int LocationId
         {
             get => locationId;

@@ -105,7 +105,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     FromAccountId = fromAccountId,
                     LocationId = desc.locationId,
                     Note = desc.description,
-                    DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds()
+                    DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds(),
+                    MCC = int.Parse(x.MCC)
                 };
                 transToAdd.Add(newTr);
             }

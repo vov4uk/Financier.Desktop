@@ -16,10 +16,12 @@ namespace Financier.Desktop.Helpers
     public class ABankHelper : BankPdfHelperBase
     {
         private const int WordsCountAfterDescription = 8;
-        private const int DescriptionStartIndex = 1;
+        private const int DescriptionStartIndex = -1;
         private const string CsvHeader = "\"Date and time\",Description,MCC,\"Card currency amount, (UAH)\",\"Operation amount\",\"Operation currency\",\"Exchange rate\",\"Commission, (UAH)\",\"Cashback amount, (UAH)\",Balance";
-        private const string DateRegexPattern = @"[0-3][0-9]\.[0-1][0-9]\.[0-9]{4} [0-2][0-9]:[0-5][0-9]";
-        private const string DoubleRegexPattern = "[+-]?\\d*\\.?\\d+";
+        private const string DateRegexPattern = @"\d+\.[0-1][0-9]\.[0-9]{4} \d+:[0-5][0-9]";
+        private const string DoubleRegexPattern = @"[+-]?\d*\.?\d+";
+        private const string CardNumberRegex = @"\d{4}(\*{4})\d{4}";
+        private const string NumbersWithSpacingRegex = @"\s\d{0,3}\s\d{0,3}\,\d{0,2}";
 
         private readonly Regex dateRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
         private readonly Regex numberRegex = new Regex(DoubleRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
@@ -32,7 +34,7 @@ namespace Financier.Desktop.Helpers
 
             Match firstMatch = this.dateRegex
                 .Matches(pageText)
-                .Skip(1)
+                .Skip(1)    // page header
                 .FirstOrDefault();
             Match lastMatch = this.numberRegex
                 .Matches(pageText)
@@ -63,6 +65,18 @@ namespace Financier.Desktop.Helpers
 
         private static string AddSeparators(string line)
         {
+            var date = Regex.Match(line, DateRegexPattern).Value;
+            line = line.Replace(date, string.Empty);
+            var cardNumber = Regex.Match(line, CardNumberRegex).Value;
+            line = line.Replace(cardNumber, string.Empty);
+
+            var numbersWithSpaces = Regex.Matches(line, NumbersWithSpacingRegex);
+            foreach (Match number in numbersWithSpaces)
+            {
+                var numberWithoutSpaces = " " + number.Value.Replace(" ", string.Empty);
+                line = line.Replace(number.Value, numberWithoutSpaces);
+            }
+
             var words = line
                 .Replace(",", ".")
                 .Trim()
@@ -84,7 +98,7 @@ namespace Financier.Desktop.Helpers
             }
 
             StringBuilder sb = new();
-            sb.Append($"\"{words[0]} {words[1]}:00\","); // datetime
+            sb.Append($"\"{date}:00\","); // datetime
             sb.Append($"\"{details.Trim()}\"");
             sb.Append(end);
             return sb.ToString();

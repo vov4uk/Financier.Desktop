@@ -18,6 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:AmountConverter x:Key="AmountConverter"/>
             <converters:UnixTimeConverter x:Key="DatetimeConverter" />
+            <converters:MccConverter x:Key="MccConverter" />
             <BitmapImage x:Key="IcActionCancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -69,6 +70,9 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Date"
                                     Binding="{Binding Path=DateTime, Converter= {StaticResource DatetimeConverter}}"
+                                    IsReadOnly="True"/>
+                <DataGridTextColumn Header="MCC"
+                                    Binding="{Binding Path=MCC, Converter= {StaticResource MccConverter}}"
                                     IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="From Account" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
