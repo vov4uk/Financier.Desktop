@@ -13,6 +13,8 @@ namespace Financier.Desktop.Helpers
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class MonobankHelper : IBankHelper
     {
+        public string BankTitle => "Monobank";
+
         public async Task<IEnumerable<BankTransaction>> ParseReport(string filePath)
         {
             if (File.Exists(filePath))

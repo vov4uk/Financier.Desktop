@@ -27,6 +27,8 @@ namespace Financier.Desktop.Helpers
 
         protected override string Header => CsvHeader;
 
+        public override string BankTitle => "Raiffeisen Bank";
+
         protected override string ParseTransactionsTable(string pageText)
         {
             StringBuilder sb = new ();

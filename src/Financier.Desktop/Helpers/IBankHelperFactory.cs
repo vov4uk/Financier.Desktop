@@ -1,7 +1,9 @@
-﻿namespace Financier.Desktop.Helpers
+﻿using Financier.Desktop.Wizards;
+
+namespace Financier.Desktop.Helpers
 {
     public interface IBankHelperFactory
     {
-        IBankHelper CreateBankHelper(string bank);
+        IBankHelper CreateBankHelper(WizardTypes bank);
     }
 }

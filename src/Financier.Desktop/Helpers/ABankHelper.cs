@@ -28,6 +28,8 @@ namespace Financier.Desktop.Helpers
 
         protected override string Header { get => CsvHeader; }
 
+        public override string BankTitle => "A-Bank";
+
         protected override string ParseTransactionsTable(string pageText)
         {
             StringBuilder sb = new ();

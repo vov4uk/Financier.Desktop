@@ -69,7 +69,7 @@
 
             this.dbFactoryMock.Setup(x => x.CreateDatabase())
                 .Returns(this.dbMock.Object);
-            this.bankMock.Setup(x => x.CreateBankHelper(It.IsAny<string>()))
+            this.bankMock.Setup(x => x.CreateBankHelper(It.IsAny<WizardTypes>()))
                 .Returns(this.csvMock.Object);
         }
 
@@ -310,7 +310,7 @@
             SetupImportWizard(csvPath);
 
             var vm = this.GetFinancierVM();
-            await vm.MonoCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
 
             this.trMock.VerifyAll();
             this.dbMock.Verify();
@@ -329,7 +329,7 @@
             SetupImportWizard(path);
 
             var vm = this.GetFinancierVM();
-            await vm.AbankCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.ABank);
 
             this.trMock.VerifyAll();
             this.dbMock.Verify();
@@ -348,7 +348,7 @@
             SetupImportWizard(path);
 
             var vm = this.GetFinancierVM();
-            await vm.RaiffeisenCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.RaifaisenBank);
 
             this.trMock.VerifyAll();
             this.dbMock.Verify();
@@ -391,7 +391,7 @@
                 .ReturnsAsync(Array.Empty<BankTransaction>());
 
             var vm = this.GetFinancierVM();
-            await vm.MonoCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
 
             this.trMock.VerifyAll();
             this.dbMock.Verify();
@@ -410,7 +410,7 @@
             this.csvMock.Setup(x => x.ParseReport(csvPath)).ReturnsAsync(Array.Empty<BankTransaction>());
 
             var vm = this.GetFinancierVM();
-            await vm.MonoCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
 
             this.dbMock.VerifyAll();
         }

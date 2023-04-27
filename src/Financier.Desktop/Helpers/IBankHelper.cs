@@ -6,6 +6,7 @@ namespace Financier.Desktop.Helpers
 {
     public interface IBankHelper
     {
+        string BankTitle { get; }
         Task<IEnumerable<BankTransaction>> ParseReport(string filePath);
     }
 }

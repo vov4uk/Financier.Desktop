@@ -18,6 +18,8 @@ namespace Financier.Desktop.Helpers
         protected const string Space = " ";
         protected abstract string Header { get; }
 
+        public abstract string BankTitle { get; }
+
         public async Task<IEnumerable<BankTransaction>> ParseReport(string filePath)
         {
             if (File.Exists(filePath))

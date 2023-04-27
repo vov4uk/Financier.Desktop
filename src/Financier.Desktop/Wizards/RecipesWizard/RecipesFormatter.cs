@@ -9,7 +9,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.View
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class RecipesFormatter : ITextFormatter
     {
-        public const string Pattern = @"((\+|\-)?)\d+(?:(\.|\,)?\d+)(\s+|-)(A|a|а|А|Б|б)";
+        public const string Pattern = @"(((\+|\-)?)\d+(?:(\.|\,)?\d+))((\s+|-)(A|a|а|А|Б|б)|(ГБ))";
         private const string NumbersRegex = @"\d+";
         public const string Space = " ";
 

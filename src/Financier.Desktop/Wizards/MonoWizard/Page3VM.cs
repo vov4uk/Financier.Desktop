@@ -89,10 +89,10 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             List<FinancierTransactionDto> transToAdd = new List<FinancierTransactionDto>();
             foreach (var x in transactions)
             {
-                var desc = ParseDescription(x.Description);
+                var parsedDescription = ParseDescription(x.Description);
                 long amount = Convert.ToInt64(x.CardCurrencyAmount * 100.0);
-                int toAccountId = amount < 0 ? desc.accountId : 0;
-                int fromAccountId = amount > 0 ? desc.accountId : 0;
+                int toAccountId = amount < 0 ? parsedDescription.accountId : 0;
+                int fromAccountId = amount > 0 ? parsedDescription.accountId : 0;
 
                 var newTr = new FinancierTransactionDto
                 {
@@ -100,13 +100,13 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     FromAmount = amount,
                     OriginalFromAmount = x.ExchangeRate == null ? null : Convert.ToInt64(x.OperationAmount * 100.0),
                     OriginalCurrencyId = x.ExchangeRate == null ? 0 : (DbManual.Currencies.FirstOrDefault(c => c.Name == x.OperationCurrency)?.Id ?? 0),
-                    CategoryId = desc.categoryId,
+                    CategoryId = parsedDescription.categoryId,
                     ToAccountId = toAccountId,
                     FromAccountId = fromAccountId,
-                    LocationId = desc.locationId,
-                    Note = desc.description,
+                    LocationId = parsedDescription.locationId,
+                    Note = x.Description,
                     DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds(),
-                    MCC = int.Parse(x.MCC)
+                    MCC = int.Parse(x.MCC ?? "0")
                 };
                 transToAdd.Add(newTr);
             }
@@ -122,19 +122,22 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        private (int categoryId, int locationId, int accountId, string description) ParseDescription(string description)
+        private (int categoryId, int locationId, int accountId) ParseDescription(string description)
         {
             int accountId = 0, locationId = 0, categoryId = 0;
-
-            bool parsed = TryParseLocation(description, out locationId)
-                || TryParseCategory(description, out categoryId)
-                || TryParseAccount(description, out accountId);
-            return (categoryId, locationId, accountId, parsed ? null : description);
+            TryParseLocation(description, out locationId);
+            TryParseCategory(description, out categoryId);
+            TryParseAccount(description, out accountId);
+            return (categoryId, locationId, accountId);
         }
 
-        private static bool ContainsString(string str, string desc)
+        private static bool ContainsString(string title, string description)
         {
-            return str?.Contains(desc, StringComparison.OrdinalIgnoreCase) == true;
+            if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(description))
+            {
+                return description.Split(" ").Any(x => title.Contains(x, StringComparison.OrdinalIgnoreCase));
+            }
+            return false;
         }
 
         private static bool TryParseLocation(string desc, out int locationId)
