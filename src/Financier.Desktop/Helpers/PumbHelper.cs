@@ -28,21 +28,20 @@ namespace Financier.Desktop.Helpers
         protected override string ParseTransactionsTable(string pageText)
         {
             var matches = lineStartRegex.Matches(pageText);
-
-            int currentPosition = matches.First().Index;
-
             StringBuilder sb = new StringBuilder();
-
-            foreach (Match match in matches.Skip(1))
+            if (matches.Any())
             {
-                var line = pageText.Substring(currentPosition, match.Index - currentPosition);
-                currentPosition = match.Index;
+                int currentPosition = matches.First().Index;
+                foreach (Match match in matches.Skip(1))
+                {
+                    var line = pageText.Substring(currentPosition, match.Index - currentPosition);
+                    currentPosition = match.Index;
 
-                sb.AppendLine(AddSeparators(line));
+                    sb.AppendLine(AddSeparators(line));
+                }
+                var end = pageEndRegex.Match(pageText);
+                sb.AppendLine(AddSeparators(pageText.Substring(currentPosition, end.Index - currentPosition).Trim()));
             }
-            var end = pageEndRegex.Match(pageText);
-            sb.AppendLine(AddSeparators(pageText.Substring(currentPosition, end.Index - currentPosition).Trim()));
-
             return sb.ToString();
         }
         private static string RemoveCardNumber(string line)

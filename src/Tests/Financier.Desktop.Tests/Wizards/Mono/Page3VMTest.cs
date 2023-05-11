@@ -114,7 +114,8 @@
                     ToAccountId = 0,
                     FromAccountId = 0,
                     LocationId = 200,
-                    Note = null,
+                    Note = "Google",
+                    MCC = 1000,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 04)).ToUnixTimeMilliseconds(),
                 },
                 new FinancierTransactionDto
@@ -127,7 +128,8 @@
                     ToAccountId = 0,
                     FromAccountId = 0,
                     LocationId = 200,
-                    Note = null,
+                    Note = "Google Store",
+                    MCC = 1000,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 03)).ToUnixTimeMilliseconds(),
                 },
                 new FinancierTransactionDto
@@ -140,7 +142,8 @@
                     ToAccountId = 0,
                     FromAccountId = 0,
                     LocationId = 0,
-                    Note = null,
+                    Note = "Hot Water",
+                    MCC = 1000,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 02)).ToUnixTimeMilliseconds(),
                 },
                 new FinancierTransactionDto
@@ -154,6 +157,7 @@
                     FromAccountId = 0,
                     LocationId = 0,
                     Note = "Unknown place",
+                    MCC = 1000,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 01)).ToUnixTimeMilliseconds(),
                 },
                 new FinancierTransactionDto
@@ -167,6 +171,7 @@
                     FromAccountId = 0,
                     LocationId = 0,
                     Note = "Unknown",
+                    MCC = 1000,
                     DateTime = new DateTimeOffset(new DateTime(2021, 12, 04, 21, 12, 00)).ToUnixTimeMilliseconds(),
                 },
             };

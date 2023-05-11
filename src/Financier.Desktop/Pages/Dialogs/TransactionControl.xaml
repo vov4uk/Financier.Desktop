@@ -313,7 +313,7 @@
                                Text="Location"/>
                     <xctk:WatermarkComboBox   Grid.Row="14" Grid.Column="0"
                                               IsEditable="True"
-                                               ItemsSource="{Binding Source={x:Static fcrd:DbManual.Location}, Mode=OneWay}"
+                                              ItemsSource="{Binding Source={x:Static fcrd:DbManual.Location}, Mode=OneWay}"
                                               SelectedValue="{Binding Transaction.LocationId}"
                                               SelectedValuePath="Id"
                                               TextSearch.TextPath="Title"

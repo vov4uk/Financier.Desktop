@@ -11,4 +11,17 @@
     <BooleanToVisibilityConverter x:Key="BoolToVis" />
     <converters:AmountConverter x:Key="AmountConverter" />
     <converters:UnixTimeConverter x:Key="DatetimeConverter" />
+    <converters:AccountTypeConverter x:Key="AccountTypeConverter"/>
+    <Style x:Key="Body_Content_DataGrid_Centering"
+                           TargetType="{x:Type DataGridCell}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

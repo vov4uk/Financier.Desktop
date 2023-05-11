@@ -61,7 +61,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Ribbon x:Name="FinancierDesktop" SelectedIndex="0">
+        <Ribbon x:Name="FinancierDesktop" SelectedIndex="0" IsEnabled="{Binding Path=IsLoading, Converter={StaticResource InverseBool}}">
 
             <Ribbon.HelpPaneContent>
                 <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_action_info.png" />-->

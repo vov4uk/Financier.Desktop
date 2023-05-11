@@ -1,4 +1,5 @@
-﻿using Financier.Desktop.Helpers;
+﻿using Financier.Common.Entities;
+using Financier.Desktop.Helpers;
 using Financier.Desktop.Wizards.RecipesWizard.View;
 using Prism.Commands;
 using System;
@@ -55,10 +56,33 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                         if (amount != 0.0)
                         {
                             var note = line.Replace(res.Value, string.Empty);
+                            int categoryId = 0;
+                            if (!string.IsNullOrWhiteSpace(note))
+                            {
+                                note = note.Replace(":", string.Empty);
+                                note = note.Replace("/", string.Empty);
+                                note = note.Replace("?", string.Empty);
+                                note = note.Replace("#", string.Empty);
+                                note = note.Replace("[", string.Empty);
+                                note = note.Replace("]", string.Empty);
+                                note = note.Replace("@", string.Empty);
+                                note = note.Replace("*", string.Empty);
+                                note = note.Replace(".", string.Empty);
+                                note = note.Replace(",", string.Empty);
+                                note = note.Replace("\"", string.Empty);
+                                note = note.Replace("&", string.Empty);
+                                note = note.Replace("'", string.Empty);
+                                var arr = note.Split(" ").Where(x => !string.IsNullOrEmpty(x) && x.Length > 2).ToArray();
+                                TryParseCategory(arr, out categoryId);
+
+                                note = string.Join(" ", arr);
+                            }
+
                             Amounts.Add(new FinancierTransactionDto
                             {
                                 FromAmount = Convert.ToInt64(amount * -100.0),
                                 Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
+                                CategoryId = categoryId,
                                 Order = order++
                             });
                         }
@@ -89,6 +113,28 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             textBox.BeginInit();
             textBox.EndInit();
             CalculateCurrentAmount();
+        }
+
+        private static bool ContainsString(string title, string[] description)
+        {
+            if (!string.IsNullOrEmpty(title) && description != null)
+            {
+                return description.Any(x => title.Contains(x, StringComparison.OrdinalIgnoreCase));
+            }
+            return false;
+        }
+        private static bool TryParseCategory(string[] desc, out int categoryId)
+        {
+            var category = DbManual.Category
+                    .Where(x => x.Id > 0)
+                    .FirstOrDefault(l => ContainsString(l.Title, desc));
+            if (category != null)
+            {
+                categoryId = category.Id.Value;
+                return true;
+            }
+            categoryId = 0;
+            return false;
         }
     }
 }

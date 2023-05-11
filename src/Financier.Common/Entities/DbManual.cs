@@ -34,7 +34,9 @@ SELECT a._id,
        a.type,
        a.last_transaction_id,
        a.number,
-       c.Name as currency_name
+       c.Name as currency_name,
+       a.card_issuer,
+       a.issuer
 FROM   account a
 INNER JOIN currency c ON a.currency_id = c._id
 WHERE  a.title IS NOT NULL

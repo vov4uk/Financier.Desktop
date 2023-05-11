@@ -132,8 +132,8 @@
                 OperationAmount = -342.57,
                 OperationCurrency = "UAH",
                 Balance = 560.2
-            };   
-            
+            };
+
             var last = new BankTransaction
             {
                 Date = new DateTime(2022, 10, 28, 0, 0, 0, DateTimeKind.Local),
@@ -148,6 +148,39 @@
             IEnumerable<BankTransaction> bank = await new Helpers.RaiffeisenHelper().ParseReport(path);
 
             Assert.Equal(11, bank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
+        }
+
+        [Fact]
+        public async Task LoadTransactions_Pumb_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2023, 04, 25, 9, 10, 6, DateTimeKind.Local),
+                Description = "Переказ ACCOUNT Списання",
+                CardCurrencyAmount = -174.0,
+                OperationAmount = -174.0,
+                OperationCurrency = "UAH",
+                Commission = 0.0,
+                Balance = 0.0
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2023, 4, 11, 22, 19, 10, DateTimeKind.Local),
+                Description = "Чистий дохід від підприємницької діяльн Надходження",
+                CardCurrencyAmount = 9372.16,
+                OperationAmount = 9372.16,
+                OperationCurrency = "UAH",
+                Commission = 0.0,
+                Balance = 0.0
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb.pdf");
+            IEnumerable<BankTransaction> bank = await new Helpers.PumbHelper().ParseReport(path);
+
+            Assert.Equal(25, bank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
         }
@@ -238,7 +271,7 @@
             Assert.Equal(1, output.Count(x => x.CategoryId == 1));
             Assert.Equal(2, output.Count(x => x.LocationId == 200));
             Assert.Equal(3, output.Count(x => x.LocationId == 201));
-            Assert.Equal(2, output.Count(x => x.LocationId == 202));
+            Assert.Equal(3, output.Count(x => x.LocationId == 202));
             Assert.Equal(1, output.Count(x => x.LocationId == 203));
             Assert.Equal(2, output.Count(x => x.LocationId == 204));
             Assert.Equal(5, output.Count(x => x.LocationId == 205));

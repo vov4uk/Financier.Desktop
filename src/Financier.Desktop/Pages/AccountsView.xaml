@@ -3,6 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:UI="clr-namespace:Financier.Common.Model;assembly=Financier.Common"
+             xmlns:controls="clr-namespace:Financier.Desktop.Pages.Controls"
+             xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="450">
@@ -14,26 +17,73 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <!--<ListBox ItemsSource="{Binding Path=Entities}"
+                 HorizontalContentAlignment="Stretch" >
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type UI:AccountModel}">
+                    <controls:AccountControl DataContext="{Binding}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>-->
         <DataGrid Margin="5"
                   ItemsSource="{Binding Path=Entities}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
-                  FontSize="14"
+                  FontSize="18"
+                  CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
+                  VerticalContentAlignment="Center"
+                  VerticalAlignment="Center"
                   IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Active" CellTemplate="{StaticResource ResourceKey=IActiveCell}">
+                <DataGridTemplateColumn Header="Active" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
+                <DataGridTemplateColumn Header=""
+                                        dgx:DataGridFilterColumn.IsFilterVisible="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Height="64"
+                                   Width="64">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource AccountTypeConverter}">
+                                        <Binding Path="Type" />
+                                        <Binding Path="CardIssuer" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}"/>
                 <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn Header="Description" Binding="{Binding Path=AccountDescription}"/>
                 <DataGridTextColumn Header="Total Amount" Binding="{Binding Path=AmountTitle}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="HorizontalAlignment" Value="Right" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsTotalAmountNegative}" Value="true">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Foreground" Value="LightPink"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsTotalAmountNegative}" Value="false">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Foreground" Value="YellowGreen"/>
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Include" Binding="{Binding Path=IsIncludeIntoTotals}"/>
-               
+                <DataGridTemplateColumn Header="Include"
+                                        dgx:DataGridFilterColumn.IsFilterVisible="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Path=IsIncludeIntoTotals}"
+                                      HorizontalAlignment="Center"
+                                      IsEnabled="False"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Last transaction"
                                     Binding="{Binding Path=LastTransactionDate, Converter= {StaticResource DatetimeConverter}}"/>
             </DataGrid.Columns>

@@ -135,7 +135,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         {
             if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(description))
             {
-                return description.Split(" ").Any(x => title.Contains(x, StringComparison.OrdinalIgnoreCase));
+                return description.Split(" ").Where(x => !string.IsNullOrEmpty(x) && x.Length > 2).Any(x => title.Contains(x, StringComparison.OrdinalIgnoreCase));
             }
             return false;
         }
@@ -174,7 +174,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             {
                 var acc = DbManual.Account
                     .FirstOrDefault(y => !string.IsNullOrWhiteSpace(y.Number) && desc.EndsWith(y.Number));
-                
+
                 if (acc != null)
                 {
                     accountId = acc.Id.Value;

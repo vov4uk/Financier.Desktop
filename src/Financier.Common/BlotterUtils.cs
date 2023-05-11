@@ -1,7 +1,9 @@
 ﻿using Financier.Common.Model;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Globalization;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Financier.Common.Utils
 {
@@ -35,6 +37,24 @@ namespace Financier.Common.Utils
             var sb = new StringBuilder();
             AmountToString(sb, fromCurrency, fromBalance ?? 0, false).Append(TRANSFER_DELIMITER);
             AmountToString(sb, toCurrency, toBalance ?? 0, false);
+            return sb.ToString();
+        }
+
+        public static string GetAccountDescription(string issuer, string number, string type)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (!string.IsNullOrEmpty(issuer))
+            {
+                sb.Append(issuer);
+            }
+            if (!string.IsNullOrEmpty(number))
+            {
+                sb.Append(" #").Append(number);
+            }
+            if (sb.Length == 0)
+            {
+                sb.Append(Char.ToUpperInvariant(type[0]) + type.Substring(1).ToLowerInvariant());
+            }
             return sb.ToString();
         }
 
