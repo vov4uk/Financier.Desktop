@@ -93,6 +93,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 long amount = Convert.ToInt64(x.CardCurrencyAmount * 100.0);
                 int toAccountId = amount < 0 ? parsedDescription.accountId : 0;
                 int fromAccountId = amount > 0 ? parsedDescription.accountId : 0;
+                int.TryParse(x.MCC ?? "0", out var mcc);
 
                 var newTr = new FinancierTransactionDto
                 {
@@ -106,7 +107,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     LocationId = parsedDescription.locationId,
                     Note = x.Description,
                     DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds(),
-                    MCC = int.Parse(x.MCC ?? "0")
+                    MCC = mcc
                 };
                 transToAdd.Add(newTr);
             }

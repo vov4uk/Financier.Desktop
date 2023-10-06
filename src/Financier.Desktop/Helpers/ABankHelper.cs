@@ -23,8 +23,8 @@ namespace Financier.Desktop.Helpers
         private const string CardNumberRegex = @"\d{4}(\*{4})\d{4}";
         private const string NumbersWithSpacingRegex = @"([-|\s])\d{1,3}\s\d{0,3}\,\d{0,2}";
 
-        private readonly Regex dateRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private readonly Regex numberRegex = new Regex(DoubleRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+        private readonly Regex dateRegex = new Regex(DateRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+        private readonly Regex numberRegex = new Regex(DoubleRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
 
         public override string BankTitle => "A-Bank";
 
@@ -34,24 +34,30 @@ namespace Financier.Desktop.Helpers
             foreach (var page in pages)
             {
                 var dates = this.dateRegex.Matches(page);
-
-                List<int> tableLines = dates
-                    .Select(x => x.Index)
-                    .ToList();
-                for (int j = 1; j < dates.Count; j++)
+                if (dates?.Any() == true)
                 {
-                    int line = tableLines[j];
-                    int prevLine = tableLines[j - 1];
-                    string lineText = page.Substring(prevLine, line - prevLine);
+                    List<int> tableLines = dates
+                        .Select(x => x.Index)
+                        .ToList();
 
-                    transactions.Add(ParseLine(lineText));
+                    for (int j = 1; j < dates.Count; j++)
+                    {
+                        int line = tableLines[j];
+                        int prevLine = tableLines[j - 1];
+                        string lineText = page.Substring(prevLine, line - prevLine);
+
+                        transactions.Add(ParseLine(lineText));
+                    }
+
+                    var lastLineStartIndex = tableLines.Last();
+                    var lastLine = page.Substring(lastLineStartIndex);
+                    var lastLineEndIndex = this.numberRegex.Matches(lastLine).LastOrDefault();
+                    if (lastLineEndIndex != null)
+                    {
+                        lastLine = lastLine.Substring(0, lastLineEndIndex.Index + lastLineEndIndex.Length);
+                        transactions.Add(ParseLine(lastLine));
+                    }
                 }
-
-                var lastLineStartIndex = tableLines.Last();
-                var lastLine = page.Substring(lastLineStartIndex);
-                var lastLineEndIndex = this.numberRegex.Matches(lastLine).LastOrDefault();
-                lastLine = lastLine.Substring(0, lastLineEndIndex.Index + lastLineEndIndex.Length);
-                transactions.Add(ParseLine(lastLine));
             }
             return transactions;
         }
@@ -73,7 +79,6 @@ namespace Financier.Desktop.Helpers
             }
 
             var words = line
-                .Replace(",", ".")
                 .Trim()
                 .Split(Space)
                 .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -86,20 +91,23 @@ namespace Financier.Desktop.Helpers
                 desctiption.Add(words[i]);
             }
 
-            var tr = new BankTransaction
+            var operationCurrency = words[wordsCount - 5];
+            var operationAmount = GetDouble(words[wordsCount - 6]);
+            var cardCurrencyAmount = GetDouble(words[wordsCount - 7]);
+
+            return new BankTransaction
             {
-                Balance = Convert.ToDouble(words[wordsCount - 1]),
-                Cashback = Convert.ToDouble(words[wordsCount - 2]),
-                Commission = Convert.ToDouble(words[wordsCount - 3]),
-                ExchangeRate = Convert.ToDouble(words[wordsCount - 4] == "-" ? "0" : words[wordsCount - 4]),
-                OperationCurrency = words[wordsCount - 5],
-                OperationAmount = Convert.ToDouble(words[wordsCount - 6]),
-                CardCurrencyAmount = Convert.ToDouble(words[wordsCount - 7]),
+                Balance = GetDouble(words[wordsCount - 1]),
+                Cashback = GetDouble(words[wordsCount - 2]),
+                Commission = GetDouble(words[wordsCount - 3]),
+                ExchangeRate = GetDouble(words[wordsCount - 4] == "-" ? "0" : words[wordsCount - 4]),
+                OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
+                OperationAmount = operationAmount,
+                CardCurrencyAmount = cardCurrencyAmount,
                 MCC = words[wordsCount - 8],
                 Description = string.Join(Space, desctiption),
                 Date = Convert.ToDateTime(date.Replace("\r\n", Space))
             };
-            return tr;
         }
     }
 }

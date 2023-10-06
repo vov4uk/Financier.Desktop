@@ -42,5 +42,11 @@ namespace Financier.Desktop.Helpers
         }
 
         protected abstract IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages);
+
+        protected static double GetDouble(string text)
+        {
+            double.TryParse(Convert.ToString(text).Replace(',','.'), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out double retNum);
+            return retNum;
+        }
     }
 }

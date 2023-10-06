@@ -17,11 +17,11 @@ namespace Financier.Desktop.Helpers
         private const string ReportDatePattern = "(Дата формування)";
         public override string BankTitle => "ПУМБ";
 
-        private static Regex lineStartRegex = new Regex(DateTimeRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private static Regex pageEndRegex = new Regex(ReportDatePattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private static Regex CardNumberRegex = new Regex(CardNumberPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private static Regex DateRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private static Regex AmountRegex = new Regex(AmountPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+        private static Regex lineStartRegex = new Regex(DateTimeRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+        private static Regex pageEndRegex = new Regex(ReportDatePattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+        private static Regex CardNumberRegex = new Regex(CardNumberPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+        private static Regex DateRegex = new Regex(DateRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+        private static Regex AmountRegex = new Regex(AmountPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
 
         protected override IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages)
         {
@@ -79,10 +79,10 @@ namespace Financier.Desktop.Helpers
 
             var tr = new BankTransaction
             {
-                Commission = Convert.ToDouble(commissionInUah),
+                Commission = GetDouble(commissionInUah),
                 OperationCurrency = operationCurrency,
-                OperationAmount = Convert.ToDouble($"{sign}{operationAmount}"),
-                CardCurrencyAmount = Convert.ToDouble($"{sign}{amountInUah}"),
+                OperationAmount = GetDouble($"{sign}{operationAmount}"),
+                CardCurrencyAmount = GetDouble($"{sign}{amountInUah}"),
 
                 Description = AmountRegex.Replace(line, string.Empty).Trim(),
                 Date = Convert.ToDateTime(dateTime.Replace(Environment.NewLine, Space))

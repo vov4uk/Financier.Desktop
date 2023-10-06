@@ -54,15 +54,15 @@
             <converters:InverseBooleanConverter x:Key="InverseBool" />
         </ResourceDictionary>
     </Window.Resources>
-    <Grid AllowDrop="True">
+    <Grid AllowDrop="True"
+          IsEnabled="{Binding Path=IsLoading, Converter={StaticResource InverseBool}}">
         <!-- TODO : USE istead of (ImageSource="pack) <BitmapImage x:Key="ic_action_cancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Ribbon x:Name="FinancierDesktop" SelectedIndex="0" IsEnabled="{Binding Path=IsLoading, Converter={StaticResource InverseBool}}">
-
+        <Ribbon x:Name="FinancierDesktop" SelectedIndex="0">
             <Ribbon.HelpPaneContent>
                 <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_action_info.png" />-->
                 <Label Content="{Binding Path=OpenBackupPath}" />

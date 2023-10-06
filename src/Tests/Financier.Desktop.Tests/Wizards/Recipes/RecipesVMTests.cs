@@ -19,8 +19,8 @@
             List<TransactionDto> actual = default;
             List<TransactionDto> expected = new List<TransactionDto>
             {
-                new TransactionDto { FromAmount = -5000, IsAmountNegative = true,  Note = "Beer Baltyka 0" },
-                new TransactionDto { FromAmount = -2500, IsAmountNegative = true,  Note = "Milk Molokia 2.5%" },
+                new TransactionDto { FromAmount = -5000, IsAmountNegative = true,  Note = "Beer Baltyka" },
+                new TransactionDto { FromAmount = -2500, IsAmountNegative = true,  Note = "Milk Molokia 25%" },
                 new TransactionDto { FromAmount = -2550, IsAmountNegative = true,  Note = string.Empty },
                 new TransactionDto { FromAmount = 50,    IsAmountNegative = false, Note = "Discount" },
             };
