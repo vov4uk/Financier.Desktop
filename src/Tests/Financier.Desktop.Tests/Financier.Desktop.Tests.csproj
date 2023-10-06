@@ -13,7 +13,6 @@
   <ItemGroup>
     <None Remove="Assets\mono.eng.transfer.csv" />
     <None Remove="Assets\pumb.pdf" />
-    <None Remove="Assets\raiffeisen.pdf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,9 +32,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\pumb.pdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\raiffeisen.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -294,7 +294,7 @@ namespace Financier.Desktop.ViewModel
             if (!string.IsNullOrEmpty(fileName))
             {
                 var importHelper = this.bankFactory.CreateBankHelper(bankType);
-                var sourceData = await importHelper.ParseReport(fileName);
+                var sourceData = importHelper.ParseReport(fileName);
 
                 Dictionary<int, BlotterModel> lastTransactions = new();
                 foreach (var acc in DbManual.Account.Where(x => x.Id.HasValue))

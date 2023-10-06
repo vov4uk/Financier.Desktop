@@ -149,10 +149,6 @@
                                   Label="A-Bank PDF"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.ABank}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/raifaisenbank.png"
-                                  Label="Raiffeisen PDF"
-                                  Command="{Binding Path=ImportCommand}"
-                                  CommandParameter="{x:Static Wizard:WizardTypes.RaifaisenBank}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/pumb.png"
                                   Label="PUMB PDF"
                                   Command="{Binding Path=ImportCommand}"

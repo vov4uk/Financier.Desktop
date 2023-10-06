@@ -87,7 +87,6 @@
     <Resource Include="Images\menu_entities_projects.png" />
     <Resource Include="Images\monobank.png" />
     <Resource Include="Images\pumb.png" />
-    <Resource Include="Images\raifaisenbank.png" />
     <Resource Include="Images\save_as_db.png" />
   </ItemGroup>
 

@@ -27,10 +27,10 @@
         }
 
         [Fact]
-        public async Task LoadTransactions_UkrHeaders_TransactionsLoaded()
+        public void LoadTransactions_UkrHeaders_TransactionsLoaded()
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            var mono = new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Equal(46, mono.Count());
@@ -40,11 +40,11 @@
         }
 
         [Fact]
-        public async Task LoadTransactions_EngHeaders_TransactionsLoaded()
+        public void LoadTransactions_EngHeaders_TransactionsLoaded()
         {
             DbManual.SetupTests(new List<AccountFilterModel>());
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            IEnumerable<BankTransaction> mono = new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
@@ -53,7 +53,7 @@
         }
 
         [Fact]
-        public async Task LoadTransactions_Monobank_ExpectedTransactions()
+        public void LoadTransactions_Monobank_ExpectedTransactions()
         {
             var expected = new List<BankTransaction>
             {
@@ -70,22 +70,22 @@
             };
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            IEnumerable<BankTransaction> mono = new Helpers.MonobankHelper().ParseReport(csvPath);
 
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(mono.ToList()));
         }
 
         [Fact]
-        public async Task LoadTransactions_Monobank_EmptyList()
+        public void LoadTransactions_Monobank_EmptyList()
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", Guid.NewGuid().ToString());
-            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            IEnumerable<BankTransaction> mono = new Helpers.MonobankHelper().ParseReport(csvPath);
 
             Assert.Empty(mono);
         }
 
         [Fact]
-        public async Task LoadTransactions_Abank_ExpectedTransactions()
+        public void LoadTransactions_Abank_ExpectedTransactions()
         {
             var first = new BankTransaction
             {
@@ -114,7 +114,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
-            IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(path);
+            IEnumerable<BankTransaction> abank = new Helpers.ABankHelper().ParseReport(path);
 
             Assert.Equal(5, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
@@ -122,38 +122,7 @@
         }
 
         [Fact]
-        public async Task LoadTransactions_Raiffaisen_ExpectedTransactions()
-        {
-            var first = new BankTransaction
-            {
-                Date = new DateTime(2022, 11, 25, 0, 0, 0, DateTimeKind.Local),
-                Description = "PR644 UA LVOV",
-                CardCurrencyAmount = -342.57,
-                OperationAmount = -342.57,
-                OperationCurrency = "UAH",
-                Balance = 560.2
-            };
-
-            var last = new BankTransaction
-            {
-                Date = new DateTime(2022, 10, 28, 0, 0, 0, DateTimeKind.Local),
-                Description = "SHOP ATB PR644 UA LVIV",
-                CardCurrencyAmount = -196.2,
-                OperationAmount = -196.2,
-                OperationCurrency = "UAH",
-                Balance = 880.3
-            };
-
-            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "raiffeisen.pdf");
-            IEnumerable<BankTransaction> bank = await new Helpers.RaiffeisenHelper().ParseReport(path);
-
-            Assert.Equal(11, bank.Count());
-            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
-            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
-        }
-
-        [Fact]
-        public async Task LoadTransactions_Pumb_ExpectedTransactions()
+        public void LoadTransactions_Pumb_ExpectedTransactions()
         {
             var first = new BankTransaction
             {
@@ -178,7 +147,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb.pdf");
-            IEnumerable<BankTransaction> bank = await new Helpers.PumbHelper().ParseReport(path);
+            IEnumerable<BankTransaction> bank = new Helpers.PumbHelper().ParseReport(path);
 
             Assert.Equal(25, bank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
@@ -186,7 +155,7 @@
         }
 
         [Fact]
-        public async Task MoveNextCommand_Execute3Times_TransactionsImpoted()
+        public void MoveNextCommand_Execute3Times_TransactionsImpoted()
         {
             List<Transaction> output = new ();
 
@@ -215,7 +184,7 @@
             DbManual.SetupTests(projects);
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            var mono = new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
@@ -281,7 +250,7 @@
         }
         
         [Fact]
-        public async Task MoveNextCommand_ParseDescription_TransactionsImpoted()
+        public void MoveNextCommand_ParseDescription_TransactionsImpoted()
         {
             List<Transaction> output = new ();
 
@@ -302,7 +271,7 @@
             DbManual.SetupTests(projects);
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.transfer.csv");
-            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            var mono = new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };

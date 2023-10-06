@@ -17,55 +17,46 @@ namespace Financier.Desktop.Helpers
     {
         private const int WordsCountAfterDescription = 8;
         private const int DescriptionStartIndex = -1;
-        private const string CsvHeader = "\"Date and time\",Description,MCC,\"Card currency amount, (UAH)\",\"Operation amount\",\"Operation currency\",\"Exchange rate\",\"Commission, (UAH)\",\"Cashback amount, (UAH)\",Balance";
-        private const string DateRegexPattern = @"[0-3][0-9]\.[0-1][0-9]\.[0-9]{4} [0-2][0-9]:[0-5][0-9]";
+
+        private const string DateRegexPattern = @"[0-3][0-9]\.[0-1][0-9]\.[0-9]{4}\r\n[0-2][0-9]:[0-5][0-9]";
         private const string DoubleRegexPattern = @"[+-]?\d*\.?\d+";
         private const string CardNumberRegex = @"\d{4}(\*{4})\d{4}";
-        private const string NumbersWithSpacingRegex = @"\s\d{0,3}\s\d{0,3}\,\d{0,2}";
+        private const string NumbersWithSpacingRegex = @"([-|\s])\d{1,3}\s\d{0,3}\,\d{0,2}";
 
         private readonly Regex dateRegex = new Regex(DateRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
         private readonly Regex numberRegex = new Regex(DoubleRegexPattern, RegexOptions.Singleline | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
 
-        protected override string Header { get => CsvHeader; }
-
         public override string BankTitle => "A-Bank";
 
-        protected override string ParseTransactionsTable(string pageText)
+        protected override IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages)
         {
-            StringBuilder sb = new ();
-
-            Match firstMatch = this.dateRegex
-                .Matches(pageText)
-                .Skip(1)    // page header
-                .FirstOrDefault();
-            Match lastMatch = this.numberRegex
-                .Matches(pageText)
-                .LastOrDefault();
-
-            if (firstMatch != null && lastMatch != null)
+            var transactions = new List<BankTransaction>();
+            foreach (var page in pages)
             {
-                string tableText = pageText.Substring(firstMatch.Index, lastMatch.Index + lastMatch.Length - firstMatch.Index);
+                var dates = this.dateRegex.Matches(page);
 
-                List<int> tableLines = dateRegex
-                    .Matches(tableText)
+                List<int> tableLines = dates
                     .Select(x => x.Index)
                     .ToList();
-                tableLines.Add(tableText.Length);
-
-                for (int j = 1; j < tableLines.Count; j++)
+                for (int j = 1; j < dates.Count; j++)
                 {
                     int line = tableLines[j];
                     int prevLine = tableLines[j - 1];
-                    string lineText = tableText.Substring(prevLine, line - prevLine);
-                    string csvText = AddSeparators(lineText);
-                    sb.AppendLine(csvText);
-                }
-            }
+                    string lineText = page.Substring(prevLine, line - prevLine);
 
-            return sb.ToString();
+                    transactions.Add(ParseLine(lineText));
+                }
+
+                var lastLineStartIndex = tableLines.Last();
+                var lastLine = page.Substring(lastLineStartIndex);
+                var lastLineEndIndex = this.numberRegex.Matches(lastLine).LastOrDefault();
+                lastLine = lastLine.Substring(0, lastLineEndIndex.Index + lastLineEndIndex.Length);
+                transactions.Add(ParseLine(lastLine));
+            }
+            return transactions;
         }
 
-        private static string AddSeparators(string line)
+        private static BankTransaction ParseLine(string line)
         {
             var date = Regex.Match(line, DateRegexPattern).Value;
             line = line.Replace(date, string.Empty);
@@ -84,28 +75,31 @@ namespace Financier.Desktop.Helpers
             var words = line
                 .Replace(",", ".")
                 .Trim()
-                .Split(Space);
+                .Split(Space)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToArray();
 
-            string end = string.Empty, details = string.Empty;
-            int caret = WordsCountAfterDescription;
-            for (int i = words.Length - 1; i > DescriptionStartIndex; i--)
+            var wordsCount = words.Length;
+            var desctiption = new List<string>();
+            for (int i = 0; i < words.Length - WordsCountAfterDescription; i++)
             {
-                if (caret > 0)
-                {
-                    end = $",{words[i]}{end}";
-                    caret--;
-                }
-                else
-                {
-                    details = $"{words[i]} {details}";
-                }
+                desctiption.Add(words[i]);
             }
 
-            StringBuilder sb = new();
-            sb.Append($"\"{date}:00\","); // datetime
-            sb.Append($"\"{details.Trim()}\"");
-            sb.Append(end);
-            return sb.ToString();
+            var tr = new BankTransaction
+            {
+                Balance = Convert.ToDouble(words[wordsCount - 1]),
+                Cashback = Convert.ToDouble(words[wordsCount - 2]),
+                Commission = Convert.ToDouble(words[wordsCount - 3]),
+                ExchangeRate = Convert.ToDouble(words[wordsCount - 4] == "-" ? "0" : words[wordsCount - 4]),
+                OperationCurrency = words[wordsCount - 5],
+                OperationAmount = Convert.ToDouble(words[wordsCount - 6]),
+                CardCurrencyAmount = Convert.ToDouble(words[wordsCount - 7]),
+                MCC = words[wordsCount - 8],
+                Description = string.Join(Space, desctiption),
+                Date = Convert.ToDateTime(date.Replace("\r\n", Space))
+            };
+            return tr;
         }
     }
 }

@@ -14,8 +14,6 @@ namespace Financier.Desktop.Wizards
         [Description("pdf")]
         ABank,
         [Description("pdf")]
-        RaifaisenBank,
-        [Description("pdf")]
         Pumb
     }
 }
