@@ -16,7 +16,6 @@ namespace Financier.Desktop.Helpers
     public class ABankHelper : BankPdfHelperBase
     {
         private const int WordsCountAfterDescription = 8;
-        private const int DescriptionStartIndex = -1;
 
         private const string DateRegexPattern = @"[0-3][0-9]\.[0-1][0-9]\.[0-9]{4}\r\n[0-2][0-9]:[0-5][0-9]";
         private const string DoubleRegexPattern = @"[+-]?\d*\.?\d+";
@@ -64,18 +63,18 @@ namespace Financier.Desktop.Helpers
 
         private static BankTransaction ParseLine(string line)
         {
-            var date = Regex.Match(line, DateRegexPattern).Value;
+            var date = Regex.Match(line, DateRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30)).Value;
             line = line.Replace(date, string.Empty);
-            var cardNumber = Regex.Match(line, CardNumberRegex);
+            var cardNumber = Regex.Match(line, CardNumberRegex, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30));
             if (cardNumber.Success)
             {
                 line = line.Replace(cardNumber.Value, string.Empty);
             }
-            var numbersWithSpaces = Regex.Matches(line, NumbersWithSpacingRegex);
-            foreach (Match number in numbersWithSpaces)
+            var numbersWithSpaces = Regex.Matches(line, NumbersWithSpacingRegex, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30));
+            foreach (var number in numbersWithSpaces.Select(x =>x.Value))
             {
-                var numberWithoutSpaces = " " + number.Value.Replace(" ", string.Empty);
-                line = line.Replace(number.Value, numberWithoutSpaces);
+                var numberWithoutSpaces = " " + number.Replace(" ", string.Empty);
+                line = line.Replace(number, numberWithoutSpaces);
             }
 
             var words = line
@@ -106,7 +105,7 @@ namespace Financier.Desktop.Helpers
                 CardCurrencyAmount = cardCurrencyAmount,
                 MCC = words[wordsCount - 8],
                 Description = string.Join(Space, desctiption),
-                Date = DateTime.ParseExact(date.Replace("\r\n", Space), "dd.MM.yyyy HH:mm", null)
+                Date = DateTime.ParseExact(date.Replace("\r\n", Space), "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture)
             };
         }
     }

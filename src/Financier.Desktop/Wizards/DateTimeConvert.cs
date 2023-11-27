@@ -2,10 +2,12 @@
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Financier.Desktop.Wizards
 {
+    [ExcludeFromCodeCoverage]
     public class DateTimeConvert : DefaultTypeConverter
     {
         private const string DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm:ss";

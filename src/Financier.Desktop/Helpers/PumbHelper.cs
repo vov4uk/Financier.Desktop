@@ -61,10 +61,10 @@ namespace Financier.Desktop.Helpers
             line = RemoveCardNumber(line);
             line = RemovePostingDate(line);
 
-            var dateTime = Regex.Match(line, DateTimeRegexPattern).Value;
+            var dateTime = Regex.Match(line, DateTimeRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30)).Value;
             line = line.Replace(dateTime, string.Empty).Replace(Environment.NewLine, Space);
 
-            var amounts = Regex.Matches(line, AmountPattern);
+            var amounts = Regex.Matches(line, AmountPattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30));
             var operationAmount = amounts[0].Groups[1].Value;
             var operationCurrency = amounts[0].Groups[2].Value;
 

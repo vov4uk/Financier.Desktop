@@ -1,12 +1,14 @@
 ﻿using Financier.Common.Model;
 using Microsoft.Extensions.Primitives;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Xml.Linq;
 
 namespace Financier.Common.Utils
 {
+    [ExcludeFromCodeCoverage]
     public static class BlotterUtils
     {
         public const string TRANSFER_DELIMITER = " \u00BB ";
@@ -94,7 +96,7 @@ namespace Financier.Common.Utils
                 };
             }
             string s = (amount / HUNDRED).ToString("F2", CultureInfo.InvariantCulture);
-            if (s.EndsWith("."))
+            if (s.EndsWith('.'))
             {
                 s = s.Substring(0, s.Length - 1);
             }

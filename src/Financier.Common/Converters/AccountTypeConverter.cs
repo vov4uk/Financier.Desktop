@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace Financier.Converters
 {
+    [ExcludeFromCodeCoverage]
     public class AccountTypeConverter : IMultiValueConverter
     {
         private static HashSet<string> KnownTypes = new HashSet<string> { "asset", "bank", "cash", "electronic", "liability" };
