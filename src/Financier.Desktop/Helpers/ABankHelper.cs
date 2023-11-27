@@ -106,7 +106,7 @@ namespace Financier.Desktop.Helpers
                 CardCurrencyAmount = cardCurrencyAmount,
                 MCC = words[wordsCount - 8],
                 Description = string.Join(Space, desctiption),
-                Date = Convert.ToDateTime(date.Replace("\r\n", Space))
+                Date = DateTime.ParseExact(date.Replace("\r\n", Space), "dd.MM.yyyy HH:mm", null)
             };
         }
     }
