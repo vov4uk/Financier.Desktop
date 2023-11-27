@@ -160,9 +160,7 @@ namespace Financier.Desktop.ViewModel
             AddKeylessEntities(entities.OfType<CategoryAttribute>());
             AddKeylessEntities(entities.OfType<TransactionAttribute>());
 
-            var duration = DateTime.Now - start;
             IsLoading = false;
-            Logger.Info($"Imported {entities.Count()} entities. Duration : {duration}");
 
             DbManual.ResetAllManuals();
             await DbManual.SetupAsync(db);

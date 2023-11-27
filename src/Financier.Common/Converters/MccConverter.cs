@@ -59,12 +59,12 @@ namespace Financier.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int mcc = (int)value;
-            if (MCC.ContainsKey(mcc))
+            int code = (int)value;
+            if (MCC.ContainsKey(code))
             {
-                  return MCC[mcc];
+                  return MCC[code];
             }
-            return mcc.ToString();
+            return code.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
