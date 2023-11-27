@@ -96,7 +96,6 @@
                 Commission = 0.0,
                 CardCurrencyAmount = -71.8,
                 OperationAmount = -71.8,
-                OperationCurrency = "UAH",
                 Cashback = 0.5,
                 ExchangeRate = 0.0
             };
@@ -110,7 +109,6 @@
                 MCC = "5411",
                 CardCurrencyAmount = -129.7,
                 OperationAmount = -129.7,
-                OperationCurrency = "UAH",
                 Cashback = 0.91,
                 ExchangeRate = 0.0
             };
