@@ -32,10 +32,10 @@ namespace Financier.Desktop.Helpers
             if (matches.Any())
             {
                 int currentPosition = matches.First().Index;
-                foreach (Match match in matches.Skip(1))
+                foreach (var match in matches.Skip(1).Select(x =>x.Index))
                 {
-                    var line = pageText.Substring(currentPosition, match.Index - currentPosition);
-                    currentPosition = match.Index;
+                    var line = pageText.Substring(currentPosition, match - currentPosition);
+                    currentPosition = match;
 
                     transactions.Add(ParseLine(line));
                 }
