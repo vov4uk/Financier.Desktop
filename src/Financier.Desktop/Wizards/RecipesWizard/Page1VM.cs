@@ -13,10 +13,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
     public class Page1VM : RecipesWizardPageVMBase
     {
+        private readonly string pattern = RecipesFormatter.Pattern + @"(\t|\n|\r|$)"; //TODO fix '100600 Балтика' case then it calculates (100600 Б), no more symbols after a|b
         private readonly char[] charactersToRemove = { ':', '/', '?', '#', '[', ']', '@', '*', '.', ',', '\"', '&', '\'' };
-
-        //TODO fix '100600 Балтика' case then it calculates (100600 Б), no more symbols after a|b
-        private readonly string pattern = RecipesFormatter.Pattern + @"(\t|\n|\r|$)";
         private DelegateCommand<RichTextBox> _highlightCommand;
         private string text;
         public Page1VM(double totalAmount)
@@ -43,30 +41,32 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         public void CalculateCurrentAmount()
         {
             Amounts.Clear();
+
             if (!string.IsNullOrEmpty(text))
             {
-                string validText = text;
-                foreach (char c in charactersToRemove)
-                {
-                    validText = validText.Replace(c.ToString(), string.Empty);
-                }
-
                 double tmp = 0.0;
                 int order = 1;
-                foreach (var line in validText.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries))
+                var lines = text.Split(Environment.NewLine).Where(line => !string.IsNullOrWhiteSpace(line));
+                foreach (var line in lines)
                 {
-                    var result = Regex.Match(line, pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-                    if (result.Success)
+                    var res = Regex.Match(line, pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+                    if (res.Success)
                     {
-                        var amount = GetDouble(result.Value.Substring(0, result.Value.Length - 2).Replace(",", ".").Trim());
+                        var number = res.Value.Substring(0, res.Value.Length - 2);
+                        var amount = GetDouble(number.Replace(",", ".").Trim());
                         tmp += amount;
 
                         if (amount != 0.0)
                         {
-                            var note = line.Replace(result.Value, string.Empty);
+                            var note = line.Replace(res.Value, string.Empty);
                             int categoryId = 0;
                             if (!string.IsNullOrWhiteSpace(note))
                             {
+                                foreach (char c in charactersToRemove)
+                                {
+                                    note = note.Replace(c.ToString(), string.Empty);
+                                }
+
                                 var arr = note.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                                               .Where(x => x.Length > 2)
                                               .ToArray();
