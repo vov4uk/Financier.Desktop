@@ -11,6 +11,7 @@ using Financier.Adapter;
 using Financier.DataAccess.View;
 using Financier.Common.Model;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Financier.Desktop
 {
@@ -42,7 +43,7 @@ namespace Financier.Desktop
             Logger.Info("App started");
         }
 
-        private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
+        private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
             var bakupFolder = @$"C:\Users\{Environment.UserName}\Dropbox\apps\FinancierAndroid";
             if (Directory.Exists(bakupFolder))
@@ -51,12 +52,12 @@ namespace Financier.Desktop
                 if (!string.IsNullOrEmpty(backupFile) && File.Exists(backupFile))
                 {
                     Logger.Info($"Loaded backup : {backupFile}");
-                    await ViewModel.OpenBackup(backupFile);
+                    Task.Run(() => ViewModel.OpenBackup(backupFile));
                 }
             }
         }
 
-        private async void Grid_Drop(object sender, DragEventArgs e)
+        private void Grid_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -64,7 +65,7 @@ namespace Financier.Desktop
                 if (files?.Any(x => Path.GetExtension(x) == Backup) == true)
                 {
                     Logger.Info($"Drag & drop backup : {files.FirstOrDefault(x => Path.GetExtension(x) == Backup)}");
-                    await ViewModel.OpenBackup(files.FirstOrDefault(x => Path.GetExtension(x) == Backup));
+                    Task.Run(() => ViewModel.OpenBackup(files.FirstOrDefault(x => Path.GetExtension(x) == Backup)));
                 }
             }
         }

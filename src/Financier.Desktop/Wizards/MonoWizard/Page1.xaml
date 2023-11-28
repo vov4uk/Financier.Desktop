@@ -5,10 +5,19 @@
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <converters:AmountConverter x:Key="AmountConverter"/>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="/Assets/Generic.xaml" />
+                <ResourceDictionary>
+                    <converters:AmountConverter x:Key="AmountConverter"/>
+                </ResourceDictionary>
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -22,21 +31,26 @@
                   AutoGenerateColumns="False"
                   CanUserAddRows="false"
                   IsReadOnly="True"
+                  CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
                   SelectedItem="{Binding MonoAccount}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Active">
+                <DataGridTemplateColumn Header="Active" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
+                <DataGridTemplateColumn Header=""
+                                        dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Ellipse Name="MyImage" Fill="Green" Width="14" Height="14" />
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding Path=IsActive}" Value="False">
-                                    <Setter TargetName="MyImage" Property="Fill" Value="Red" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
+                            <Image Height="24"
+                                   Width="24">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource AccountTypeConverter}">
+                                        <Binding Path="Type" />
+                                        <Binding Path="CardIssuer" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Type" Binding="{Binding Path=Type}"/>
                 <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
                 <DataGridTemplateColumn Header="Total Amount">
                     <DataGridTemplateColumn.CellTemplate>

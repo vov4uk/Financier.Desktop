@@ -14,6 +14,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\pumb.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Images\ic_launcher.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -82,7 +86,7 @@
     <Resource Include="Images\menu_entities_payees.png" />
     <Resource Include="Images\menu_entities_projects.png" />
     <Resource Include="Images\monobank.png" />
-    <Resource Include="Images\raifaisenbank.png" />
+    <Resource Include="Images\pumb.png" />
     <Resource Include="Images\save_as_db.png" />
   </ItemGroup>
 
@@ -92,11 +96,12 @@
     <PackageReference Include="Docnet.Core" Version="2.4.0-alpha.2" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
     <PackageReference Include="Emoji.Wpf" Version="0.3.4" />
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="NLog" Version="5.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog" Version="5.1.3" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.49.0.57237">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.0.0.68202">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

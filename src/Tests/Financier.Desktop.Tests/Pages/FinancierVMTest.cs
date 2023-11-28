@@ -69,7 +69,7 @@
 
             this.dbFactoryMock.Setup(x => x.CreateDatabase())
                 .Returns(this.dbMock.Object);
-            this.bankMock.Setup(x => x.CreateBankHelper(It.IsAny<string>()))
+            this.bankMock.Setup(x => x.CreateBankHelper(It.IsAny<WizardTypes>()))
                 .Returns(this.csvMock.Object);
         }
 
@@ -304,13 +304,13 @@
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", "Monobank Import", false))
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", " Import", false))
                 .Returns(true);
 
             SetupImportWizard(csvPath);
 
             var vm = this.GetFinancierVM();
-            await vm.MonoCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
 
             this.trMock.VerifyAll();
             this.dbMock.Verify();
@@ -323,32 +323,32 @@
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
             this.dialogMock.Setup(x => x.OpenFileDialog("pdf")).Returns(path);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", "A-Bank Import", false))
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", " Import", false))
                 .Returns(true);
 
             SetupImportWizard(path);
 
             var vm = this.GetFinancierVM();
-            await vm.AbankCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.ABank);
 
             this.trMock.VerifyAll();
             this.dbMock.Verify();
         }
 
         [Fact]
-        public async Task RaiffeisenCommand_OpenWizard_AddNewTransaction()
+        public async Task PumbCommand_OpenWizard_AddNewTransaction()
         {
             await this.SetupDbManual();
 
-            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "raiffaisen.pdf");
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb.pdf");
             this.dialogMock.Setup(x => x.OpenFileDialog("pdf")).Returns(path);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", "Raiffeisen Import", false))
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", " Import", false))
                 .Returns(true);
 
             SetupImportWizard(path);
 
             var vm = this.GetFinancierVM();
-            await vm.RaiffeisenCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Pumb);
 
             this.trMock.VerifyAll();
             this.dbMock.Verify();
@@ -373,7 +373,7 @@
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
             this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<MonoWizardVM>())).Returns(findManyOutput);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skiped 1 duplicates.", "Monobank Import", false)).Returns(true);
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skiped 1 duplicates.", " Import", false)).Returns(true);
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
@@ -388,10 +388,12 @@
                 .Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
             this.csvMock.Setup(x => x.ParseReport(csvPath))
-                .ReturnsAsync(Array.Empty<BankTransaction>());
+                .Returns(Array.Empty<BankTransaction>());
+            this.csvMock.SetupGet(x => x.BankTitle)
+                .Returns(string.Empty);
 
             var vm = this.GetFinancierVM();
-            await vm.MonoCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
 
             this.trMock.VerifyAll();
             this.dbMock.Verify();
@@ -407,10 +409,13 @@
                 .Returns(true);
             this.SetupWizardRepos();
 
-            this.csvMock.Setup(x => x.ParseReport(csvPath)).ReturnsAsync(Array.Empty<BankTransaction>());
+            this.csvMock.Setup(x => x.ParseReport(csvPath))
+                .Returns(Array.Empty<BankTransaction>());
+            this.csvMock.SetupGet(x => x.BankTitle)
+                .Returns(string.Empty);
 
             var vm = this.GetFinancierVM();
-            await vm.MonoCommand.ExecuteAsync();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
 
             this.dbMock.VerifyAll();
         }
@@ -689,13 +694,20 @@
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
             this.trMock = new(MockBehavior.Strict);
-            this.uowMock.Setup(x => x.GetRepository<Transaction>()).Returns(this.trMock.Object);
-            this.dbMock.Setup(x => x.AddTransactionsAsync(It.IsAny<List<Transaction>>())).Returns(Task.CompletedTask);
-            this.trMock.Setup(x => x.FindManyAsync(It.IsAny<Expression<Func<Transaction, bool>>>())).ReturnsAsync(new List<Transaction>());
-            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.GetRepository<Transaction>())
+                .Returns(this.trMock.Object);
+            this.dbMock.Setup(x => x.AddTransactionsAsync(It.IsAny<List<Transaction>>()))
+                .Returns(Task.CompletedTask);
+            this.trMock.Setup(x => x.FindManyAsync(It.IsAny<Expression<Func<Transaction, bool>>>()))
+                .ReturnsAsync(new List<Transaction>());
+            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()))
+                .Returns(Task.CompletedTask);
+            this.dbMock.Setup(x => x.CreateUnitOfWork())
+                .Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
-            this.csvMock.Setup(x => x.ParseReport(path)).ReturnsAsync(Array.Empty<BankTransaction>());
+            this.csvMock.Setup(x => x.ParseReport(path))
+                .Returns(Array.Empty<BankTransaction>());
+            this.csvMock.SetupGet(x => x.BankTitle).Returns(string.Empty);
         }
     }
 }

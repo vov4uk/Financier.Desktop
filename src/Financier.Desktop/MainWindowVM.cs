@@ -19,6 +19,10 @@ using Financier.Reports;
 using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.Common;
+using Financier.Desktop.Wizards;
+using Financier.Converters;
+using System.Windows.Input;
+using Prism.Commands;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -34,10 +38,8 @@ namespace Financier.Desktop.ViewModel
         private BackupVersion _backupVersion;
         private Dictionary<string, List<string>> _entityColumnsOrder;
         private IAsyncCommand<Type> _menuNavigateCommand;
-        private IAsyncCommand _monoCommand;
-        private IAsyncCommand _abankCommand;
-        private IAsyncCommand _raiffeisenCommand;
-        private IAsyncCommand _openBackupCommand;
+        private IAsyncCommand<WizardTypes> _importCommand;
+        private ICommand _openBackupCommand;
         private IAsyncCommand _saveBackupCommand;
         private IAsyncCommand _saveBackupAsDbCommand;
         private readonly IBackupWriter backupWriter;
@@ -47,6 +49,7 @@ namespace Financier.Desktop.ViewModel
         private readonly IEntityReader entityReader;
         private LocationsVM locationsVm;
         private string openBackupPath;
+        private bool isLoading;
         private PayeesVM payeesVm;
         private ProjectsVM projectsVm;
 
@@ -119,15 +122,17 @@ namespace Financier.Desktop.ViewModel
             private set => SetProperty(ref projectsVm, value);
         }
 
+        public bool IsLoading
+        {
+            get => isLoading;
+            private set => SetProperty(ref isLoading, value);
+        }
+
         public IAsyncCommand<Type> MenuNavigateCommand => _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
 
-        public IAsyncCommand MonoCommand => _monoCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("Monobank", "csv"));
+        public IAsyncCommand<WizardTypes> ImportCommand => _importCommand ??= new AsyncCommand<WizardTypes>(OpenImportWizardAsync);
 
-        public IAsyncCommand AbankCommand => _abankCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("A-Bank", "pdf"));
-
-        public IAsyncCommand RaiffeisenCommand => _raiffeisenCommand ??= new AsyncCommand(() => OpenMonoWizardAsync("Raiffeisen", "pdf"));
-
-        public IAsyncCommand OpenBackupCommand => _openBackupCommand ??= new AsyncCommand(OpenBackup_Click);
+        public ICommand OpenBackupCommand => _openBackupCommand ??= new DelegateCommand(OpenBackup_Click);
 
         public IAsyncCommand SaveBackupCommand => _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
 
@@ -135,10 +140,10 @@ namespace Financier.Desktop.ViewModel
 
         public async Task OpenBackup(string backupPath)
         {
-            var start = DateTime.Now;
+            OpenBackupPath = backupPath;
+            IsLoading = true;
             ClearPages();
 
-            OpenBackupPath = backupPath;
             var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);
             _backupVersion = backupVersion;
             _entityColumnsOrder = columnsOrder;
@@ -154,9 +159,7 @@ namespace Financier.Desktop.ViewModel
             AddKeylessEntities(entities.OfType<CategoryAttribute>());
             AddKeylessEntities(entities.OfType<TransactionAttribute>());
 
-            var duration = DateTime.Now - start;
-            Logger.Info($"Duration : {duration}");
-            dialogWrapper.ShowMessageBox($"Imported {entities.Count()} entities. Duration : {duration}","Success");
+            IsLoading = false;
 
             DbManual.ResetAllManuals();
             await DbManual.SetupAsync(db);
@@ -272,24 +275,25 @@ namespace Financier.Desktop.ViewModel
             await RefreshCurrentPage();
         }
 
-        private async Task OpenBackup_Click()
+        private void OpenBackup_Click()
         {
             var backupPath = dialogWrapper.OpenFileDialog(Backup);
             if (!string.IsNullOrEmpty(backupPath))
             {
                 Logger.Info($"Opened backup : {backupPath}");
-                await OpenBackup(backupPath);
+                Task.Run(() => OpenBackup(backupPath));
             }
         }
 
-        private async Task OpenMonoWizardAsync(string bank, string fileExtention)
+        private async Task OpenImportWizardAsync(WizardTypes bankType)
         {
+            var fileExtention = EnumDescriptionConverter.GetEnumDescription(bankType);
             var fileName = dialogWrapper.OpenFileDialog(fileExtention);
             Logger.Info($"{fileExtention} fileName -> {fileName}");
             if (!string.IsNullOrEmpty(fileName))
             {
-                var csvHelper = this.bankFactory.CreateBankHelper(bank);
-                var csvTransactions = await csvHelper.ParseReport(fileName);
+                var importHelper = this.bankFactory.CreateBankHelper(bankType);
+                var sourceData = importHelper.ParseReport(fileName);
 
                 Dictionary<int, BlotterModel> lastTransactions = new();
                 foreach (var acc in DbManual.Account.Where(x => x.Id.HasValue))
@@ -298,7 +302,7 @@ namespace Financier.Desktop.ViewModel
                     lastTransactions.Add(acc.Id.Value, last);
                 }
 
-                var vm = new MonoWizardVM(bank, csvTransactions, lastTransactions);
+                var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions);
 
                 var output = dialogWrapper.ShowWizard(vm);
 
@@ -326,7 +330,7 @@ namespace Financier.Desktop.ViewModel
                     this.dialogWrapper.ShowMessageBox(
                         $"Imported {monoToImport.Count} transactions."
                         + ((duplicatesCount > 0) ? $" Skiped {duplicatesCount} duplicates." : string.Empty),
-                        $"{bank} Import");
+                        $"{importHelper.BankTitle} Import");
 
                     Logger.Info($"Imported {monoToImport.Count} transactions. Found duplicates : {duplicatesCount}");
                 }

@@ -1,4 +1,5 @@
-﻿using Financier.Desktop.Helpers;
+﻿using Financier.Common.Entities;
+using Financier.Desktop.Helpers;
 using Financier.Desktop.Wizards.RecipesWizard.View;
 using Prism.Commands;
 using System;
@@ -12,6 +13,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
     public class Page1VM : RecipesWizardPageVMBase
     {
+        private readonly string pattern = RecipesFormatter.Pattern + @"(\t|\n|\r|$)"; //TODO fix '100600 Балтика' case then it calculates (100600 Б), no more symbols after a|b
+        private readonly char[] charactersToRemove = { ':', '/', '?', '#', '[', ']', '@', '*', '.', ',', '\"', '&', '\'' };
         private DelegateCommand<RichTextBox> _highlightCommand;
         private string text;
         public Page1VM(double totalAmount)
@@ -38,7 +41,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         public void CalculateCurrentAmount()
         {
             Amounts.Clear();
-            var pattern = RecipesFormatter.Pattern + @"(\t|\n|\r|$)"; //TODO fix '100600 Балтика' case then it calculates (100600 Б), no more symbols after a|b
+
             if (!string.IsNullOrEmpty(text))
             {
                 double tmp = 0.0;
@@ -46,19 +49,22 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 var lines = text.Split(Environment.NewLine).Where(line => !string.IsNullOrWhiteSpace(line));
                 foreach (var line in lines)
                 {
-                    var res = Regex.Match(line, pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-                    if (res.Success)
+                    var findNumber = Regex.Match(line, pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+                    if (findNumber.Success)
                     {
-                        var number = res.Value.Substring(0, res.Value.Length - 2);
-                        var amount = GetDouble(number.Replace(",", ".").Trim());
+                        var amount = GetDouble(findNumber.Value.Substring(0, findNumber.Value.Length - 2).Replace(",", ".").Trim());
                         tmp += amount;
+
                         if (amount != 0.0)
                         {
-                            var note = line.Replace(res.Value, string.Empty);
+                            var note = line.Replace(findNumber.Value, string.Empty);
+                            var lineResult = ParseLine(note);
+
                             Amounts.Add(new FinancierTransactionDto
                             {
                                 FromAmount = Convert.ToInt64(amount * -100.0),
-                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
+                                Note = lineResult.note,
+                                CategoryId = lineResult.categoryId,
                                 Order = order++
                             });
                         }
@@ -89,6 +95,50 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             textBox.BeginInit();
             textBox.EndInit();
             CalculateCurrentAmount();
+        }
+
+        private static bool ContainsString(string title, string[] description)
+        {
+            if (!string.IsNullOrEmpty(title) && description != null)
+            {
+                return description.Any(x => title.Contains(x, StringComparison.OrdinalIgnoreCase));
+            }
+            return false;
+        }
+        private static bool TryParseCategory(string[] desc, out int categoryId)
+        {
+            var category = DbManual.Category
+                    .Where(x => x.Id > 0)
+                    .FirstOrDefault(l => ContainsString(l.Title, desc));
+            if (category != null)
+            {
+                categoryId = category.Id.Value;
+                return true;
+            }
+            categoryId = 0;
+            return false;
+        }
+
+        private (string note, int categoryId) ParseLine(string note)
+        {
+            int categoryId = 0;
+            if (!string.IsNullOrWhiteSpace(note))
+            {
+                foreach (char c in charactersToRemove)
+                {
+                    note = note.Replace(c.ToString(), string.Empty);
+                }
+
+                var arr = note.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                              .Where(x => x.Length > 2)
+                              .ToArray();
+
+                TryParseCategory(arr, out categoryId);
+
+                note = string.Join(" ", arr);
+            }
+            note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd();
+            return (note, categoryId);
         }
     }
 }

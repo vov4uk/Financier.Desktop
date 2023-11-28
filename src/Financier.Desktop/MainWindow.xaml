@@ -7,6 +7,8 @@
                Icon="pack://application:,,,/Images/ic_launcher.png"
                xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel"
                xmlns:View="clr-namespace:Financier.Desktop.Views"
+               xmlns:Wizard="clr-namespace:Financier.Desktop.Wizards"
+               xmlns:fa="http://schemas.fontawesome.io/icons/"
                AllowDrop="True"
                Loaded="RibbonWindow_Loaded">
     <Window.Resources>
@@ -52,7 +54,8 @@
             <converters:InverseBooleanConverter x:Key="InverseBool" />
         </ResourceDictionary>
     </Window.Resources>
-    <Grid AllowDrop="True">
+    <Grid AllowDrop="True"
+          IsEnabled="{Binding Path=IsLoading, Converter={StaticResource InverseBool}}">
         <!-- TODO : USE istead of (ImageSource="pack) <BitmapImage x:Key="ic_action_cancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -60,7 +63,6 @@
         </Grid.RowDefinitions>
 
         <Ribbon x:Name="FinancierDesktop" SelectedIndex="0">
-
             <Ribbon.HelpPaneContent>
                 <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_action_info.png" />-->
                 <Label Content="{Binding Path=OpenBackupPath}" />
@@ -141,13 +143,16 @@
                              IsEnabled="True">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png"
                                   Label="Monobank CSV"
-                                  Command="{Binding Path=MonoCommand}" />
+                                  Command="{Binding Path=ImportCommand}"
+                                  CommandParameter="{x:Static Wizard:WizardTypes.Monobank}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/abank.png"
                                   Label="A-Bank PDF"
-                                  Command="{Binding Path=AbankCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/raifaisenbank.png"
-                                  Label="Raiffeisen PDF"
-                                  Command="{Binding Path=RaiffeisenCommand}" />
+                                  Command="{Binding Path=ImportCommand}"
+                                  CommandParameter="{x:Static Wizard:WizardTypes.ABank}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/pumb.png"
+                                  Label="PUMB PDF"
+                                  Command="{Binding Path=ImportCommand}"
+                                  CommandParameter="{x:Static Wizard:WizardTypes.Pumb}" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Transaction"
@@ -245,6 +250,11 @@
                        FontSize="14"
                        FontWeight="Bold"
                        Text="Drop .backup file here" />
+        </Grid>
+        <Grid Grid.Row="1"
+              AllowDrop="True"
+              Visibility="{Binding Path=IsLoading, Converter={StaticResource BoolToVis}}">
+            <fa:ImageAwesome Icon="Refresh" Foreground="DarkBlue" Spin="True" Height="64" Width="64" />
         </Grid>
     </Grid>
 </RibbonWindow >

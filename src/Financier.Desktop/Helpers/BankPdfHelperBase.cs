@@ -16,37 +16,37 @@ namespace Financier.Desktop.Helpers
     public abstract class BankPdfHelperBase : IBankHelper
     {
         protected const string Space = " ";
-        protected abstract string Header { get; }
 
-        public async Task<IEnumerable<BankTransaction>> ParseReport(string filePath)
+        public abstract string BankTitle { get; }
+
+        public IEnumerable<BankTransaction> ParseReport(string filePath)
         {
             if (File.Exists(filePath))
             {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine(Header);
+                List<string> pages = new List<string>();
                 using (var docReader = DocLib.Instance.GetDocReader(filePath, new PageDimensions()))
                 {
                     for (var i = 0; i < docReader.GetPageCount(); i++)
                     {
                         using (var pageReader = docReader.GetPageReader(i))
                         {
-                            var pageText = ParseTransactionsTable(pageReader.GetText().Replace(Environment.NewLine, Space));
-                            sb.AppendLine(pageText.TrimEnd());
+                            pages.Add(pageReader.GetText());
                         }
                     }
                 }
 
-                using (TextReader streamReader = new StringReader(sb.ToString()))
-                {
-                    using (var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture))
-                    {
-                        return await csv.GetRecordsAsync<BankTransaction>().ToListAsync();
-                    }
-                }
+                return ParseTransactionsTable(pages);
+
             }
             return Array.Empty<BankTransaction>();
         }
 
-        protected abstract string ParseTransactionsTable(string pageText);
+        protected abstract IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages);
+
+        protected static double GetDouble(string text)
+        {
+            double.TryParse(Convert.ToString(text).Replace(',','.'), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out double retNum);
+            return retNum;
+        }
     }
 }

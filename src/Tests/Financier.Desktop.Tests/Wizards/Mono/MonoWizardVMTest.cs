@@ -27,10 +27,10 @@
         }
 
         [Fact]
-        public async Task LoadTransactions_UkrHeaders_TransactionsLoaded()
+        public void LoadTransactions_UkrHeaders_TransactionsLoaded()
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            var mono = new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Equal(46, mono.Count());
@@ -40,11 +40,11 @@
         }
 
         [Fact]
-        public async Task LoadTransactions_EngHeaders_TransactionsLoaded()
+        public void LoadTransactions_EngHeaders_TransactionsLoaded()
         {
             DbManual.SetupTests(new List<AccountFilterModel>());
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            IEnumerable<BankTransaction> mono = new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
@@ -53,7 +53,7 @@
         }
 
         [Fact]
-        public async Task LoadTransactions_Monobank_ExpectedTransactions()
+        public void LoadTransactions_Monobank_ExpectedTransactions()
         {
             var expected = new List<BankTransaction>
             {
@@ -70,51 +70,51 @@
             };
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            IEnumerable<BankTransaction> mono = new Helpers.MonobankHelper().ParseReport(csvPath);
 
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(mono.ToList()));
         }
 
         [Fact]
-        public async Task LoadTransactions_Monobank_EmptyList()
+        public void LoadTransactions_Monobank_EmptyList()
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", Guid.NewGuid().ToString());
-            IEnumerable<BankTransaction> mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            IEnumerable<BankTransaction> mono = new Helpers.MonobankHelper().ParseReport(csvPath);
 
             Assert.Empty(mono);
         }
 
         [Fact]
-        public async Task LoadTransactions_Abank_ExpectedTransactions()
+        public void LoadTransactions_Abank_ExpectedTransactions()
         {
             var first = new BankTransaction
             {
-                Date = new DateTime(2023, 2, 15, 9, 36, 0, DateTimeKind.Local),
+                Date = new DateTime(2023, 2, 15, 9, 36, 0),
                 Description = "АТБ",
                 Balance = 386.78,
                 MCC = "5411",
                 Commission = 0.0,
                 CardCurrencyAmount = -71.8,
                 OperationAmount = -71.8,
-                OperationCurrency = "UAH",
                 Cashback = 0.5,
+                ExchangeRate = 0.0
             };
 
             var last = new BankTransaction
             {
-                Date = new DateTime(2023, 2, 3, 13, 54, 0, DateTimeKind.Local),
+                Date = new DateTime(2023, 2, 3, 13, 54, 0),
                 Description = "АТБ",
                 Balance = 115.81,
                 Commission = 0.0,
                 MCC = "5411",
                 CardCurrencyAmount = -129.7,
                 OperationAmount = -129.7,
-                OperationCurrency = "UAH",
                 Cashback = 0.91,
+                ExchangeRate = 0.0
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
-            IEnumerable<BankTransaction> abank = await new Helpers.ABankHelper().ParseReport(path);
+            IEnumerable<BankTransaction> abank = new Helpers.ABankHelper().ParseReport(path);
 
             Assert.Equal(5, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
@@ -122,38 +122,40 @@
         }
 
         [Fact]
-        public async Task LoadTransactions_Raiffaisen_ExpectedTransactions()
+        public void LoadTransactions_Pumb_ExpectedTransactions()
         {
             var first = new BankTransaction
             {
-                Date = new DateTime(2022, 11, 25, 0, 0, 0, DateTimeKind.Local),
-                Description = "PR644 UA LVOV",
-                CardCurrencyAmount = -342.57,
-                OperationAmount = -342.57,
+                Date = new DateTime(2023, 04, 25, 9, 10, 6),
+                Description = "Переказ ACCOUNT Списання",
+                CardCurrencyAmount = -174.0,
+                OperationAmount = -174.0,
                 OperationCurrency = "UAH",
-                Balance = 560.2
-            };   
-            
-            var last = new BankTransaction
-            {
-                Date = new DateTime(2022, 10, 28, 0, 0, 0, DateTimeKind.Local),
-                Description = "SHOP ATB PR644 UA LVIV",
-                CardCurrencyAmount = -196.2,
-                OperationAmount = -196.2,
-                OperationCurrency = "UAH",
-                Balance = 880.3
+                Commission = 0.0,
+                Balance = 0.0
             };
 
-            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "raiffeisen.pdf");
-            IEnumerable<BankTransaction> bank = await new Helpers.RaiffeisenHelper().ParseReport(path);
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2023, 4, 11, 22, 19, 10),
+                Description = "Чистий дохід від підприємницької діяльн Надходження",
+                CardCurrencyAmount = 9372.16,
+                OperationAmount = 9372.16,
+                OperationCurrency = "UAH",
+                Commission = 0.0,
+                Balance = 0.0
+            };
 
-            Assert.Equal(11, bank.Count());
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb.pdf");
+            IEnumerable<BankTransaction> bank = new Helpers.PumbHelper().ParseReport(path);
+
+            Assert.Equal(25, bank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
         }
 
         [Fact]
-        public async Task MoveNextCommand_Execute3Times_TransactionsImpoted()
+        public void MoveNextCommand_Execute3Times_TransactionsImpoted()
         {
             List<Transaction> output = new ();
 
@@ -182,7 +184,7 @@
             DbManual.SetupTests(projects);
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            var mono = new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
@@ -248,7 +250,7 @@
         }
         
         [Fact]
-        public async Task MoveNextCommand_ParseDescription_TransactionsImpoted()
+        public void MoveNextCommand_ParseDescription_TransactionsImpoted()
         {
             List<Transaction> output = new ();
 
@@ -269,7 +271,7 @@
             DbManual.SetupTests(projects);
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.transfer.csv");
-            var mono = await new Helpers.MonobankHelper().ParseReport(csvPath);
+            var mono = new Helpers.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };

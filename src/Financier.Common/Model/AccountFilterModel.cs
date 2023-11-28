@@ -35,5 +35,11 @@ namespace Financier.Common.Model
 
         [Column("number")]
         public string Number { get; set; }
+
+        [Column("card_issuer")]
+        public string CardIssuer { get; set; }
+
+        [Column("issuer")]
+        public string Issuer { get; set; }
     }
 }
