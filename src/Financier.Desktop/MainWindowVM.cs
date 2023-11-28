@@ -142,7 +142,6 @@ namespace Financier.Desktop.ViewModel
         {
             OpenBackupPath = backupPath;
             IsLoading = true;
-            var start = DateTime.Now;
             ClearPages();
 
             var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);

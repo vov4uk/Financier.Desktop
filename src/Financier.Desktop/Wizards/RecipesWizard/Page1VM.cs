@@ -49,38 +49,22 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 var lines = text.Split(Environment.NewLine).Where(line => !string.IsNullOrWhiteSpace(line));
                 foreach (var line in lines)
                 {
-                    var res = Regex.Match(line, pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-                    if (res.Success)
+                    var findNumber = Regex.Match(line, pattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
+                    if (findNumber.Success)
                     {
-                        var number = res.Value.Substring(0, res.Value.Length - 2);
-                        var amount = GetDouble(number.Replace(",", ".").Trim());
+                        var amount = GetDouble(findNumber.Value.Substring(0, findNumber.Value.Length - 2).Replace(",", ".").Trim());
                         tmp += amount;
 
                         if (amount != 0.0)
                         {
-                            var note = line.Replace(res.Value, string.Empty);
-                            int categoryId = 0;
-                            if (!string.IsNullOrWhiteSpace(note))
-                            {
-                                foreach (char c in charactersToRemove)
-                                {
-                                    note = note.Replace(c.ToString(), string.Empty);
-                                }
-
-                                var arr = note.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                              .Where(x => x.Length > 2)
-                                              .ToArray();
-
-                                TryParseCategory(arr, out categoryId);
-
-                                note = string.Join(" ", arr);
-                            }
+                            var note = line.Replace(findNumber.Value, string.Empty);
+                            var lineResult = ParseLine(note);
 
                             Amounts.Add(new FinancierTransactionDto
                             {
                                 FromAmount = Convert.ToInt64(amount * -100.0),
-                                Note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd(),
-                                CategoryId = categoryId,
+                                Note = lineResult.note,
+                                CategoryId = lineResult.categoryId,
                                 Order = order++
                             });
                         }
@@ -133,6 +117,28 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
             categoryId = 0;
             return false;
+        }
+
+        private (string note, int categoryId) ParseLine(string note)
+        {
+            int categoryId = 0;
+            if (!string.IsNullOrWhiteSpace(note))
+            {
+                foreach (char c in charactersToRemove)
+                {
+                    note = note.Replace(c.ToString(), string.Empty);
+                }
+
+                var arr = note.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                              .Where(x => x.Length > 2)
+                              .ToArray();
+
+                TryParseCategory(arr, out categoryId);
+
+                note = string.Join(" ", arr);
+            }
+            note = string.IsNullOrWhiteSpace(note) ? string.Empty : note.TrimEnd();
+            return (note, categoryId);
         }
     }
 }
