@@ -57,8 +57,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
         public List<BankTransaction> GetMonoTransactions()
         {
-            var startDate = _startTransaction?.Date ?? new DateTime(2017, 11, 17); // Monobank launched
-            return allTransactions.OrderByDescending(x => x.Date).Where(x => x.Date > startDate).ToList();
+            var startDate = _startTransaction?.Date ?? new DateTime(2017, 11, 17, 0, 0, 0, DateTimeKind.Local); // Monobank launched
+            return allTransactions.Where(x => x.Date > startDate).OrderByDescending(x => x.Date).ToList();
         }
 
         public BankTransaction StartTransaction

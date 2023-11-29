@@ -147,11 +147,14 @@ namespace Financier.DataAccess
                     }
 
                     var acc = context.Accounts.FirstOrDefault(x => x.Id == accountId);
-                    acc.TotalAmount = balance;
                     var lastTransaction = transactions.LastOrDefault();
-                    acc.LastTransactionDate = lastTransaction?.DateTime ?? 0;
-                    acc.LastTransactionId = lastTransaction?.Id ?? 0;
-                    context.Accounts.Update(acc);
+                    if (acc != null)
+                    {
+                        acc.TotalAmount = balance;
+                        acc.LastTransactionDate = lastTransaction?.DateTime ?? 0;
+                        acc.LastTransactionId = lastTransaction?.Id ?? 0;
+                        context.Accounts.Update(acc);
+                    }
                     await context.SaveChangesAsync();
                 }
             }
@@ -197,9 +200,16 @@ namespace Financier.DataAccess
             if (id != 0)
             {
                 using var uow = CreateUnitOfWork();
-                return (await uow.GetRepository<Transaction>().FindManyAsync(
+                var subTransactions = await uow.GetRepository<Transaction>().
+                    FindManyAsync(
                     predicate: x => x.ParentId == id,
-                    includes: new Expression<Func<Transaction, object>>[]{ o => o.OriginalCurrency, c => c.Category})) ?? Array.Empty<Transaction>().ToList();
+                    includes: new Expression<Func<Transaction, object>>[]{ o => o.OriginalCurrency, c => c.Category});
+
+                if (subTransactions == null)
+                {
+                    return Array.Empty<Transaction>();
+                }
+                return subTransactions;
             }
 
             return Array.Empty<Transaction>();
@@ -250,7 +260,7 @@ namespace Financier.DataAccess
                                 int ordinal = reader.GetOrdinal(customAttribute.Name);
                                 object obj = ordinal != -1 ?
                                     reader.GetValue(ordinal) :
-                                    throw new Exception(string.Format("Class [{0}] have attribute of field [{1}] which not exist in reader", this.GetType(), customAttribute.Name));
+                                    throw new InvalidCastException(string.Format("Class [{0}] have attribute of field [{1}] which not exist in reader", this.GetType(), customAttribute.Name));
 
                                 if (obj != DBNull.Value)
                                 {

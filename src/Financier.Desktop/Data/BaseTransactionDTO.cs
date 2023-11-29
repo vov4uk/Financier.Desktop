@@ -37,7 +37,7 @@ namespace Financier.Desktop.Data
 
         public DateTime DateTime
         {
-            get { return new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second); }
+            get { return new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second, DateTimeKind.Local); }
         }
 
         public int Id
