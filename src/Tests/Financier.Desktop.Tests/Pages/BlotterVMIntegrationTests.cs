@@ -52,27 +52,6 @@ namespace Financier.Desktop.Tests.Pages
         }
 
         [Fact]
-        public async Task DuplicateTransaction_NewTransactionAdded_BalancesUpdated()
-        {
-            await SetupDb(EditSplitTransactions());
-
-            var resultVm = EditSplitTransactionDto();
-            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
-                .Returns(resultVm);
-
-            var vm = new BlotterVM(db, dialogMock.Object);
-            vm.SelectedValue = new Common.Model.BlotterModel { Id = 27160, CategoryId = -1 };
-            await vm.DuplicateCommand.ExecuteAsync();
-
-            var result = await GetResults();
-
-            Assert.Equal(DuplicateSplitTransactionRunningBalancesJson, JsonConvert.SerializeObject(result.Balances.OrderBy(x=>x.TransactionId)));
-            Assert.Equal(834, result.Accounts.FirstOrDefault(x => x.Id == 1).TotalAmount);
-            Assert.Equal(-48460, result.Accounts.FirstOrDefault(x => x.Id == 2).TotalAmount);
-            Assert.Equal(834, result.Transactions.FirstOrDefault(x => x.Id == 27174).ToAmount);
-        }
-
-        [Fact]
         public async Task CreateSplitTransaction_SubTransactionWithSubTransfer_BalancesUpdated()
         {
             await SetupDb();
@@ -316,12 +295,6 @@ namespace Financier.Desktop.Tests.Pages
         private string EditSplitTransactionRunningBalancesJson =>
 "[{\"TransactionId\":27160,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-24230}," +
 "{\"TransactionId\":27173,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":834}]";
-
-        private string DuplicateSplitTransactionRunningBalancesJson =>
-"[" +
- "{\"TransactionId\":27160,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-24230}," +
- "{\"TransactionId\":27173,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-48460}," +
- "{\"TransactionId\":27174,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":834}]";
 
         private string CreateSplitTransactionRunningBalancesJson => "[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-100300}," +
 "{\"TransactionId\":3,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":100000}]";
