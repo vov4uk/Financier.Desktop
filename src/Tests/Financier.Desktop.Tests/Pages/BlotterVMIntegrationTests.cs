@@ -66,7 +66,7 @@ namespace Financier.Desktop.Tests.Pages
 
             var result = await GetResults();
 
-            Assert.Equal(DuplicateSplitTransactionRunningBalancesJson, JsonConvert.SerializeObject(result.Balances));
+            Assert.Equal(DuplicateSplitTransactionRunningBalancesJson, JsonConvert.SerializeObject(result.Balances.OrderBy(x=>x.TransactionId)));
             Assert.Equal(834, result.Accounts.FirstOrDefault(x => x.Id == 1).TotalAmount);
             Assert.Equal(-48460, result.Accounts.FirstOrDefault(x => x.Id == 2).TotalAmount);
             Assert.Equal(834, result.Transactions.FirstOrDefault(x => x.Id == 27174).ToAmount);
@@ -316,9 +316,11 @@ namespace Financier.Desktop.Tests.Pages
         private string EditSplitTransactionRunningBalancesJson =>
 "[{\"TransactionId\":27160,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-24230}," +
 "{\"TransactionId\":27173,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":834}]";
+
         private string DuplicateSplitTransactionRunningBalancesJson =>
-"[{\"TransactionId\":27173,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-48460}," +
+"[" +
  "{\"TransactionId\":27160,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-24230}," +
+ "{\"TransactionId\":27173,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-48460}," +
  "{\"TransactionId\":27174,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":834}]";
 
         private string CreateSplitTransactionRunningBalancesJson => "[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-100300}," +
