@@ -1,5 +1,6 @@
 ## Transfers
----
+[<-- Back](/pages/open.md)
+_____________
 ### What app can do?
 #### Add new transfer
  ![Add new transfer](/img/add_transfer.png)

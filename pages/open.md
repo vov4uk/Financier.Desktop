@@ -1,4 +1,5 @@
 ## Open .backup
+[<-- Back](/pages/open.md)
 _____________
 There are few ways to open .backup files:
 #### Open from application menu

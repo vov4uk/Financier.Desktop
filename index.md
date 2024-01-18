@@ -23,5 +23,5 @@ The main reason to create this application was the possibility to import bank st
 
 #### Save from application menu
 ![Open](https://vov4uk.github.io/Financier.Desktop/img/save_db.png)
-_____________
+
 - Reporting (kudos to [@2ruslan](https://github.com/2ruslan))

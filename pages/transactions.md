@@ -1,5 +1,6 @@
 ## Transactions
----
+[<-- Back](/pages/open.md)
+_____________
 ### What app can do?
 #### Add new transaction
  ![Add new transaction](https://vov4uk.github.io/Financier.Desktop/img/add_transaction.png)

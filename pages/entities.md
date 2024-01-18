@@ -1,4 +1,7 @@
 ## Entities
+[<-- Back](/pages/open.md)
+_____________
+
 ![Entities](https://vov4uk.github.io/Financier.Desktop/img/entities.png)
 _____________
 ## Categories (read only)
