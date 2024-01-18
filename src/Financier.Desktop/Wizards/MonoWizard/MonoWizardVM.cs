@@ -86,6 +86,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 Note = x.Note,
                 LocationId = x.LocationId,
                 ProjectId = x.ProjectId,
+                PayeeId = x.PayeeId,
                 CategoryId = 0,
                 Category = default,
                 DateTime = x.DateTime,

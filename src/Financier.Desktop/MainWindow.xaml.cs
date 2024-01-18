@@ -12,6 +12,8 @@ using Financier.DataAccess.View;
 using Financier.Common.Model;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Win32;
+using Financier.Desktop.Properties;
 
 namespace Financier.Desktop
 {
@@ -45,7 +47,8 @@ namespace Financier.Desktop
 
         private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var bakupFolder = @$"C:\Users\{Environment.UserName}\Dropbox\apps\FinancierAndroid";
+            var bakupFolder = Settings.Default.DefaultBackupDir ?? @$"C:\Users\{Environment.UserName}\Dropbox\apps\Financisto Holo";
+            ViewModel.DefaultBackupDirectory = Settings.Default.DefaultBackupDir;
             if (Directory.Exists(bakupFolder))
             {
                 var backupFile = Directory.EnumerateFiles(bakupFolder, BackupFormat).OrderByDescending(x => x).FirstOrDefault();
@@ -73,6 +76,22 @@ namespace Financier.Desktop
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void RibbonApplicationMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFolderDialog openFileDialog = new OpenFolderDialog
+            {
+                Multiselect = false
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                var currentFolder = openFileDialog.FolderName;
+                Settings.Default.DefaultBackupDir = currentFolder;
+                Settings.Default.Save();
+                ViewModel.DefaultBackupDirectory = currentFolder;
+            }
         }
     }
 }

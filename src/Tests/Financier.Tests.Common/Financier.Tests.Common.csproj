@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <AssemblyName>Financier.Tests.Common</AssemblyName>
     <RootNamespace>Financier.Tests.Common</RootNamespace>
   </PropertyGroup>

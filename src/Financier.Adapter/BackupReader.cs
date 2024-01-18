@@ -39,7 +39,7 @@ namespace Financier.Adapter
                         break;
 
                     case Backup.VERSION_NAME:
-                        BackupVersion.Version = Version.Parse(line.Value);
+                        BackupVersion.Version = line.Value;
                         break;
 
                     case Backup.DATABASE_VERSION:

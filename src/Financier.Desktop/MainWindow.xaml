@@ -52,24 +52,56 @@
             <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InverseBooleanConverter x:Key="InverseBool" />
+            <ContextMenu x:Key="HiddenContextMenu" Visibility="Hidden"/>
+            <Style TargetType="Ribbon">
+                <Setter Property="Ribbon.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
+            <Style TargetType="RibbonTab">
+                <Setter Property="RibbonTab.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
+            <Style TargetType="RibbonGroup">
+                <Setter Property="RibbonGroup.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
+            <Style TargetType="RibbonButton">
+                <Setter Property="RibbonButton.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
+            <Style TargetType="RibbonRadioButton">
+                <Setter Property="RibbonRadioButton.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
+            <Style TargetType="RibbonTextBox">
+                <Setter Property="RibbonTextBox.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
+            <Style TargetType="RibbonComboBox">
+                <Setter Property="RibbonComboBox.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
+            <Style TargetType="RibbonApplicationMenuItem">
+                <Setter Property="RibbonApplicationMenuItem.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
+            <Style TargetType="RibbonGalleryCategory">
+                <Setter Property="RibbonGalleryCategory.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
+            <Style TargetType="RibbonGallery">
+                <Setter Property="RibbonGallery.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Grid AllowDrop="True"
           IsEnabled="{Binding Path=IsLoading, Converter={StaticResource InverseBool}}">
-        <!-- TODO : USE istead of (ImageSource="pack) <BitmapImage x:Key="ic_action_cancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Ribbon x:Name="FinancierDesktop" SelectedIndex="0">
+        <Ribbon x:Name="FinancierDesktop"
+                SelectedIndex="0">
             <Ribbon.HelpPaneContent>
-                <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/ic_action_info.png" />-->
                 <Label Content="{Binding Path=OpenBackupPath}" />
             </Ribbon.HelpPaneContent>
 
             <Ribbon.ApplicationMenu>
-                <RibbonApplicationMenu>
+                <RibbonApplicationMenu ContextMenu="{x:Null}"
+                                       Background="#858585"
+                                       BorderBrush="#858585">
                     <RibbonApplicationMenuItem Header="Open"
                                                ToolTip="Open backup file"
                                                ToolTipDescription="Open backup file"
@@ -81,18 +113,52 @@
                     <RibbonApplicationMenuItem Header="Save as .db"
                                                Command="{Binding Path=SaveBackupAsDbCommand}"
                                                ImageSource="pack://application:,,,/Images/save_as_db.png" />
+                    <RibbonApplicationMenuItem Header="Set default directory"
+                                               Click="RibbonApplicationMenuItem_Click"
+                                               ImageSource="pack://application:,,,/Images/folder.png" />
                     <!--<RibbonApplicationMenuItem Header="Options"
                                                ImageSource="pack://application:,,,/Images/ic_action_gear.png"
                                                IsEnabled="False" />-->
-                    <RibbonApplicationMenuItem Header="Exit"
-                                               Click="Exit_Click"
-                                               ImageSource="pack://application:,,,/Images/ic_menu_back.png" />
+                    <RibbonApplicationMenu.FooterPaneContent>
+                        <DockPanel LastChildFill="False">
+                            <RibbonButton Click="Exit_Click"
+                                          SmallImageSource="pack://application:,,,/Images/ic_menu_back.png"
+                                          Label="Exit"
+                                          ToolTipTitle="Exit"
+                                          KeyTip="X"
+                                          DockPanel.Dock="Right"
+                                          Margin="2"
+                                          BorderBrush="#858585" />
+                        </DockPanel>
+                    </RibbonApplicationMenu.FooterPaneContent>
+                    <RibbonApplicationMenu.AuxiliaryPaneContent>
+                        <RibbonGallery CanUserFilter="False"
+                                       ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <RibbonGalleryCategory Header="Default backup directory :"
+                                                   Background="Transparent">
+                                <RibbonGalleryCategory.Items>
+                                    <RibbonGalleryItem IsEnabled="False">
+                                        <Label Content="{Binding Path=DefaultBackupDirectory}"/>
+                                    </RibbonGalleryItem>
+                                </RibbonGalleryCategory.Items>
+                                <RibbonGalleryCategory.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"
+                                                    ToolTip="{Binding Path=DefaultBackupDirectory}"
+                                                    HorizontalAlignment="Left"
+                                                    CanHorizontallyScroll="False"
+                                                    IsItemsHost="True"/>
+                                    </ItemsPanelTemplate>
+                                </RibbonGalleryCategory.ItemsPanel>
+                            </RibbonGalleryCategory>
+                        </RibbonGallery>
+                    </RibbonApplicationMenu.AuxiliaryPaneContent>
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
 
             <RibbonTab Header="Main"
                        Selector.IsSelected="True">
-                <RibbonGroup Header="Entities">
+                <RibbonGroup Header="Entities" ContextMenu="{x:Null}">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_accounts_unselected.png"
                                   Label="Accounts"
                                   Command="{Binding Path=MenuNavigateCommand}"
@@ -118,7 +184,8 @@
                                   CommandParameter="{StaticResource CurrencyExchangeRateType}" />
                 </RibbonGroup>
 
-                <RibbonGroup x:Name="Blotter" Header="Blotter">
+                <RibbonGroup x:Name="Blotter"
+                             Header="Blotter">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_blotter_selected.png"
                                   Label="Blotter"
                                   Command="{Binding Path=MenuNavigateCommand}"
@@ -156,9 +223,9 @@
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Transaction"
-                         DataContext="{Binding}"
-                         Visibility="{Binding Path=IsTransactionPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                         Header="Transaction">
+                             DataContext="{Binding}"
+                             Visibility="{Binding Path=IsTransactionPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                             Header="Transaction">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
                                   Label="Add Expense"
                                   Command="{Binding Path=Blotter.AddCommand}" />
@@ -198,9 +265,9 @@
                 </RibbonGroup>
 
                 <RibbonGroup Header="Project"
-                       Selector.IsSelected="{Binding Path=IsProjectPageSelected, Mode=OneWay}"
-                       Visibility="{Binding Path=IsProjectPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                       DataContext="{Binding}">
+                             Selector.IsSelected="{Binding Path=IsProjectPageSelected, Mode=OneWay}"
+                             Visibility="{Binding Path=IsProjectPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                             DataContext="{Binding}">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
                                   Label="Add"
                                   Command="{Binding Path=Projects.AddCommand}" />
@@ -254,7 +321,7 @@
         <Grid Grid.Row="1"
               AllowDrop="True"
               Visibility="{Binding Path=IsLoading, Converter={StaticResource BoolToVis}}">
-            <fa:ImageAwesome Icon="Refresh" Foreground="DarkBlue" Spin="True" Height="64" Width="64" />
+            <fa:ImageAwesome Icon="Refresh" Foreground="#858585" Spin="True" Height="64" Width="64" />
         </Grid>
     </Grid>
 </RibbonWindow >

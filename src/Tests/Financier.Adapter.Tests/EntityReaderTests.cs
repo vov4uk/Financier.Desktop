@@ -19,7 +19,7 @@
 
             Assert.Equal(211, backupVersion.DatabaseVersion);
             Assert.Equal("ru.orangesoftware.financisto", backupVersion.Package);
-            Assert.Equal(new Version(1, 7, 4), backupVersion.Version);
+            Assert.Equal("1.7.4", backupVersion.Version);
             Assert.Equal(100, backupVersion.VersionCode);
 
             Assert.Equal(3, entities.OfType<Account>().Count());

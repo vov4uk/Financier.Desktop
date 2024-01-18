@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Images\ic_launcher.ico</ApplicationIcon>
@@ -14,10 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\pumb.png" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Resource Include="Images\folder.png" />
     <Resource Include="Images\ic_launcher.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -92,16 +89,16 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="30.0.1" />
-    <PackageReference Include="DataGridExtensions" Version="2.6.0-beta1" />
-    <PackageReference Include="Docnet.Core" Version="2.4.0-alpha.2" />
-    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
+    <PackageReference Include="DataGridExtensions" Version="2.6.0" />
+    <PackageReference Include="Docnet.Core" Version="2.6.0" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.113" />
     <PackageReference Include="Emoji.Wpf" Version="0.3.4" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="5.1.3" />
+    <PackageReference Include="NLog" Version="5.2.8" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.0.0.68202">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.16.0.82469">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -238,6 +238,22 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Payee" IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <xctk:WatermarkComboBox IsEditable="True"
+                                                    ItemsSource="{Binding Source={x:Static fcrd:DbManual.Payee}, Mode=OneWay}"
+                                                    SelectedValue="{Binding
+                                                                    Path=PayeeId,
+                                                                    Mode=TwoWay,
+                                                                    NotifyOnTargetUpdated=True,
+                                                                    UpdateSourceTrigger=PropertyChanged}"
+                                                    SelectedValuePath="Id"
+                                                    TextSearch.TextPath="Title"
+                                                    ItemTemplate="{StaticResource ResourceKey=IActive}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
