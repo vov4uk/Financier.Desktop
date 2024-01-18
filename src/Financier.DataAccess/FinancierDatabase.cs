@@ -202,8 +202,9 @@ namespace Financier.DataAccess
                 using var uow = CreateUnitOfWork();
                 var subTransactions = await uow.GetRepository<Transaction>().
                     FindManyAsync(
-                    predicate: x => x.ParentId == id,
-                    includes: new Expression<Func<Transaction, object>>[]{ o => o.OriginalCurrency, c => c.Category});
+                    x => x.ParentId == id,
+                    o => o.OriginalCurrency,
+                    c => c.Category);
 
                 if (subTransactions == null)
                 {

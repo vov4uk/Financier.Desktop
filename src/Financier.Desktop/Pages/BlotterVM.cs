@@ -416,7 +416,7 @@
                 predicate = predicate.And(x => x.LocationId == _location.Id);
             }
 
-            var items = await repo.FindManyAsync(
+            var items = await repo.FindManyAndProjectAsync(
                 predicate: predicate,
                 projection: x => new BlotterModel
                 {
