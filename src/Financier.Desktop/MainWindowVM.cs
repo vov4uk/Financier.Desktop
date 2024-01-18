@@ -49,6 +49,7 @@ namespace Financier.Desktop.ViewModel
         private readonly IEntityReader entityReader;
         private LocationsVM locationsVm;
         private string openBackupPath;
+        private string defaultBackupDirectory;
         private bool isLoading;
         private PayeesVM payeesVm;
         private ProjectsVM projectsVm;
@@ -102,6 +103,11 @@ namespace Financier.Desktop.ViewModel
         {
             get => openBackupPath;
             private set => SetProperty(ref openBackupPath, value);
+        }
+        public string DefaultBackupDirectory
+        {
+            get => defaultBackupDirectory;
+            internal set => SetProperty(ref defaultBackupDirectory, value);
         }
 
         public LocationsVM Locations
@@ -250,7 +256,7 @@ namespace Financier.Desktop.ViewModel
                         return _pages[type];
                     }
 
-                default: throw new NotSupportedException($"{type.FullName} not suported");
+                default: throw new NotSupportedException($"{type.FullName} not supported");
             }
         }
 
@@ -287,9 +293,9 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OpenImportWizardAsync(WizardTypes bankType)
         {
-            var fileExtention = EnumDescriptionConverter.GetEnumDescription(bankType);
-            var fileName = dialogWrapper.OpenFileDialog(fileExtention);
-            Logger.Info($"{fileExtention} fileName -> {fileName}");
+            var fileExtension = EnumDescriptionConverter.GetEnumDescription(bankType);
+            var fileName = dialogWrapper.OpenFileDialog(fileExtension);
+            Logger.Info($"{fileExtension} fileName -> {fileName}");
             if (!string.IsNullOrEmpty(fileName))
             {
                 var importHelper = this.bankFactory.CreateBankHelper(bankType);
@@ -329,7 +335,7 @@ namespace Financier.Desktop.ViewModel
 
                     this.dialogWrapper.ShowMessageBox(
                         $"Imported {monoToImport.Count} transactions."
-                        + ((duplicatesCount > 0) ? $" Skiped {duplicatesCount} duplicates." : string.Empty),
+                        + ((duplicatesCount > 0) ? $" Skipped {duplicatesCount} duplicates." : string.Empty),
                         $"{importHelper.BankTitle} Import");
 
                     Logger.Info($"Imported {monoToImport.Count} transactions. Found duplicates : {duplicatesCount}");

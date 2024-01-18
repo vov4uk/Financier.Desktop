@@ -6,7 +6,7 @@ namespace Financier.Adapter
     {
         public string Package { get; set; }
         public int VersionCode { get; set; }
-        public Version Version { get; set; }
+        public string Version { get; set; }
         public int DatabaseVersion { get; set; }
     }
 }

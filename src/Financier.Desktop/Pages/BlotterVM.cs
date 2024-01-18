@@ -80,7 +80,7 @@
 
         public AccountFilterModel Account
         {
-            get => _account ??= DbManual.Account.FirstOrDefault(p => !p.Id.HasValue);
+            get => _account ??= DbManual.Account.Find(p => !p.Id.HasValue);
             set
             {
                 _account = value;
@@ -90,7 +90,7 @@
 
         public CategoryModel Category
         {
-            get => _category ??= DbManual.Category.FirstOrDefault(p => !p.Id.HasValue);
+            get => _category ??= DbManual.Category.Find(p => !p.Id.HasValue);
             set
             {
                 _category = value;
@@ -100,7 +100,7 @@
 
         public PayeeModel Payee
         {
-            get => _payee ??= DbManual.Payee.FirstOrDefault(p => !p.Id.HasValue);
+            get => _payee ??= DbManual.Payee.Find(p => !p.Id.HasValue);
             set
             {
                 _payee = value;
@@ -110,7 +110,7 @@
 
         public ProjectModel Project
         {
-            get => _project ??= DbManual.Project.FirstOrDefault(p => !p.Id.HasValue);
+            get => _project ??= DbManual.Project.Find(p => !p.Id.HasValue);
             set
             {
                 _project = value;
@@ -120,7 +120,7 @@
 
         public LocationModel Location
         {
-            get => _location ??= DbManual.Location.FirstOrDefault(p => !p.Id.HasValue);
+            get => _location ??= DbManual.Location.Find(p => !p.Id.HasValue);
             set
             {
                 _location = value;
@@ -175,32 +175,41 @@
             }
         }
 
-        protected override Task OnEdit(BlotterModel item)
+        protected override async Task OnEdit(BlotterModel item)
         {
             if (item.Type == "Transfer")
             {
-                return OpenTransferDialogAsync(item.Id, false);
+                var transfer = await GetTransfer(item.Id);
+                await OpenTransferDialogAsync(transfer);
             }
             else
             {
-                return OpenTransactionDialogAsync(item.Id, false);
+                var t = await GetTransaction(item.Id);
+                await OpenTransactionDialogAsync(t.transaction, t.subTransactions);
             }
         }
 
-        private Task AddTransfer()
+        private async Task AddTransfer()
         {
-            return OpenTransferDialogAsync(0, false);
+            Transaction transfer = await db.GetOrCreateTransactionAsync(0);
+            if (Account?.Id != null)
+            {
+                transfer.FromAccountId = (int)Account.Id;
+            }
+            await OpenTransferDialogAsync(transfer);
         }
 
-        private Task OnDuplicate(BlotterModel item)
+        private async Task OnDuplicate(BlotterModel item)
         {
             if (item.Type == "Transfer")
             {
-                return OpenTransferDialogAsync(item.Id, true);
+                var transfer = await GetTransfer(item.Id, true);
+                await OpenTransferDialogAsync(transfer);
             }
             else
             {
-                return OpenTransactionDialogAsync(item.Id, true);
+                var t = await GetTransaction(item.Id, true);
+                await OpenTransactionDialogAsync(t.transaction, t.subTransactions);
             }
         }
 
@@ -210,25 +219,21 @@
             base.OnSelectedValueChanged();
         }
 
-        protected override Task OnAdd()
+        protected override async Task OnAdd()
         {
-            return OpenTransactionDialogAsync(0, false);
+            Transaction transaction = await db.GetOrCreateTransactionAsync(0);
+            IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(0);
+
+            if (Account?.Id != null)
+            {
+                transaction.FromAccountId = (int)Account.Id;
+            }
+
+            await OpenTransactionDialogAsync(transaction, subTransactions);
         }
 
-        private async Task OpenTransferDialogAsync(int id, bool isDuplicate)
+        private async Task OpenTransferDialogAsync(Transaction transfer)
         {
-            Logger.Info($"OpenTransferDialog : id {id} ; isDuplicate {isDuplicate}");
-            Transaction transfer = await db.GetOrCreateTransactionAsync(id);
-            if (isDuplicate)
-            {
-                transfer.Id = 0;
-                transfer.DateTime = UnixTimeConverter.ConvertBack(DateTime.Now);
-            }
-            if (id == 0 && Account?.Id != null)
-            {
-                transfer.FromAccountId = (int)Account.Id;
-            }
-
             TransferControlVM dialogVm = new TransferControlVM(new TransferDto(transfer));
 
             var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
@@ -245,9 +250,20 @@
             }
         }
 
-        private async Task OpenTransactionDialogAsync(int id, bool isDuplicate)
+        private async Task<Transaction> GetTransfer(int id, bool isDuplicate = false)
         {
-            Logger.Info($"OpenTransactionDialog: id {id} ; isDuplicate {isDuplicate}");
+            Transaction transfer = await db.GetOrCreateTransactionAsync(id);
+            if (isDuplicate)
+            {
+                transfer.Id = 0;
+                transfer.DateTime = UnixTimeConverter.ConvertBack(DateTime.Now);
+            }
+
+            return transfer;
+        }
+
+        private async Task<(Transaction transaction, IEnumerable<Transaction> subTransactions)> GetTransaction(int id, bool isDuplicate = false)
+        {
             Transaction transaction = await db.GetOrCreateTransactionAsync(id);
             IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(id);
 
@@ -256,21 +272,13 @@
                 transaction.Id = 0;
                 transaction.DateTime = UnixTimeConverter.ConvertBack(DateTime.Now);
             }
-            if (id == 0 && Account?.Id != null)
-            {
-                transaction.FromAccountId = (int)Account.Id;
-            }
 
+            return (transaction, subTransactions);
+        }
+
+        private async Task OpenTransactionDialogAsync(Transaction transaction, IEnumerable<Transaction> subTransactions)
+        {
             var transactionDto = new TransactionDto(transaction, subTransactions);
-
-            // if transaction not in home currency, replace FromAmount with OriginalFromAmount to show correct values
-            if (transactionDto.IsOriginalFromAmountVisible)
-            {
-                foreach (var item in transactionDto.SubTransactions.OfType<TransactionDto>())
-                {
-                    item.FromAmount = item.OriginalFromAmount ?? 0;
-                }
-            }
 
             TransactionControlVM dialogVm = new TransactionControlVM(transactionDto, dialogWrapper);
 
@@ -279,78 +287,99 @@
             var resultVm = result as TransactionDto;
             if (resultVm != null)
             {
-                var resultTransactions = new List<Transaction>();
+                await SaveTransactionResult(transaction, subTransactions, resultVm);
+            }
+        }
 
-                MapperHelper.MapTransaction(resultVm, transaction);
-                long totalFromAmountHomeCurrency = transaction.FromAmount;
-                resultTransactions.Add(transaction);
-                if (resultVm?.SubTransactions?.Any() == true)
+        private async Task SaveTransactionResult(Transaction transaction, IEnumerable<Transaction> subTransactions, TransactionDto resultVm)
+        {
+            var resultTransactions = new List<Transaction>();
+
+            MapperHelper.MapTransaction(resultVm, transaction);
+            long totalFromAmountHomeCurrency = transaction.FromAmount;
+            resultTransactions.Add(transaction);
+            if (resultVm.SubTransactions?.Any() == true)
+            {
+                // TODO : Add Unit Test for code below
+                foreach (var subTransactionDto in resultVm.SubTransactions.OfType<TransactionDto>())
                 {
-                    // TODO : Add Unit Test for code below
-                    foreach (var subTransactionDto in resultVm.SubTransactions.OfType<TransactionDto>())
+                    Transaction subTransaction = await GetSubTransaction(transaction, resultVm, subTransactionDto);
+
+                    //Set FromAmount in home currency
+                    if (resultVm.IsOriginalFromAmountVisible)
                     {
-                        var subTransaction = await db.GetOrCreateAsync<Transaction>(subTransactionDto.Id);
-                        subTransactionDto.Date = resultVm.Date;
-                        subTransactionDto.Time = resultVm.Time;
-                        MapperHelper.MapTransaction(subTransactionDto, subTransaction);
-                        subTransaction.Parent = transaction;
-                        subTransaction.FromAccountId = transaction.FromAccountId;
-                        subTransaction.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
-                        subTransaction.Category = default;
+                        var originalFromAmount = (subTransactionDto).RealFromAmount;
+                        subTransaction.FromAmount = (long)(originalFromAmount * resultVm.Rate);
+                        subTransaction.OriginalFromAmount = originalFromAmount;
+                        totalFromAmountHomeCurrency -= subTransaction.FromAmount;
+                    }
 
-                        //Set FromAmount in home currency
-                        if (resultVm.IsOriginalFromAmountVisible)
-                        {
-                            var originalFromAmount = (subTransactionDto).RealFromAmount;
-                            subTransaction.FromAmount = (long)(originalFromAmount * resultVm.Rate);
-                            subTransaction.OriginalFromAmount = originalFromAmount;
-                            totalFromAmountHomeCurrency -= subTransaction.FromAmount;
-                        }
+                    resultTransactions.Add(subTransaction);
+                }
 
+                if (!resultVm.IsOriginalFromAmountVisible)
+                {
+                    foreach (var subTranfer in resultVm.SubTransactions.OfType<TransferDto>())
+                    {
+                        Transaction subTransaction = await GetSubTransfer(transaction, resultVm, subTranfer);
                         resultTransactions.Add(subTransaction);
                     }
-
-                    if (!resultVm.IsOriginalFromAmountVisible)
-                    {
-                        foreach (var subTranfer in resultVm.SubTransactions.OfType<TransferDto>())
-                        {
-                            var subTransaction = await db.GetOrCreateAsync<Transaction>(subTranfer.Id);
-
-                            subTranfer.Date = resultVm.Date;
-                            subTranfer.Time = resultVm.Time;
-                            MapperHelper.MapTransfer(subTranfer, subTransaction);
-                            subTransaction.Parent = transaction;
-                            subTransaction.FromAccountId = transaction.FromAccountId;
-
-                            resultTransactions.Add(subTransaction);
-                        }
-                    }
-
-                    // check if sum of all subtransaction == parentTransaction.FromAmount
-                    // if not - add diference to last transaction
-                    if (resultVm.IsOriginalFromAmountVisible && totalFromAmountHomeCurrency != 0)
-                    {
-                        resultTransactions.Last().FromAmount += totalFromAmountHomeCurrency;
-                    }
                 }
 
-                await db.InsertOrUpdateAsync(resultTransactions);
-
-                var transactionsIds = resultTransactions.Select(x => x.Id).Distinct().ToList();
-                var deletedSubTransaction = subTransactions.Select(x => x.Id).Where(x => !transactionsIds.Contains(x));
-                foreach (var t in deletedSubTransaction)
+                // check if sum of all subtransaction == parentTransaction.FromAmount
+                // if not - add diference to last transaction
+                if (resultVm.IsOriginalFromAmountVisible && totalFromAmountHomeCurrency != 0)
                 {
-                    await DeleteTransaction(t);
+                    resultTransactions.Last().FromAmount += totalFromAmountHomeCurrency;
                 }
-
-                await db.RebuildAccountBalanceAsync(transaction.FromAccountId);
-                var toAccounts = resultTransactions.Select(x => x.ToAccountId).Where(x => x > 0).Distinct().ToList();
-                foreach (var account in toAccounts)
-                {
-                    await db.RebuildAccountBalanceAsync(account);
-                }
-                await RefreshData();
             }
+
+            await db.InsertOrUpdateAsync(resultTransactions);
+
+            await ProcessDeletedTransactions(subTransactions, resultTransactions);
+
+            await db.RebuildAccountBalanceAsync(transaction.FromAccountId);
+            var toAccounts = resultTransactions.Select(x => x.ToAccountId).Where(x => x > 0).Distinct().ToList();
+            foreach (var account in toAccounts)
+            {
+                await db.RebuildAccountBalanceAsync(account);
+            }
+            await RefreshData();
+        }
+
+        private async Task ProcessDeletedTransactions(IEnumerable<Transaction> subTransactions, List<Transaction> resultTransactions)
+        {
+            var transactionsIds = resultTransactions.Select(x => x.Id).Distinct().ToList();
+            var deletedSubTransaction = subTransactions.Select(x => x.Id).Where(x => !transactionsIds.Contains(x));
+            foreach (var t in deletedSubTransaction)
+            {
+                await DeleteTransaction(t);
+            }
+        }
+
+        private async Task<Transaction> GetSubTransfer(Transaction transaction, TransactionDto resultVm, TransferDto subTranfer)
+        {
+            var subTransaction = await db.GetOrCreateAsync<Transaction>(subTranfer.Id);
+
+            subTranfer.Date = resultVm.Date;
+            subTranfer.Time = resultVm.Time;
+            MapperHelper.MapTransfer(subTranfer, subTransaction);
+            subTransaction.Parent = transaction;
+            subTransaction.FromAccountId = transaction.FromAccountId;
+            return subTransaction;
+        }
+
+        private async Task<Transaction> GetSubTransaction(Transaction transaction, TransactionDto resultVm, TransactionDto subTransactionDto)
+        {
+            var subTransaction = await db.GetOrCreateAsync<Transaction>(subTransactionDto.Id);
+            subTransactionDto.Date = resultVm.Date;
+            subTransactionDto.Time = resultVm.Time;
+            MapperHelper.MapTransaction(subTransactionDto, subTransaction);
+            subTransaction.Parent = transaction;
+            subTransaction.FromAccountId = transaction.FromAccountId;
+            subTransaction.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
+            subTransaction.Category = default;
+            return subTransaction;
         }
 
         protected override async Task RefreshData()
@@ -387,7 +416,7 @@
                 predicate = predicate.And(x => x.LocationId == _location.Id);
             }
 
-            var items = await repo.FindManyAsync(
+            var items = await repo.FindManyAndProjectAsync(
                 predicate: predicate,
                 projection: x => new BlotterModel
                 {
@@ -429,7 +458,9 @@
                         Symbol = x.OriginalCurrency.Symbol,
                     }
                 },
-                includes: new Expression<Func<BlotterTransactions, object>>[] { x => x.FromAccountCurrency, x => x.ToAccountCurrency, x => x.OriginalCurrency });
+                x => x.FromAccountCurrency,
+                x => x.ToAccountCurrency,
+                x => x.OriginalCurrency);
 
             if (items != null)
             {

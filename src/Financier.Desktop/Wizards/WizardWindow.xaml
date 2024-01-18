@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Title}"
-        Width="1040"
+        Width="1100"
         Height="620"
         Background="{DynamicResource WindowBackgroundBrush}"
         UseLayoutRounding="True"
@@ -31,8 +31,9 @@
             <RowDefinition Height="5" />
         </Grid.RowDefinitions>
 
-        <ContentPresenter Grid.Row="1" Grid.Column="1"
-                              Content="{Binding CurrentPage}" DataContext="{Binding CurrentPage}" />
+        <ContentPresenter Grid.Row="1"
+                          Grid.Column="1"
+                          Content="{Binding CurrentPage}" DataContext="{Binding CurrentPage}" />
 
         <Separator
             Height="17"

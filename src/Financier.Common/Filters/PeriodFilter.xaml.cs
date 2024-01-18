@@ -88,8 +88,8 @@ namespace Financier.Common.Filters
                     {
                         var today = DateTime.Today;
 
-                        from = new DateTime(today.AddMonths(-1).Year, today.AddMonths(-1).Month, 1);
-                        to = new DateTime(today.Year, today.Month, 1).AddMilliseconds(-1);
+                        from = new DateTime(today.AddMonths(-1).Year, today.AddMonths(-1).Month, 1,0,0,0, DateTimeKind.Local);
+                        to = new DateTime(today.Year, today.Month, 1,0,0,0, DateTimeKind.Local).AddMilliseconds(-1);
                     }
                     break;
                 case PeriodType.CurrentWeek:
@@ -108,8 +108,8 @@ namespace Financier.Common.Filters
                     {
                         var today = DateTime.Today;
 
-                        from = new DateTime(today.Year, today.Month, 1);
-                        to = new DateTime(today.AddMonths(1).Year, today.AddMonths(1).Month, 1).AddMilliseconds(-1);
+                        from = new DateTime(today.Year, today.Month, 1, 0, 0, 0, DateTimeKind.Local);
+                        to = new DateTime(today.AddMonths(1).Year, today.AddMonths(1).Month, 1, 0, 0, 0, DateTimeKind.Local).AddMilliseconds(-1);
                     }
                     break;
                 case PeriodType.PreviousAndCurrentWeek:
@@ -128,8 +128,8 @@ namespace Financier.Common.Filters
                     {
                         var today = DateTime.Today;
 
-                        from = new DateTime(today.AddMonths(-1).Year, today.AddMonths(-1).Month, 1);
-                        to = new DateTime(today.AddMonths(1).Year, today.AddMonths(1).Month, 1).AddMilliseconds(-1);
+                        from = new DateTime(today.AddMonths(-1).Year, today.AddMonths(-1).Month, 1, 0, 0, 0, DateTimeKind.Local);
+                        to = new DateTime(today.AddMonths(1).Year, today.AddMonths(1).Month, 1, 0, 0, 0, DateTimeKind.Local).AddMilliseconds(-1);
                     }
                     break;
                 default:

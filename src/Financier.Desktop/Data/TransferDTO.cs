@@ -29,8 +29,8 @@ namespace Financier.Desktop.Data
             toAmount = transaction.ToAmount;
             date = UnixTimeConverter.Convert(transaction.DateTime).Date;
             time = UnixTimeConverter.Convert(transaction.DateTime);
-            fromAccount = DbManual.Account.FirstOrDefault(x => x.Id == fromAccountId);
-            toAccount = DbManual.Account.FirstOrDefault(x => x.Id == toAccountId);
+            fromAccount = DbManual.Account.Find(x => x.Id == fromAccountId);
+            toAccount = DbManual.Account.Find(x => x.Id == toAccountId);
         }
 
         public AccountFilterModel FromAccount
@@ -50,7 +50,7 @@ namespace Financier.Desktop.Data
 
         public CurrencyModel FromAccountCurrency
         {
-            get => DbManual.Currencies?.FirstOrDefault(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0));
+            get => DbManual.Currencies?.Find(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0));
         }
 
         public int FromAccountId
@@ -126,7 +126,7 @@ namespace Financier.Desktop.Data
 
         public CurrencyModel ToAccountCurrency
         {
-            get => DbManual.Currencies?.FirstOrDefault(x => x.Id == (ToAccount != null ? ToAccount.CurrencyId : 0));
+            get => DbManual.Currencies?.Find(x => x.Id == (ToAccount != null ? ToAccount.CurrencyId : 0));
         }
 
         public long ToAmount

@@ -9,6 +9,7 @@ namespace Financier.Desktop.Wizards
         private string note;
         private int order;
         private int projectId;
+        private int payeeId;
         private int toAccountId;
 
         public int CategoryId
@@ -71,6 +72,15 @@ namespace Financier.Desktop.Wizards
             {
                 projectId = value;
                 RaisePropertyChanged(nameof(ProjectId));
+            }
+        }
+        public int PayeeId
+        {
+            get => payeeId;
+            set
+            {
+                payeeId = value;
+                RaisePropertyChanged(nameof(PayeeId));
             }
         }
 

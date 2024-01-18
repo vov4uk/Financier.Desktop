@@ -27,7 +27,7 @@ namespace Financier.Desktop.ViewModel
         {
             using var uow = db.CreateUnitOfWork();
             var accountRepo = uow.GetRepository<Account>();
-            var items = await accountRepo.FindManyAsync(
+            var items = await accountRepo.FindManyAndProjectAsync(
                 predicate: x => true,
                 projection: acc => new AccountModel(acc),
                 includes : x => x.Currency);

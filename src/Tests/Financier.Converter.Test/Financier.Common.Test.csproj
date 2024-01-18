@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <DebugType>full</DebugType>
     <AssemblyName>Financier.Converters.Tests</AssemblyName>
     <RootNamespace>Financier.Converters.Tests</RootNamespace>
     <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
     <IsTestProject>true</IsTestProject>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>

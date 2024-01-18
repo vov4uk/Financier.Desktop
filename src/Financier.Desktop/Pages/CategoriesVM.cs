@@ -37,7 +37,7 @@ namespace Financier.Desktop.ViewModel
         {
             foreach (var category in categories.OrderBy(x => x.Left))
             {
-                if (!nodes.Any(x => x.Right > category.Left))
+                if (!nodes.Exists(x => x.Right > category.Left))
                 {
                     var subNode = new CategoryTreeModel
                     {
@@ -49,7 +49,7 @@ namespace Financier.Desktop.ViewModel
                     nodes.Add(subNode);
 
                     var sub = categories.Where(x => x.Left > category.Left && x.Right < category.Right).ToList();
-                    if (sub.Any())
+                    if (sub.Count > 0)
                     {
                         InitializeNodes(subNode.SubCategoties, sub, level + 1);
                     }

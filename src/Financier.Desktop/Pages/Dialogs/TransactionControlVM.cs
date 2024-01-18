@@ -51,7 +51,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private static void CopySubTransaction(TransactionDto original, TransactionDto modifiedCopy)
         {
             original.CategoryId = modifiedCopy.CategoryId;
-            original.Category = DbManual.Category?.FirstOrDefault(x => x.Id == modifiedCopy.CategoryId);
+            original.Category = DbManual.Category?.Find(x => x.Id == modifiedCopy.CategoryId);
             original.FromAmount = modifiedCopy.RealFromAmount;
             original.IsAmountNegative = modifiedCopy.IsAmountNegative;
             original.Note = modifiedCopy.Note;
@@ -83,7 +83,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             {
                 foreach (var item in outputTransactions)
                 {
-                    item.Category = DbManual.Category?.FirstOrDefault(x => x.Id == item.CategoryId);
+                    item.Category = DbManual.Category?.Find(x => x.Id == item.CategoryId);
                     Transaction.SubTransactions.Add(item);
                 }
                 Transaction.RecalculateUnSplitAmount();

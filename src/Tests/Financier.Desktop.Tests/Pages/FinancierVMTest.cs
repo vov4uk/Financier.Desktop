@@ -373,7 +373,7 @@
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
             this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<MonoWizardVM>())).Returns(findManyOutput);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skiped 1 duplicates.", " Import", false)).Returns(true);
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skipped 1 duplicates.", " Import", false)).Returns(true);
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());

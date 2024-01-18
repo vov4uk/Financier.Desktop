@@ -56,7 +56,14 @@ namespace Financier.Desktop.Data
                 }
                 else
                 {
-                    list.Add(new TransactionDto(t));
+                    var tr = new TransactionDto(t);
+
+                    // if transaction not in home currency, replace FromAmount with OriginalFromAmount to show correct values
+                    if (IsOriginalFromAmountVisible)
+                    {
+                        tr.FromAmount = tr.OriginalFromAmount ?? 0;
+                    }
+                    list.Add(tr);
                 }
             }
 
@@ -83,7 +90,7 @@ namespace Financier.Desktop.Data
 
         public AccountFilterModel FromAccount
         {
-            get => fromAccount ??= DbManual.Account?.FirstOrDefault(x => x.Id == FromAccountId);
+            get => fromAccount ??= DbManual.Account?.Find(x => x.Id == FromAccountId);
             set
             {
                 if (SetProperty(ref fromAccount, value))
@@ -110,12 +117,12 @@ namespace Financier.Desktop.Data
 
         public CurrencyModel FromAccountCurrency
         {
-            get => DbManual.Currencies?.FirstOrDefault(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0));
+            get => DbManual.Currencies?.Find(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0));
         }
 
         public CategoryModel Category
         {
-            get => category ??= DbManual.Category?.FirstOrDefault(x => x.Id == CategoryId);
+            get => category ??= DbManual.Category?.Find(x => x.Id == CategoryId);
             set
             {
                 if (SetProperty(ref category, value))
@@ -187,7 +194,7 @@ namespace Financier.Desktop.Data
 
         public CurrencyModel OriginalCurrency
         {
-            get => currency ??= DbManual.Currencies?.FirstOrDefault(x => x.Id == OriginalCurrencyId);
+            get => currency ??= DbManual.Currencies?.Find(x => x.Id == OriginalCurrencyId);
             set
             {
                 if (SetProperty(ref currency, value))
@@ -268,7 +275,7 @@ namespace Financier.Desktop.Data
                 if (Rate != 0)
                 {
                     var d = 1.0 / Rate;
-                    var localCurrency = DbManual.Currencies?.FirstOrDefault(x => x.Id == fromAccount?.Id);
+                    var localCurrency = DbManual.Currencies?.Find(x => x.Id == fromAccount?.Id);
                     return $"1{currency?.Name}={Rate:F5}{localCurrency?.Name}, 1{localCurrency?.Name}={d:F5}{currency?.Name}";
                 }
 
@@ -322,7 +329,9 @@ namespace Financier.Desktop.Data
         internal void RecalculateRate()
         {
             if (originalFromAmount != null && originalFromAmount != 0)
+            {
                 Rate = Math.Abs(fromAmount / 100.0 / (originalFromAmount.Value / 100.0));
+            }
         }
     }
 }

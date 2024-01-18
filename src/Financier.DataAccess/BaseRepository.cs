@@ -78,7 +78,7 @@ namespace Financier.DataAccess
             return await result?.ToListAsync();
         }
 
-        public virtual async Task<List<TResult>> FindManyAsync<TResult>(
+        public virtual async Task<List<TResult>> FindManyAndProjectAsync<TResult>(
             Expression<Func<T, bool>> predicate,
             Expression<Func<T, TResult>> projection,
             params Expression<Func<T, object>>[] includes)
