@@ -1,6 +1,6 @@
 ## Open .backup
-[<-- Back](/pages/open.md)
-_____________
+[<-- Back](https://vov4uk.github.io/Financier.Desktop)
+
 There are few ways to open .backup files:
 #### Open from application menu
  ![Open](https://vov4uk.github.io/Financier.Desktop/img/open_menu.png)

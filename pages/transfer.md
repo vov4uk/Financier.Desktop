@@ -1,6 +1,6 @@
 ## Transfers
-[<-- Back](/pages/open.md)
-_____________
+[<-- Back](https://vov4uk.github.io/Financier.Desktop)
+
 ### What app can do?
 #### Add new transfer
  ![Add new transfer](/img/add_transfer.png)

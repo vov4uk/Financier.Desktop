@@ -1,6 +1,5 @@
 ## Entities
-[<-- Back](/pages/open.md)
-_____________
+[<-- Back](https://vov4uk.github.io/Financier.Desktop)
 
 ![Entities](https://vov4uk.github.io/Financier.Desktop/img/entities.png)
 _____________
