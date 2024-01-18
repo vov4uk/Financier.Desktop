@@ -2,23 +2,23 @@
 ---
 ### What app can do?
 #### Add new transaction
- ![Add new transaction](/img/add_transaction.png)
+ ![Add new transaction](https://vov4uk.github.io/Financier.Desktop/img/add_transaction.png)
 #### Set categories, projects, payees, location and notes
- ![Edit dailog](/img/edit_dialog.png)
+ ![Edit dailog](https://vov4uk.github.io/Financier.Desktop/img/edit_dialog.png)
 #### Edit existing transaction (double-click on grid)
- ![Edit transaction](/img/edit.png)
+ ![Edit transaction](https://vov4uk.github.io/Financier.Desktop/img/edit.png)
 #### Delete transaction
- ![Delete](/img/delete.gif)
+ ![Delete](https://vov4uk.github.io/Financier.Desktop/img/delete.gif)
 #### Duplicate
- ![Duplicate](/img/duplicate.png)
+ ![Duplicate](https://vov4uk.github.io/Financier.Desktop/img/duplicate.png)
 #### Split transactions
- ![Split](/img/split.gif)
+ ![Split](https://vov4uk.github.io/Financier.Desktop/img/split.gif)
 #### Multi-currency transactions
- ![Multi-currency transactions](/img/currency_transaction.png)
+ ![Multi-currency transactions](https://vov4uk.github.io/Financier.Desktop/img/currency_transaction.png)
 #### Multi-currency split transactions
- ![Multi-currency split transactions](/img/currency_split_transaction.png)
+ ![Multi-currency split transactions](https://vov4uk.github.io/Financier.Desktop/img/currency_split_transaction.png)
 #### Sub transfers
-![Sub transfers](/img/subTransfer.gif)
+![Sub transfers](https://vov4uk.github.io/Financier.Desktop/img/subTransfer.gif)
 
 
 ### Not supported:

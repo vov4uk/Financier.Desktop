@@ -12,16 +12,16 @@ The main reason to create this application was the possibility to import bank st
 - [Edit transfers](/pages/transfer.md)
 - [Edit entities](/pages/entities.md) (projects, locations ..)
 - [Import CSV report from Monobank](/pages/mono.md)
-_____________
+
 #### Video instruction
-![Open](/img/mono.gif)
-_____________
+![Open](https://vov4uk.github.io/Financier.Desktop/img/mono.gif)
+
 - Import PDF report from A-Bank
 - Import PDF report from PUMB
 - Parse recipiet text to SPLIT transaction
 - Save .backup as SQLite database (.db file)
-_____________
+
 #### Save from application menu
-![Open](/img/save_db.png)
+![Open](https://vov4uk.github.io/Financier.Desktop/img/save_db.png)
 _____________
 - Reporting (kudos to [@2ruslan](https://github.com/2ruslan))
