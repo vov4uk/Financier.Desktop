@@ -30,9 +30,7 @@
         public const string START = "#START";
         public const string END = "#END";
 
-        public static string[] RESTORE_SCRIPTS => restore_scripts;
-
-        private static readonly string[] restore_scripts = {
+        public static string[] RESTORE_SCRIPTS => new []{
             "_20100114_1158_alter_accounts_types",
             "_20110903_0129_alter_template_splits",
             "_20171230_1852_alter_electronic_account_type"};

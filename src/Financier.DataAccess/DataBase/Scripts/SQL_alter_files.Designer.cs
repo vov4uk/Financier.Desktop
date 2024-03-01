@@ -451,12 +451,13 @@ namespace Financier.DataAccess.DataBase.Scripts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to create table if not exists running_balance (
-        ///	account_id integer not null,
-        ///	transaction_id integer not null,
-        ///	datetime long not null,
-        ///	balance integer not null,
-        ///	PRIMARY KEY (account_id, transaction_id)
+        ///   Looks up a localized string similar to create table if not exists running_balance
+        ///(
+        ///    account_id integer not null,
+        ///    transaction_id integer not null,
+        ///    datetime long not null,
+        ///    balance long not null,
+        ///    PRIMARY KEY (account_id, transaction_id)
         ///);
         ///
         ///create index if not exists running_balance_act_idx ON running_balance (account_id);
@@ -594,7 +595,7 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///ALTER TABLE account ADD COLUMN updated_on TIMESTAMP DEFAULT 0;
         ///ALTER TABLE account ADD COLUMN remote_key text;
         ///
-        ///ALTER TABLE transactions ADD COLUMN updated_on TIMESTAMP DEFAULT 0 [rest of string was truncated]&quot;;.
+        ///ALTER TABLE transactions ADD COLUMN updated_on TIMESTA [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string _20120820_1725_add_needed_for_sync {
             get {
@@ -783,11 +784,47 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///update budget set sort_order=_id;
         ///
         ///ALTER TABLE LOCATIONS ADD COLUMN sort_order integer not null default 0;
-        ///update LOCATIONS set [rest of string was truncated]&quot;;.
+        ///update  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string _20180301_0202_add_sort_order_to_all_entities {
             get {
                 return ResourceManager.GetString("_20180301_0202_add_sort_order_to_all_entities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE account ADD COLUMN last_transaction_id integer not null default 0;.
+        /// </summary>
+        internal static string _20220901_1220_add_lastaccounttransactionid {
+            get {
+                return ResourceManager.GetString("_20220901_1220_add_lastaccounttransactionid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE sms_template ADD COLUMN to_account_id integer not null default -1;.
+        /// </summary>
+        internal static string _20231225_2250_add_to_account_id_to_sms_template {
+            get {
+                return ResourceManager.GetString("_20231225_2250_add_to_account_id_to_sms_template", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE sms_template ADD COLUMN note TEXT.
+        /// </summary>
+        internal static string _20240112_2143_add_note_to_sms_template {
+            get {
+                return ResourceManager.GetString("_20240112_2143_add_note_to_sms_template", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE currency ADD COLUMN update_exchange_rate INTEGER NOT NULL DEFAULT 1;.
+        /// </summary>
+        internal static string _20240121_0445_add_update_exchange_rate_to_currency {
+            get {
+                return ResourceManager.GetString("_20240121_0445_add_update_exchange_rate_to_currency", resourceCulture);
             }
         }
         
@@ -799,18 +836,32 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///ALTER TABLE currency ADD COLUMN is_active boolean not null default 1;
         ///ALTER TABLE sms_template ADD COLUMN is_active boolean not null default 1;.
         /// </summary>
-        internal static string _20190209_alter_entities_add_is_active {
+        internal static string _20240218_0355_alter_entities_add_is_active {
             get {
-                return ResourceManager.GetString("_20190209_alter_entities_add_is_active", resourceCulture);
+                return ResourceManager.GetString("_20240218_0355_alter_entities_add_is_active", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ALTER TABLE account ADD COLUMN last_transaction_id integer not null default 0;.
+        ///   Looks up a localized string similar to CREATE TABLE IF NOT EXISTS locations_t (
+        ///    _id              INTEGER   PRIMARY KEY AUTOINCREMENT,
+        ///    datetime         LONG      NOT NULL,
+        ///    provider         TEXT,
+        ///    accuracy         FLOAT,
+        ///    latitude         DOUBLE,
+        ///    longitude        DOUBLE,
+        ///    resolved_address TEXT,
+        ///    count            INTEGER   NOT NULL
+        ///                               DEFAULT 0,
+        ///    updated_on       TIMESTAMP DEFAULT 0,
+        ///    remote_key       TEXT,
+        ///    title            TEXT,
+        ///    sort_order       INTEGER   NOT NULL
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string _20220901_1220_add_lastaccounttransactionid {
+        internal static string _20240221_0135_alter_location_drop_name_is_payee {
             get {
-                return ResourceManager.GetString("_20220901_1220_add_lastaccounttransactionid", resourceCulture);
+                return ResourceManager.GetString("_20240221_0135_alter_location_drop_name_is_payee", resourceCulture);
             }
         }
     }

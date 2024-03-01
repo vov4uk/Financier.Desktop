@@ -119,204 +119,216 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="_20090723_0035_initial_data" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20090723_0035_initial_data.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20090723_0035_initial_data.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20090830_1754_add_is_default" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20090830_1754_add_is_default.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20090830_1754_add_is_default.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20090929_2217_add_decimals" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20090929_2217_add_decimals.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20090929_2217_add_decimals.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091010_1709_add_types_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091010_1709_add_types_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091010_1709_add_types_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091014_2319_add_sort_order_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091014_2319_add_sort_order_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091014_2319_add_sort_order_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091026_1456_add_is_active_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091026_1456_add_is_active_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091026_1456_add_is_active_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091110_2228_add_more_params_to_currency" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091110_2228_add_more_params_to_currency.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091110_2228_add_more_params_to_currency.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091121_0104_add_is_included_into_totals_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091121_0104_add_is_included_into_totals_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091121_0104_add_is_included_into_totals_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091124_1721_add_count_to_location" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091124_1721_add_count_to_location.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091124_1721_add_count_to_location.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091124_1824_update_count_for_locations" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091124_1824_update_count_for_locations.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091124_1824_update_count_for_locations.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091125_2310_update_count_for_locations" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091125_2310_update_count_for_locations.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091125_2310_update_count_for_locations.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091126_2208_add_remember_fields" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091126_2208_add_remember_fields.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091126_2208_add_remember_fields.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091127_2106_add_payee_to_transaction" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091127_2106_add_payee_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091127_2106_add_payee_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091128_1302_add_last_account_id_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091128_1302_add_last_account_id_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091128_1302_add_last_account_id_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091128_1748_add_limit_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091128_1748_add_limit_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091128_1748_add_limit_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091130_2236_add_sort_order_to_category" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091130_2236_add_sort_order_to_category.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091130_2236_add_sort_order_to_category.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091210_2339_add_recur_to_budget" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091210_2339_add_recur_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091210_2339_add_recur_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091224_2250_alter_recur_for_existing_budgets" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091224_2250_alter_recur_for_existing_budgets.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091224_2250_alter_recur_for_existing_budgets.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20091228_0048_create_currency_rate_table" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20091228_0048_create_currency_rate_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20091228_0048_create_currency_rate_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100114_1153_add_credit_card_type_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100114_1153_add_credit_card_type_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100114_1153_add_credit_card_type_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100114_1158_alter_accounts_types" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100114_1158_alter_accounts_types.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100114_1158_alter_accounts_types.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100115_0003_update_sort_order_for_all_categories" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100115_0003_update_sort_order_for_all_categories.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100115_0003_update_sort_order_for_all_categories.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100320_2045_add_project_to_budget" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100320_2045_add_project_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100320_2045_add_project_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100322_2041_add_expanded_to_budget" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100322_2041_add_expanded_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100322_2041_add_expanded_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100410_1748_add_is_template_to_transaction" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100410_1748_add_is_template_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100410_1748_add_is_template_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100416_2329_add_template_name_to_transaction" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100416_2329_add_template_name_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100416_2329_add_template_name_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100427_2208_add_recurrence_to_transaction" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100427_2208_add_recurrence_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100427_2208_add_recurrence_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100504_0020_add_notification_options_to_transaction" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100504_0020_add_notification_options_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100504_0020_add_notification_options_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100506_2129_add_status_to_transaction" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100506_2129_add_status_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100506_2129_add_status_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100511_2253_add_delete_after_expired_attribute" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100511_2253_add_delete_after_expired_attribute.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100511_2253_add_delete_after_expired_attribute.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100522_1311_add_include_credit_to_budget" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100522_1311_add_include_credit_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100522_1311_add_include_credit_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100617_2118_add_picture_to_transaction" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100617_2118_add_picture_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100617_2118_add_picture_to_transaction.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100721_0737_add_bill_filtering_pars_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100721_0737_add_bill_filtering_pars_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100721_0737_add_bill_filtering_pars_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20100927_2135_add_last_recurrence_to_transactions" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20100927_2135_add_last_recurrence_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20100927_2135_add_last_recurrence_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20101115_2200_add_payee_table" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20101115_2200_add_payee_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20101115_2200_add_payee_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20101118_2001_add_payee_id_to_transactions" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20101118_2001_add_payee_id_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20101118_2001_add_payee_id_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20101216_0152_add_type_to_category" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20101216_0152_add_type_to_category.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20101216_0152_add_type_to_category.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20110227_2112_add_ccard_closing_date" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20110227_2112_add_ccard_closing_date.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20110227_2112_add_ccard_closing_date.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20110412_0024_create_running_balance_table" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20110412_0024_create_running_balance_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20110412_0024_create_running_balance_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20110420_2316_add_split_category" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20110420_2316_add_split_category.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20110420_2316_add_split_category.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20110422_0051_create_split_table" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20110422_0051_create_split_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20110422_0051_create_split_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20110429_2323_add_parent_id_to_transactions" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20110429_2323_add_parent_id_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20110429_2323_add_parent_id_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20110903_0129_alter_template_splits" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20110903_0129_alter_template_splits.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20110903_0129_alter_template_splits.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20111124_2133_add_last_category_id_to_payee" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20111124_2133_add_last_category_id_to_payee.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20111124_2133_add_last_category_id_to_payee.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20111127_1941_add_symbol_format_to_currency" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20111127_1941_add_symbol_format_to_currency.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20111127_1941_add_symbol_format_to_currency.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20111215_2017_add_note_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20111215_2017_add_note_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20111215_2017_add_note_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20120117_20581_create_currency_exchange_rate_table" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20120117_20581_create_currency_exchange_rate_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20120117_20581_create_currency_exchange_rate_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20120423_alter_projects_add_is_active" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20120423_alter_projects_add_is_active.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20120423_alter_projects_add_is_active.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20120709_1956_add_last_transaction_date_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20120709_1956_add_last_transaction_date_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20120709_1956_add_last_transaction_date_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20120820_1725_add_needed_for_sync" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20120820_1725_add_needed_for_sync.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20120820_1725_add_needed_for_sync.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20120904_1420_add_original_currency_and_amount_to_transactions" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20120904_1420_add_original_currency_and_amount_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20120904_1420_add_original_currency_and_amount_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20120906_0128_add_original_currency_and_amount_to_transactions" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20120906_0128_add_original_currency_and_amount_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20120906_0128_add_original_currency_and_amount_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20130624_1725_add_needed_for_sync_attributes" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20130624_1725_add_needed_for_sync_attributes.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20130624_1725_add_needed_for_sync_attributes.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20130704_2309_add_account_id_to_budget" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20130704_2309_add_account_id_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20130704_2309_add_account_id_to_budget.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20130919_1725_add_needed_for_sync_blob" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20130919_1725_add_needed_for_sync_blob.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20130919_1725_add_needed_for_sync_blob.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20131226_1725_add_index_for_flowzr" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20131226_1725_add_index_for_flowzr.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20131226_1725_add_index_for_flowzr.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20160426_2152_add_title_to_locations" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20160426_2152_add_title_to_locations.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20160426_2152_add_title_to_locations.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20160426_2205_update_locations" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20160426_2205_update_locations.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20160426_2205_update_locations.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20171020_0707_add_sms_templates" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20171020_0707_add_sms_templates.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20171020_0707_add_sms_templates.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20171028_0707_added_required_columns_to_smstemplates" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20171028_0707_added_required_columns_to_smstemplates.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20171028_0707_added_required_columns_to_smstemplates.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20171207_0707_added_income_column_to_smstemplates" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20171207_0707_added_income_column_to_smstemplates.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20171207_0707_added_income_column_to_smstemplates.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20171230_1852_alter_electronic_account_type" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20171230_1852_alter_electronic_account_type.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20171230_1852_alter_electronic_account_type.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20180117_1235_add_title_to_attributes" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20180117_1235_add_title_to_attributes.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20180117_1235_add_title_to_attributes.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20180301_0101_added_order_column_to_smstemplates" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20180301_0101_added_order_column_to_smstemplates.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20180301_0101_added_order_column_to_smstemplates.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20180301_0202_add_sort_order_to_all_entities" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20180301_0202_add_sort_order_to_all_entities.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="_20190209_alter_entities_add_is_active" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20190209_alter_entities_add_is_active.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>alter\20180301_0202_add_sort_order_to_all_entities.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20220901_1220_add_lastaccounttransactionid" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>alter\20220901_1220_add_lastaccounttransactionid.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="_20231225_2250_add_to_account_id_to_sms_template" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20231225_2250_add_to_account_id_to_sms_template.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_20240112_2143_add_note_to_sms_template" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20240112_2143_add_note_to_sms_template.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_20240121_0445_add_update_exchange_rate_to_currency" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20240121_0445_add_update_exchange_rate_to_currency.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_20240218_0355_alter_entities_add_is_active" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20240218_0355_alter_entities_add_is_active.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_20240221_0135_alter_location_drop_name_is_payee" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20240221_0135_alter_location_drop_name_is_payee.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
 </root>

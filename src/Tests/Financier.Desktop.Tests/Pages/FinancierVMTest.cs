@@ -227,7 +227,6 @@
             Assert.Equal(result.Address, actual[0].Address);
             Assert.Equal(result.IsActive, actual[0].IsActive);
             Assert.Equal(result.Title, actual[0].Title);
-            Assert.Equal(result.Title, actual[0].Name);
             Assert.Equal(0, actual[0].Id);
             Assert.Equal(0, actual[0].Count);
         }

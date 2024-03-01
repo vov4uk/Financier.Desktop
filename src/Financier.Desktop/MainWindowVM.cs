@@ -146,31 +146,42 @@ namespace Financier.Desktop.ViewModel
 
         public async Task OpenBackup(string backupPath)
         {
-            OpenBackupPath = backupPath;
-            IsLoading = true;
-            ClearPages();
+            try
+            {
+                OpenBackupPath = backupPath;
+                IsLoading = true;
+                ClearPages();
 
-            var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);
-            _backupVersion = backupVersion;
-            _entityColumnsOrder = columnsOrder;
+                var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);
+                _backupVersion = backupVersion;
+                _entityColumnsOrder = columnsOrder;
 
-            db?.Dispose();
+                db?.Dispose();
 
-            db = dbFactory.CreateDatabase();
-            await db.ImportEntitiesAsync(entities);
+                var locations = entities.OfType<Location>();
 
-            keyLessEntities.Clear();
+                db = dbFactory.CreateDatabase();
+                await db.ImportEntitiesAsync(entities);
 
-            AddKeylessEntities(entities.OfType<CCardClosingDate>());
-            AddKeylessEntities(entities.OfType<CategoryAttribute>());
-            AddKeylessEntities(entities.OfType<TransactionAttribute>());
+                keyLessEntities.Clear();
 
-            IsLoading = false;
+                AddKeylessEntities(entities.OfType<CCardClosingDate>());
+                AddKeylessEntities(entities.OfType<CategoryAttribute>());
+                AddKeylessEntities(entities.OfType<TransactionAttribute>());
 
-            DbManual.ResetAllManuals();
-            await DbManual.SetupAsync(db);
+                IsLoading = false;
 
-            await NavigateToType(typeof(BlotterModel));
+                DbManual.ResetAllManuals();
+                await DbManual.SetupAsync(db);
+
+                await NavigateToType(typeof(BlotterModel));
+            }
+            catch (Exception ex)
+            {
+                IsLoading = false;
+                Logger.Error(ex);
+                throw;
+            }
         }
 
         public async Task SaveBackup(string backupPath)

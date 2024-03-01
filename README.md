@@ -21,10 +21,11 @@
 [**Install the .NET Desktop Runtime.**](https://dotnet.microsoft.com/en-us/download/dotnet/8.0/runtime)
 
 MVP (minimum viable product) application, with enough functions to work with Financisto .backup on Windows.
-More info on [Github pages](https://vov4uk.github.io/Financier.Desktop)
+<br/>More info on [Github pages](https://vov4uk.github.io/Financier.Desktop)
+</br>[Latest release](https://github.com/vov4uk/Financier.Desktop/releases/latest)
 
 ## About
- Desktop version of [Financier](https://github.com/handydevcom/financier "Financier") which is a fork of the great [Financisto](https://github.com/dsolonenko/financisto) app. Financisto is an open-source personal finance tracker for Android platform.
+ Desktop version of [Financisto Holo](https://github.com/tiberiusteng/financisto1-holo "Financisto Holo") which is a fork of the great [Financisto](https://github.com/dsolonenko/financisto) app. Financisto is an open-source personal finance tracker for Android platform.
 
 ## Supported features
 

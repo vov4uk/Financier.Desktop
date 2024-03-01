@@ -5,7 +5,6 @@
     <TargetFramework>net8.0-windows7.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon>Images\ic_launcher.ico</ApplicationIcon>
     <StartupObject>Financier.Desktop.App</StartupObject>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
@@ -14,8 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Images\folder.png" />
-    <Resource Include="Images\ic_launcher.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -23,6 +20,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <PropertyGroup>
+      <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+      <Deterministic>false</Deterministic>
+      <NeutralLanguage>uk-UA</NeutralLanguage>
+      <ApplicationIcon>Images\ic_launcher.ico</ApplicationIcon>
+  </PropertyGroup>
 
   <ItemGroup>
     <Resource Include="Images\abank.png" />
@@ -69,6 +72,7 @@
     <Resource Include="Images\ic_action_transfer.png" />
     <Resource Include="Images\ic_action_trash.png" />
     <Resource Include="Images\ic_launcher.png" />
+    <Resource Include="Images\ic_launcher.ico" />
     <Resource Include="Images\ic_menu_back.png" />
     <Resource Include="Images\ic_tab_accounts_unselected.png" />
     <Resource Include="Images\ic_tab_blotter_selected.png" />
@@ -85,10 +89,11 @@
     <Resource Include="Images\monobank.png" />
     <Resource Include="Images\pumb.png" />
     <Resource Include="Images\save_as_db.png" />
+    <Resource Include="Images\folder.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="CsvHelper" Version="31.0.0" />
     <PackageReference Include="DataGridExtensions" Version="2.6.0" />
     <PackageReference Include="Docnet.Core" Version="2.6.0" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.113" />
@@ -98,7 +103,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog" Version="5.2.8" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.16.0.82469">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.19.0.84025">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -45,7 +45,6 @@ namespace Financier.Desktop.ViewModel
                 selectedValue.IsActive = updatedItem.IsActive;
                 selectedValue.Address = updatedItem.Address;
                 selectedValue.Title = updatedItem.Title;
-                selectedValue.Name = updatedItem.Title;
                 if (id == 0)
                 {
                     selectedValue.Count = 0;

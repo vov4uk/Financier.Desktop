@@ -294,7 +294,7 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///   Looks up a localized string similar to create view v_report_location AS 
         ///select 
         ///       l._id as _id,
-        ///       l.name as name,
+        ///       l.title as name,
         ///       t.datetime as datetime,
         ///       t.from_account_currency_id as from_account_currency_id,
         ///       t.from_amount as from_amount,
@@ -303,7 +303,7 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///       t.original_currency_id as original_currency_id,
         ///       t.original_from_amount as original_from_amount,
         ///       t.is_transfer as is_transfer,
-        ///       t.from_account_id as from_account_id, [rest of string was truncated]&quot;;.
+        ///       t.from_account_id as from_account_id [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string _062_v_report_location_ {
             get {
