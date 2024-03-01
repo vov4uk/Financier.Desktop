@@ -146,31 +146,39 @@ namespace Financier.Desktop.ViewModel
 
         public async Task OpenBackup(string backupPath)
         {
-            OpenBackupPath = backupPath;
-            IsLoading = true;
-            ClearPages();
+            try
+            {
+                OpenBackupPath = backupPath;
+                IsLoading = true;
+                ClearPages();
 
-            var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);
-            _backupVersion = backupVersion;
-            _entityColumnsOrder = columnsOrder;
+                var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);
+                _backupVersion = backupVersion;
+                _entityColumnsOrder = columnsOrder;
 
-            db?.Dispose();
+                db?.Dispose();
+                db = dbFactory.CreateDatabase();
+                await db.ImportEntitiesAsync(entities);
 
-            db = dbFactory.CreateDatabase();
-            await db.ImportEntitiesAsync(entities);
+                keyLessEntities.Clear();
 
-            keyLessEntities.Clear();
+                AddKeylessEntities(entities.OfType<CCardClosingDate>());
+                AddKeylessEntities(entities.OfType<CategoryAttribute>());
+                AddKeylessEntities(entities.OfType<TransactionAttribute>());
 
-            AddKeylessEntities(entities.OfType<CCardClosingDate>());
-            AddKeylessEntities(entities.OfType<CategoryAttribute>());
-            AddKeylessEntities(entities.OfType<TransactionAttribute>());
+                IsLoading = false;
 
-            IsLoading = false;
+                DbManual.ResetAllManuals();
+                await DbManual.SetupAsync(db);
 
-            DbManual.ResetAllManuals();
-            await DbManual.SetupAsync(db);
-
-            await NavigateToType(typeof(BlotterModel));
+                await NavigateToType(typeof(BlotterModel));
+            }
+            catch (Exception ex)
+            {
+                IsLoading = false;
+                Logger.Error(ex);
+                throw;
+            }
         }
 
         public async Task SaveBackup(string backupPath)

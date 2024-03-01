@@ -119,57 +119,57 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="_010_v_all_transactions_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\010[v_all_transactions].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\010[v_all_transactions].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_015_v_blotter_for_account_with_splits_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\015[v_blotter_for_account_with_splits].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\015[v_blotter_for_account_with_splits].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_020_v_blotter_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\020[v_blotter].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\020[v_blotter].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_021_v_blotter_for_account_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\021[v_blotter_for_account].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\021[v_blotter_for_account].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_022_v_blotter_flatsplits_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\022[v_blotter_flatsplits].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\022[v_blotter_flatsplits].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_030_v_category_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\030[v_category].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\030[v_category].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_035_v_category_list_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\035[v_category_list].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\035[v_category_list].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_050_v_attributes_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\050[v_attributes].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\050[v_attributes].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_060_v_report_category_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\060[v_report_category].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\060[v_report_category].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_060_v_report_sub_category_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\060[v_report_sub_category].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\060[v_report_sub_category].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_061_v_report_period_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\061[v_report_period].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\061[v_report_period].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_062_v_report_location_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\062[v_report_location].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\062[v_report_location].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_063_v_report_project_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\063[v_report_project].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\063[v_report_project].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_064_v_report_payee_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\064[v_report_payee].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\064[v_report_payee].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_080_v_transaction_attributes_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\080[v_transaction_attributes].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\080[v_transaction_attributes].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_081_v_currency_exchange_rate_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\081[v_currency_exchange_rate].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\081[v_currency_exchange_rate].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_083_v_account_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\083[v_account].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\083[v_account].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_084_v_report_transactions_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\084[v_report_transactions].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+    <value>view\084[v_report_transactions].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
 </root>

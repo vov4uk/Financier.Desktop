@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <DebugType>full</DebugType>
   </PropertyGroup>
 
@@ -72,7 +72,6 @@
     <EmbeddedResource Include="DataBase\Scripts\alter\20180117_1235_add_title_to_attributes.sql" />
     <EmbeddedResource Include="DataBase\Scripts\alter\20180301_0101_added_order_column_to_smstemplates.sql" />
     <EmbeddedResource Include="DataBase\Scripts\alter\20180301_0202_add_sort_order_to_all_entities.sql" />
-    <EmbeddedResource Include="DataBase\Scripts\alter\20190209_alter_entities_add_is_active.sql" />
     <EmbeddedResource Include="DataBase\Scripts\alter\20220901_1220_add_lastaccounttransactionid.sql" />    
     <EmbeddedResource Include="DataBase\Scripts\create\account.sql" />
     <EmbeddedResource Include="DataBase\Scripts\create\attributes.sql" />
@@ -103,9 +102,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="5.1.3" />
+    <PackageReference Include="NLog" Version="5.2.8" />
   </ItemGroup>
 
   <ItemGroup>

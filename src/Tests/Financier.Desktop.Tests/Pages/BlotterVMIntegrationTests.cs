@@ -133,7 +133,9 @@ namespace Financier.Desktop.Tests.Pages
 
             var result = await GetResults();
 
-            Assert.Equal(balanceJson, JsonConvert.SerializeObject(result.Balances));
+            string str1 = JsonConvert.SerializeObject(result.Balances);
+
+            Assert.Equal(balanceJson, str1);
             Assert.Equal(fromAmount, result.Transactions[1].FromAmount);
             Assert.Equal(toAmount, result.Transactions[1].ToAmount);
         }
@@ -307,17 +309,17 @@ namespace Financier.Desktop.Tests.Pages
 "{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":28000}]";
 
         private const string DuplicateTransferHomeCurrencyRunningBalancesJson = "[" +
-"{\"TransactionId\":2,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-56000}," +
 "{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-28000}," +
-"{\"TransactionId\":2,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":56000}," +
-"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":28000}" +
+"{\"TransactionId\":2,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-56000}," +
+"{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":28000}," +
+"{\"TransactionId\":2,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":56000}" +
 "]";
 
         private const string DuplicateTransferDiffCurrencyRunningBalancesJson = "[" +
-"{\"TransactionId\":2,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-56000}," +
 "{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-28000}," +
-"{\"TransactionId\":2,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":2000}," +
-"{\"TransactionId\":1,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":1000}" +
+"{\"TransactionId\":2,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-56000}," +
+"{\"TransactionId\":1,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":1000}," +
+"{\"TransactionId\":2,\"AccountId\":3,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":2000}" +
 "]";
 
         private const string DuplicateTransactionHomeCurrencyRunningBalancesJson = "[" +

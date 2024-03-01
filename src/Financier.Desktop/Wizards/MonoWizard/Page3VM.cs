@@ -17,7 +17,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         List<AccountFilterModel> accounts;
         private AccountFilterModel _monoAccount;
         private ObservableCollection<FinancierTransactionDto> financierTransactions;
-        private static readonly Regex CardNumberRegex = new Regex(@"(\*\*\*\*)([0-9]{4})", RegexOptions.None, TimeSpan.FromMilliseconds(1000));
+        private static readonly Regex CardNumberRegex = new Regex(@"(\*)([0-9]{4})", RegexOptions.None, TimeSpan.FromMilliseconds(1000));
 
         public Page3VM()
         {
@@ -171,10 +171,13 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
         private static bool TryParseAccount(string desc, out int accountId)
         {
-            if (CardNumberRegex.IsMatch(desc))
+            var res = CardNumberRegex.Match(desc);
+
+            if (res.Success && res.Groups.Count > 2)
             {
+                string cardNumber = res.Groups[2].Value;
                 var acc = DbManual.Account
-                    .FirstOrDefault(y => !string.IsNullOrWhiteSpace(y.Number) && desc.EndsWith(y.Number));
+                    .Find(y => !string.IsNullOrWhiteSpace(y.Number) && string.Equals(y.Number, cardNumber, StringComparison.InvariantCultureIgnoreCase));
 
                 if (acc != null)
                 {

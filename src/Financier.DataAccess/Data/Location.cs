@@ -7,8 +7,6 @@ namespace Financier.DataAccess.Data
     [Table(Backup.LOCATIONS_TABLE)]
     public class Location : Tag
     {
-        [Column("name")]
-        public string Name { get; set; }
 
         [Column("datetime")]
         public long Date { get; set; }
@@ -25,14 +23,14 @@ namespace Financier.DataAccess.Data
         [Column("longitude")]
         public string Longitude { get; set; }
 
-        [Column("is_payee")]
-        public bool IsPayee { get; set; }
-
         [Column("resolved_address")]
         public string Address { get; set; }
 
         [Column("count")]
         public int Count { get; set; }
+        
+        [Column("sort_order")]
+        public int SortOrder { get; set; }
 
     }
 }
