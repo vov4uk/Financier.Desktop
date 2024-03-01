@@ -157,9 +157,6 @@ namespace Financier.Desktop.ViewModel
                 _entityColumnsOrder = columnsOrder;
 
                 db?.Dispose();
-
-                var locations = entities.OfType<Location>();
-
                 db = dbFactory.CreateDatabase();
                 await db.ImportEntitiesAsync(entities);
 

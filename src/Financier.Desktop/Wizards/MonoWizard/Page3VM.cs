@@ -177,7 +177,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             {
                 string cardNumber = res.Groups[2].Value;
                 var acc = DbManual.Account
-                    .FirstOrDefault(y => !string.IsNullOrWhiteSpace(y.Number) && string.Equals(y.Number, cardNumber, StringComparison.InvariantCultureIgnoreCase));
+                    .Find(y => !string.IsNullOrWhiteSpace(y.Number) && string.Equals(y.Number, cardNumber, StringComparison.InvariantCultureIgnoreCase));
 
                 if (acc != null)
                 {
