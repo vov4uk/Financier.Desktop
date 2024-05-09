@@ -13,6 +13,7 @@ namespace Financier.Desktop.Helpers
                 case WizardTypes.Monobank : return new MonobankHelper();
                 case WizardTypes.ABank: return new ABankHelper();
                 case WizardTypes.Pumb: return new PumbHelper();
+                case WizardTypes.Pireus: return new PireusHelper();
                 default:
                     throw new NotSupportedException("Bank not found");
             }

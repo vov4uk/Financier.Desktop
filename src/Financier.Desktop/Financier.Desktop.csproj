@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\pireus.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -87,6 +91,7 @@
     <Resource Include="Images\menu_entities_payees.png" />
     <Resource Include="Images\menu_entities_projects.png" />
     <Resource Include="Images\monobank.png" />
+    <Resource Include="Images\pireus.png" />
     <Resource Include="Images\pumb.png" />
     <Resource Include="Images\save_as_db.png" />
     <Resource Include="Images\folder.png" />
