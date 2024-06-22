@@ -41,9 +41,9 @@ namespace Financier.Desktop.Helpers
                 }
 
                 var operationCurrency = "UAH";
-                var operationAmount = GetDouble(item.OperationAmount.Replace("UAH", string.Empty).Trim());
-                var cardCurrenyAmount = GetDouble(item.CardCurrenyAmount.Replace("UAH", string.Empty).Trim());
-                var commisionAmount = GetDouble(item.CommisionAmount.Replace("UAH", string.Empty).Trim());
+                var operationAmount = GetDouble(RemoveCurrencyCode(item.OperationAmount));
+                var cardCurrenyAmount = GetDouble(RemoveCurrencyCode(item.CardCurrenyAmount));
+                var commisionAmount = GetDouble(RemoveCurrencyCode(item.CommisionAmount));
 
                 var tr = new BankTransaction
                 {
@@ -59,6 +59,12 @@ namespace Financier.Desktop.Helpers
             }
 
             return transactions;
+        }
+
+
+        private static string RemoveCurrencyCode(string amount)
+        {
+            return amount.Replace("UAH", string.Empty).Replace("USD", string.Empty).Replace("EUR", string.Empty).Trim();
         }
     }
 

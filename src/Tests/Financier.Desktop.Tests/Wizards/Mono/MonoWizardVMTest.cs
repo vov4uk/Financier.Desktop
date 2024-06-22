@@ -228,7 +228,6 @@
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
         }
 
-
         [Fact]
         public void LoadTransactions_PumbMultiPage_ExpectedTransactions()
         {
