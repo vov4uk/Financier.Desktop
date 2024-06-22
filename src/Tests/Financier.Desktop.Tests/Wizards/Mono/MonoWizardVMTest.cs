@@ -122,6 +122,80 @@
         }
 
         [Fact]
+        public void LoadTransactions_AbankMultiPages_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2024, 4, 30, 19, 41, 0),
+                Description = "Монобанк",
+                Balance = 2072.28,
+                MCC = "6010",
+                Commission = 0.0,
+                CardCurrencyAmount = 2000.0,
+                OperationAmount = 2000.0,
+                Cashback = 0.0,
+                ExchangeRate = 0.0
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2024, 4, 4, 9, 51, 0),
+                Description = "Монобанк",
+                Balance = 3166.91,
+                Commission = 0.0,
+                MCC = "6010",
+                CardCurrencyAmount = 2000.0,
+                OperationAmount = 2000.0,
+                Cashback = 0.0,
+                ExchangeRate = 0.0
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank_3_pages.pdf");
+            IEnumerable<BankTransaction> abank = new Helpers.ABankHelper().ParseReport(path);
+
+            Assert.Equal(17, abank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
+        }
+
+        [Fact]
+        public void LoadTransactions_Pireus_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2024, 5, 27, 15, 13, 41),
+                Description = "Оплата покупки (magazyn Rodynna kovbaska(P0043515) m.Lviv UA)",
+                Balance = 132.63,
+                MCC = null,
+                Commission = 0.0,
+                CardCurrencyAmount = -209.68,
+                OperationAmount = -209.68,
+                Cashback = null,
+                ExchangeRate = null
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2024, 4, 18, 9, 49, 2),
+                Description = "Оплата покупки (magazyn Rodynna kovbaska(P0043515) m.Lviv UA)",
+                Balance = 0.0,
+                Commission = 0.0,
+                MCC = null,
+                CardCurrencyAmount = -22.9,
+                OperationAmount = -22.9,
+                Cashback = null,
+                ExchangeRate = null
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pireus.pdf");
+            IEnumerable<BankTransaction> pireus = new Helpers.PireusHelper().ParseReport(path);
+
+            Assert.Equal(111, pireus.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(pireus.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(pireus.Last()));
+        }
+
+        [Fact]
         public void LoadTransactions_Pumb_ExpectedTransactions()
         {
             var first = new BankTransaction
@@ -150,6 +224,39 @@
             IEnumerable<BankTransaction> bank = new Helpers.PumbHelper().ParseReport(path);
 
             Assert.Equal(25, bank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
+        }
+
+        [Fact]
+        public void LoadTransactions_PumbMultiPage_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2024, 04, 23, 8, 59, 44),
+                Description = "FOP Kolomits Oksana Pe LVOV           UA Покупка",
+                CardCurrencyAmount = -700.0,
+                OperationAmount = -700.0,
+                OperationCurrency = "UAH",
+                Commission = 0.0,
+                Balance = 0.0,
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2024, 4, 1, 12, 25, 47),
+                Description = "CARD*0544 Списання",
+                CardCurrencyAmount = -3750.0,
+                OperationAmount = -3750.0,
+                OperationCurrency = "UAH",
+                Commission = 0.0,
+                Balance = 0.0
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb_2_pages.pdf");
+            IEnumerable<BankTransaction> bank = new Helpers.PumbHelper().ParseReport(path);
+
+            Assert.Equal(37, bank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
         }

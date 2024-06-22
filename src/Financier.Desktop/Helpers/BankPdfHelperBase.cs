@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using CsvHelper;
-using Docnet.Core.Models;
-using Docnet.Core;
 using Financier.Desktop.Wizards;
+using CsvHelper.Configuration;
+using Tabula;
+using UglyToad.PdfPig;
+using Tabula.Extractors;
 
 namespace Financier.Desktop.Helpers
 {
     public abstract class BankPdfHelperBase : IBankHelper
     {
         protected const string Space = " ";
+
+        protected readonly CsvConfiguration DefaultCsvReaderConfig = new CsvConfiguration(CultureInfo.CurrentCulture)
+        {
+            HasHeaderRecord = true,
+            Delimiter = ";",
+            IgnoreBlankLines = true,
+            MissingFieldFound = null
+        };
+
 
         public abstract string BankTitle { get; }
 
@@ -24,13 +32,51 @@ namespace Financier.Desktop.Helpers
             if (File.Exists(filePath))
             {
                 List<string> pages = new List<string>();
-                using (var docReader = DocLib.Instance.GetDocReader(filePath, new PageDimensions()))
+
+                using (PdfDocument document = PdfDocument.Open(filePath, new ParsingOptions() { ClipPaths = true }))
                 {
-                    for (var i = 0; i < docReader.GetPageCount(); i++)
+                    ObjectExtractor oe = new ObjectExtractor(document);
+                    for (int i = 0; i < document.NumberOfPages; i++)
                     {
-                        using (var pageReader = docReader.GetPageReader(i))
+                        PageArea page = oe.Extract(i + 1);
+
+                        IExtractionAlgorithm ea = new SpreadsheetExtractionAlgorithm();
+
+                        var pageTables = ea.Extract(page);
+                        if (!pageTables.Any())
                         {
-                            pages.Add(pageReader.GetText());
+                            continue;
+                        }
+
+                        Table table = pageTables.OrderBy(x => x.Cells.Count).Last();
+
+                        using (var stream = new MemoryStream())
+                        using (var sb = new StreamWriter(stream) { AutoFlush = true })
+                        {
+                            CsvWriter csvWriter = new CsvWriter(sb, DefaultCsvReaderConfig);
+
+                            foreach (IReadOnlyList<Cell> row in table.Rows)
+                            {
+
+                                var allEmpty = row.All(x => string.IsNullOrEmpty(x.GetText()));
+                                if (!allEmpty)
+                                {
+                                    foreach (Cell item in row)
+                                    {
+                                        csvWriter.WriteField(item.GetText().Replace("\r", " "));
+                                    }
+
+                                    csvWriter.NextRecord();
+                                }
+                            }
+
+                            var reader = new StreamReader(stream);
+                            stream.Position = 0;
+
+
+                            var data = reader.ReadToEnd().Trim();
+
+                            pages.Add(data);
                         }
                     }
                 }

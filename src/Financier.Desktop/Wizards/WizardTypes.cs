@@ -14,6 +14,8 @@ namespace Financier.Desktop.Wizards
         [Description("pdf")]
         ABank,
         [Description("pdf")]
-        Pumb
+        Pumb,
+        [Description("pdf")]
+        Pireus
     }
 }

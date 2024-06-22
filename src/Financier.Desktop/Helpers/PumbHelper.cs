@@ -1,93 +1,106 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration.Attributes;
 using Financier.Desktop.Wizards;
+using Newtonsoft.Json;
 
 namespace Financier.Desktop.Helpers
 {
     public class PumbHelper : BankPdfHelperBase
     {
-        private const string DateTimeRegexPattern = @"(\d{4}-\d{2}-\d{2}\r\n\d{2}:\d{2}:\d{2})";
-        private const string DateRegexPattern = @"(\s\d{4}-\d{2}-\d{2})";
-        private const string CardNumberPattern = @"(\d{8}\*{4}\d{4})";
-        private const string AmountPattern = @"([0-9]+\.[0-9]+) (UAH|USD|EUR)";
-        private const string ReportDatePattern = "(Дата формування)";
         public override string BankTitle => "ПУМБ";
-
-        private static Regex lineStartRegex = new Regex(DateTimeRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private static Regex pageEndRegex = new Regex(ReportDatePattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private static Regex CardNumberRegex = new Regex(CardNumberPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private static Regex DateRegex = new Regex(DateRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private static Regex AmountRegex = new Regex(AmountPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
 
         protected override IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages)
         {
             string pageText = string.Join(Environment.NewLine, pages);
-            var matches = lineStartRegex.Matches(pageText);
 
-            List<BankTransaction> transactions= new List<BankTransaction>();
-            if (matches.Any())
+
+            List<Pumb_Row> converted = new List<Pumb_Row>();
+
+
+            using (var csv = new CsvReader(new StringReader(pageText), DefaultCsvReaderConfig))
             {
-                int currentPosition = matches.First().Index;
-                foreach (var match in matches.Skip(1).Select(x =>x.Index))
-                {
-                    var line = pageText.Substring(currentPosition, match - currentPosition);
-                    currentPosition = match;
+                var records = csv.GetRecords<Pumb_Row>();
 
-                    transactions.Add(ParseLine(line));
+                var batch = records.Take(1000).ToList();
+                converted.AddRange(batch);
+            }
+
+
+            var transactions = new List<BankTransaction>();
+
+            foreach (var item in converted.Where(x => !string.IsNullOrWhiteSpace(x.OperationAmount)))
+            {
+                string sign = string.Empty;
+                if (!string.Equals(item.TransactionType, "Надходження", StringComparison.OrdinalIgnoreCase))
+                {
+                    sign = "-";
                 }
-                var end = pageEndRegex.Match(pageText);
-                transactions.Add(ParseLine(pageText.Substring(currentPosition, end.Index - currentPosition).Trim()));
+
+                var operationCurrency = "UAH";
+                var operationAmount = GetDouble(RemoveCurrencyCode(item.OperationAmount));
+                var cardCurrenyAmount = GetDouble(RemoveCurrencyCode(item.CardCurrenyAmount));
+                var commisionAmount = GetDouble(RemoveCurrencyCode(item.CommisionAmount));
+
+                var tr = new BankTransaction
+                {
+                    Commission = commisionAmount,
+                    OperationCurrency = operationCurrency,
+                    OperationAmount = GetDouble($"{sign}{operationAmount}"),
+                    CardCurrencyAmount = GetDouble($"{sign}{cardCurrenyAmount}"),
+
+                    Description = $"{item.Details} {item.TransactionType}",
+                    Date = item.Date
+                };
+                transactions.Add(tr);
             }
 
             return transactions;
         }
-        private static string RemoveCardNumber(string line)
+
+
+        private static string RemoveCurrencyCode(string amount)
         {
-            return CardNumberRegex.Replace(line, string.Empty);
+            return amount.Replace("UAH", string.Empty).Replace("USD", string.Empty).Replace("EUR", string.Empty).Trim();
+        }
+    }
+
+    public class Pumb_Row
+    {
+        [Name("Дата та час операції")]
+        public DateTime Date { get; set; }
+
+        [Name("Сума операції")]
+        public string OperationAmount { get; set; }
+
+
+        [Name("Дата виконання (Дата постінгу)")]
+        public string ProcessingDate { get; set; }
+
+        [Name("Сума у валюті рахунку")]
+        public string CardCurrenyAmount { get; set; }
+
+
+        [Name("Сума комісій")]
+        public string CommisionAmount { get; set; }
+
+
+        [Name("Номер картки")]
+        public string CardNumber { get; set; }
+
+        [Name("Деталі операції")]
+        public string Details { get; set; }
+
+        [Name("Опис операції")]
+        public string TransactionType { get; set; }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
 
-        private static string RemovePostingDate(string line)
-        {
-            return DateRegex.Replace(line, string.Empty);
-        }
-
-
-        private static BankTransaction ParseLine(string line)
-        {
-            line = RemoveCardNumber(line);
-            line = RemovePostingDate(line);
-
-            var dateTime = Regex.Match(line, DateTimeRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30)).Value;
-            line = line.Replace(dateTime, string.Empty).Replace(Environment.NewLine, Space);
-
-            var amounts = Regex.Matches(line, AmountPattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30));
-            var operationAmount = amounts[0].Groups[1].Value;
-            var operationCurrency = amounts[0].Groups[2].Value;
-
-            var amountInUah = amounts[1].Groups[1].Value;
-            var commision = amounts.Last();
-            var commissionInUah = commision.Groups[1].Value;
-            string sign = string.Empty;
-            if (!line.Contains("Надходження", StringComparison.OrdinalIgnoreCase))
-            {
-                sign = "-";
-            }
-
-            var tr = new BankTransaction
-            {
-                Commission = GetDouble(commissionInUah),
-                OperationCurrency = operationCurrency,
-                OperationAmount = GetDouble($"{sign}{operationAmount}"),
-                CardCurrencyAmount = GetDouble($"{sign}{amountInUah}"),
-
-                Description = AmountRegex.Replace(line, string.Empty).Trim(),
-                Date = Convert.ToDateTime(dateTime.Replace(Environment.NewLine, Space))
-            };
-            return tr;
-        }
     }
 }

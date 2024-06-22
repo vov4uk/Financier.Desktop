@@ -220,6 +220,10 @@
                                   Label="PUMB PDF"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pumb}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/pireus.png"
+                                  Label="Pireus PDF"
+                                  Command="{Binding Path=ImportCommand}"
+                                  CommandParameter="{x:Static Wizard:WizardTypes.Pireus}" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Transaction"

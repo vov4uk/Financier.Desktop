@@ -9,85 +9,81 @@ using System.Linq;
 
 namespace Financier.Desktop.Helpers
 {
-    public class ABankHelper : BankPdfHelperBase
+    public class PireusHelper : BankPdfHelperBase
     {
-        public override string BankTitle => "A-Bank";
+        public override string BankTitle => "Pireus";
 
         protected override IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages)
         {
-            List<Abank_Row> converted = new List<Abank_Row>();
+            var transactions = new List<BankTransaction>();
+
+
+            List<Pireus_Row> converted = new List<Pireus_Row>();
 
             foreach (var page in pages)
             {
                 using (var csv = new CsvReader(new StringReader(page), DefaultCsvReaderConfig))
                 {
-                    var records = csv.GetRecords<Abank_Row>();
+                    var records = csv.GetRecords<Pireus_Row>();
 
                     var batch = records.Take(1000).ToList();
                     converted.AddRange(batch);
                 }
             }
 
-            var transactions = new List<BankTransaction>();
 
             foreach (var item in converted)
             {
-
                 var operationCurrency = item.OperationCurrency;
-                var operationAmount = GetDouble(item.OperationAmount.Replace(Space, string.Empty));
-                var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount.Replace(Space, string.Empty));
+                var operationAmount = GetDouble(item.OperationAmount);
+                var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
 
                 var bt = new BankTransaction
                 {
-                    Balance = GetDouble(item.Balance.Replace(Space, string.Empty)),
-                    Cashback = GetDouble(item.Cashback.Replace(Space, string.Empty)),
-                    Commission = GetDouble(item.Commision.Replace(Space, string.Empty)),
-                    ExchangeRate = GetDouble(item.ExchangeRate.Replace(Space, string.Empty)),
+                    Balance = GetDouble(item.Balance),
+
+                    Commission = GetDouble(item.Commision),
                     OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
                     OperationAmount = operationAmount,
                     CardCurrencyAmount = cardCurrencyAmount,
-                    MCC = item.MCC,
                     Description = item.Details,
                     Date = item.Date
                 };
+
                 transactions.Add(bt);
             }
 
-            return transactions;
+            return transactions.OrderByDescending(x => x.Date);
         }
-
     }
 
-    public class Abank_Row
+    public class Pireus_Row
     {
-        [Name("Дата і час операції")]
+        [Name("Дата та час транзакції")]
         public DateTime Date { get; set; }
 
-        [Name("Сума у валюті операції")]
+        [Name("Сума транзакції")]
         public string OperationAmount { get; set; }
 
-        [Name("Валюта")]
+        [Name("Валюта транзакції")]
         public string OperationCurrency { get; set; }
 
-        [Name("Курс")]
-        public string ExchangeRate { get; set; }
+        [Name("Дата виконання операції")]
+        public string ProcessingDate { get; set; }
 
-        [Name("Сума комісій (UAH)")]
-        public string Commision { get; set; }
-
-        [Name("Сума кешбеку (UAH)")]
-        public string Cashback { get; set; }
-
-        [Name("Сума у валюті карти (UAH)")]
+        [Name("Сума операції у валюті рахунку з урахуванням комісії")]
         public string CardCurrencyAmount { get; set; }
 
-        [Name("МСС")]
-        public string MCC { get; set; }
+        [Name("Комісія")]
+        public string Commision { get; set; }
+
+        [Name("Номер карти / номер рахунку")]
+        public string CardNumber { get; set; }
 
         [Name("Деталі операції")]
         public string Details { get; set; }
 
-        [Name("Залишок після операціЇ")]
+        [Name("Баланс")]
         public string Balance { get; set; }
 
         public override string ToString()
