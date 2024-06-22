@@ -1,112 +1,98 @@
 ﻿using CsvHelper;
-using Docnet.Core;
-using Docnet.Core.Models;
+using CsvHelper.Configuration.Attributes;
 using Financier.Desktop.Wizards;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Financier.Desktop.Helpers
 {
     public class ABankHelper : BankPdfHelperBase
     {
-        private const int WordsCountAfterDescription = 8;
-
-        private const string DateRegexPattern = @"[0-3][0-9]\.[0-1][0-9]\.[0-9]{4}\r\n[0-2][0-9]:[0-5][0-9]";
-        private const string DoubleRegexPattern = @"[+-]?\d*\.?\d+";
-        private const string CardNumberRegex = @"\d{4}(\*{4})\d{4}";
-        private const string NumbersWithSpacingRegex = @"([-|\s])\d{1,3}\s\d{0,3}\,\d{0,2}";
-
-        private readonly Regex dateRegex = new Regex(DateRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-        private readonly Regex numberRegex = new Regex(DoubleRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1000));
-
         public override string BankTitle => "A-Bank";
 
         protected override IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages)
         {
-            var transactions = new List<BankTransaction>();
+            List<Abank_Row> converted = new List<Abank_Row>();
+
             foreach (var page in pages)
             {
-                var dates = this.dateRegex.Matches(page);
-                if (dates?.Any() == true)
+                using (var csv = new CsvReader(new StringReader(page), DefaultCsvReaderConfig))
                 {
-                    List<int> tableLines = dates
-                        .Select(x => x.Index)
-                        .ToList();
+                    var records = csv.GetRecords<Abank_Row>();
 
-                    for (int j = 1; j < dates.Count; j++)
-                    {
-                        int line = tableLines[j];
-                        int prevLine = tableLines[j - 1];
-                        string lineText = page.Substring(prevLine, line - prevLine);
-
-                        transactions.Add(ParseLine(lineText));
-                    }
-
-                    var lastLineStartIndex = tableLines.Last();
-                    var lastLine = page.Substring(lastLineStartIndex);
-                    var lastLineEndIndex = this.numberRegex.Matches(lastLine).LastOrDefault();
-                    if (lastLineEndIndex != null)
-                    {
-                        lastLine = lastLine.Substring(0, lastLineEndIndex.Index + lastLineEndIndex.Length);
-                        transactions.Add(ParseLine(lastLine));
-                    }
+                    var batch = records.Take(1000).ToList();
+                    converted.AddRange(batch);
                 }
             }
+
+            var transactions = new List<BankTransaction>();
+
+            foreach (var item in converted)
+            {
+
+                var operationCurrency = item.OperationCurrency;
+                var operationAmount = GetDouble(item.OperationAmount.Replace(Space, string.Empty));
+                var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount.Replace(Space, string.Empty));
+
+                var bt = new BankTransaction
+                {
+                    Balance = GetDouble(item.Balance.Replace(Space, string.Empty)),
+                    Cashback = GetDouble(item.Cashback.Replace(Space, string.Empty)),
+                    Commission = GetDouble(item.Commision.Replace(Space, string.Empty)),
+                    ExchangeRate = GetDouble(item.ExchangeRate.Replace(Space, string.Empty)),
+                    OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
+                    OperationAmount = operationAmount,
+                    CardCurrencyAmount = cardCurrencyAmount,
+                    MCC = item.MCC,
+                    Description = item.Details,
+                    Date = item.Date
+                };
+                transactions.Add(bt);
+            }
+
             return transactions;
         }
 
-        private static BankTransaction ParseLine(string line)
+    }
+
+    public class Abank_Row
+    {
+        [Name("Дата і час операції")]
+        public DateTime Date { get; set; }
+
+        [Name("Сума у валюті операції")]
+        public string OperationAmount { get; set; }
+
+        [Name("Валюта")]
+        public string OperationCurrency { get; set; }
+
+        [Name("Курс")]
+        public string ExchangeRate { get; set; }
+
+        [Name("Сума комісій (UAH)")]
+        public string Commision { get; set; }
+
+        [Name("Сума кешбеку (UAH)")]
+        public string Cashback { get; set; }
+
+        [Name("Сума у валюті карти (UAH)")]
+        public string CardCurrencyAmount { get; set; }
+
+        [Name("МСС")]
+        public string MCC { get; set; }
+
+        [Name("Деталі операції")]
+        public string Details { get; set; }
+
+        [Name("Залишок після операціЇ")]
+        public string Balance { get; set; }
+
+        public override string ToString()
         {
-            var date = Regex.Match(line, DateRegexPattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30)).Value;
-            line = line.Replace(date, string.Empty);
-            var cardNumber = Regex.Match(line, CardNumberRegex, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30));
-            if (cardNumber.Success)
-            {
-                line = line.Replace(cardNumber.Value, string.Empty);
-            }
-            var numbersWithSpaces = Regex.Matches(line, NumbersWithSpacingRegex, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(30));
-            foreach (var number in numbersWithSpaces.Select(x =>x.Value))
-            {
-                var numberWithoutSpaces = " " + number.Replace(" ", string.Empty);
-                line = line.Replace(number, numberWithoutSpaces);
-            }
-
-            var words = line
-                .Trim()
-                .Split(Space)
-                .Where(x => !string.IsNullOrWhiteSpace(x))
-                .ToArray();
-
-            var wordsCount = words.Length;
-            var description = new List<string>();
-            for (int i = 0; i < words.Length - WordsCountAfterDescription; i++)
-            {
-                description.Add(words[i]);
-            }
-
-            var operationCurrency = words[wordsCount - 5];
-            var operationAmount = GetDouble(words[wordsCount - 6]);
-            var cardCurrencyAmount = GetDouble(words[wordsCount - 7]);
-
-            return new BankTransaction
-            {
-                Balance = GetDouble(words[wordsCount - 1]),
-                Cashback = GetDouble(words[wordsCount - 2]),
-                Commission = GetDouble(words[wordsCount - 3]),
-                ExchangeRate = GetDouble(words[wordsCount - 4] == "-" ? "0" : words[wordsCount - 4]),
-                OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
-                OperationAmount = operationAmount,
-                CardCurrencyAmount = cardCurrencyAmount,
-                MCC = words[wordsCount - 8],
-                Description = string.Join(Space, description),
-                Date = DateTime.ParseExact(date.Replace("\r\n", Space), "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture)
-            };
+            return JsonConvert.SerializeObject(this);
         }
     }
 }
