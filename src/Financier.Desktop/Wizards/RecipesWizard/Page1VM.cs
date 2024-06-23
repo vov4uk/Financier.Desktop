@@ -105,6 +105,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             }
             return false;
         }
+
         private static bool TryParseCategory(string[] desc, out int categoryId)
         {
             var category = DbManual.Category
@@ -131,6 +132,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
                 var arr = note.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                               .Where(x => x.Length > 2)
+                              .Select(x => x.Trim('-').Trim().ToLowerInvariant())
                               .ToArray();
 
                 TryParseCategory(arr, out categoryId);

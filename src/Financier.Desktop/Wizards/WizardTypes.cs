@@ -13,6 +13,8 @@ namespace Financier.Desktop.Wizards
         Monobank,
         [Description("pdf")]
         ABank,
+        [Description("xlsx")]
+        ABankExcel,
         [Description("pdf")]
         Pumb,
         [Description("pdf")]

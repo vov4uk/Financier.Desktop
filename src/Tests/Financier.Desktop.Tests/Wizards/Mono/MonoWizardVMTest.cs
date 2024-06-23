@@ -159,6 +159,43 @@
         }
 
         [Fact]
+        public void LoadTransactions_AbankExcel_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2024, 4, 30, 19, 41, 0),
+                Description = "Монобанк",
+                Balance = 2072.28,
+                MCC = "6010",
+                Commission = 0.0,
+                CardCurrencyAmount = 2000.0,
+                OperationAmount = 2000.0,
+                Cashback = 0.0,
+                ExchangeRate = 0.0
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2024, 4, 4, 9, 51, 0),
+                Description = "Монобанк",
+                Balance = 3166.91,
+                Commission = 0.0,
+                MCC = "6010",
+                CardCurrencyAmount = 2000.0,
+                OperationAmount = 2000.0,
+                Cashback = 0.0,
+                ExchangeRate = 0.0
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.xlsx");
+            IEnumerable<BankTransaction> abank = new Helpers.AbankExcelHelper().ParseReport(path);
+
+            Assert.Equal(17, abank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
+        }
+
+        [Fact]
         public void LoadTransactions_Pireus_ExpectedTransactions()
         {
             var first = new BankTransaction

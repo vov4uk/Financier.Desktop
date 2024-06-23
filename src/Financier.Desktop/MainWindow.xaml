@@ -212,10 +212,19 @@
                                   Label="Monobank CSV"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Monobank}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/abank.png"
-                                  Label="A-Bank PDF"
-                                  Command="{Binding Path=ImportCommand}"
-                                  CommandParameter="{x:Static Wizard:WizardTypes.ABank}" />
+                    <RibbonMenuButton  Label="A-Bank"
+                                       LargeImageSource="pack://application:,,,/Images/abank.png" >
+
+                        <RibbonMenuItem  Header="PDF"
+                                         Foreground="Red"
+                                         Command="{Binding Path=ImportCommand}"
+                                         CommandParameter="{x:Static Wizard:WizardTypes.ABank}" />
+                        <RibbonMenuItem  Header="Excel"
+                                         Foreground="Green"
+                                         Command="{Binding Path=ImportCommand}"
+                                         CommandParameter="{x:Static Wizard:WizardTypes.ABankExcel}" />
+                    </RibbonMenuButton>
+
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/pumb.png"
                                   Label="PUMB PDF"
                                   Command="{Binding Path=ImportCommand}"

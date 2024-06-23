@@ -12,6 +12,7 @@ namespace Financier.Desktop.Helpers
             {
                 case WizardTypes.Monobank : return new MonobankHelper();
                 case WizardTypes.ABank: return new ABankHelper();
+                case WizardTypes.ABankExcel: return new AbankExcelHelper();
                 case WizardTypes.Pumb: return new PumbHelper();
                 case WizardTypes.Pireus: return new PireusHelper();
                 default:
