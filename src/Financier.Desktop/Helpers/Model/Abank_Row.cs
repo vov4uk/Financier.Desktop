@@ -7,34 +7,34 @@ namespace Financier.Desktop.Helpers.Model
 {
     public class Abank_Row
     {
-        [Name("Дата і час операції")]
-        public DateTime Date { get; set; }
+        [Index(0)]
+        public string Date { get; set; }
 
-        [Name("Сума у валюті операції")]
-        public string OperationAmount { get; set; }
-
-        [Name("Валюта")]
-        public string OperationCurrency { get; set; }
-
-        [Name("Курс")]
-        public string ExchangeRate { get; set; }
-
-        [Name("Сума комісій (UAH)")]
-        public string Commision { get; set; }
-
-        [Name("Сума кешбеку (UAH)")]
-        public string Cashback { get; set; }
-
-        [Name("Сума у валюті карти (UAH)")]
-        public string CardCurrencyAmount { get; set; }
-
-        [Name("МСС")]
-        public string MCC { get; set; }
-
-        [Name("Деталі операції")]
+        [Index(2)]
         public string Details { get; set; }
 
-        [Name("Залишок після операціЇ")]
+        [Index(3)]
+        public string MCC { get; set; }
+
+        [Index(4)]
+        public string CardCurrencyAmount { get; set; }
+
+        [Index(5)]
+        public string OperationAmount { get; set; }
+
+        [Index(6)]
+        public string OperationCurrency { get; set; }
+
+        [Index(7)]
+        public string ExchangeRate { get; set; }
+
+        [Index(8)]
+        public string Commision { get; set; }
+
+        [Index(9)]
+        public string Cashback { get; set; }
+
+        [Index(10)]
         public string Balance { get; set; }
 
         public override string ToString()

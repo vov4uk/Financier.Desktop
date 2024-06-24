@@ -6,31 +6,31 @@ namespace Financier.Desktop.Helpers.Model
 {
     public class Pumb_Row
     {
-        [Name("Дата та час операції")]
+        [Index(0)]
         public DateTime Date { get; set; }
 
-        [Name("Сума операції")]
+        [Index(1)]
         public string OperationAmount { get; set; }
 
 
-        [Name("Дата виконання (Дата постінгу)")]
+        [Index(2)]
         public string ProcessingDate { get; set; }
 
-        [Name("Сума у валюті рахунку")]
+        [Index(3)]
         public string CardCurrenyAmount { get; set; }
 
 
-        [Name("Сума комісій")]
+        [Index(4)]
         public string CommisionAmount { get; set; }
 
 
-        [Name("Номер картки")]
+        [Index(5)]
         public string CardNumber { get; set; }
 
-        [Name("Деталі операції")]
+        [Index(6)]
         public string Details { get; set; }
 
-        [Name("Опис операції")]
+        [Index(7)]
         public string TransactionType { get; set; }
 
         public override string ToString()

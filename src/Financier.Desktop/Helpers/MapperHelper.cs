@@ -2,11 +2,15 @@
 using Financier.DataAccess.Data;
 using Financier.Converters;
 using Financier.Desktop.Data;
+using Financier.Desktop.Wizards;
+using Financier.Desktop.Helpers.Model;
 
 namespace Financier.Desktop.Helpers
 {
     public static class MapperHelper
     {
+        public const string Space = " ";
+
         public static void MapTransfer(TransferDto dto, Transaction tr)
         {
             tr.FromAccountId = dto.FromAccountId;
@@ -54,6 +58,33 @@ namespace Financier.Desktop.Helpers
             tr.Note = dto.Note;
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.LastRecurrence = UnixTimeConverter.ConvertBack(DateTime.Now);
+        }
+
+
+        public static BankTransaction ToBankTransaction(Abank_Row item)
+        {
+            var operationCurrency = item.OperationCurrency;
+            var operationAmount = ToDouble(item.OperationAmount);
+            var cardCurrencyAmount = ToDouble(item.CardCurrencyAmount);
+
+            return new BankTransaction
+            {
+                Balance = ToDouble(item.Balance),
+                Cashback = ToDouble(item.Cashback),
+                Commission = ToDouble(item.Commision),
+                ExchangeRate = ToDouble(item.ExchangeRate),
+                OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
+                OperationAmount = operationAmount,
+                CardCurrencyAmount = cardCurrencyAmount,
+                MCC = item.MCC,
+                Description = item.Details,
+                Date = Convert.ToDateTime(item.Date)
+            };
+        }
+
+        private static double ToDouble(string val)
+        {
+            return BankPdfHelperBase.GetDouble(val.Replace(Space, string.Empty));
         }
     }
 }

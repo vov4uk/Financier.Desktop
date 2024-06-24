@@ -1,53 +1,48 @@
 ﻿
+using CsvHelper;
+using CsvHelper.Configuration;
+using Financier.Desktop.Helpers.Model;
 using Financier.Desktop.Wizards;
 using MiniExcelLibs;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using Tabula;
 
 namespace Financier.Desktop.Helpers
 {
     public class AbankExcelHelper : IBankHelper
     {
-        protected const string Space = " ";
         public string BankTitle => "A-Bank";
 
         public IEnumerable<BankTransaction> ParseReport(string filePath)
         {
-            var rows = MiniExcel.Query(filePath, useHeaderRow: true, excelType: ExcelType.XLSX, startCell: "A20").Cast<IDictionary<string, object>>().ToList();
+            List<Abank_Row> abankRows = new List<Abank_Row>();
+            var rows = MiniExcel.Query(filePath, useHeaderRow: true, excelType: ExcelType.XLSX, startCell: "A20");
 
-            var transactions = new List<BankTransaction>();
-
-            foreach (var item in rows.Where(x => x["Сума в валюті операції"] != null))
+            using (var csvStream = new MemoryStream())
             {
+                MiniExcel.SaveAs(csvStream, rows, printHeader: true, excelType: ExcelType.CSV);
 
-                var operationCurrency = Convert.ToString(item["Валюта"]);
-                var operationAmount = ToDouble(item["Сума в валюті операції"]);
-                var cardCurrencyAmount = ToDouble(item["Сума в валюті картки (UAH)"]);
-
-                var bt = new BankTransaction
+                using (var csvReader = new StreamReader(csvStream))
+                using (var csv = new CsvReader(csvReader, new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
-                    Balance = ToDouble(item["Залишок після операції"]),
-                    Cashback = ToDouble(item["Сума кешбеку (UAH)"]),
-                    Commission = ToDouble(item["Сума комісій (UAH)"]),
-                    ExchangeRate = ToDouble(item["Курс"]),
-                    OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
-                    OperationAmount = operationAmount,
-                    CardCurrencyAmount = cardCurrencyAmount,
-                    MCC = Convert.ToString(item["MCC"]),
-                    Description = Convert.ToString(item["Деталі операції"]),
-                    Date = Convert.ToDateTime(item["Дата i час операції"])
-                };
-                transactions.Add(bt);
+                    HasHeaderRecord = true,
+                    IgnoreBlankLines = true,
+                    ShouldSkipRecord = args => args.Row.Parser.Record.All(string.IsNullOrWhiteSpace),
+                    Delimiter = ","
+                }))
+                {
+                    csvStream.Position = 0;
+                    var r = csv.GetRecords<Abank_Row>().ToList();
+                    abankRows.AddRange(r);
+                }
             }
 
+            var transactions = abankRows.Select(MapperHelper.ToBankTransaction).ToList();
             return transactions;
-        }
-
-
-        private double ToDouble(object val)
-        {
-            return BankPdfHelperBase.GetDouble(Convert.ToString(val).Replace(Space, string.Empty));
         }
     }
 }

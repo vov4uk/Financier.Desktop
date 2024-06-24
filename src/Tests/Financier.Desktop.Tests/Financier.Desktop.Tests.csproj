@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Assets\abank.pdf">
+      <None Update="Assets\abank.eng.xlsx">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Assets\abank.xlsx">

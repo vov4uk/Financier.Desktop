@@ -6,31 +6,31 @@ namespace Financier.Desktop.Helpers.Model
 {
     public class Pireus_Row
     {
-        [Name("Дата та час транзакції")]
+        [Index(0)]
         public DateTime Date { get; set; }
 
-        [Name("Сума транзакції")]
+        [Index(1)]
         public string OperationAmount { get; set; }
 
-        [Name("Валюта транзакції")]
+        [Index(2)]
         public string OperationCurrency { get; set; }
 
-        [Name("Дата виконання операції")]
+        [Index(3)]
         public string ProcessingDate { get; set; }
 
-        [Name("Сума операції у валюті рахунку з урахуванням комісії")]
+        [Index(4)]
         public string CardCurrencyAmount { get; set; }
 
-        [Name("Комісія")]
+        [Index(5)]
         public string Commision { get; set; }
 
-        [Name("Номер карти / номер рахунку")]
+        [Index(6)]
         public string CardNumber { get; set; }
 
-        [Name("Деталі операції")]
+        [Index(7)]
         public string Details { get; set; }
 
-        [Name("Баланс")]
+        [Index(8)]
         public string Balance { get; set; }
 
         public override string ToString()
