@@ -28,11 +28,5 @@ namespace Financier.Desktop.Helpers
             var transactions = abankRows.Select(MapperHelper.ToBankTransaction).ToList();
             return transactions;
         }
-
-        private double ToDouble(string val)
-        {
-            return BankPdfHelperBase.GetDouble(val.Replace(Space, string.Empty));
-        }
-
     }
 }
