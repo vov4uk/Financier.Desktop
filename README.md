@@ -43,7 +43,3 @@ MVP (minimum viable product) application, with enough functions to work with Fin
 - Reporting (kudos to [@2ruslan](https://github.com/2ruslan))
 
 ![Alt text](Financier.Desktop.gif?raw=true "UI example")
-
-## License
-
-See [License](LICENSE)
