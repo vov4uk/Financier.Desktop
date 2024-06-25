@@ -7,7 +7,7 @@ namespace Financier.Desktop.Helpers.Model
     public class Pireus_Row
     {
         [Index(0)]
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         [Index(1)]
         public string OperationAmount { get; set; }

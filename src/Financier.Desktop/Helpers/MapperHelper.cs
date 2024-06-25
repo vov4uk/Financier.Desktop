@@ -4,6 +4,7 @@ using Financier.Converters;
 using Financier.Desktop.Data;
 using Financier.Desktop.Wizards;
 using Financier.Desktop.Helpers.Model;
+using static Financier.Desktop.Helpers.BankPdfHelperBase;
 
 namespace Financier.Desktop.Helpers
 {
@@ -64,15 +65,15 @@ namespace Financier.Desktop.Helpers
         public static BankTransaction ToBankTransaction(Abank_Row item)
         {
             var operationCurrency = item.OperationCurrency;
-            var operationAmount = ToDouble(item.OperationAmount);
-            var cardCurrencyAmount = ToDouble(item.CardCurrencyAmount);
+            var operationAmount = GetDouble(item.OperationAmount);
+            var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
 
             return new BankTransaction
             {
-                Balance = ToDouble(item.Balance),
-                Cashback = ToDouble(item.Cashback),
-                Commission = ToDouble(item.Commision),
-                ExchangeRate = ToDouble(item.ExchangeRate),
+                Balance = GetDouble(item.Balance),
+                Cashback = GetDouble(item.Cashback),
+                Commission = GetDouble(item.Commision),
+                ExchangeRate = GetDouble(item.ExchangeRate),
                 OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
                 OperationAmount = operationAmount,
                 CardCurrencyAmount = cardCurrencyAmount,
@@ -80,11 +81,6 @@ namespace Financier.Desktop.Helpers
                 Description = item.Details,
                 Date = Convert.ToDateTime(item.Date)
             };
-        }
-
-        private static double ToDouble(string val)
-        {
-            return BankPdfHelperBase.GetDouble(val.Replace(Space, string.Empty));
         }
     }
 }

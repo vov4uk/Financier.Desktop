@@ -201,7 +201,7 @@
             var first = new BankTransaction
             {
                 Date = new DateTime(2024, 5, 27, 15, 13, 41),
-                Description = "Оплата покупки (magazyn Rodynna kovbaska(P0043515) m.Lviv UA)",
+                Description = "Оплата покупки  magazyn Rodynna kovbaska P0043515  m.Lviv UA ",
                 Balance = 132.63,
                 MCC = null,
                 Commission = 0.0,
@@ -214,8 +214,8 @@
             var last = new BankTransaction
             {
                 Date = new DateTime(2024, 4, 18, 9, 49, 2),
-                Description = "Оплата покупки (magazyn Rodynna kovbaska(P0043515) m.Lviv UA)",
-                Balance = 0.0,
+                Description = "Оплата покупки  magazyn Rodynna kovbaska P0043515  m.Lviv UA ",
+                Balance = 3960.3,
                 Commission = 0.0,
                 MCC = null,
                 CardCurrencyAmount = -22.9,

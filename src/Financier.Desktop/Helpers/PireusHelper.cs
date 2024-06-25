@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using Financier.Desktop.Helpers.Model;
 using Financier.Desktop.Wizards;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,23 +19,27 @@ namespace Financier.Desktop.Helpers
 
             List<Pireus_Row> converted = new List<Pireus_Row>();
 
-            foreach (var page in pages)
+            using (var csv = new CsvReader(new StringReader(string.Join(Environment.NewLine, pages)), DefaultCsvReaderConfig))
             {
-                using (var csv = new CsvReader(new StringReader(page), DefaultCsvReaderConfig))
-                {
-                    var records = csv.GetRecords<Pireus_Row>();
-
-                    var batch = records.Take(1000).ToList();
-                    converted.AddRange(batch);
-                }
+                var records = csv.GetRecords<Pireus_Row>().ToList();
+                converted.AddRange(records);
             }
-
 
             foreach (var item in converted)
             {
                 var operationCurrency = item.OperationCurrency;
                 var operationAmount = GetDouble(item.OperationAmount);
                 var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
+
+                if (cardCurrencyAmount == 0)
+                {
+                    cardCurrencyAmount = operationAmount;
+                }
+
+                if (operationAmount == 0)
+                {
+                    continue;
+                }
 
                 var bt = new BankTransaction
                 {
@@ -44,8 +49,8 @@ namespace Financier.Desktop.Helpers
                     OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
                     OperationAmount = operationAmount,
                     CardCurrencyAmount = cardCurrencyAmount,
-                    Description = item.Details,
-                    Date = item.Date
+                    Description = item.Details.Replace("(", Space).Replace(")", Space),
+                    Date = Convert.ToDateTime(item.Date)
                 };
 
                 transactions.Add(bt);
