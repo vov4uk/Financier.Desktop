@@ -10,8 +10,6 @@ namespace Financier.Desktop.Helpers
 {
     public static class MapperHelper
     {
-        public const string Space = " ";
-
         public static void MapTransfer(TransferDto dto, Transaction tr)
         {
             tr.FromAccountId = dto.FromAccountId;
