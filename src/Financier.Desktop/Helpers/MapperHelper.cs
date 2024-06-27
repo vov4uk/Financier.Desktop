@@ -67,10 +67,7 @@ namespace Financier.Desktop.Helpers
             var operationAmount = GetDouble(item.OperationAmount);
             var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
 
-            DateTime dt;
 
-            var formats = new[] { "dd.MM.yyyy HH:mm:ss", "dd.MM.yyyy HH:mm", "dd.MM.yyyy h:mm:ss", "dd.MM.yyyy h:mm" };
-            DateTime.TryParseExact(item.Date, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
 
             return new BankTransaction
             {
@@ -83,8 +80,18 @@ namespace Financier.Desktop.Helpers
                 CardCurrencyAmount = cardCurrencyAmount,
                 MCC = item.MCC,
                 Description = item.Details,
-                Date = dt
+                Date = ParseDateTime(item.Date)
             };
+        }
+
+        public static DateTime ParseDateTime(string dateTime)
+        {
+            DateTime dt;
+
+            var formats = new[] { "dd.MM.yyyy H:mm:ss", "dd.MM.yyyy H:mm"};
+            DateTime.TryParseExact(dateTime, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+
+            return dt;
         }
     }
 }

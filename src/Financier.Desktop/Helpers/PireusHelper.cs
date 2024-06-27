@@ -50,7 +50,7 @@ namespace Financier.Desktop.Helpers
                     OperationAmount = operationAmount,
                     CardCurrencyAmount = cardCurrencyAmount,
                     Description = item.Details.Replace("(", Space).Replace(")", Space),
-                    Date = Convert.ToDateTime(item.Date)
+                    Date = MapperHelper.ParseDateTime(item.Date)
                 };
 
                 transactions.Add(bt);
