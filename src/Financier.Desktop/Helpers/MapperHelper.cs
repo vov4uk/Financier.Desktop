@@ -69,7 +69,7 @@ namespace Financier.Desktop.Helpers
 
             DateTime dt;
 
-            var formats = new[] { "dd.MM.yyyy H:mm:ss", "dd.MM.yyyy H:mm"};
+            var formats = new[] { "dd.MM.yyyy HH:mm:ss", "dd.MM.yyyy HH:mm", "dd.MM.yyyy h:mm:ss", "dd.MM.yyyy h:mm" };
             DateTime.TryParseExact(item.Date, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
 
             return new BankTransaction
