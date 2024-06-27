@@ -68,18 +68,9 @@ namespace Financier.Desktop.Helpers
             var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
 
             DateTime dt;
-            if (!DateTime.TryParseExact(item.Date,
-                                   "dd.MM.yyyy HH:mm:ss",
-                                   CultureInfo.InvariantCulture,
-                                   DateTimeStyles.None,
-                                   out dt))
-            {
-                DateTime.TryParseExact(item.Date,
-                  "dd.MM.yyyy HH:mm",
-                  CultureInfo.InvariantCulture,
-                  DateTimeStyles.None,
-                  out dt);
-            };
+
+            var formats = new[] { "dd.MM.yyyy H:mm:ss", "dd.MM.yyyy H:mm"};
+            DateTime.TryParseExact(item.Date, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
 
             return new BankTransaction
             {
