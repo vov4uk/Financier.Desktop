@@ -5,6 +5,7 @@ using Financier.Desktop.Data;
 using Financier.Desktop.Wizards;
 using Financier.Desktop.Helpers.Model;
 using static Financier.Desktop.Helpers.BankPdfHelperBase;
+using System.Globalization;
 
 namespace Financier.Desktop.Helpers
 {
@@ -66,6 +67,20 @@ namespace Financier.Desktop.Helpers
             var operationAmount = GetDouble(item.OperationAmount);
             var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
 
+            DateTime dt;
+            if (!DateTime.TryParseExact(item.Date,
+                                   "dd.MM.yyyy HH:mm:ss",
+                                   CultureInfo.InvariantCulture,
+                                   DateTimeStyles.None,
+                                   out dt))
+            {
+                DateTime.TryParseExact(item.Date,
+                  "dd.MM.yyyy HH:mm",
+                  CultureInfo.InvariantCulture,
+                  DateTimeStyles.None,
+                  out dt);
+            };
+
             return new BankTransaction
             {
                 Balance = GetDouble(item.Balance),
@@ -77,7 +92,7 @@ namespace Financier.Desktop.Helpers
                 CardCurrencyAmount = cardCurrencyAmount,
                 MCC = item.MCC,
                 Description = item.Details,
-                Date = Convert.ToDateTime(item.Date)
+                Date = dt
             };
         }
     }
