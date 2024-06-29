@@ -219,7 +219,7 @@
                                          Foreground="Red"
                                          Command="{Binding Path=ImportCommand}"
                                          CommandParameter="{x:Static Wizard:WizardTypes.ABank}" />
-                        <RibbonMenuItem  Header="Excel"
+                        <RibbonMenuItem  Header="XLSX"
                                          Foreground="Green"
                                          Command="{Binding Path=ImportCommand}"
                                          CommandParameter="{x:Static Wizard:WizardTypes.ABankExcel}" />
@@ -233,6 +233,10 @@
                                   Label="Pireus PDF"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pireus}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/privat.png"
+                                  Label="Privat XLSX"
+                                  Command="{Binding Path=ImportCommand}"
+                                  CommandParameter="{x:Static Wizard:WizardTypes.Privat}" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Transaction"

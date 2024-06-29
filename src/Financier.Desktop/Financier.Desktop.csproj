@@ -56,6 +56,7 @@
     <Resource Include="Images\actionbar_filter_cancel.png" />
     <Resource Include="Images\actionbar_tiles_large.png" />
     <Resource Include="Images\backup_file.png" />
+    <Resource Include="Images\database.png" />
     <Resource Include="Images\drag-drop-icon.png" />
     <Resource Include="Images\ic_action_add.png" />
     <Resource Include="Images\ic_action_arrow_left_bottom.png" />
@@ -88,6 +89,7 @@
     <Resource Include="Images\menu_entities_projects.png" />
     <Resource Include="Images\monobank.png" />
     <Resource Include="Images\pireus.png" />
+    <Resource Include="Images\privat.png" />
     <Resource Include="Images\pumb.png" />
     <Resource Include="Images\save_as_db.png" />
     <Resource Include="Images\folder.png" />

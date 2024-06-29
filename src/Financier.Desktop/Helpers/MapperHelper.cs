@@ -72,8 +72,6 @@ namespace Financier.Desktop.Helpers
             var operationAmount = GetDouble(item.OperationAmount);
             var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
 
-
-
             return new BankTransaction
             {
                 Balance = GetDouble(item.Balance),
@@ -85,6 +83,23 @@ namespace Financier.Desktop.Helpers
                 CardCurrencyAmount = cardCurrencyAmount,
                 MCC = item.MCC,
                 Description = item.Details,
+                Date = ParseDateTime(item.Date)
+            };
+        }
+
+        public static BankTransaction ToBankTransaction(Privat_Row item)
+        {
+            var operationCurrency = item.OperationCurrency;
+            var operationAmount = GetDouble(item.OperationAmount);
+            var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
+
+            return new BankTransaction
+            {
+                Balance = GetDouble(item.Balance),
+                OperationCurrency = Math.Abs(operationAmount) != Math.Abs(cardCurrencyAmount) ? operationCurrency : null,
+                OperationAmount = operationAmount,
+                CardCurrencyAmount = cardCurrencyAmount,
+                Description = $"{item.Category} : {item.Details}",
                 Date = ParseDateTime(item.Date)
             };
         }

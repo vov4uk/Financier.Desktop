@@ -15,6 +15,8 @@ namespace Financier.Desktop.Wizards
         ABank,
         [Description("xlsx")]
         ABankExcel,
+        [Description("xlsx")]
+        Privat,
         [Description("pdf")]
         Pumb,
         [Description("pdf")]
