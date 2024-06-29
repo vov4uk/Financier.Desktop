@@ -11,6 +11,7 @@ namespace Financier.Desktop.Wizards
         private int projectId;
         private int payeeId;
         private int toAccountId;
+        private bool isAmountNegative;
 
         public int CategoryId
         {
@@ -95,5 +96,17 @@ namespace Financier.Desktop.Wizards
         }
 
         public long ToAmount { get; set; }
+
+        public bool IsAmountNegative
+        {
+            get => isAmountNegative;
+            set
+            {
+                if (SetProperty(ref isAmountNegative, value))
+                {
+                    RaisePropertyChanged(nameof(IsAmountNegative));
+                }
+            }
+        }
     }
 }

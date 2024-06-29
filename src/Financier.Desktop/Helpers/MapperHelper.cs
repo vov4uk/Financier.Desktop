@@ -22,8 +22,13 @@ namespace Financier.Desktop.Helpers
             tr.ToAmount = Math.Abs(dto.IsToAmountVisible ? dto.ToAmount : dto.FromAmount);
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.LastRecurrence = UnixTimeConverter.ConvertBack(DateTime.Now);
-            tr.OriginalCurrencyId = dto.FromAccountCurrency?.Id;
-            tr.OriginalFromAmount = Math.Abs(dto.FromAmount) * -1;
+
+            if (dto.FromAccountCurrency?.Id != dto.ToAccountCurrency?.Id)
+            {
+                tr.OriginalCurrencyId = dto.FromAccountCurrency?.Id;
+                tr.OriginalFromAmount = Math.Abs(dto.FromAmount) * -1;
+            }
+
             tr.CategoryId = 0;
             tr.Category = default;
         }

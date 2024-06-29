@@ -68,6 +68,14 @@
                             CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
+                <DataGridTemplateColumn Header="">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="x"
+                                    Command="Delete"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Date"
                                     Binding="{Binding Path=DateTime, Converter= {StaticResource DatetimeConverter}}"
                                     IsReadOnly="True"/>
@@ -137,16 +145,29 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Amount"
-                                    dgx:DataGridFilterColumn.IsFilterVisible="False">
+                                        dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock HorizontalAlignment="Right"
+                                       Name="AmountText"
                                        Text="{Binding
                                               Path=FromAmount,
                                               StringFormat=F2,
                                               Converter={StaticResource AmountConverter},
                                               ConverterParameter=false}">
                             </TextBlock>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsAmountNegative}" Value="true">
+                                    <DataTrigger.Setters>
+                                        <Setter TargetName="AmountText" Property="Foreground" Value="DarkRed"/>
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsAmountNegative}" Value="false">
+                                    <DataTrigger.Setters>
+                                        <Setter TargetName="AmountText" Property="Foreground" Value="YellowGreen"/>
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
