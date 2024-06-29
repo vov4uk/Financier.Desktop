@@ -196,6 +196,36 @@
         }
 
         [Fact]
+        public void LoadTransactions_PrivatExcel_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2024, 6, 28, 15, 00, 19),
+                Description = "Туризм : ФОП",
+                Balance = 640.46,
+                CardCurrencyAmount = -2901,
+                OperationAmount = -2901,
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2024, 5, 31, 9, 46, 08),
+                Description = "Перекази : ФОП",
+                Balance = 320.46,
+                CardCurrencyAmount = -455.0,
+                OperationAmount = -455.0,
+
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "privat.xlsx");
+            IEnumerable<BankTransaction> bank = new Helpers.PrivatHelper().ParseReport(path);
+
+            Assert.Equal(9, bank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
+        }
+
+        [Fact]
         public void LoadTransactions_Pireus_ExpectedTransactions()
         {
             var first = new BankTransaction

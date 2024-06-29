@@ -28,6 +28,11 @@ namespace Financier.Desktop.Helpers
                 tr.OriginalCurrencyId = dto.FromAccountCurrency?.Id;
                 tr.OriginalFromAmount = Math.Abs(dto.FromAmount) * -1;
             }
+            else
+            {
+                tr.OriginalCurrencyId = 0;
+                tr.OriginalFromAmount = 0;
+            }
 
             tr.CategoryId = 0;
             tr.Category = default;
@@ -92,6 +97,10 @@ namespace Financier.Desktop.Helpers
             var operationCurrency = item.OperationCurrency;
             var operationAmount = GetDouble(item.OperationAmount);
             var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
+            if (cardCurrencyAmount < 0)
+            {
+                operationAmount = -1 * Math.Abs(operationAmount);
+            }
 
             return new BankTransaction
             {
