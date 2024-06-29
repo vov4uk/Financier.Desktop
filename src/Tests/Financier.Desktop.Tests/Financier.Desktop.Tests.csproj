@@ -29,7 +29,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Assets\abank.pdf">
+      <None Update="Assets\abank.eng.xlsx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Assets\abank.xlsx">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Assets\abank_3_pages.pdf">
@@ -48,6 +51,9 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Assets\pireus.pdf">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Assets\privat.xlsx">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Assets\pumb.pdf">

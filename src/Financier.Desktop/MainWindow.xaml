@@ -212,10 +212,19 @@
                                   Label="Monobank CSV"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Monobank}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/abank.png"
-                                  Label="A-Bank PDF"
-                                  Command="{Binding Path=ImportCommand}"
-                                  CommandParameter="{x:Static Wizard:WizardTypes.ABank}" />
+                    <RibbonMenuButton  Label="A-Bank"
+                                       LargeImageSource="pack://application:,,,/Images/abank.png" >
+
+                        <RibbonMenuItem  Header="PDF"
+                                         Foreground="Red"
+                                         Command="{Binding Path=ImportCommand}"
+                                         CommandParameter="{x:Static Wizard:WizardTypes.ABank}" />
+                        <RibbonMenuItem  Header="XLSX"
+                                         Foreground="Green"
+                                         Command="{Binding Path=ImportCommand}"
+                                         CommandParameter="{x:Static Wizard:WizardTypes.ABankExcel}" />
+                    </RibbonMenuButton>
+
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/pumb.png"
                                   Label="PUMB PDF"
                                   Command="{Binding Path=ImportCommand}"
@@ -224,6 +233,10 @@
                                   Label="Pireus PDF"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pireus}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/privat.png"
+                                  Label="Privat XLSX"
+                                  Command="{Binding Path=ImportCommand}"
+                                  CommandParameter="{x:Static Wizard:WizardTypes.Privat}" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Transaction"

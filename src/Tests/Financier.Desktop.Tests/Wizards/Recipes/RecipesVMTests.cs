@@ -19,10 +19,10 @@
             List<TransactionDto> actual = default;
             List<TransactionDto> expected = new List<TransactionDto>
             {
-                new TransactionDto { FromAmount = -5000, IsAmountNegative = true,  Note = "Beer Baltyka" },
-                new TransactionDto { FromAmount = -2500, IsAmountNegative = true,  Note = "Milk Molokia 25%" },
+                new TransactionDto { FromAmount = -5000, IsAmountNegative = true,  Note = "beer baltyka" },
+                new TransactionDto { FromAmount = -2500, IsAmountNegative = true,  Note = "milk molokia 25%" },
                 new TransactionDto { FromAmount = -2550, IsAmountNegative = true,  Note = string.Empty },
-                new TransactionDto { FromAmount = 50,    IsAmountNegative = false, Note = "Discount" },
+                new TransactionDto { FromAmount = 50,    IsAmountNegative = false, Note = "discount" },
             };
             foreach (var item in expected)
             {

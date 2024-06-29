@@ -107,7 +107,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     LocationId = parsedDescription.locationId,
                     Note = x.Description,
                     DateTime = new DateTimeOffset(x.Date).ToUnixTimeMilliseconds(),
-                    MCC = mcc
+                    MCC = mcc,
+                    IsAmountNegative = amount < 0
                 };
                 transToAdd.Add(newTr);
             }

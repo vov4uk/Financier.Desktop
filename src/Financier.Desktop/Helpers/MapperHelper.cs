@@ -2,6 +2,10 @@
 using Financier.DataAccess.Data;
 using Financier.Converters;
 using Financier.Desktop.Data;
+using Financier.Desktop.Wizards;
+using Financier.Desktop.Helpers.Model;
+using static Financier.Desktop.Helpers.BankPdfHelperBase;
+using System.Globalization;
 
 namespace Financier.Desktop.Helpers
 {
@@ -18,8 +22,18 @@ namespace Financier.Desktop.Helpers
             tr.ToAmount = Math.Abs(dto.IsToAmountVisible ? dto.ToAmount : dto.FromAmount);
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.LastRecurrence = UnixTimeConverter.ConvertBack(DateTime.Now);
-            tr.OriginalCurrencyId = dto.FromAccountCurrency?.Id;
-            tr.OriginalFromAmount = Math.Abs(dto.FromAmount) * -1;
+
+            if (dto.FromAccountCurrency?.Id != dto.ToAccountCurrency?.Id)
+            {
+                tr.OriginalCurrencyId = dto.FromAccountCurrency?.Id;
+                tr.OriginalFromAmount = Math.Abs(dto.FromAmount) * -1;
+            }
+            else
+            {
+                tr.OriginalCurrencyId = 0;
+                tr.OriginalFromAmount = 0;
+            }
+
             tr.CategoryId = 0;
             tr.Category = default;
         }
@@ -54,6 +68,59 @@ namespace Financier.Desktop.Helpers
             tr.Note = dto.Note;
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.LastRecurrence = UnixTimeConverter.ConvertBack(DateTime.Now);
+        }
+
+
+        public static BankTransaction ToBankTransaction(Abank_Row item)
+        {
+            var operationCurrency = item.OperationCurrency;
+            var operationAmount = GetDouble(item.OperationAmount);
+            var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
+
+            return new BankTransaction
+            {
+                Balance = GetDouble(item.Balance),
+                Cashback = GetDouble(item.Cashback),
+                Commission = GetDouble(item.Commision),
+                ExchangeRate = GetDouble(item.ExchangeRate),
+                OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
+                OperationAmount = operationAmount,
+                CardCurrencyAmount = cardCurrencyAmount,
+                MCC = item.MCC,
+                Description = item.Details,
+                Date = ParseDateTime(item.Date)
+            };
+        }
+
+        public static BankTransaction ToBankTransaction(Privat_Row item)
+        {
+            var operationCurrency = item.OperationCurrency;
+            var operationAmount = GetDouble(item.OperationAmount);
+            var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
+            if (cardCurrencyAmount < 0)
+            {
+                operationAmount = -1 * Math.Abs(operationAmount);
+            }
+
+            return new BankTransaction
+            {
+                Balance = GetDouble(item.Balance),
+                OperationCurrency = Math.Abs(operationAmount) != Math.Abs(cardCurrencyAmount) ? operationCurrency : null,
+                OperationAmount = operationAmount,
+                CardCurrencyAmount = cardCurrencyAmount,
+                Description = $"{item.Category} : {item.Details}",
+                Date = ParseDateTime(item.Date)
+            };
+        }
+
+        public static DateTime ParseDateTime(string dateTime)
+        {
+            DateTime dt;
+
+            var formats = new[] { "dd.MM.yyyy H:mm:ss", "dd.MM.yyyy H:mm"};
+            DateTime.TryParseExact(dateTime, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+
+            return dt;
         }
     }
 }

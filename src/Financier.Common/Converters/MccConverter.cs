@@ -64,7 +64,7 @@ namespace Financier.Converters
             {
                   return MCC[code];
             }
-            return code.ToString();
+            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

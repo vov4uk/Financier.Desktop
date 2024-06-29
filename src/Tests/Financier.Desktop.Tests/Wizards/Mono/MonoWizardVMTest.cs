@@ -85,43 +85,6 @@
         }
 
         [Fact]
-        public void LoadTransactions_Abank_ExpectedTransactions()
-        {
-            var first = new BankTransaction
-            {
-                Date = new DateTime(2023, 2, 15, 9, 36, 0),
-                Description = "АТБ",
-                Balance = 386.78,
-                MCC = "5411",
-                Commission = 0.0,
-                CardCurrencyAmount = -71.8,
-                OperationAmount = -71.8,
-                Cashback = 0.5,
-                ExchangeRate = 0.0
-            };
-
-            var last = new BankTransaction
-            {
-                Date = new DateTime(2023, 2, 3, 13, 54, 0),
-                Description = "АТБ",
-                Balance = 115.81,
-                Commission = 0.0,
-                MCC = "5411",
-                CardCurrencyAmount = -129.7,
-                OperationAmount = -129.7,
-                Cashback = 0.91,
-                ExchangeRate = 0.0
-            };
-
-            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
-            IEnumerable<BankTransaction> abank = new Helpers.ABankHelper().ParseReport(path);
-
-            Assert.Equal(5, abank.Count());
-            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
-            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
-        }
-
-        [Fact]
         public void LoadTransactions_AbankMultiPages_ExpectedTransactions()
         {
             var first = new BankTransaction
@@ -159,12 +122,116 @@
         }
 
         [Fact]
+        public void LoadTransactions_AbankExcel_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2024, 4, 30, 19, 41, 0),
+                Description = "Монобанк",
+                Balance = 2072.28,
+                MCC = "6010",
+                Commission = 0.0,
+                CardCurrencyAmount = 2000.0,
+                OperationAmount = 2000.0,
+                Cashback = 0.0,
+                ExchangeRate = 0.0
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2024, 4, 4, 9, 51, 0),
+                Description = "Монобанк",
+                Balance = 3166.91,
+                Commission = 0.0,
+                MCC = "6010",
+                CardCurrencyAmount = 2000.0,
+                OperationAmount = 2000.0,
+                Cashback = 0.0,
+                ExchangeRate = 0.0
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.xlsx");
+            IEnumerable<BankTransaction> abank = new Helpers.AbankExcelHelper().ParseReport(path);
+
+            Assert.Equal(17, abank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
+        }
+
+        [Fact]
+        public void LoadTransactions_AbankEnglishExcel_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2024, 6, 21, 18, 29, 0),
+                Description = "Exchange. Rate 40.20",
+                Balance = 894.72,
+                MCC = "4829",
+                Commission = 0.0,
+                CardCurrencyAmount = 51.85,
+                OperationAmount = 51.85,
+                Cashback = 0.0,
+                ExchangeRate = 0.0
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2024, 5, 24, 12, 44, 0),
+                Description = "ATB",
+                Balance = 2306.27,
+                Commission = 0.0,
+                MCC = "5411",
+                CardCurrencyAmount = -472.92,
+                OperationAmount = -472.92,
+                Cashback = 5.67,
+                ExchangeRate = 0.0
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.eng.xlsx");
+            IEnumerable<BankTransaction> abank = new Helpers.AbankExcelHelper().ParseReport(path);
+
+            Assert.Equal(26, abank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
+        }
+
+        [Fact]
+        public void LoadTransactions_PrivatExcel_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2024, 6, 28, 15, 00, 19),
+                Description = "Туризм : ФОП",
+                Balance = 640.46,
+                CardCurrencyAmount = -2901,
+                OperationAmount = -2901,
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2024, 5, 31, 9, 46, 08),
+                Description = "Перекази : ФОП",
+                Balance = 320.46,
+                CardCurrencyAmount = -455.0,
+                OperationAmount = -455.0,
+
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "privat.xlsx");
+            IEnumerable<BankTransaction> bank = new Helpers.PrivatHelper().ParseReport(path);
+
+            Assert.Equal(9, bank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
+        }
+
+        [Fact]
         public void LoadTransactions_Pireus_ExpectedTransactions()
         {
             var first = new BankTransaction
             {
                 Date = new DateTime(2024, 5, 27, 15, 13, 41),
-                Description = "Оплата покупки (magazyn Rodynna kovbaska(P0043515) m.Lviv UA)",
+                Description = "Оплата покупки  magazyn Rodynna kovbaska P0043515  m.Lviv UA ",
                 Balance = 132.63,
                 MCC = null,
                 Commission = 0.0,
@@ -177,8 +244,8 @@
             var last = new BankTransaction
             {
                 Date = new DateTime(2024, 4, 18, 9, 49, 2),
-                Description = "Оплата покупки (magazyn Rodynna kovbaska(P0043515) m.Lviv UA)",
-                Balance = 0.0,
+                Description = "Оплата покупки  magazyn Rodynna kovbaska P0043515  m.Lviv UA ",
+                Balance = 3960.3,
                 Commission = 0.0,
                 MCC = null,
                 CardCurrencyAmount = -22.9,
