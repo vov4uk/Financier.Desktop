@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-      <TargetFramework>net8.0-windows7.0</TargetFramework>
+      <TargetFramework>net10.0-windows7.0</TargetFramework>
       <IsPackable>false</IsPackable>
       <DebugType>full</DebugType>
       <AssemblyName>Financier.Adapter.Tests</AssemblyName>
@@ -29,14 +29,14 @@
     <PackageReference Include="AutoFixture" Version="4.18.1" />
     <PackageReference Include="AutoFixture.AutoMoq" Version="4.18.1" />
     <PackageReference Include="AutoFixture.Xunit2" Version="4.18.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.8.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

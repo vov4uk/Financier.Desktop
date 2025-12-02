@@ -145,7 +145,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private static bool TryParseLocation(string desc, out int locationId)
         {
               var location = DbManual.Location
-                .Where(x => x.Id > 0)
+                .Where(x => x.Id > 0 && x.IsActive)
                 .FirstOrDefault(l => ContainsString(l.Title, desc) || ContainsString(l.Address, desc));
             if (location != null)
             {

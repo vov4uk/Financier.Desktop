@@ -23,6 +23,7 @@ using Financier.Desktop.Wizards;
 using Financier.Converters;
 using System.Windows.Input;
 using Prism.Commands;
+using IAsyncCommand = Financier.Common.IAsyncCommand;
 
 namespace Financier.Desktop.ViewModel
 {

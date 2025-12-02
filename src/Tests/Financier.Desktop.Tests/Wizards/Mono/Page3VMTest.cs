@@ -177,7 +177,7 @@
             };
 
             List<CategoryModel> categories = new List<CategoryModel> { new CategoryModel { Title = "Hot water", Id = 100 } };
-            List<LocationModel> locations = new List<LocationModel> { new LocationModel { Id = 200, Title = "Google", Address = "Google Store" } };
+            List<LocationModel> locations = new List<LocationModel> { new LocationModel { Id = 200, Title = "Google", Address = "Google Store" , IsActive = true } };
             List<CurrencyModel> currencies = new List<CurrencyModel> { new CurrencyModel { Id = 1, Name = "USD" }, new CurrencyModel { Id = 2, Name = "UAH" } };
             DbManual.SetupTests(categories);
             DbManual.SetupTests(locations);

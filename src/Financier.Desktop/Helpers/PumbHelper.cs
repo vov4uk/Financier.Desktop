@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Financier.Desktop.Helpers.Model;
 using Financier.Desktop.Wizards;
 
@@ -18,9 +20,19 @@ namespace Financier.Desktop.Helpers
 
 
             List<Pumb_Row> converted = new List<Pumb_Row>();
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = true,
+                Delimiter = ";",
+                IgnoreBlankLines = true,
+                MissingFieldFound = null,
+                ShouldSkipRecord = (e) =>
+                {
+                    return string.IsNullOrEmpty(e.Row[0]) || e.Row.ColumnCount != 8;
+                }
+            };
 
-
-            using (var csv = new CsvReader(new StringReader(pageText), DefaultCsvReaderConfig))
+            using (var csv = new CsvReader(new StringReader(pageText), config))
             {
                 var records = csv.GetRecords<Pumb_Row>();
 
@@ -39,8 +51,9 @@ namespace Financier.Desktop.Helpers
                     sign = "-";
                 }
 
-                var operationCurrency = "UAH";
+
                 var operationAmount = GetDouble(RemoveCurrencyCode(item.OperationAmount));
+                var operationCurrency = item.OperationAmount.Replace(RemoveCurrencyCode(item.OperationAmount), "").Trim();
                 var cardCurrenyAmount = GetDouble(RemoveCurrencyCode(item.CardCurrenyAmount));
                 var commisionAmount = GetDouble(RemoveCurrencyCode(item.CommisionAmount));
 
@@ -50,20 +63,24 @@ namespace Financier.Desktop.Helpers
                     OperationCurrency = operationCurrency,
                     OperationAmount = GetDouble($"{sign}{operationAmount}"),
                     CardCurrencyAmount = GetDouble($"{sign}{cardCurrenyAmount}"),
-
+                    ExchangeRate = operationAmount == cardCurrenyAmount ? null : (double)Math.Round(cardCurrenyAmount / operationAmount, 4),
                     Description = $"{item.Details} {item.TransactionType}",
                     Date = item.Date
                 };
                 transactions.Add(tr);
             }
 
-            return transactions;
+            return transactions.OrderByDescending(x => x.Date).ToList();
         }
 
 
         private static string RemoveCurrencyCode(string amount)
         {
-            return amount.Replace("UAH", string.Empty).Replace("USD", string.Empty).Replace("EUR", string.Empty).Trim();
+            return amount.Replace("UAH", string.Empty)
+                .Replace("USD", string.Empty)
+                .Replace("EUR", string.Empty)
+                .Replace("PLN", string.Empty)
+                .Trim();
         }
     }
 }

@@ -32,6 +32,7 @@ namespace Financier.DataAccess
             : this(
                 new DbContextOptionsBuilder<FinancierDataContext>()
                     .UseSqlite(CreateInMemoryDatabase())
+                    .EnableSensitiveDataLogging(true)
                     .Options)
         {
             _connection = RelationalOptionsExtension.Extract(ContextOptions).Connection;

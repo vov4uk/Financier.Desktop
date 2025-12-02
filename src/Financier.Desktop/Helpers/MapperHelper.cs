@@ -118,7 +118,7 @@ namespace Financier.Desktop.Helpers
             DateTime dt;
 
             var formats = new[] { "dd.MM.yyyy H:mm:ss", "dd.MM.yyyy H:mm"};
-            DateTime.TryParseExact(dateTime, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
+            DateTime.TryParseExact(dateTime.Replace(": ",":"), formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt);
 
             return dt;
         }

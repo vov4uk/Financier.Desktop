@@ -340,14 +340,14 @@
             };
             List<ProjectModel> projects = new () { new () { Id = 1, IsActive = true, Title = "My project" } };
             List<CategoryModel> categories = new () { new () { Title = "Комуналка", Id = 1 } };
-            List<LocationModel> locations = new ()
+            List<LocationModel> locations = new()
             {
-                new () { Id = 200, Title = "Internet", Address = "Київстар" },
-                new () { Id = 201, Title = "Рошен", Address = "Roshen" },
-                new () { Id = 202, Title = "Твій сир", Address = "Tvijsir" },
-                new () { Id = 203, Title = "АТБ" },
-                new () { Id = 204, Title = "Арсен" },
-                new () { Id = 205, Title = "Сільпо" },
+                new () { Id = 200, Title = "Internet", Address = "Київстар", IsActive = true },
+                new () { Id = 201, Title = "Рошен", Address = "Roshen" , IsActive = true },
+                new () { Id = 202, Title = "Твій сир", Address = "Tvijsir" , IsActive = true },
+                new () { Id = 203, Title = "АТБ" , IsActive = true },
+                new () { Id = 204, Title = "Арсен" , IsActive = true },
+                new () { Id = 205, Title = "Сільпо" , IsActive = true },
             };
             List<CurrencyModel> currencies = new () { new () { Id = 1, Name = "USD" }, new () { Id = 2, Name = "UAH" } };
 
