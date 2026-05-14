@@ -8,7 +8,8 @@
                xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel"
                xmlns:View="clr-namespace:Financier.Desktop.Views"
                xmlns:Wizard="clr-namespace:Financier.Desktop.Wizards"
-               xmlns:fa="http://schemas.fontawesome.io/icons/"
+               xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                AllowDrop="True"
                Loaded="RibbonWindow_Loaded">
     <Window.Resources>
@@ -338,7 +339,7 @@
         <Grid Grid.Row="1"
               AllowDrop="True"
               Visibility="{Binding Path=IsLoading, Converter={StaticResource BoolToVis}}">
-            <fa:ImageAwesome Icon="Refresh" Foreground="#858585" Spin="True" Height="64" Width="64" />
+            <fa:IconImage Icon="Refresh" Foreground="#858585" Height="64" Width="64" fa:Awesome.Spin="True" />
         </Grid>
     </Grid>
 </RibbonWindow >

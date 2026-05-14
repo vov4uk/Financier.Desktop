@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Threading.Tasks;
     using Financier.Adapter;
     using Financier.DataAccess;
     using Financier.Desktop.Helpers;
@@ -14,7 +15,7 @@
     public class FinancierVMIntegrationTest
     {
         [Fact]
-        public async void OpenBackup_ParseBackup_ImportEntities()
+        public async Task OpenBackup_ParseBackup_ImportEntities()
         {
             var dialogMock = new Mock<IDialogWrapper>();
             dialogMock.Setup(x => x.ShowMessageBox(It.IsAny<string>(), "Success", false)).Returns(true);
@@ -28,7 +29,7 @@
         }
 
         [Fact]
-        public async void SaveBackup_OpenBackup_ShouldSaveSameBackup()
+        public async Task SaveBackup_OpenBackup_ShouldSaveSameBackup()
         {
             var dialogMock = new Mock<IDialogWrapper>();
             dialogMock.Setup(x => x.ShowMessageBox(It.IsAny<string>(), "Success", false)).Returns(true);

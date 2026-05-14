@@ -95,7 +95,7 @@ namespace Financier.Common.Utils
                     Symbol = ""
                 };
             }
-            string s = (amount / HUNDRED).ToString("F2", CultureInfo.InvariantCulture);
+            string s = (amount / HUNDRED).ToString("N2", CultureInfo.InvariantCulture);
             if (s.EndsWith('.'))
             {
                 s = s.Substring(0, s.Length - 1);

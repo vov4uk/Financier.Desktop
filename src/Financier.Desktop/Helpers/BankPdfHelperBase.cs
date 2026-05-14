@@ -35,10 +35,9 @@ namespace Financier.Desktop.Helpers
 
                 using (PdfDocument document = PdfDocument.Open(filePath, new ParsingOptions() { ClipPaths = true }))
                 {
-                    ObjectExtractor oe = new ObjectExtractor(document);
                     for (int i = 0; i < document.NumberOfPages; i++)
                     {
-                        PageArea page = oe.Extract(i + 1);
+                        PageArea page = ObjectExtractor.Extract(document, i + 1);
 
                         IExtractionAlgorithm ea = new SpreadsheetExtractionAlgorithm();
 
@@ -63,7 +62,7 @@ namespace Financier.Desktop.Helpers
                                 {
                                     foreach (Cell item in row)
                                     {
-                                        csvWriter.WriteField(item.GetText().Replace("\r", " "));
+                                        csvWriter.WriteField(item.GetText().Replace("\r", " ").Trim());
                                     }
 
                                     csvWriter.NextRecord();

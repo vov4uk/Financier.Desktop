@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Financier.Desktop.Wizards;
 
 namespace Financier.Desktop.Helpers
@@ -19,9 +20,19 @@ namespace Financier.Desktop.Helpers
         {
             if (File.Exists(filePath))
             {
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    MissingFieldFound = null,
+                    HasHeaderRecord = true,
+                    ShouldSkipRecord = (e) =>
+                    {
+                        return e.Row.Parser.RawRecord.Contains("www.fg.gov.ua");
+                    }
+                };
+
                 using FileStream file = File.OpenRead(filePath);
                 using StreamReader streamReader = new StreamReader(file, Encoding.UTF8);
-                using (var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                using (var csv = new CsvReader(streamReader, config))
                 {
                     return csv.GetRecords<BankTransaction>().ToList();
                 }

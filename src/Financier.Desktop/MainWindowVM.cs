@@ -23,6 +23,7 @@ using Financier.Desktop.Wizards;
 using Financier.Converters;
 using System.Windows.Input;
 using Prism.Commands;
+using IAsyncCommand = Financier.Common.IAsyncCommand;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -167,6 +168,7 @@ namespace Financier.Desktop.ViewModel
                 AddKeylessEntities(entities.OfType<TransactionAttribute>());
 
                 IsLoading = false;
+
 
                 DbManual.ResetAllManuals();
                 await DbManual.SetupAsync(db);
@@ -412,6 +414,17 @@ namespace Financier.Desktop.ViewModel
                 dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
                 Logger.Info($"Backup done. Saved {backupPath}");
             }
+        }
+
+        public async Task UpdateExchangeRates()
+        {
+            var exchangeRateLoader = new ExchangeRateLoader(db);
+            var exchangeRates = await exchangeRateLoader.LoadExchangeRates();
+
+            using var uow = db.CreateUnitOfWork();
+            var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();
+            await currencyExchangeRepo.AddRangeAsync(exchangeRates);
+            await uow.SaveChangesAsync();
         }
     }
 }

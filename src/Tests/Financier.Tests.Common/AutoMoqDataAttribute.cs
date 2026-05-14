@@ -4,7 +4,7 @@ namespace Financier.Tests.Common
 {
     using System;
     using AutoFixture;
-    using AutoFixture.Xunit2;
+    using AutoFixture.Xunit3;
 
     public class AutoMoqDataAttribute : AutoDataAttribute
     {
