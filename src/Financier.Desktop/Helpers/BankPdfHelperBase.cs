@@ -62,7 +62,7 @@ namespace Financier.Desktop.Helpers
                                 {
                                     foreach (Cell item in row)
                                     {
-                                        csvWriter.WriteField(item.GetText().Replace("\r", " "));
+                                        csvWriter.WriteField(item.GetText().Replace("\r", " ").Trim());
                                     }
 
                                     csvWriter.NextRecord();

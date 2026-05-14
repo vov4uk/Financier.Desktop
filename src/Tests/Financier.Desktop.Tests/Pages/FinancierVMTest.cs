@@ -117,7 +117,7 @@
 
         [Theory]
         [AutoMoqData]
-        public async void OpenBackup_ParseBackup_ImportEntities(
+        public async Task OpenBackup_ParseBackup_ImportEntities(
             string backupPath,
             IEnumerable<Entity> entities,
             BackupVersion backupVersion,
@@ -144,7 +144,7 @@
 
         [Theory]
         [AutoMoqData]
-        public async void SaveBackup_ReadEntitiesFromDb_ExportEntities(
+        public async Task SaveBackup_ReadEntitiesFromDb_ExportEntities(
             string backupPath)
         {
             var vm = this.GetFinancierVM();
@@ -188,7 +188,7 @@
 
         [Theory]
         [AutoMoqData]
-        public async void SaveBackupAsDb_ExecuteCommand_DBQueryExecuted(string backupPath)
+        public async Task SaveBackupAsDb_ExecuteCommand_DBQueryExecuted(string backupPath)
         {
             var vm = this.GetFinancierVM();
             this.dbMock.Setup(x => x.SaveAsFile(backupPath)).Returns(Task.CompletedTask).Verifiable();

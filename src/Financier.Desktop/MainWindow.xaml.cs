@@ -55,7 +55,8 @@ namespace Financier.Desktop
                 if (!string.IsNullOrEmpty(backupFile) && File.Exists(backupFile))
                 {
                     Logger.Info($"Loaded backup : {backupFile}");
-                    Task.Run(() => ViewModel.OpenBackup(backupFile));
+                    Task.Run(() => ViewModel.OpenBackup(backupFile))
+                        .ContinueWith((t) => ViewModel.UpdateExchangeRates());
                 }
             }
         }

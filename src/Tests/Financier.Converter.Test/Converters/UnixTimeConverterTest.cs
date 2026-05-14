@@ -3,7 +3,7 @@
     using System;
     using System.Globalization;
     using System.Windows.Data;
-    using AutoFixture.Xunit2;
+    using AutoFixture.Xunit3;
     using Financier.Converters;
     using Xunit;
 

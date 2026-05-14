@@ -64,8 +64,8 @@ namespace Financier.Desktop.ViewModel
         protected override async Task RefreshData()
         {
             using var uow = db.CreateUnitOfWork();
-            var accountRepo = uow.GetRepository<CurrencyExchangeRate>();
-            var items = await accountRepo.FindManyAndProjectAsync(
+            var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();
+            var items = await currencyExchangeRepo.FindManyAndProjectAsync(
                 x => x.FromCurrencyId == (_from != null ? _from.Id : 0) && x.ToCurrencyId == (_to != null ? _to.Id : 0), // where
                 rate => new ExchangeRateModel
                 {
