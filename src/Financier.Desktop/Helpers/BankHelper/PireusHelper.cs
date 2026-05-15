@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Financier.Desktop.Helpers
+namespace Financier.Desktop.Helpers.BankHelper
 {
     public class PireusHelper : BankPdfHelperBase
     {

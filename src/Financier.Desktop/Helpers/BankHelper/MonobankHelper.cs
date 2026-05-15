@@ -9,7 +9,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Financier.Desktop.Wizards;
 
-namespace Financier.Desktop.Helpers
+namespace Financier.Desktop.Helpers.BankHelper
 {
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class MonobankHelper : IBankHelper

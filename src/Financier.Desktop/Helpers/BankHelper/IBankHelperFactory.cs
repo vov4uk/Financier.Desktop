@@ -1,6 +1,6 @@
 ﻿using Financier.Desktop.Wizards;
 
-namespace Financier.Desktop.Helpers
+namespace Financier.Desktop.Helpers.BankHelper
 {
     public interface IBankHelperFactory
     {

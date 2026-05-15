@@ -10,7 +10,7 @@ using Tabula;
 using UglyToad.PdfPig;
 using Tabula.Extractors;
 
-namespace Financier.Desktop.Helpers
+namespace Financier.Desktop.Helpers.BankHelper
 {
     public abstract class BankPdfHelperBase : IBankHelper
     {
@@ -39,7 +39,7 @@ namespace Financier.Desktop.Helpers
                     {
                         PageArea page = ObjectExtractor.Extract(document, i + 1);
 
-                        IExtractionAlgorithm ea = new SpreadsheetExtractionAlgorithm();
+                        IExtractionAlgorithm ea = new BasicExtractionAlgorithm();
 
                         var pageTables = ea.Extract(page);
                         if (!pageTables.Any())

@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-   <a href="https://dotnet.microsoft.com/en-us/download/dotnet/8.0/runtime">
+   <a href="https://dotnet.microsoft.com/en-us/download/dotnet/10.0/runtime">
       <strong>Install the .NET Desktop Runtime.</strong>
    </a>
 </p>

@@ -14,6 +14,7 @@
     using Financier.DataAccess.View;
     using Financier.Desktop.Data;
     using Financier.Desktop.Helpers;
+    using Financier.Desktop.Helpers.BankHelper;
     using Financier.Desktop.ViewModel;
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;

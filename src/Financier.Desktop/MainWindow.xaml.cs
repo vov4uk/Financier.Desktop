@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using Financier.Desktop.Properties;
+using Financier.Desktop.Helpers.BankHelper;
 
 namespace Financier.Desktop
 {
@@ -40,8 +41,10 @@ namespace Financier.Desktop
             ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new BankHelperFactory());
 
             DataContext = ViewModel;
-            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            Title = $"Financier Desktop v.{version}";
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var buildDate = new DateTime(2000, 1, 1)
+               .AddDays(version.Build).AddSeconds(version.Revision * 2);
+            Title = $"Financier Desktop v.{buildDate.Date.ToShortDateString()}";
             Logger.Info("App started");
         }
 

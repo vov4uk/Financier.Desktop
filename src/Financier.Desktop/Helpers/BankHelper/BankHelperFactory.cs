@@ -1,7 +1,7 @@
 ﻿using System;
 using Financier.Desktop.Wizards;
 
-namespace Financier.Desktop.Helpers
+namespace Financier.Desktop.Helpers.BankHelper
 {
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class BankHelperFactory : IBankHelperFactory
@@ -16,6 +16,7 @@ namespace Financier.Desktop.Helpers
                 case WizardTypes.Pumb: return new PumbHelper();
                 case WizardTypes.Pireus: return new PireusHelper();
                 case WizardTypes.Privat: return new PrivatHelper();
+                case WizardTypes.Pko: return new PKOHelper();
                 default:
                     throw new NotSupportedException("Bank not found");
             }

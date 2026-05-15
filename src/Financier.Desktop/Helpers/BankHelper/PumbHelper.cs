@@ -8,7 +8,7 @@ using CsvHelper.Configuration;
 using Financier.Desktop.Helpers.Model;
 using Financier.Desktop.Wizards;
 
-namespace Financier.Desktop.Helpers
+namespace Financier.Desktop.Helpers.BankHelper
 {
     public class PumbHelper : BankPdfHelperBase
     {

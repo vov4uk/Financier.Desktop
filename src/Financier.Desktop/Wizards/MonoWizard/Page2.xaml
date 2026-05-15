@@ -58,7 +58,7 @@
                 <DataGridTextColumn Header="Date"
                                     Binding="{Binding Path=Date, StringFormat='yyyy.MM.dd HH:mm:ss'}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False"/>
-                <DataGridTextColumn Header="UAH"
+                <DataGridTextColumn Header="Amount"
                                     Binding="{Binding Path=CardCurrencyAmount, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
 

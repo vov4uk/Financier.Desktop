@@ -6,6 +6,7 @@
     using Financier.Adapter;
     using Financier.DataAccess;
     using Financier.Desktop.Helpers;
+    using Financier.Desktop.Helpers.BankHelper;
     using Financier.Desktop.ViewModel;
     using Moq;
     using Xunit;

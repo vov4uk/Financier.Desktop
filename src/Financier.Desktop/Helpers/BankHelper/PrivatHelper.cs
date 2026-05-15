@@ -1,5 +1,4 @@
-﻿
-using CsvHelper;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Financier.Desktop.Helpers.Model;
 using Financier.Desktop.Wizards;
@@ -9,18 +8,19 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Tabula;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Financier.Desktop.Helpers
+namespace Financier.Desktop.Helpers.BankHelper
 {
-    public class AbankExcelHelper : IBankHelper
+    public class PrivatHelper : IBankHelper
     {
-        public string BankTitle => "A-Bank";
+        public string BankTitle => "Приват";
 
         public IEnumerable<BankTransaction> ParseReport(string filePath)
         {
-            List<Abank_Row> abankRows = new List<Abank_Row>();
-            var rows = MiniExcel.Query(filePath, useHeaderRow: true, excelType: ExcelType.XLSX, startCell: "A20");
+            List<Privat_Row> abankRows = new List<Privat_Row>();
+            var rows = MiniExcel.Query(filePath, useHeaderRow: true, excelType: ExcelType.XLSX, startCell: "A2");
 
             using (var csvStream = new MemoryStream())
             {
@@ -36,7 +36,7 @@ namespace Financier.Desktop.Helpers
                 }))
                 {
                     csvStream.Position = 0;
-                    var r = csv.GetRecords<Abank_Row>().ToList();
+                    var r = csv.GetRecords<Privat_Row>().ToList();
                     abankRows.AddRange(r);
                 }
             }

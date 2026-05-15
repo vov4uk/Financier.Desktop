@@ -24,6 +24,7 @@ using Financier.Converters;
 using System.Windows.Input;
 using Prism.Commands;
 using IAsyncCommand = Financier.Common.IAsyncCommand;
+using Financier.Desktop.Helpers.BankHelper;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -168,7 +169,6 @@ namespace Financier.Desktop.ViewModel
                 AddKeylessEntities(entities.OfType<TransactionAttribute>());
 
                 IsLoading = false;
-
 
                 DbManual.ResetAllManuals();
                 await DbManual.SetupAsync(db);

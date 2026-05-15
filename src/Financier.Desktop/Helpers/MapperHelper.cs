@@ -4,7 +4,7 @@ using Financier.Converters;
 using Financier.Desktop.Data;
 using Financier.Desktop.Wizards;
 using Financier.Desktop.Helpers.Model;
-using static Financier.Desktop.Helpers.BankPdfHelperBase;
+using static Financier.Desktop.Helpers.BankHelper.BankPdfHelperBase;
 using System.Globalization;
 
 namespace Financier.Desktop.Helpers

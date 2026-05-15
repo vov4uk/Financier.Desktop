@@ -20,6 +20,8 @@ namespace Financier.Desktop.Wizards
         [Description("pdf")]
         Pumb,
         [Description("pdf")]
-        Pireus
+        Pireus,
+        [Description("pdf")]
+        Pko
     }
 }

@@ -10,6 +10,7 @@
     using Financier.DataAccess.Data;
     using Financier.Desktop.Wizards;
     using Financier.Desktop.Wizards.MonoWizard.ViewModel;
+    using Financier.Desktop.Helpers.BankHelper;
     using Financier.Tests.Common;
     using Newtonsoft.Json;
     using Xunit;
@@ -30,7 +31,7 @@
         public void LoadTransactions_UkrHeaders_TransactionsLoaded()
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = new Helpers.MonobankHelper().ParseReport(csvPath);
+            var mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Equal(46, mono.Count());
@@ -44,7 +45,7 @@
         {
             DbManual.SetupTests(new List<AccountFilterModel>());
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            IEnumerable<BankTransaction> mono = new Helpers.MonobankHelper().ParseReport(csvPath);
+            IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
@@ -70,7 +71,7 @@
             };
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            IEnumerable<BankTransaction> mono = new Helpers.MonobankHelper().ParseReport(csvPath);
+            IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
 
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(mono.ToList()));
         }
@@ -79,7 +80,7 @@
         public void LoadTransactions_Monobank_EmptyList()
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", Guid.NewGuid().ToString());
-            IEnumerable<BankTransaction> mono = new Helpers.MonobankHelper().ParseReport(csvPath);
+            IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
 
             Assert.Empty(mono);
         }
@@ -114,7 +115,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank_3_pages.pdf");
-            IEnumerable<BankTransaction> abank = new Helpers.ABankHelper().ParseReport(path);
+            IEnumerable<BankTransaction> abank = new Helpers.BankHelper.ABankHelper().ParseReport(path);
 
             Assert.Equal(17, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
@@ -151,7 +152,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.xlsx");
-            IEnumerable<BankTransaction> abank = new Helpers.AbankExcelHelper().ParseReport(path);
+            IEnumerable<BankTransaction> abank = new Helpers.BankHelper.ABankHelper().ParseReport(path);
 
             Assert.Equal(17, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
@@ -188,7 +189,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.eng.xlsx");
-            IEnumerable<BankTransaction> abank = new Helpers.AbankExcelHelper().ParseReport(path);
+            IEnumerable<BankTransaction> abank = new AbankExcelHelper().ParseReport(path);
 
             Assert.Equal(26, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
@@ -218,7 +219,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "privat.xlsx");
-            IEnumerable<BankTransaction> bank = new Helpers.PrivatHelper().ParseReport(path);
+            IEnumerable<BankTransaction> bank = new PrivatHelper().ParseReport(path);
 
             Assert.Equal(9, bank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
@@ -255,11 +256,50 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pireus.pdf");
-            IEnumerable<BankTransaction> pireus = new Helpers.PireusHelper().ParseReport(path);
+            IEnumerable<BankTransaction> pireus = new PireusHelper().ParseReport(path);
 
             Assert.Equal(111, pireus.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(pireus.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(pireus.Last()));
+        }
+
+        [Fact]
+        public void LoadTransactions_PKO_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2025, 5, 20, 0, 0, 0),
+                Description = "OTWARCIE RACHUNKU\r\n",
+                Balance = 0,
+                MCC = null,
+                Commission = null,
+                CardCurrencyAmount = 0,
+                OperationAmount = 0,
+                Cashback = null,
+                ExchangeRate = null,
+                OperationCurrency = ""
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2025, 6, 20, 0, 0, 0),
+                Description = "PRZELEW NA TELEFON WYCHODZĄCY ZEW.\r\nPIWOOD:  DO: 487*****867ODBIORCA PRZELEWU NA TELEFON",
+                Balance = 151.53,
+                Commission = null,
+                MCC = null,
+                CardCurrencyAmount = -19,
+                OperationAmount = -19,
+                Cashback = null,
+                ExchangeRate = null,
+                OperationCurrency = ""
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pko.pdf");
+            IEnumerable<BankTransaction> pko = new PKOHelper().ParseReport(path);
+
+            Assert.Equal(22, pko.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(pko.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(pko.Last()));
         }
 
         [Fact]
@@ -288,7 +328,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb.pdf");
-            IEnumerable<BankTransaction> bank = new Helpers.PumbHelper().ParseReport(path);
+            IEnumerable<BankTransaction> bank = new PumbHelper().ParseReport(path);
 
             Assert.Equal(25, bank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
@@ -321,7 +361,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb_2_pages.pdf");
-            IEnumerable<BankTransaction> bank = new Helpers.PumbHelper().ParseReport(path);
+            IEnumerable<BankTransaction> bank = new PumbHelper().ParseReport(path);
 
             Assert.Equal(37, bank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
@@ -358,7 +398,7 @@
             DbManual.SetupTests(projects);
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = new Helpers.MonobankHelper().ParseReport(csvPath);
+            var mono = new MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
@@ -445,7 +485,7 @@
             DbManual.SetupTests(projects);
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.transfer.csv");
-            var mono = new Helpers.MonobankHelper().ParseReport(csvPath);
+            var mono = new MonobankHelper().ParseReport(csvPath);
             var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };

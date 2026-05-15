@@ -238,6 +238,10 @@
                                   Label="Privat XLSX"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Privat}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/pko.png"
+                                  Label="PKO PDF"
+                                  Command="{Binding Path=ImportCommand}"
+                                  CommandParameter="{x:Static Wizard:WizardTypes.Pko}" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Transaction"
