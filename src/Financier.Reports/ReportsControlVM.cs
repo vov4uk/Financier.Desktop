@@ -40,6 +40,7 @@ namespace Financier.Reports
                     new TreeNode(typeof(ReportStructureActivesVM)),
                     new TreeNode(typeof(ReportStructureIncomeExpenseVM)),
                     new TreeNode(typeof(ByCategoryReportVM)),
+                    new TreeNode(typeof(ReportStructureSaldoVM)),
                 }
             };
 

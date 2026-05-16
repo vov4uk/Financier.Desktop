@@ -34,7 +34,7 @@ namespace Financier.Reports
         public SafePlotModel PlotModel 
         {
             get => plotModel;
-            private set
+            protected set
             {
                 plotModel = value;
                 RaisePropertyChanged(nameof(PlotModel));

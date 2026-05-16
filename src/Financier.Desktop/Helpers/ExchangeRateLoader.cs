@@ -1,13 +1,14 @@
 ﻿using Financier.Common.Model;
-using Financier.DataAccess;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
-using Microsoft.VisualBasic.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Financier.Desktop.Helpers
@@ -49,7 +50,7 @@ namespace Financier.Desktop.Helpers
                                     ToCurrencyId = toCurrency.Id ?? 0,
                                     Rate = rate,
                                     Date = updatedOn * 1000,
-                                    UpdatedOn = DateTime.UtcNow.Ticks
+                                    UpdatedOn = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
                                 });
                             }
                         }
@@ -63,6 +64,100 @@ namespace Financier.Desktop.Helpers
             }
 
             return result;
+        }
+
+        public async Task<List<CurrencyExchangeRate>> LoadRates()
+        {
+//1   UAH
+//2   USD
+//3   EUR
+//4   PLN
+
+            var result = new List<CurrencyExchangeRate>();
+            var files = Directory.GetFiles(@"C:\FFOutput\Rates", "*.json");
+
+            foreach (var file in files)
+            {
+                var json = await File.ReadAllTextAsync(file);
+                var rates = JsonConvert.DeserializeObject<CurrencyRates>(json);
+
+                result.Add(new CurrencyExchangeRate
+                {
+                    FromCurrencyId = 3,
+                    ToCurrencyId = 2,
+                    Rate = 1/rates.rates["EUR"],
+                    Date = rates.timestamp * 1000,
+                });
+                result.Add(new CurrencyExchangeRate
+                {
+                    FromCurrencyId = 1,
+                    ToCurrencyId = 2,
+                    Rate = 1 / rates.rates["UAH"],
+                    Date = rates.timestamp * 1000
+                });
+                result.Add(new CurrencyExchangeRate
+                {
+                    FromCurrencyId = 4,
+                    ToCurrencyId = 2,
+                    Rate = 1 / rates.rates["PLN"],
+                    Date = rates.timestamp * 1000
+                });
+            }
+
+            var nbuJson = await File.ReadAllTextAsync(@"C:\FFOutput\currency_rates.json");
+            var nbuRates = JsonConvert.DeserializeObject<List<rurrencyRates>>(nbuJson);
+
+            var startDate = new DateTime(2026, 5, 1);
+            for (int i = 0; i < 150; i++)
+            {
+                var currentDate = startDate.AddMonths(-1 * i);
+                var currentDateString = currentDate.ToString("dd.MM.yyyy");
+                long unixTime = ((DateTimeOffset)currentDate).ToUnixTimeSeconds() * 1000;
+
+                var pln = nbuRates.FirstOrDefault(x => x.date == currentDateString && x.letter_code == "PLN");
+                var eur = nbuRates.FirstOrDefault(x => x.date == currentDateString && x.letter_code == "EUR");
+
+                if (pln != null)
+                {
+                    float plnRate = pln.official_rate.Value / pln.quantity.Value;
+
+                    result.Add(new CurrencyExchangeRate
+                    {
+                        FromCurrencyId = 1,
+                        ToCurrencyId = 4,
+                        Rate = 1 / plnRate,
+                        Date = unixTime
+                    });
+                    result.Add(new CurrencyExchangeRate
+                    {
+                        FromCurrencyId = 4,
+                        ToCurrencyId = 1,
+                        Rate = plnRate,
+                        Date = unixTime
+                    });
+                }
+
+                if (eur != null)
+                {
+                    float eurRate = eur.official_rate.Value / eur.quantity.Value;
+                    result.Add(new CurrencyExchangeRate
+                    {
+                        FromCurrencyId = 1,
+                        ToCurrencyId = 3,
+                        Rate = 1 / eurRate,
+                        Date = unixTime
+                    });
+                    result.Add(new CurrencyExchangeRate
+                    {
+                        FromCurrencyId = 3,
+                        ToCurrencyId = 1,
+                        Rate = eurRate,
+                        Date = unixTime
+                    });
+                }
+            }
+
+                return result;
         }
 
         private string buildUrl(string fromCurrency, string toCurrency)
@@ -81,5 +176,34 @@ namespace Financier.Desktop.Helpers
 
             return (updated, currencyProperty.Name, currencyProperty.Value.Value<float>());
         }
+    }
+
+    public class CurrencyRates
+    {
+        public string disclaimer { get; set; }
+        public string license { get; set; }
+        public long timestamp { get; set; }
+        public string @base { get; set; }
+        public Dictionary<string, float> rates { get; set; }
+    }
+
+    [DebuggerDisplay("{date}--{official_rate}")]
+    public class rurrencyRates
+    {
+        //Дата,Час,Код цифровий, Код літерний,Кількість одиниць, Назва валюти,"Офіційний курс гривні, грн",Примітка
+
+        public string date { get; set; }
+
+        public int code { get; set; }
+
+        public string letter_code { get; set; }
+
+        public int? quantity { get; set; }
+
+        public string currency_name { get; set; }
+
+        public float? official_rate { get; set; }
+
+        public string note { get; set; }
     }
 }

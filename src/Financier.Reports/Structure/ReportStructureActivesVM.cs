@@ -21,6 +21,7 @@ SELECT account_title,
        balance,
        symbol,
        balance_default_crr,
+       balance_usd,
        default_crr_symbol,
        date
 FROM   (SELECT a.title AS account_title,
@@ -41,6 +42,14 @@ FROM   (SELECT a.title AS account_title,
                                                         AND from_currency_id = c._id
                                                         AND((t.datetime BETWEEN rate_date AND rate_date_end) OR rate_date_end = 253402293599000 )), 0)
                END AS balance_default_crr,
+               CASE( SELECT _id FROM currency WHERE name = 'USD')
+               WHEN c._id THEN r.balance / 100.0
+               ELSE Round((r.balance / 100.0 ) * (SELECT rate
+                                                  FROM v_currency_exchange_rate
+                                                  WHERE to_currency_id = (SELECT _id FROM currency WHERE name = 'USD')
+                                                        AND from_currency_id = c._id
+                                                        AND((t.datetime BETWEEN rate_date AND rate_date_end) OR rate_date_end = 253402293599000 )), 0)
+               END AS balance_usd,
                (SELECT symbol FROM   currency WHERE  is_default = 1) AS default_crr_symbol,
                Date(t.datetime / 1000, 'unixepoch') AS date
         FROM running_balance r

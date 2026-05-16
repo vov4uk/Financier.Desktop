@@ -419,7 +419,7 @@ namespace Financier.Desktop.ViewModel
         public async Task UpdateExchangeRates()
         {
             var exchangeRateLoader = new ExchangeRateLoader(db);
-            var exchangeRates = await exchangeRateLoader.LoadExchangeRates();
+            var exchangeRates = await exchangeRateLoader.LoadRates();
 
             using var uow = db.CreateUnitOfWork();
             var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();
