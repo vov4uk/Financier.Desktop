@@ -94,6 +94,7 @@
     <Resource Include="Images\pumb.png" />
     <Resource Include="Images\save_as_db.png" />
     <Resource Include="Images\folder.png" />
+    <Resource Include="Images\rules.png" />
   </ItemGroup>
 
   <ItemGroup>

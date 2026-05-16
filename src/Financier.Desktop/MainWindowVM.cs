@@ -55,6 +55,7 @@ namespace Financier.Desktop.ViewModel
         private bool isLoading;
         private PayeesVM payeesVm;
         private ProjectsVM projectsVm;
+        private RulesVM rulesVm;
 
         public MainWindowVM(IDialogWrapper dialogWrapper,
             IFinancierDatabaseFactory dbFactory,
@@ -90,6 +91,7 @@ namespace Financier.Desktop.ViewModel
                 RaisePropertyChanged(nameof(IsLocationPageSelected));
                 RaisePropertyChanged(nameof(IsProjectPageSelected));
                 RaisePropertyChanged(nameof(IsPayeePageSelected));
+                RaisePropertyChanged(nameof(IsRulesPageSelected));
             }
         }
 
@@ -100,6 +102,8 @@ namespace Financier.Desktop.ViewModel
         public bool IsProjectPageSelected => currentPage is ProjectsVM;
 
         public bool IsTransactionPageSelected => currentPage is BlotterVM;
+
+        public bool IsRulesPageSelected => currentPage is RulesVM;
 
         public string OpenBackupPath
         {
@@ -128,6 +132,12 @@ namespace Financier.Desktop.ViewModel
         {
             get => projectsVm;
             private set => SetProperty(ref projectsVm, value);
+        }
+
+        public RulesVM Rules
+        {
+            get => rulesVm;
+            private set => SetProperty(ref rulesVm, value);
         }
 
         public bool IsLoading
@@ -222,6 +232,7 @@ namespace Financier.Desktop.ViewModel
             Locations = null;
             Payees = null;
             Projects = null;
+            Rules = null;
         }
 
         private void CreatePages()
@@ -230,6 +241,7 @@ namespace Financier.Desktop.ViewModel
             Locations = new LocationsVM(db, dialogWrapper);
             Payees = new PayeesVM(db, dialogWrapper);
             Projects = new ProjectsVM(db, dialogWrapper);
+            Rules = new RulesVM(db, dialogWrapper);
 
             _pages.TryAdd(typeof(BlotterModel), Blotter);
             _pages.TryAdd(typeof(LocationModel), Locations);
@@ -257,6 +269,8 @@ namespace Financier.Desktop.ViewModel
                     return GetOrCreatePage<CategoryTreeModel, CategoriesVM>();
                 case nameof(ExchangeRateModel):
                     return GetOrCreatePage<ExchangeRateModel, ExchangeRatesVM>();
+                case nameof(RulesModel):
+                    return GetOrCreatePage<RulesModel, RulesVM>();
                 case nameof(ReportsControlVM):
                     {
                         if (!_pages.ContainsKey(type))
@@ -419,7 +433,7 @@ namespace Financier.Desktop.ViewModel
         public async Task UpdateExchangeRates()
         {
             var exchangeRateLoader = new ExchangeRateLoader(db);
-            var exchangeRates = await exchangeRateLoader.LoadRates();
+            var exchangeRates = await exchangeRateLoader.LoadExchangeRates();
 
             using var uow = db.CreateUnitOfWork();
             var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();

@@ -41,6 +41,9 @@
             <DataTemplate DataType="{x:Type reports:ReportsControlVM}">
                 <reports:ReportsControl/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:RulesVM}">
+                <View:RulesView/>
+            </DataTemplate>
             <x:Type x:Key="AccountType" TypeName="data:AccountModel" />
             <x:Type x:Key="CategoryType" TypeName="data:CategoryTreeModel" />
             <x:Type x:Key="ProjectType" TypeName="data:ProjectModel" />
@@ -50,6 +53,7 @@
             <x:Type x:Key="CurrencyExchangeRateType" TypeName="data:ExchangeRateModel" />
             <x:Type x:Key="TransactionsViewType" TypeName="data:BlotterModel" />
             <x:Type x:Key="ReportsControl" TypeName="reports:ReportsControlVM" />
+            <x:Type x:Key="RulesType" TypeName="data:RulesModel" />
             <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InverseBooleanConverter x:Key="InverseBool" />
@@ -201,6 +205,13 @@
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource ReportsControl}" />
                 </RibbonGroup>
+                <RibbonGroup x:Name="Rules"
+                             Header="Rules">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/rules.png"
+                                  Label="Rules"
+                                  Command="{Binding Path=MenuNavigateCommand}"
+                                  CommandParameter="{StaticResource RulesType}" />
+                </RibbonGroup>
                 <!--<RibbonGroup x:Name="Export" Header="Export" IsEnabled="False">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_export.png"
                                   Label="Export to excel" />
@@ -316,6 +327,21 @@
                                   Label="Delete"
                                   IsEnabled="False"
                                   Command="{Binding Path=Payees.DeleteCommand}" />
+                </RibbonGroup>
+                <RibbonGroup Header="Rule"
+                             Selector.IsSelected="{Binding Path=IsRulesPageSelected, Mode=OneWay}"
+                             Visibility="{Binding Path=IsRulesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                             DataContext="{Binding}">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
+                                  Label="Add"
+                                  Command="{Binding Path=Rules.AddCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_edit.png"
+                                  Label="Edit"
+                                  Command="{Binding Path=Rules.EditCommand}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
+                                  Label="Delete"
+                                  IsEnabled="False"
+                                  Command="{Binding Path=Rules.DeleteCommand}" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
