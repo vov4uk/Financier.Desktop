@@ -39,7 +39,7 @@ namespace Financier.Desktop.Helpers.BankHelper
                     {
                         PageArea page = ObjectExtractor.Extract(document, i + 1);
 
-                        IExtractionAlgorithm ea = new BasicExtractionAlgorithm();
+                        IExtractionAlgorithm ea = new SpreadsheetExtractionAlgorithm();
 
                         var pageTables = ea.Extract(page);
                         if (!pageTables.Any())

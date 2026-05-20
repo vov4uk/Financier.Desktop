@@ -1,26 +1,33 @@
 ﻿using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.DataAccess.Data;
+using Financier.Desktop.Data;
+using Financier.Desktop.Helpers;
+using Financier.Desktop.Pages.Dialogs;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class Page3VM : WizardPageBaseVM
     {
+        private readonly IDialogWrapper _dialogWrapper;
         private DelegateCommand _clearAllNotesCommand;
         private DelegateCommand<FinancierTransactionDto> _deleteCommand;
+        private AsyncDelegateCommand<FinancierTransactionDto> _addRuleCommand;
         List<AccountFilterModel> accounts;
         private AccountFilterModel _monoAccount;
         private ObservableCollection<FinancierTransactionDto> financierTransactions;
         private static readonly Regex CardNumberRegex = new Regex(@"(\*)([0-9]{4})", RegexOptions.None, TimeSpan.FromMilliseconds(1000));
 
-        public Page3VM()
+        public Page3VM(IDialogWrapper dialogWrapper)
         {
+            this._dialogWrapper = dialogWrapper;
             Accounts = DbManual.Account
                 .OrderByDescending(x => x.IsActive)
                 .ThenBy(x => x.SortOrder)
@@ -32,6 +39,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             get
             {
                 return _deleteCommand ??= new DelegateCommand<FinancierTransactionDto>(tr => { financierTransactions.Remove(tr); });
+            }
+        }
+
+        public AsyncDelegateCommand<FinancierTransactionDto> AddRuleCommand
+        {
+            get
+            {
+                return _addRuleCommand ??= new AsyncDelegateCommand<FinancierTransactionDto>(tr => OpenRulesDialogAsync(tr.Note));
             }
         }
 
@@ -110,10 +125,71 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     MCC = mcc,
                     IsAmountNegative = amount < 0
                 };
+
+                if (!string.IsNullOrEmpty(newTr.Note))
+                {
+                    ApplyRules(newTr);
+                }
                 transToAdd.Add(newTr);
             }
 
             FinancierTransactions = new ObservableCollection<FinancierTransactionDto>(transToAdd);
+        }
+
+        private void ApplyRules(FinancierTransactionDto transaction)
+        {
+            foreach (var rule in DbManual.Rules.Where(r => r.IsActive))
+            {
+                HashSet<int> mccCodes = new HashSet<int>();
+                if (rule.Condition == "MCC" && DbManual.MCCCategories.ContainsKey(rule.Description))
+                {
+                    var list = DbManual.MCCCategories[rule.Description];
+                    mccCodes = new HashSet<int>(list);
+                }
+
+                bool meetsCondition = false;
+                if (rule.Condition == "Description contains")
+                {
+                    if (transaction.Note.Contains(rule.Description, StringComparison.OrdinalIgnoreCase))
+                    {
+                        meetsCondition = true;
+                    }
+                }
+                else if (rule.Condition == "Description matches")
+                {
+                    if (transaction.Note.Equals(rule.Description, StringComparison.OrdinalIgnoreCase))
+                    {
+                        meetsCondition = true;
+                    }
+                }
+                else if (rule.Condition == "MCC")
+                {
+                    if (transaction.MCC > 0 && mccCodes.Contains(transaction.MCC))
+                    {
+                        meetsCondition = true;
+                    }
+                }
+
+                if (meetsCondition)
+                {
+                    if (rule.CategoryId.HasValue)
+                    {
+                        transaction.CategoryId = rule.CategoryId.Value;
+                    }
+                    if (rule.LocationId.HasValue)
+                    {
+                        transaction.LocationId = rule.LocationId.Value;
+                    }
+                    if (rule.PayeeId.HasValue)
+                    {
+                        transaction.PayeeId = rule.PayeeId.Value;
+                    }
+                    if (rule.ProjectId.HasValue)
+                    {
+                        transaction.ProjectId = rule.ProjectId.Value;
+                    }
+                }
+            }
         }
 
         private void ClearAllNotes()
@@ -188,6 +264,46 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
             accountId = 0;
             return false;
+        }
+
+        private async Task OpenRulesDialogAsync(string description)
+        {
+            RuleDTO rule = new RuleDTO()
+            {
+                Description = description,
+                Condition = "Description contains",
+                Created = DateTime.Now,
+                IsActive = true
+            };
+
+            RuleControlVM ruleVm = new RuleControlVM(rule);
+
+            var result = _dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, "Rule");
+
+            var updatedItem = result as RuleDTO;
+            if (updatedItem != null)
+            {
+                DbManual.Rules.Add(new RuleModel
+                {
+                    Description = updatedItem.Description,
+                    CategoryId = updatedItem.CategoryId,
+                    Condition = updatedItem.Condition,
+                    Created = updatedItem.Created,
+                    Id = DbManual.Rules.Count > 0 ? DbManual.Rules.Select(r => r.Id).Max().Value + 1 : 1,
+                    IsActive = updatedItem.IsActive,
+                    LocationId = updatedItem.LocationId,
+                    PayeeId = updatedItem.PayeeId,
+                    ProjectId = updatedItem.ProjectId
+                });
+
+                await DbManual.SaveRulesAsync();
+                await DbManual.LoadRulesAsync();
+
+                foreach (var transaction in FinancierTransactions.Where(x => !string.IsNullOrEmpty(x.Note)))
+                {
+                    ApplyRules(transaction);
+                }
+            }
         }
     }
 }

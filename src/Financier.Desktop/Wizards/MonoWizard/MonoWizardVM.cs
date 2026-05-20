@@ -4,20 +4,23 @@ using System.Linq;
 using System.Text.Json;
 using Financier.Common.Model;
 using Financier.DataAccess.Data;
+using Financier.Desktop.Helpers;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
     public class MonoWizardVM : WizardBaseVM
     {
+        private readonly IDialogWrapper _dialogWrapper;
         private readonly List<BankTransaction> monoTransactions;
         private readonly Dictionary<int, BlotterModel> lastTransactions;
         private readonly string Bank;
 
-        public MonoWizardVM(string bank, IEnumerable<BankTransaction> monoTransactions, Dictionary<int, BlotterModel> lastTransactions)
+        public MonoWizardVM(string bank, IEnumerable<BankTransaction> monoTransactions, Dictionary<int, BlotterModel> lastTransactions, IDialogWrapper dialogWrapper)
         {
             this.monoTransactions = new(monoTransactions);
             this.Bank = bank;
             this.lastTransactions = lastTransactions;
+            this._dialogWrapper = dialogWrapper;
             CreatePages();
             CurrentPage = Pages[0];
         }
@@ -57,7 +60,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 {
                     new Page1VM(Bank),
                     new Page2VM(monoTransactions, lastTransactions),
-                    new Page3VM()
+                    new Page3VM(_dialogWrapper)
                 }.AsReadOnly();
         }
 

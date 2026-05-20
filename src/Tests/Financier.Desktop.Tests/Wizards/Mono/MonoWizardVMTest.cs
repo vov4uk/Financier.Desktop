@@ -14,6 +14,8 @@
     using Financier.Tests.Common;
     using Newtonsoft.Json;
     using Xunit;
+    using Moq;
+    using Financier.Desktop.Helpers;
 
     public class MonoWizardVMTest
     {
@@ -22,7 +24,7 @@
         public void Constructor_ReceiveParameters_CurrentPageNotEmpty(List<BankTransaction> mono)
         {
             DbManual.SetupTests(new List<AccountFilterModel>());
-            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>(), new Mock<IDialogWrapper>().Object);
 
             Assert.NotNull(vm.CurrentPage);
         }
@@ -32,7 +34,7 @@
         {
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             var mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>(), new Mock<IDialogWrapper>().Object);
 
             Assert.Equal(46, mono.Count());
             Assert.Equal(46, ((Page2VM)vm.Pages[1]).GetMonoTransactions().Count);
@@ -46,7 +48,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>());
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
             IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>(), new Mock<IDialogWrapper>().Object);
 
             Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
             Assert.NotNull(vm.CurrentPage);
@@ -152,7 +154,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.xlsx");
-            IEnumerable<BankTransaction> abank = new Helpers.BankHelper.ABankHelper().ParseReport(path);
+            IEnumerable<BankTransaction> abank = new Helpers.BankHelper.AbankExcelHelper().ParseReport(path);
 
             Assert.Equal(17, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
@@ -399,7 +401,7 @@
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
             var mono = new MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>(), new Mock<IDialogWrapper>().Object);
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
 
@@ -486,7 +488,7 @@
 
             var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.transfer.csv");
             var mono = new MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>());
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>(), new Mock<IDialogWrapper>().Object);
 
             vm.RequestClose += (sender, args) => { output = sender as List<Transaction>; };
             vm.MoveNextCommand.Execute();

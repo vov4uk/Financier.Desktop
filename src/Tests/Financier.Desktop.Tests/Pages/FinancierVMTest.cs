@@ -254,7 +254,7 @@
 
         [Theory]
         [AutoMoqData]
-        public async Task Projects_AddRaised_NewItemAdded(TagDto result)
+        public async Task Projects_AddRaised_NewItemAdded(TagDTO result)
         {
             var location = new Project() { Id = 0 };
             Project[] actual = null;

@@ -182,6 +182,7 @@ namespace Financier.Desktop.ViewModel
 
                 DbManual.ResetAllManuals();
                 await DbManual.SetupAsync(db);
+                await DbManual.LoadRulesAsync();
 
                 await NavigateToType(typeof(BlotterModel));
             }
@@ -247,6 +248,7 @@ namespace Financier.Desktop.ViewModel
             _pages.TryAdd(typeof(LocationModel), Locations);
             _pages.TryAdd(typeof(PayeeModel), Payees);
             _pages.TryAdd(typeof(ProjectModel), Projects);
+            _pages.TryAdd(typeof(RuleModel), Rules);
         }
 
         private BindableBase GetOrCreatePage(Type type)
@@ -269,8 +271,8 @@ namespace Financier.Desktop.ViewModel
                     return GetOrCreatePage<CategoryTreeModel, CategoriesVM>();
                 case nameof(ExchangeRateModel):
                     return GetOrCreatePage<ExchangeRateModel, ExchangeRatesVM>();
-                case nameof(RulesModel):
-                    return GetOrCreatePage<RulesModel, RulesVM>();
+                case nameof(RuleModel):
+                    return Rules ??= GetOrCreatePage<RuleModel, RulesVM>();
                 case nameof(ReportsControlVM):
                     {
                         if (!_pages.ContainsKey(type))
@@ -332,7 +334,7 @@ namespace Financier.Desktop.ViewModel
                     lastTransactions.Add(acc.Id.Value, last);
                 }
 
-                var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions);
+                var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions, dialogWrapper);
 
                 var output = dialogWrapper.ShowWizard(vm);
 

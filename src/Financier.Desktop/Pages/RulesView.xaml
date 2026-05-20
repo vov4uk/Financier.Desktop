@@ -15,6 +15,16 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <fcrd:DataGridAutoHeaders ItemsSource="{Binding Path=Entities}" />
+        <fcrd:DataGridAutoHeaders ItemsSource="{Binding Path=Entities, UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding SelectedValue}"
+                                  CanUserAddRows="False"
+                                  FontSize="14"
+                                  IsReadOnly="True">
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick"
+                              Command="{Binding EditCommand}"
+                              CommandParameter="{Binding SelectedValue}" />
+            </DataGrid.InputBindings>
+        </fcrd:DataGridAutoHeaders>
     </Grid>
 </UserControl>

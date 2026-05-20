@@ -18,8 +18,7 @@
     </UserControl.Resources>
     <GroupBox Margin="5"
               Header="Location details"
-              FontSize="12"
-              Background="{StaticResource WindowBackgroundBrush}">
+              FontSize="12">
         <GroupBox.Resources>
             <Style TargetType="{x:Type Image}">
                 <Setter Property="Height" Value="20" />
