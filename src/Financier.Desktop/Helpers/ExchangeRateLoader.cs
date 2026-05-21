@@ -133,12 +133,12 @@ namespace Financier.Desktop.Helpers
             return result;
         }
 
-        private string buildFreeCurrencyUrl(string fromCurrency, string toCurrency)
+        private static string buildFreeCurrencyUrl(string fromCurrency, string toCurrency)
         {
             return "https://freecurrencyrates.com/api/action.php?s=fcr&iso=" + toCurrency + "&f=" + fromCurrency + "&v=1&do=cvals";
         }
 
-        public (long UpdatedOn, string Currency, float Rate) ParseExchangeRateJson(string json)
+        public static (long UpdatedOn, string Currency, float Rate) ParseExchangeRateJson(string json)
         {
             var obj = JObject.Parse(json);
             var updated = long.Parse(obj["updated"].Value<string>());

@@ -1,9 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="iNKORE.UI.WPF.Emojis" Version="0.3.6.4" />
-    <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
-    <PackageReference Include="Prism.Core" Version="9.0.537" />
-    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.129" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.26.0.140279">
+    <PackageReference Include="iNKORE.UI.WPF.Emojis" />
+    <PackageReference Include="OxyPlot.Wpf" />
+    <PackageReference Include="Prism.Core" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" />
+    <PackageReference Include="SonarAnalyzer.CSharp">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

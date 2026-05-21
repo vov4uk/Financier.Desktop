@@ -217,7 +217,7 @@
             };
 
             List<CategoryModel> categories = new List<CategoryModel> { new CategoryModel { Title = "Hot water", Id = 100 } };
-            List<LocationModel> locations = new List<LocationModel> { new LocationModel { Id = 200, Title = "Google", Address = "Google Store" , IsActive = true } };
+            List<LocationModel> locations = new List<LocationModel> { new LocationModel { Id = 200, Title = "Google", Address = "Google Store", IsActive = true } };
             List<CurrencyModel> currencies = new List<CurrencyModel> { new CurrencyModel { Id = 1, Name = "USD" }, new CurrencyModel { Id = 2, Name = "UAH" } };
             DbManual.SetupTests(categories);
             DbManual.SetupTests(locations);
@@ -292,7 +292,7 @@
                 Condition = "Description contains",
                 Description = "Amazon",
                 CategoryId = categoryId,
-                Created = DateTime.Now
+                Created = DateTime.Now,
             };
 
             var transaction = new BankTransaction
@@ -316,7 +316,6 @@
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
-
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
@@ -339,7 +338,7 @@
                 Description = "Exact Match",
                 CategoryId = categoryId,
                 PayeeId = payeeId,
-                Created = DateTime.Now
+                Created = DateTime.Now,
             };
 
             var transaction = new BankTransaction
@@ -388,7 +387,7 @@
                 CategoryId = categoryId,
                 LocationId = locationId,
                 ProjectId = projectId,
-                Created = DateTime.Now
+                Created = DateTime.Now,
             };
 
             var transaction = new BankTransaction
@@ -412,7 +411,6 @@
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
-
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
@@ -434,7 +432,7 @@
                 Condition = "Description contains",
                 Description = "NonExistentText",
                 CategoryId = 100,
-                Created = DateTime.Now
+                Created = DateTime.Now,
             };
 
             var transaction = new BankTransaction
@@ -477,7 +475,7 @@
                 Condition = "Description contains",
                 Description = "Apple",
                 CategoryId = 100,
-                Created = DateTime.Now
+                Created = DateTime.Now,
             };
 
             var transaction = new BankTransaction
@@ -522,7 +520,7 @@
                 Condition = "Description contains",
                 Description = "google",
                 CategoryId = categoryId,
-                Created = DateTime.Now
+                Created = DateTime.Now,
             };
 
             var transaction = new BankTransaction
@@ -567,7 +565,7 @@
                 Condition = "Description contains",
                 Description = "Meta",
                 CategoryId = categoryId1,
-                Created = DateTime.Now
+                Created = DateTime.Now,
             };
 
             var rule2 = new RuleModel
@@ -577,7 +575,7 @@
                 Condition = "Description contains",
                 Description = "Paymnt",
                 CategoryId = categoryId2,
-                Created = DateTime.Now.AddSeconds(1)
+                Created = DateTime.Now.AddSeconds(1),
             };
 
             var transaction = new BankTransaction
@@ -601,7 +599,6 @@
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
-
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId2, vm.FinancierTransactions[0].CategoryId);
@@ -621,7 +618,7 @@
                 Condition = "Description contains",
                 Created = DateTime.Now,
                 IsActive = true,
-                CategoryId = 1000
+                CategoryId = 1000,
             };
 
             _dialogWrapperMock
@@ -659,7 +656,7 @@
                 Note = description,
                 MonoAccountId = account.Id,
                 FromAmount = 10000,
-                MCC = 0
+                MCC = 0,
             });
 
             // Assert
@@ -703,7 +700,7 @@
                 Note = description,
                 MonoAccountId = account.Id,
                 FromAmount = 10000,
-                MCC = 0
+                MCC = 0,
             });
 
             // Assert
@@ -726,7 +723,7 @@
                 CategoryId = 100,
                 LocationId = 50,
                 PayeeId = 25,
-                ProjectId = 10
+                ProjectId = 10,
             };
 
             List<BankTransaction> transactions = new List<BankTransaction>
@@ -765,7 +762,7 @@
                 Note = description,
                 MonoAccountId = account.Id,
                 FromAmount = 10000,
-                MCC = 0
+                MCC = 0,
             });
 
             // Assert

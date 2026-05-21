@@ -692,7 +692,7 @@
                 .Returns(output);
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new(MockBehavior.Strict);
+            this.trMock = new (MockBehavior.Strict);
             this.uowMock.Setup(x => x.GetRepository<Transaction>())
                 .Returns(this.trMock.Object);
             this.dbMock.Setup(x => x.AddTransactionsAsync(It.IsAny<List<Transaction>>()))

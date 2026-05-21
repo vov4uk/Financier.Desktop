@@ -135,7 +135,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             FinancierTransactions = new ObservableCollection<FinancierTransactionDto>(transToAdd);
         }
 
-        private void ApplyRules(FinancierTransactionDto transaction)
+        private static void ApplyRules(FinancierTransactionDto transaction)
         {
             foreach (var rule in DbManual.Rules.Where(r => r.IsActive))
             {
@@ -199,7 +199,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        private (int categoryId, int locationId, int accountId) ParseDescription(string description)
+        private static (int categoryId, int locationId, int accountId) ParseDescription(string description)
         {
             int accountId = 0, locationId = 0, categoryId = 0;
             TryParseLocation(description, out locationId);

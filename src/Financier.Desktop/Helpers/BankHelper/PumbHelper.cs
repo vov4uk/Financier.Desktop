@@ -63,7 +63,7 @@ namespace Financier.Desktop.Helpers.BankHelper
                     OperationCurrency = operationCurrency,
                     OperationAmount = GetDouble($"{sign}{operationAmount}"),
                     CardCurrencyAmount = GetDouble($"{sign}{cardCurrenyAmount}"),
-                    ExchangeRate = operationAmount == cardCurrenyAmount ? null : (double)Math.Round(cardCurrenyAmount / operationAmount, 4),
+                    ExchangeRate = operationAmount == cardCurrenyAmount ? null : Math.Round(cardCurrenyAmount / operationAmount, 4),
                     Description = $"{item.Details} {item.TransactionType}",
                     Date = item.Date
                 };

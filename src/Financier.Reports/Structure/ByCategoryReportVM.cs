@@ -1,14 +1,13 @@
-﻿using Financier.DataAccess.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using OxyPlot;
+using System.Linq;
+using Financier.Common.Attribute;
 using Financier.Converters;
+using Financier.DataAccess.Abstractions;
 using Financier.Reports.Structure;
 using OxyPlot.Axes;
-using OxyPlot.Series;
-using System.Linq;
 using OxyPlot.Legends;
-using Financier.Common.Attribute;
+using OxyPlot.Series;
 
 namespace Financier.Reports
 {

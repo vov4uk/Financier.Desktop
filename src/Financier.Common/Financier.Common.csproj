@@ -1,16 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.129" />
-    <PackageReference Include="iNKORE.UI.WPF.Emojis" Version="0.3.6.4" />
-    <PackageReference Include="Prism.Core" Version="9.0.537" />
-    <PackageReference Include="WPFChromeTabsMVVM" Version="1.4.0" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" />
+    <PackageReference Include="iNKORE.UI.WPF.Emojis" />
+    <PackageReference Include="Prism.Core" />
+    <PackageReference Include="WPFChromeTabsMVVM" />
   </ItemGroup>
 
   <ItemGroup>

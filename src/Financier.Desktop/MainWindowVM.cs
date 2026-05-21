@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
 using ToastNotifications.Position;
 using Application = System.Windows.Application;
 using IAsyncCommand = Financier.Common.IAsyncCommand;
@@ -530,7 +531,10 @@ namespace Financier.Desktop.ViewModel
                     }
                 }
             }
-
+            else
+            {
+                notifier.ShowWarning("Exchange rates provider not configured.", new ToastNotifications.Core.MessageOptions { ShowCloseButton = true });
+            }
         }
     }
 }

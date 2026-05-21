@@ -21,6 +21,7 @@
     {
         private readonly Mock<IDialogWrapper> dialogMock;
         private FinancierDatabase db;
+
         public BlotterVMIntegrationTests()
         {
             this.dialogMock = new Mock<IDialogWrapper>();
@@ -200,6 +201,7 @@
 
                 uow.SaveChanges();
             }
+
             DbManual.ResetAllManuals();
             await DbManual.SetupAsync(db);
 
@@ -228,7 +230,7 @@
             await vm.ClearFiltersCommand.ExecuteAsync();
             vm.Project = DbManual.Project.FirstOrDefault(x => x.Id == 1);
             await vm.RefreshDataCommand.ExecuteAsync();
-            Assert.Equal(1, vm.Entities.Count);
+            Assert.Single(vm.Entities);
 
             await vm.ClearFiltersCommand.ExecuteAsync();
             vm.Location = DbManual.Location.FirstOrDefault(x => x.Id == 1);
@@ -238,7 +240,7 @@
             await vm.ClearFiltersCommand.ExecuteAsync();
             vm.Payee = DbManual.Payee.FirstOrDefault(x => x.Id == 1);
             await vm.RefreshDataCommand.ExecuteAsync();
-            Assert.Equal(1, vm.Entities.Count);
+            Assert.Single(vm.Entities);
 
             await vm.ClearFiltersCommand.ExecuteAsync();
             vm.From = UnixTimeConverter.Convert(1645004465000);
@@ -253,7 +255,7 @@
             vm.Category = DbManual.Category.FirstOrDefault(x => x.Id == 37);
             vm.From = UnixTimeConverter.Convert(1644825372000);
             await vm.RefreshDataCommand.ExecuteAsync();
-            Assert.Equal(1, vm.Entities.Count);
+            Assert.Single(vm.Entities);
         }
 
         private async Task SetupDb(List<Transaction> transactions = null)
@@ -273,29 +275,31 @@
 
                 uow.SaveChanges();
             }
+
             DbManual.ResetAllManuals();
             await DbManual.SetupAsync(db);
         }
 
         private async Task<(List<Account> Accounts, List<RunningBalance> Balances, List<Transaction> Transactions)> GetResults()
         {
-            List<Account> Accounts = new();
-            List<Transaction> Transactions = new();
-            List<RunningBalance> Balances = new();
+            List<Account> accounts = new ();
+            List<Transaction> transactions = new ();
+            List<RunningBalance> balances = new ();
             using (var uow = db.CreateUnitOfWork())
             {
-                Transactions = await uow.GetRepository<Transaction>().GetAllAsync();
-                Balances = await uow.GetRepository<RunningBalance>().GetAllAsync();
-                Accounts = await uow.GetRepository<Account>().GetAllAsync();
+                transactions = await uow.GetRepository<Transaction>().GetAllAsync();
+                balances = await uow.GetRepository<RunningBalance>().GetAllAsync();
+                accounts = await uow.GetRepository<Account>().GetAllAsync();
             }
-            return (Accounts, Balances, Transactions);
+
+            return (accounts, balances, transactions);
         }
 
-        private string EditSplitTransactionRunningBalancesJson =>
+        private const string EditSplitTransactionRunningBalancesJson =
 "[{\"TransactionId\":27160,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-24230}," +
 "{\"TransactionId\":27173,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":834}]";
 
-        private string CreateSplitTransactionRunningBalancesJson => "[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-100300}," +
+        private const string CreateSplitTransactionRunningBalancesJson = "[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-100300}," +
 "{\"TransactionId\":3,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":100000}]";
 
         private const string CreateTransferDiffCurrencyRunningBalancesJson =
@@ -329,7 +333,7 @@
 "{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-54703}" +
 "]";
 
-        private string CreateSplitTransactionDifferentCurrenciesRunningBalancesJson =>
+        private const string CreateSplitTransactionDifferentCurrenciesRunningBalancesJson =
  "[{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-54703}]";
 
         private const string CreateTransactionHomeCurrencyRunningBalancesJson =
@@ -368,6 +372,7 @@
             {
                 transaction.SubTransactions.Add(item);
             }
+
             transaction.SubTransactions.Add(transfer);
             return transaction;
         }
@@ -394,6 +399,7 @@
             {
                 transaction.SubTransactions.Add(item);
             }
+
             return transaction;
         }
 
@@ -441,8 +447,8 @@
 "{\"IsSubTransaction\":false,\"Date\":\"2022-02-15T00:00:00\",\"Time\":\"2022-02-15T17:47:19\",\"FromAccountId\":1,\"ToAccountId\":2," +
 "\"FromAccountCurrency\":{\"Id\":1,\"Name\":\"UAH\",\"Title\":\"Ukrainian hryvnia\",\"Symbol\":\"₴\",\"IsDefault\":true}," +
 "\"FromAmount\":-100000,\"IsToAmountVisible\":false," +
-"\"FromAccount\":{\"Id\":1,\"IsActive\":true,\"SortOrder\":1,\"Title\":\"Мій Гаманець\",\"Type\":\"CASH\",\"CurrencyName\":\"UAH\",\"CurrencyId\":1,\"TotalAmount\":233000},"+
-"\"ToAccount\":{\"Id\":2,\"IsActive\":true,\"SortOrder\":2,\"Title\":\"Мій Monobank\",\"Type\":\"DEBIT_CARD\",\"CurrencyName\":\"UAH\",\"CurrencyId\":1,\"TotalAmount\":1847968},"+
+"\"FromAccount\":{\"Id\":1,\"IsActive\":true,\"SortOrder\":1,\"Title\":\"Мій Гаманець\",\"Type\":\"CASH\",\"CurrencyName\":\"UAH\",\"CurrencyId\":1,\"TotalAmount\":233000}," +
+"\"ToAccount\":{\"Id\":2,\"IsActive\":true,\"SortOrder\":2,\"Title\":\"Мій Monobank\",\"Type\":\"DEBIT_CARD\",\"CurrencyName\":\"UAH\",\"CurrencyId\":1,\"TotalAmount\":1847968}," +
 "\"ToAccountCurrency\":{\"Id\":1,\"Name\":\"UAH\",\"Title\":\"Ukrainian hryvnia\",\"Symbol\":\"₴\",\"IsDefault\":true}," +
 "\"ToAmount\":100000,\"Rate\":1.0,\"Note\":null,\"IsAmountNegative\":true,\"RealFromAmount\":-100000,\"DateTime\":\"2022-02-15T17:47:19\",\"Id\":0}");
             transaction.SubTransactions.Clear();
@@ -496,7 +502,7 @@
 "{\"_id\":37,\"title\":\"Продукти🍌\",  \"left\":25,  \"right\":26, \"last_location_id\":0,\"last_project_id\":0,\"sort_order\":0,\"type\":0,\"updated_on\":0,\"remote_key\":null,\"is_active\":1}," +
 "{\"_id\":43,\"title\":\"Молочні🐮\",   \"left\":9,   \"right\":14, \"last_location_id\":0,\"last_project_id\":0,\"sort_order\":0,\"type\":0,\"updated_on\":0,\"remote_key\":null,\"is_active\":1}," +
 "{\"_id\":68,\"title\":\"Солодощі🍫\",   \"left\":27,  \"right\":28, \"last_location_id\":0,\"last_project_id\":0,\"sort_order\":0,\"type\":0,\"updated_on\":0,\"remote_key\":null,\"is_active\":1}," +
-"{\"_id\":76,\"title\":\"Комісія 📦\",  \"left\":162, \"right\":163,\"last_location_id\":0,\"last_project_id\":0,\"sort_order\":0,\"type\":0,\"updated_on\":0,\"remote_key\":null,\"is_active\":1},"+
+"{\"_id\":76,\"title\":\"Комісія 📦\",  \"left\":162, \"right\":163,\"last_location_id\":0,\"last_project_id\":0,\"sort_order\":0,\"type\":0,\"updated_on\":0,\"remote_key\":null,\"is_active\":1}," +
 "{\"_id\":84,\"title\":\"Фрукти🍇\",    \"left\":22,  \"right\":23, \"last_location_id\":0,\"last_project_id\":0,\"sort_order\":0,\"type\":0,\"updated_on\":0,\"remote_key\":null,\"is_active\":1}" +
 "]");
         }
@@ -560,6 +566,5 @@
 
         private const string DuplicateTransactionHomeCurrency =
 "[{\"_id\":1,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-10000,\"to_amount\":0,\"datetime\":1644060576000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,\"payee_id\":0,\"parent_id\":0,\"updated_on\":0,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,\"blob_key\":null}]";
-
     }
 }

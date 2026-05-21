@@ -99,7 +99,7 @@
                 CardCurrencyAmount = 2000.0,
                 OperationAmount = 2000.0,
                 Cashback = 0.0,
-                ExchangeRate = 0.0
+                ExchangeRate = 0.0,
             };
 
             var last = new BankTransaction
@@ -112,7 +112,7 @@
                 CardCurrencyAmount = 2000.0,
                 OperationAmount = 2000.0,
                 Cashback = 0.0,
-                ExchangeRate = 0.0
+                ExchangeRate = 0.0,
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank_3_pages.pdf");
@@ -136,7 +136,7 @@
                 CardCurrencyAmount = 2000.0,
                 OperationAmount = 2000.0,
                 Cashback = 0.0,
-                ExchangeRate = 0.0
+                ExchangeRate = 0.0,
             };
 
             var last = new BankTransaction
@@ -149,7 +149,7 @@
                 CardCurrencyAmount = 2000.0,
                 OperationAmount = 2000.0,
                 Cashback = 0.0,
-                ExchangeRate = 0.0
+                ExchangeRate = 0.0,
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.xlsx");
@@ -173,7 +173,7 @@
                 CardCurrencyAmount = 51.85,
                 OperationAmount = 51.85,
                 Cashback = 0.0,
-                ExchangeRate = 0.0
+                ExchangeRate = 0.0,
             };
 
             var last = new BankTransaction
@@ -186,7 +186,7 @@
                 CardCurrencyAmount = -472.92,
                 OperationAmount = -472.92,
                 Cashback = 5.67,
-                ExchangeRate = 0.0
+                ExchangeRate = 0.0,
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.eng.xlsx");
@@ -216,7 +216,6 @@
                 Balance = 320.46,
                 CardCurrencyAmount = -455.0,
                 OperationAmount = -455.0,
-
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "privat.xlsx");
@@ -240,7 +239,7 @@
                 CardCurrencyAmount = -209.68,
                 OperationAmount = -209.68,
                 Cashback = null,
-                ExchangeRate = null
+                ExchangeRate = null,
             };
 
             var last = new BankTransaction
@@ -253,7 +252,7 @@
                 CardCurrencyAmount = -22.9,
                 OperationAmount = -22.9,
                 Cashback = null,
-                ExchangeRate = null
+                ExchangeRate = null,
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pireus.pdf");
@@ -278,7 +277,7 @@
                 OperationAmount = 0,
                 Cashback = null,
                 ExchangeRate = null,
-                OperationCurrency = ""
+                OperationCurrency = string.Empty,
             };
 
             var last = new BankTransaction
@@ -292,7 +291,7 @@
                 OperationAmount = -19,
                 Cashback = null,
                 ExchangeRate = null,
-                OperationCurrency = ""
+                OperationCurrency = string.Empty,
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pko.pdf");
@@ -314,7 +313,7 @@
                 OperationAmount = -174.0,
                 OperationCurrency = "UAH",
                 Commission = 0.0,
-                Balance = 0.0
+                Balance = 0.0,
             };
 
             var last = new BankTransaction
@@ -325,7 +324,7 @@
                 OperationAmount = 9372.16,
                 OperationCurrency = "UAH",
                 Commission = 0.0,
-                Balance = 0.0
+                Balance = 0.0,
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb.pdf");
@@ -358,7 +357,7 @@
                 OperationAmount = -3750.0,
                 OperationCurrency = "UAH",
                 Commission = 0.0,
-                Balance = 0.0
+                Balance = 0.0,
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb_2_pages.pdf");
@@ -381,14 +380,14 @@
             };
             List<ProjectModel> projects = new () { new () { Id = 1, IsActive = true, Title = "My project" } };
             List<CategoryModel> categories = new () { new () { Title = "Комуналка", Id = 1 } };
-            List<LocationModel> locations = new()
+            List<LocationModel> locations = new ()
             {
                 new () { Id = 200, Title = "Internet", Address = "Київстар", IsActive = true },
-                new () { Id = 201, Title = "Рошен", Address = "Roshen" , IsActive = true },
-                new () { Id = 202, Title = "Твій сир", Address = "Tvijsir" , IsActive = true },
-                new () { Id = 203, Title = "АТБ" , IsActive = true },
-                new () { Id = 204, Title = "Арсен" , IsActive = true },
-                new () { Id = 205, Title = "Сільпо" , IsActive = true },
+                new () { Id = 201, Title = "Рошен", Address = "Roshen", IsActive = true },
+                new () { Id = 202, Title = "Твій сир", Address = "Tvijsir", IsActive = true },
+                new () { Id = 203, Title = "АТБ", IsActive = true },
+                new () { Id = 204, Title = "Арсен", IsActive = true },
+                new () { Id = 205, Title = "Сільпо", IsActive = true },
             };
             List<CurrencyModel> currencies = new () { new () { Id = 1, Name = "USD" }, new () { Id = 2, Name = "UAH" } };
 
@@ -463,7 +462,7 @@
 
             DbManual.ResetAllManuals();
         }
-        
+
         [Fact]
         public void MoveNextCommand_ParseDescription_TransactionsImpoted()
         {
@@ -504,7 +503,6 @@
             // Transfer To Mono
             Assert.Equal(4, toMono.FromAccountId);
             Assert.Equal(1, toMono.ToAccountId);
-
 
             DbManual.ResetAllManuals();
         }
