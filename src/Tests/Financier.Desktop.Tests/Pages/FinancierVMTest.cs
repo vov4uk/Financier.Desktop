@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
@@ -57,12 +56,12 @@
         {
             this.bankMock = new (MockBehavior.Strict);
             this.csvMock = new (MockBehavior.Strict);
-            this.dialogMock = new(MockBehavior.Strict);
-            this.dbFactoryMock = new(MockBehavior.Strict);
-            this.dbMock = new(MockBehavior.Strict);
-            this.uowMock = new(MockBehavior.Strict);
-            this.entityReaderMock = new(MockBehavior.Strict);
-            this.backupWriterMock = new(MockBehavior.Strict);
+            this.dialogMock = new (MockBehavior.Strict);
+            this.dbFactoryMock = new (MockBehavior.Strict);
+            this.dbMock = new (MockBehavior.Strict);
+            this.uowMock = new (MockBehavior.Strict);
+            this.entityReaderMock = new (MockBehavior.Strict);
+            this.backupWriterMock = new (MockBehavior.Strict);
             this.accountsRepo = new ();
             this.transactionsRepo = new ();
             this.categoriesRepo = new ();

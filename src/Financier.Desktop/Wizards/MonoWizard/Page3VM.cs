@@ -1,16 +1,15 @@
-﻿using Financier.Common.Entities;
-using Financier.Common.Model;
-using Financier.DataAccess.Data;
-using Financier.Desktop.Data;
-using Financier.Desktop.Helpers;
-using Financier.Desktop.Pages.Dialogs;
-using Prism.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Financier.Common.Entities;
+using Financier.Common.Model;
+using Financier.Desktop.Data;
+using Financier.Desktop.Helpers;
+using Financier.Desktop.Pages.Dialogs;
+using Prism.Commands;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {

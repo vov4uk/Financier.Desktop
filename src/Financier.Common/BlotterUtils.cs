@@ -1,10 +1,8 @@
-﻿using Financier.Common.Model;
-using Microsoft.Extensions.Primitives;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
-using System.Xml.Linq;
+using Financier.Common.Model;
 
 namespace Financier.Common.Utils
 {

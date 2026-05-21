@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
+             xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="800">
     <UserControl.Resources>
@@ -15,16 +16,29 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <fcrd:DataGridAutoHeaders ItemsSource="{Binding Path=Entities, UpdateSourceTrigger=PropertyChanged}"
-                                  SelectedItem="{Binding SelectedValue}"
-                                  CanUserAddRows="False"
-                                  FontSize="14"
-                                  IsReadOnly="True">
+        <DataGrid ItemsSource="{Binding Path=Entities, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding SelectedValue}"
+                  CanUserAddRows="False"
+                  FontSize="14"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False">
             <DataGrid.InputBindings>
                 <MouseBinding MouseAction="LeftDoubleClick"
                               Command="{Binding EditCommand}"
                               CommandParameter="{Binding SelectedValue}" />
             </DataGrid.InputBindings>
-        </fcrd:DataGridAutoHeaders>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Created" Binding="{Binding Created}" />
+                <DataGridTextColumn Header="Condition" Binding="{Binding Condition}" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" />
+                <DataGridTemplateColumn Header="Title">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <emoji:EmojiedTextBlock Text="{Binding Title}" x:Name="Cell"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

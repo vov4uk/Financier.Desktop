@@ -1,8 +1,8 @@
-﻿using Financier.DataAccess.Data;
-using System;
+﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Financier.Common.Entities;
 
 namespace Financier.Common.Model
 {
@@ -30,7 +30,40 @@ namespace Financier.Common.Model
         public int? LocationId { get; set; }
         public string MCCCategory { get; set; }
 
-
         public RuleModel() { }
+
+        private string BuildTitle()
+        {
+            string title = string.Empty;
+            if (PayeeId.HasValue)
+            {
+                var pe = DbManual.Payee.FirstOrDefault(p => p.Id == PayeeId.Value);
+                title += $"Payee: {pe?.Title} ";
+            }
+            if (ProjectId.HasValue)
+            {
+                var p = DbManual.Project.FirstOrDefault(p => p.Id == ProjectId.Value);
+                title += $"Project: {p?.Title} ";
+            }
+            if (CategoryId.HasValue)
+            {
+                var c = DbManual.Category.FirstOrDefault(c => c.Id == CategoryId.Value);
+                title += $"Category: {c?.Title} ";
+            }
+            if (LocationId.HasValue)
+            {
+                var l = DbManual.Location.FirstOrDefault(l => l.Id == LocationId.Value);
+                title += $"Location: {l?.Title} ";
+            }
+            if (!string.IsNullOrEmpty(MCCCategory))
+            {
+                title += $"MCC: {MCCCategory} ";
+            }
+            return title.Trim();
+        }
+        public void UpdateTitle()
+        {
+            Title = BuildTitle();
+        }
     }
 }

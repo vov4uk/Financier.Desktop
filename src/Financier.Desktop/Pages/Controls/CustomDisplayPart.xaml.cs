@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using ToastNotifications.Core;
 
 namespace Financier.Desktop.Pages.Controls
@@ -13,6 +14,11 @@ namespace Financier.Desktop.Pages.Controls
         {
             InitializeComponent();
             Bind(customNotification);
+        }
+
+        private void OnClose(object sender, RoutedEventArgs e)
+        {
+            Notification.Close();
         }
     }
 
@@ -29,7 +35,7 @@ namespace Financier.Desktop.Pages.Controls
         }
 
         private string _message;
-        public string Message
+        public new string Message
         {
             get
             {

@@ -1,25 +1,22 @@
-﻿using Financier.Common.Entities;
-using Financier.Converters;
-using Financier.DataAccess;
-using Financier.DataAccess.Abstractions;
-using Financier.DataAccess.Data;
-using Financier.Desktop.Data;
-using Financier.Desktop.Helpers;
-using Financier.Desktop.ViewModel;
-using Financier.Desktop.ViewModel.Dialog;
-using Financier.Desktop.Views;
-using Financier.Tests.Common;
-using Moq;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-
-namespace Financier.Desktop.Tests.Pages
+﻿namespace Financier.Desktop.Tests.Pages
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Financier.Common.Entities;
+    using Financier.Converters;
+    using Financier.DataAccess;
+    using Financier.DataAccess.Data;
+    using Financier.Desktop.Data;
+    using Financier.Desktop.Helpers;
+    using Financier.Desktop.ViewModel;
+    using Financier.Desktop.ViewModel.Dialog;
+    using Financier.Desktop.Views;
+    using Financier.Tests.Common;
+    using Moq;
+    using Newtonsoft.Json;
+    using Xunit;
+
     public class BlotterVMIntegrationTests
     {
         private readonly Mock<IDialogWrapper> dialogMock;

@@ -8,31 +8,26 @@
                               xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                               mc:Ignorable="d"
              d:DesignHeight="60" d:DesignWidth="250" >
-    <UserControl.Resources>
-        <BitmapImage x:Key="ic_action_cancel"   UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
-    </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <Border Background="LightGray"
-                Padding="10"
-                CornerRadius="5"
-                Grid.ColumnSpan="2">
-        <TextBlock Text="{Binding Message}" 
-                   FontSize="14"
-                   Foreground="Black"
-                   VerticalAlignment="Stretch"
-                   HorizontalAlignment="Center"/>
-        </Border>
-        <xctk:IconButton   Grid.Column="1"
-                           Height="24"
-                           Width="24"
-                           VerticalAlignment="Top">
-            <xctk:IconButton.Icon>
-                <Image Source="{StaticResource ic_action_cancel}" />
-            </xctk:IconButton.Icon>
-        </xctk:IconButton>
-    </Grid>
+    <Border x:Name="ContentWrapper" Style="{DynamicResource NotificationBorder}" Background="LightGray">
+        <Grid x:Name="ContentContainer">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto"  />
+            </Grid.ColumnDefinitions>
+            <Rectangle x:Name="Icon" Width="24" Height="24">
+                <Rectangle.Fill>
+                    <VisualBrush Visual="{StaticResource InformationIcon}" />
+                </Rectangle.Fill>
+            </Rectangle>
+            <TextBlock x:Name="Text" Text="{Binding Message, Mode=OneTime}" Style="{StaticResource NotificationText}" Foreground="Black" Grid.Column="1"  />
+            <Button x:Name="CloseButton" Style="{StaticResource NotificationCloseButton}"  Padding="1" Grid.Column="2" Click="OnClose" Visibility="Hidden">
+                <Rectangle Style="{StaticResource CloseButtonIcon}" Margin="2">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource CloseIcon}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </Grid>
+    </Border>
 </core:NotificationDisplayPart>

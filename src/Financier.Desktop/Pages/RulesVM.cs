@@ -30,6 +30,10 @@ namespace Financier.Desktop.ViewModel
             await DbManual.SaveRulesAsync();
             await DbManual.LoadRulesAsync();
             Entities = new ObservableCollection<RuleModel>(DbManual.Rules.OrderBy(r => r.Created));
+            foreach (var item in Entities)
+            {
+                item.UpdateTitle();
+            }
         }
 
         private async Task OnRuleDelete(int id)
@@ -70,7 +74,7 @@ namespace Financier.Desktop.ViewModel
             {
                 rule = new RuleDTO()
                 {
-                    Description = "TEST",
+                    Description = "Description here",
                     Condition = "Description contains",
                     Created = DateTime.Now,
                     IsActive = true

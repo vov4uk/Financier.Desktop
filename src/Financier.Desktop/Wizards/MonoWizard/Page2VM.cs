@@ -1,10 +1,9 @@
-﻿using Financier.Common.Entities;
-using Financier.Common.Model;
-using Prism.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Financier.Common.Model;
+using Prism.Commands;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {

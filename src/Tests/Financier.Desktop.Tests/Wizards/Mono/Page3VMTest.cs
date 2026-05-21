@@ -1,8 +1,13 @@
 ﻿namespace Financier.Desktop.Tests.Wizards.Mono
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Data;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Financier.Common.Entities;
     using Financier.Common.Model;
-    using Financier.DataAccess.Data;
     using Financier.Desktop.Data;
     using Financier.Desktop.Helpers;
     using Financier.Desktop.Pages.Dialogs;
@@ -11,12 +16,6 @@
     using Financier.Tests.Common;
     using Moq;
     using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Data;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Xunit;
 
     public class Page3VMTest
@@ -46,32 +45,32 @@
             {
                 new RuleModel
                 {
-                 Id= 8,
-                 Created= new DateTime(2026, 5, 16, 22, 32, 55, 354),
-                 Condition= "Description contains",
-                 Description= "Google",
-                 Title= null,
-                 IsActive= true,
-                 PayeeId= null,
-                 ProjectId= null,
-                 CategoryId= null,
-                 LocationId= 200,
-                 MCCCategory= null
-               },
-                             new RuleModel
+                 Id = 8,
+                 Created = new DateTime(2026, 5, 16, 22, 32, 55, 354),
+                 Condition = "Description contains",
+                 Description = "Google",
+                 Title = null,
+                 IsActive = true,
+                 PayeeId = null,
+                 ProjectId = null,
+                 CategoryId = null,
+                 LocationId = 200,
+                 MCCCategory = null,
+                },
+                new RuleModel
                 {
-                 Id= 0,
-                 Created= new DateTime(2026, 5, 16, 22, 32, 55, 354),
-                 Condition= "Description contains",
-                 Description= "Hot Water",
-                 Title= null,
-                 IsActive= true,
-                 PayeeId= null,
-                 ProjectId= null,
-                 CategoryId= 100,
-                 LocationId= null,
-                 MCCCategory= null
-               },
+                 Id = 0,
+                 Created = new DateTime(2026, 5, 16, 22, 32, 55, 354),
+                 Condition = "Description contains",
+                 Description = "Hot Water",
+                 Title = null,
+                 IsActive = true,
+                 PayeeId = null,
+                 ProjectId = null,
+                 CategoryId = 100,
+                 LocationId = null,
+                 MCCCategory = null,
+                },
             };
 
             List<BankTransaction> transactions = new List<BankTransaction>
@@ -459,7 +458,6 @@
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
-
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(0, vm.FinancierTransactions[0].CategoryId);
@@ -504,7 +502,6 @@
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
-
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(0, vm.FinancierTransactions[0].CategoryId);
@@ -548,7 +545,6 @@
             var vm = new Page3VM(_dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
-
 
             // Assert
             Assert.Single(vm.FinancierTransactions);

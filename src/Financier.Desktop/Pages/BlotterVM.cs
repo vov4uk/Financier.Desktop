@@ -1,5 +1,10 @@
 ﻿namespace Financier.Desktop.ViewModel
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using Financier.Common;
     using Financier.Common.Entities;
     using Financier.Common.Model;
@@ -12,13 +17,6 @@
     using Financier.Desktop.Helpers;
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Text.Json.Serialization;
-    using System.Threading.Tasks;
 
     public class BlotterVM : EntityBaseVM<BlotterModel>
     {

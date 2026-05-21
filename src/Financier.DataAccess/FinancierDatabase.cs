@@ -1,11 +1,4 @@
-﻿using Financier.DataAccess.Abstractions;
-using Financier.DataAccess.Data;
-using Financier.DataAccess.DataBase.Scripts;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using NLog;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,10 +7,16 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Resources;
 using System.Threading.Tasks;
+using Financier.DataAccess.Abstractions;
+using Financier.DataAccess.Data;
+using Financier.DataAccess.DataBase.Scripts;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using NLog;
 
 namespace Financier.DataAccess
 {

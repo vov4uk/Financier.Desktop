@@ -19,7 +19,7 @@ namespace Financier.Common
             _context = SynchronizationContext.Current;
         }
 
-        event EventHandler ICommand.CanExecuteChanged
+        event EventHandler? ICommand.CanExecuteChanged
         {
             add { _canExecuteChanged += value; }
             remove { _canExecuteChanged -= value; }
@@ -32,12 +32,12 @@ namespace Financier.Common
         }
 
         // ----- Implement ICommand
-        bool ICommand.CanExecute(object parameter)
+        bool ICommand.CanExecute(object? parameter)
         {
             return CanExecute();
         }
 
-        async void ICommand.Execute(object parameter)
+        async void ICommand.Execute(object? parameter)
         {
             await ExecuteAsync();
         }
@@ -94,12 +94,12 @@ namespace Financier.Common
         }
 
         // ----- Explicit implementations
-        bool ICommand.CanExecute(object parameter)
+        bool ICommand.CanExecute(object? parameter)
         {
             return CanExecute((T)parameter);
         }
 
-        async void ICommand.Execute(object parameter)
+        async void ICommand.Execute(object? parameter)
         {
             await ExecuteAsync((T)parameter);
         }

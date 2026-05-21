@@ -147,4 +147,7 @@
         <_Parameter1>Financier.Desktop.Tests</_Parameter1>
       </AssemblyAttribute>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
 </Project>

@@ -1,20 +1,18 @@
 ﻿using System;
-using Financier.Desktop.ViewModel;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls.Ribbon;
-using DataFormats = System.Windows.DataFormats;
-using Financier.Desktop.Helpers;
-using Financier.DataAccess;
-using Financier.Adapter;
-using Financier.DataAccess.View;
-using Financier.Common.Model;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.Win32;
-using Financier.Desktop.Properties;
+using System.Windows;
+using System.Windows.Controls.Ribbon;
+using Financier.Adapter;
+using Financier.DataAccess;
+using Financier.Desktop.Helpers;
 using Financier.Desktop.Helpers.BankHelper;
+using Financier.Desktop.Properties;
+using Financier.Desktop.ViewModel;
+using Microsoft.Win32;
+using DataFormats = System.Windows.DataFormats;
 
 namespace Financier.Desktop
 {

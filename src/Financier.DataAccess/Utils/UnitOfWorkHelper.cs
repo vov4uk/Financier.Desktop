@@ -1,11 +1,10 @@
-﻿using Financier.DataAccess.Abstractions;
-using Financier.DataAccess.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Financier.DataAccess.Abstractions;
 
 namespace Financier.DataAccess.Utils
 {

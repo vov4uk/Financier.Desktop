@@ -7,6 +7,9 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=local:SettingsVM, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -29,8 +32,11 @@
                                 <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="freecurrencyrates.com" IsChecked="{Binding IsfreecurrencyratesSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox Grid.Row="1" Grid.Column="0" Margin="5" Header="App id"
-                                  IsEnabled="{Binding IsOpenExchangeRatesProviderSelected, UpdateSourceTrigger=PropertyChanged}">
+                        <GroupBox Grid.Row="1"
+                                  Grid.Column="0"
+                                  Margin="5"
+                                  Header="App id"
+                                  Visibility="{Binding IsOpenExchangeRatesProviderSelected, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox Margin="5" Text="{Binding Entity.OpenExchangeRatesProviderAppId, Mode=TwoWay}"
                                      />
                         </GroupBox>

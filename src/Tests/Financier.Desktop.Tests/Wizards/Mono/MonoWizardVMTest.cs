@@ -4,18 +4,17 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Threading.Tasks;
     using Financier.Common.Entities;
     using Financier.Common.Model;
     using Financier.DataAccess.Data;
+    using Financier.Desktop.Helpers;
+    using Financier.Desktop.Helpers.BankHelper;
     using Financier.Desktop.Wizards;
     using Financier.Desktop.Wizards.MonoWizard.ViewModel;
-    using Financier.Desktop.Helpers.BankHelper;
     using Financier.Tests.Common;
+    using Moq;
     using Newtonsoft.Json;
     using Xunit;
-    using Moq;
-    using Financier.Desktop.Helpers;
 
     public class MonoWizardVMTest
     {

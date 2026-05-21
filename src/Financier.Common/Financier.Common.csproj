@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.129" />
-    <PackageReference Include="Emoji.Wpf" Version="0.3.4" />
+    <PackageReference Include="iNKORE.UI.WPF.Emojis" Version="0.3.6.4" />
     <PackageReference Include="Prism.Core" Version="9.0.537" />
     <PackageReference Include="WPFChromeTabsMVVM" Version="1.4.0" />
   </ItemGroup>
