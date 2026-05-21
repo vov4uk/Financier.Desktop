@@ -1,30 +1,35 @@
-﻿using Financier.DataAccess.Abstractions;
-using Financier.DataAccess.Data;
-using Financier.DataAccess.Utils;
-using Financier.Desktop.Views;
-using Financier.Adapter;
-using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Financier.Desktop.ViewModel.Dialog;
-using Financier.Desktop.Views.Controls;
-using Financier.Desktop.Helpers;
-using Financier.Desktop.Wizards.MonoWizard.ViewModel;
-using System.IO;
-using System.Collections.Concurrent;
-using Financier.Desktop.Data;
-using Financier.Reports;
+﻿using Financier.Adapter;
+using Financier.Common;
 using Financier.Common.Entities;
 using Financier.Common.Model;
-using Financier.Common;
-using Financier.Desktop.Wizards;
 using Financier.Converters;
-using System.Windows.Input;
-using Prism.Commands;
-using IAsyncCommand = Financier.Common.IAsyncCommand;
+using Financier.DataAccess.Abstractions;
+using Financier.DataAccess.Data;
+using Financier.DataAccess.Utils;
+using Financier.Desktop.Data;
+using Financier.Desktop.Helpers;
 using Financier.Desktop.Helpers.BankHelper;
+using Financier.Desktop.Pages.Dialogs;
+using Financier.Desktop.Properties;
+using Financier.Desktop.ViewModel.Dialog;
+using Financier.Desktop.Wizards;
+using Financier.Desktop.Wizards.MonoWizard.ViewModel;
+using Financier.Reports;
+using Newtonsoft.Json;
+using Prism.Commands;
+using Prism.Mvvm;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Position;
+using Application = System.Windows.Application;
+using IAsyncCommand = Financier.Common.IAsyncCommand;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -37,6 +42,7 @@ namespace Financier.Desktop.ViewModel
         private readonly IFinancierDatabaseFactory dbFactory;
         private readonly IDialogWrapper dialogWrapper;
         private readonly List<Entity> keyLessEntities = new();
+        private readonly Notifier notifier;
         private BackupVersion _backupVersion;
         private Dictionary<string, List<string>> _entityColumnsOrder;
         private IAsyncCommand<Type> _menuNavigateCommand;
@@ -44,6 +50,8 @@ namespace Financier.Desktop.ViewModel
         private ICommand _openBackupCommand;
         private IAsyncCommand _saveBackupCommand;
         private IAsyncCommand _saveBackupAsDbCommand;
+        private IAsyncCommand _settingsCommand;
+        private IAsyncCommand _refreshExchangeRatesCommand;
         private readonly IBackupWriter backupWriter;
         private BlotterVM blotterVm;
         private BindableBase currentPage;
@@ -52,6 +60,7 @@ namespace Financier.Desktop.ViewModel
         private LocationsVM locationsVm;
         private string openBackupPath;
         private string defaultBackupDirectory;
+        private string exchangeRatesSettings;
         private bool isLoading;
         private PayeesVM payeesVm;
         private ProjectsVM projectsVm;
@@ -71,6 +80,23 @@ namespace Financier.Desktop.ViewModel
             db = dbFactory.CreateDatabase();
 
             CreatePages();
+
+            this.notifier = new Notifier(cfg =>
+            {
+                cfg.PositionProvider = new WindowPositionProvider(
+                    parentWindow: Application.Current.MainWindow,
+                    corner: Corner.BottomRight,
+                    offsetX: 10,
+                    offsetY: 10);
+
+                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                    notificationLifetime: TimeSpan.FromSeconds(10),
+                    maximumNotificationCount: MaximumNotificationCount.FromCount(3));
+
+                cfg.Dispatcher = Application.Current.Dispatcher;
+
+                cfg.DisplayOptions.Width = 250;
+            });
         }
 
         public BlotterVM Blotter
@@ -92,6 +118,7 @@ namespace Financier.Desktop.ViewModel
                 RaisePropertyChanged(nameof(IsProjectPageSelected));
                 RaisePropertyChanged(nameof(IsPayeePageSelected));
                 RaisePropertyChanged(nameof(IsRulesPageSelected));
+                RaisePropertyChanged(nameof(IsExchangeRatesPageSelected));
             }
         }
 
@@ -105,6 +132,8 @@ namespace Financier.Desktop.ViewModel
 
         public bool IsRulesPageSelected => currentPage is RulesVM;
 
+        public bool IsExchangeRatesPageSelected => currentPage is ExchangeRatesVM;
+
         public string OpenBackupPath
         {
             get => openBackupPath;
@@ -114,6 +143,12 @@ namespace Financier.Desktop.ViewModel
         {
             get => defaultBackupDirectory;
             internal set => SetProperty(ref defaultBackupDirectory, value);
+        }
+
+        public string ExchangeRatesSettings
+        {
+            get => exchangeRatesSettings;
+            internal set => SetProperty(ref exchangeRatesSettings, value);
         }
 
         public LocationsVM Locations
@@ -156,6 +191,9 @@ namespace Financier.Desktop.ViewModel
 
         public IAsyncCommand SaveBackupAsDbCommand => _saveBackupAsDbCommand ??= new AsyncCommand(SaveBackupAsDb);
 
+        public IAsyncCommand SettingsCommand => _settingsCommand ??= new AsyncCommand(Settings_Click);
+        public IAsyncCommand RefreshExchangeRatesCommand => _refreshExchangeRatesCommand ??= new AsyncCommand(RefreshExchangeRates_Click);
+
         public async Task OpenBackup(string backupPath)
         {
             try
@@ -185,6 +223,8 @@ namespace Financier.Desktop.ViewModel
                 await DbManual.LoadRulesAsync();
 
                 await NavigateToType(typeof(BlotterModel));
+
+                notifier.ShowCustomMessage($"Successfully loaded {entities.Count()} entities", new ToastNotifications.Core.MessageOptions { ShowCloseButton = true });
             }
             catch (Exception ex)
             {
@@ -432,15 +472,65 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        public async Task UpdateExchangeRates()
+        private async Task Settings_Click()
         {
-            var exchangeRateLoader = new ExchangeRateLoader(db);
-            var exchangeRates = await exchangeRateLoader.LoadExchangeRates();
+            SettingsDTO dto = null;
+            if (string.IsNullOrEmpty(ExchangeRatesSettings))
+            {
+                dto = new SettingsDTO()
+                {
+                    ExchangeRatesProvider = string.Empty,
+                    UpdateExchangeRatesOnStart = false,
+                };
+            }
+            else
+            {
+                dto = JsonConvert.DeserializeObject<SettingsDTO>(ExchangeRatesSettings);
+            }
 
-            using var uow = db.CreateUnitOfWork();
-            var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();
-            await currencyExchangeRepo.AddRangeAsync(exchangeRates);
-            await uow.SaveChangesAsync();
+            DialogBaseVM vm = new SettingsVM(dto);
+            var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, "Settings") as SettingsDTO;
+
+            if (updated != null)
+            {
+                string json = JsonConvert.SerializeObject(updated, Formatting.Indented);
+                Settings.Default.ExchangeRatesSettings = json;
+                Settings.Default.Save();
+                ExchangeRatesSettings = json;
+            }
+        }
+
+        private async Task RefreshExchangeRates_Click()
+        {
+            if (!string.IsNullOrEmpty(ExchangeRatesSettings))
+            {
+                var dto = JsonConvert.DeserializeObject<SettingsDTO>(ExchangeRatesSettings);
+
+                if (dto.UpdateExchangeRatesOnStart)
+                {
+                    var exchangeRateLoader = new ExchangeRateLoader(db);
+                    List<CurrencyExchangeRate> exchangeRates = new List<CurrencyExchangeRate>();
+
+                    if (dto.ExchangeRatesProvider == "freecurrencyrates.com")
+                    {
+                        exchangeRates = await exchangeRateLoader.LoadFreeCurrencyRates();
+                    }
+                    else if (dto.ExchangeRatesProvider == "openexchangerates.org")
+                    {
+                        exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(dto.OpenExchangeRatesProviderAppId);
+                    }
+
+                    if (exchangeRates.Any())
+                    {
+                        using var uow = db.CreateUnitOfWork();
+                        var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();
+                        await currencyExchangeRepo.AddRangeAsync(exchangeRates);
+                        await uow.SaveChangesAsync();
+                        notifier.ShowCustomMessage("Exchange rates updated successfully.", new ToastNotifications.Core.MessageOptions { ShowCloseButton = true });
+                    }
+                }
+            }
+
         }
     }
 }

@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="Financier.Desktop.Pages.Dialogs.SettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Financier.Desktop.Pages.Dialogs"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:SettingsVM, IsDesignTimeCreatable=True}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl TabStripPlacement="Left" 
+                    Margin="0, 0, 0, 10"
+                    Grid.Row="0">
+            <TabItem Name="fontweight" Header="Exchange rates">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5" Header="Providers">
+                            <StackPanel>
+                                <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="openexchangerates.org" IsChecked="{Binding IsOpenExchangeRatesProviderSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="freecurrencyrates.com" IsChecked="{Binding IsfreecurrencyratesSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Grid.Row="1" Grid.Column="0" Margin="5" Header="App id"
+                                  IsEnabled="{Binding IsOpenExchangeRatesProviderSelected, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox Margin="5" Text="{Binding Entity.OpenExchangeRatesProviderAppId, Mode=TwoWay}"
+                                     />
+                        </GroupBox>
+                        <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" Content="Update exchange rates on start?"
+                                  IsChecked="{Binding Entity.UpdateExchangeRatesOnStart, Mode=TwoWay}"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+        </TabControl>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Margin="2"
+                    Command="{Binding SaveCommand}"
+                    Content="SAVE" />
+            <Button Grid.Column="1" Margin="2"
+                    Command="{Binding CancelCommand}"
+                    Content="CANCEL" />
+        </Grid>
+    </Grid>
+</UserControl>

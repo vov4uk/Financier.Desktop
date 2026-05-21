@@ -1,8 +1,6 @@
-﻿using Financier.Desktop.Data;
+﻿using System.Collections.ObjectModel;
+using Financier.Desktop.Data;
 using Financier.Desktop.ViewModel.Dialog;
-using Prism.Commands;
-using System.Collections.ObjectModel;
-using System.Data;
 
 namespace Financier.Desktop.Pages.Dialogs
 {

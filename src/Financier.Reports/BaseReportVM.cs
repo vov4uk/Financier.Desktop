@@ -1,14 +1,13 @@
-﻿using Financier.Common;
-using Financier.Common.Entities;
-using Financier.Common.Model;
-using Financier.DataAccess.Abstractions;
-using OxyPlot;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Financier.Common;
+using Financier.Common.Entities;
+using Financier.Common.Model;
+using Financier.DataAccess.Abstractions;
 
 namespace Financier.Reports
 {
@@ -184,7 +183,7 @@ namespace Financier.Reports
             if (StartYearMonths.Year.HasValue)
                 stringBuilder.Append(string.Format(" ((date_year = {0} and date_month >= {1}) or date_year > {0})", StartYearMonths.Year, StartYearMonths.Month));
             if (DateFilter.HasValue)
-                stringBuilder.Append($" date(\"{DateFilter.Value.ToString("yyyy-MM-dd")}\")");
+                stringBuilder.Append($" {new DateTimeOffset(DateFilter.Value).ToUnixTimeMilliseconds()}");
             if (EndYearMonths.Year.HasValue)
                 stringBuilder.Append(string.Format(" {2} ((date_year = {0} and date_month <= {1}) or date_year < {0})", EndYearMonths.Year, EndYearMonths.Month, stringBuilder.Length != 0 ? " and " : string.Empty));
             if (Payee.Id.HasValue)

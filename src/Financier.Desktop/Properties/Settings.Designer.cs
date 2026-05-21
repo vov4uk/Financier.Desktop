@@ -18,5 +18,12 @@ namespace Financier.Desktop.Properties
             get => (string)this[nameof(DefaultBackupDir)];
             set => this[nameof(DefaultBackupDir)] = (object)value;
         }
+
+        [UserScopedSetting]
+        public string ExchangeRatesSettings
+        {
+            get => (string)this[nameof(ExchangeRatesSettings)];
+            set => this[nameof(ExchangeRatesSettings)] = (object)value;
+        }
     }
 }

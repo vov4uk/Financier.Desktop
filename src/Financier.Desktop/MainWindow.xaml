@@ -121,9 +121,9 @@
                     <RibbonApplicationMenuItem Header="Set default directory"
                                                Click="RibbonApplicationMenuItem_Click"
                                                ImageSource="pack://application:,,,/Images/folder.png" />
-                    <!--<RibbonApplicationMenuItem Header="Options"
-                                               ImageSource="pack://application:,,,/Images/ic_action_gear.png"
-                                               IsEnabled="False" />-->
+                    <RibbonApplicationMenuItem Header="Settings"
+                                               Command="{Binding Path=SettingsCommand}"
+                                               ImageSource="pack://application:,,,/Images/ic_action_gear.png" />
                     <RibbonApplicationMenu.FooterPaneContent>
                         <DockPanel LastChildFill="False">
                             <RibbonButton Click="Exit_Click"
@@ -341,6 +341,14 @@
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
                                   Label="Delete"
                                   Command="{Binding Path=Rules.DeleteCommand}" />
+                </RibbonGroup>
+                <RibbonGroup Header="Exchange Rates"
+                             Selector.IsSelected="{Binding Path=IsExchangeRatesPageSelected, Mode=OneWay}"
+                             Visibility="{Binding Path=IsExchangeRatesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                             DataContext="{Binding}">
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_refresh.png"
+                                  Label="Refresh"
+                                  Command="{Binding Path=RefreshExchangeRatesCommand}" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

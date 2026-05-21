@@ -1,15 +1,14 @@
-﻿using Financier.Common.Entities;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
+using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Pages.Dialogs;
-using Financier.Desktop.Views.Controls;
-using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Financier.Desktop.ViewModel
 {
