@@ -466,7 +466,7 @@ namespace Financier.Desktop.ViewModel
             }
             else
             {
-                dto = JsonConvert.DeserializeObject<SettingsDTO>(ExchangeRatesSettings);
+                dto = TryDeserializeSettings(ExchangeRatesSettings);
             }
 
             DialogBaseVM vm = new SettingsVM(dto);
@@ -485,7 +485,7 @@ namespace Financier.Desktop.ViewModel
         {
             if (!string.IsNullOrEmpty(ExchangeRatesSettings))
             {
-                var dto = JsonConvert.DeserializeObject<SettingsDTO>(ExchangeRatesSettings);
+                var dto = TryDeserializeSettings(ExchangeRatesSettings);
 
                 if (dto.UpdateExchangeRatesOnStart)
                 {
@@ -514,6 +514,24 @@ namespace Financier.Desktop.ViewModel
             else
             {
                 notifier?.ShowWarning("Exchange rates provider not configured.");
+            }
+        }
+
+        private SettingsDTO TryDeserializeSettings(string json)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<SettingsDTO>(json)
+                    ?? new SettingsDTO { ExchangeRatesProvider = string.Empty, UpdateExchangeRatesOnStart = false };
+            }
+            catch (JsonException ex)
+            {
+                Logger.Warn(ex, "Failed to deserialize ExchangeRatesSettings; resetting to defaults.");
+                ExchangeRatesSettings = null;
+                Settings.Default.ExchangeRatesSettings = null;
+                Settings.Default.Save();
+                notifier?.ShowWarning("Settings file was corrupted and has been reset. Please re-configure exchange rate settings.");
+                return new SettingsDTO { ExchangeRatesProvider = string.Empty, UpdateExchangeRatesOnStart = false };
             }
         }
     }

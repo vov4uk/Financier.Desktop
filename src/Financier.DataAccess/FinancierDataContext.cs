@@ -1,6 +1,5 @@
 ﻿using Financier.DataAccess.Data;
 using Financier.DataAccess.View;
-using Financier.DataAccess.View.Financier.DataAccess.View;
 using Microsoft.EntityFrameworkCore;
 
 namespace Financier.DataAccess

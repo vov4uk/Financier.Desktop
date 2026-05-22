@@ -15,6 +15,8 @@ namespace Financier.Desktop.Helpers.BankHelper
 {
     public class PKOHelper : IBankHelper
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public string BankTitle => "PKO";
 
         public IEnumerable<BankTransaction> ParseReport(string filePath)
@@ -67,6 +69,11 @@ namespace Financier.Desktop.Helpers.BankHelper
                 foreach (string page in pages)
                 {
                     var startTextIndex = page.IndexOf("Data waluty Opis operacji|");
+                    if (startTextIndex < 0)
+                    {
+                        Logger.Warn("PKO page header marker not found, skipping page.");
+                        continue;
+                    }
                     var pageText = page.Substring(startTextIndex + 26);
                     var endTextIndex = Math.Max(pageText.IndexOf("|Saldo do przeniesienia"), pageText.IndexOf("|Saldo końcowe"));
                     if (endTextIndex < 0)
@@ -81,72 +88,84 @@ namespace Financier.Desktop.Helpers.BankHelper
 
                     for (int i = 0; i < rowStart.Count; i++)
                     {
-                        var match = rowStart[i];
-                        var dateStr = match.Groups[1].Value;
-                        var idStr = match.Groups[2].Value;
-
-                        // Get the substring from current match to the next match (or end of string)
-                        int blockStart = match.Index;
-                        int blockEnd = (i + 1 < rowStart.Count) ? rowStart[i + 1].Index : pageText.Length;
-                        var transactionBlock = pageText.Substring(blockStart + match.Length, blockEnd - blockStart - match.Length).TrimEnd('|');
-
-                        // Remove spaces between numbers (e.g., "3 200,00" -> "3200,00")
-                        transactionBlock = Regex.Replace(transactionBlock, @"(?<=[0-9])\s+(?=[0-9])", "").Trim();
-
-                        var decimalPattern = @"-?\d+(?:,\d+)";
-
-                        var decimalMatches = Regex.Matches(transactionBlock, decimalPattern);
-
-                        var operationAmount = decimalMatches[0];
-                        var saldo = decimalMatches[1];
-                        var transactionType = transactionBlock.Substring(0, operationAmount.Index).Trim('|').Trim();
-
-                        var transactionDescriprion = transactionBlock.Substring(saldo.Index + saldo.Length).Trim('|').Trim();
-
-                        var dataWaluty = Regex.Match(transactionDescriprion, @"([0-9]{2}\.[0-9]{2}\.[0-9]{4})");
-                        if (dataWaluty.Success)
+                        try
                         {
-                            transactionDescriprion = transactionDescriprion.Substring(dataWaluty.Length);
+                            var match = rowStart[i];
+                            var dateStr = match.Groups[1].Value;
+                            var idStr = match.Groups[2].Value;
+
+                            // Get the substring from current match to the next match (or end of string)
+                            int blockStart = match.Index;
+                            int blockEnd = (i + 1 < rowStart.Count) ? rowStart[i + 1].Index : pageText.Length;
+                            var transactionBlock = pageText.Substring(blockStart + match.Length, blockEnd - blockStart - match.Length).TrimEnd('|');
+
+                            // Remove spaces between numbers (e.g., "3 200,00" -> "3200,00")
+                            transactionBlock = Regex.Replace(transactionBlock, @"(?<=[0-9])\s+(?=[0-9])", "").Trim();
+
+                            var decimalPattern = @"-?\d+(?:,\d+)";
+
+                            var decimalMatches = Regex.Matches(transactionBlock, decimalPattern);
+                            if (decimalMatches.Count < 2)
+                            {
+                                Logger.Warn("PKO row block has fewer than 2 decimal values, skipping. Block: {0}", transactionBlock);
+                                continue;
+                            }
+
+                            var operationAmount = decimalMatches[0];
+                            var saldo = decimalMatches[1];
+                            var transactionType = transactionBlock.Substring(0, operationAmount.Index).Trim('|').Trim();
+
+                            var transactionDescriprion = transactionBlock.Substring(saldo.Index + saldo.Length).Trim('|').Trim();
+
+                            var dataWaluty = Regex.Match(transactionDescriprion, @"([0-9]{2}\.[0-9]{2}\.[0-9]{4})");
+                            if (dataWaluty.Success)
+                            {
+                                transactionDescriprion = transactionDescriprion.Substring(dataWaluty.Length);
+                            }
+
+                            var dataWalutyGodzina = Regex.Match(transactionDescriprion, @"Godz\.([0-9]{2}:[0-9]{2}:[0-9]{2})");
+                            string dataWalutyGodzinaStr = "00:00:00";
+                            if (dataWalutyGodzina.Success)
+                            {
+                                transactionDescriprion = transactionDescriprion.Replace(dataWalutyGodzina.Value, "");
+                                dataWalutyGodzinaStr = dataWalutyGodzina.Groups[1].Value;
+                            }
+
+                            // Parse the transaction data
+                            DateTime.TryParseExact(dateStr, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var transactionDate);
+                            DateTime.TryParseExact($"{dataWaluty.Value} {dataWalutyGodzinaStr}", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var currencyDate);
+
+                            var kwotaOryg = Regex.Match(transactionDescriprion, @"(Kwota oryg\.:) (-?\d+(?:,\d+)) ([A-Z]{3})");
+                            if (kwotaOryg.Success)
+                            {
+                                transactionDescriprion = transactionDescriprion.Replace(kwotaOryg.Value, "");
+                            }
+
+                            transactionDescriprion = transactionDescriprion.Replace("|", "").Trim();
+                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"(Nr ref:|Nrref:)( |)([0-9]{17})", string.Empty).Trim();
+                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"Tel\.:[0-9]{11}", string.Empty).Trim();
+                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"Karta:[0-9]{6}\*\*\*\*\*\*[0-9]{4}", string.Empty).Trim();
+                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"([0-9]{26})", " ").Trim();
+                            transactionDescriprion = transactionDescriprion.Replace("Lokalizacja:", string.Empty).Trim();
+
+                            var transaction = new PKO_Transaction
+                            {
+                                DataOperacji = transactionDate,
+                                IdentyfikatorOperacji = idStr,
+                                DataWaluty = currencyDate,
+                                KwotaOperacji = BankPdfHelperBase.GetDouble(operationAmount.Value),
+                                Saldo = BankPdfHelperBase.GetDouble(saldo.Value),
+                                OpisOperacji = transactionDescriprion,
+                                TypOperacji = transactionType,
+                                KwotaOryg = kwotaOryg.Success ? BankPdfHelperBase.GetDouble(kwotaOryg.Groups[2].Value) : BankPdfHelperBase.GetDouble(operationAmount.Value),
+                                WalutaOryg = kwotaOryg.Success ? kwotaOryg.Groups[3].Value : string.Empty
+                            };
+                            transactions.Add(transaction);
                         }
-
-                        var dataWalutyGodzina = Regex.Match(transactionDescriprion, @"Godz\.([0-9]{2}:[0-9]{2}:[0-9]{2})");
-                        string dataWalutyGodzinaStr = "00:00:00";
-                        if (dataWalutyGodzina.Success)
+                        catch (Exception ex)
                         {
-                            transactionDescriprion = transactionDescriprion.Replace(dataWalutyGodzina.Value, "");
-                            dataWalutyGodzinaStr = dataWalutyGodzina.Groups[1].Value;
+                            Logger.Error(ex, "PKO failed to parse transaction row at index {0}.", i);
                         }
-
-                        // Parse the transaction data
-                        DateTime.TryParseExact(dateStr, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var transactionDate);
-                        DateTime.TryParseExact($"{dataWaluty.Value} {dataWalutyGodzinaStr}", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var currencyDate);
-
-                        var kwotaOryg = Regex.Match(transactionDescriprion, @"(Kwota oryg\.:) (-?\d+(?:,\d+)) ([A-Z]{3})");
-                        if (kwotaOryg.Success)
-                        {
-                            transactionDescriprion = transactionDescriprion.Replace(kwotaOryg.Value, "");
-                        }
-
-                        transactionDescriprion = transactionDescriprion.Replace("|", "").Trim();
-                        transactionDescriprion = Regex.Replace(transactionDescriprion, @"(Nr ref:|Nrref:)( |)([0-9]{17})", string.Empty).Trim();
-                        transactionDescriprion = Regex.Replace(transactionDescriprion, @"Tel\.:[0-9]{11}", string.Empty).Trim();
-                        transactionDescriprion = Regex.Replace(transactionDescriprion, @"Karta:[0-9]{6}\*\*\*\*\*\*[0-9]{4}", string.Empty).Trim();
-                        transactionDescriprion = Regex.Replace(transactionDescriprion, @"([0-9]{26})", " ").Trim();
-                        transactionDescriprion = transactionDescriprion.Replace("Lokalizacja:", string.Empty).Trim();
-
-                        var transaction = new PKO_Transaction
-                        {
-                            DataOperacji = transactionDate,
-                            IdentyfikatorOperacji = idStr,
-                            DataWaluty = currencyDate,
-                            KwotaOperacji = BankPdfHelperBase.GetDouble(operationAmount.Value),
-                            Saldo = BankPdfHelperBase.GetDouble(saldo.Value),
-                            OpisOperacji = transactionDescriprion,
-                            TypOperacji = transactionType,
-                            KwotaOryg = kwotaOryg.Success ? BankPdfHelperBase.GetDouble(kwotaOryg.Groups[2].Value) : BankPdfHelperBase.GetDouble(operationAmount.Value),
-                            WalutaOryg = kwotaOryg.Success ? kwotaOryg.Groups[3].Value : string.Empty
-                        };
-                        transactions.Add(transaction);
                     }
                 }
 

@@ -1,15 +1,12 @@
-﻿using Financier.Common.Model;
-using Financier.DataAccess.Abstractions;
-using Financier.DataAccess.Data;
-using Financier.Desktop.Properties;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Financier.Common.Model;
+using Financier.DataAccess.Abstractions;
+using Financier.DataAccess.Data;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Financier.Desktop.Helpers
 {
@@ -39,14 +36,14 @@ namespace Financier.Desktop.Helpers
                     if (response.IsSuccessStatusCode)
                     {
                         var content = await response.Content.ReadAsStringAsync();
-                        var (updatedOn, currency, rate) = ParseExchangeRateJson(content);
+                        var (updatedOn, rate) = ParseExchangeRateJson(content);
                         result.Add(new CurrencyExchangeRate
                         {
                             FromCurrencyId = fromCurrency.Id ?? 0,
                             ToCurrencyId = toCurrency.Id ?? 0,
                             Rate = rate,
                             Date = updatedOn * 1000,
-                            UpdatedOn = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                            UpdatedOn = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                         });
                     }
                     else
@@ -80,21 +77,24 @@ namespace Financier.Desktop.Helpers
                     var content = await response.Content.ReadAsStringAsync();
                     var exchangeRates = JsonConvert.DeserializeObject<OpenExchangeCurrencyRates>(content);
 
-                    foreach (var pair in currencies)
+                    if (exchangeRates?.rates?.Any() == true)
                     {
-                        var fromCurrency = pair.Key;
-                        var toCurrency = pair.Value;
-                        float fromToUsd = 1.0f / exchangeRates.rates.FirstOrDefault(r => r.Key == fromCurrency.Name).Value;
-                        float usdTo = exchangeRates.rates.FirstOrDefault(r => r.Key == toCurrency.Name).Value;
-
-                        result.Add(new CurrencyExchangeRate
+                        foreach (var pair in currencies)
                         {
-                            FromCurrencyId = fromCurrency.Id ?? 0,
-                            ToCurrencyId = toCurrency.Id ?? 0,
-                            Rate = fromToUsd * usdTo,
-                            Date = exchangeRates.timestamp * 1000,
-                            UpdatedOn = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-                        });
+                            var fromCurrency = pair.Key;
+                            var toCurrency = pair.Value;
+                            float fromToUsd = 1.0f / exchangeRates.rates.FirstOrDefault(r => r.Key == fromCurrency.Name).Value;
+                            float usdTo = exchangeRates.rates.FirstOrDefault(r => r.Key == toCurrency.Name).Value;
+
+                            result.Add(new CurrencyExchangeRate
+                            {
+                                FromCurrencyId = fromCurrency.Id ?? 0,
+                                ToCurrencyId = toCurrency.Id ?? 0,
+                                Rate = fromToUsd * usdTo,
+                                Date = exchangeRates.timestamp * 1000,
+                                UpdatedOn = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                            });
+                        }
                     }
                 }
                 else
@@ -138,7 +138,7 @@ namespace Financier.Desktop.Helpers
             return "https://freecurrencyrates.com/api/action.php?s=fcr&iso=" + toCurrency + "&f=" + fromCurrency + "&v=1&do=cvals";
         }
 
-        public static (long UpdatedOn, string Currency, float Rate) ParseExchangeRateJson(string json)
+        public static (long UpdatedOn, float Rate) ParseExchangeRateJson(string json)
         {
             var obj = JObject.Parse(json);
             var updated = long.Parse(obj["updated"].Value<string>());
@@ -147,7 +147,7 @@ namespace Financier.Desktop.Helpers
             var currencyProperty = obj.Properties()
                 .FirstOrDefault(p => p.Name != "updated");
 
-            return (updated, currencyProperty.Name, currencyProperty.Value.Value<float>());
+            return (updated, currencyProperty.Value.Value<float>());
         }
     }
 
