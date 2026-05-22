@@ -107,6 +107,7 @@
                 Assert.NotNull(uow.GetRepository<BlotterTransactions>());
             }
         }
+
         [Fact]
         public void CreateUnitOfWork_Execute_UOWCreated()
         {
@@ -425,6 +426,7 @@
                 Assert.Equal(-600, acc.TotalAmount);
             }
         }
+
         private static async Task<(Account account, Currency currency, Category category)> PredefineData(FinancierDatabase db)
         {
             using (var uow = db.CreateUnitOfWork())

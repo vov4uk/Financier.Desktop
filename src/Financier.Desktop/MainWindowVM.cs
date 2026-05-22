@@ -23,6 +23,7 @@ using Financier.Desktop.Wizards;
 using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using Financier.Reports;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using Prism.Mvvm;
 using IAsyncCommand = Financier.Common.IAsyncCommand;
@@ -474,7 +475,13 @@ namespace Financier.Desktop.ViewModel
 
             if (updated != null)
             {
-                string json = JsonConvert.SerializeObject(updated, Formatting.Indented);
+                var jObj = JObject.FromObject(updated);
+                if (!string.IsNullOrEmpty(updated.OpenExchangeRatesProviderAppId))
+                {
+                    jObj[nameof(SettingsDTO.OpenExchangeRatesProviderAppId)] =
+                        SettingsProtection.Encrypt(updated.OpenExchangeRatesProviderAppId);
+                }
+                string json = jObj.ToString(Formatting.Indented);
                 Settings.Default.ExchangeRatesSettings = json;
                 Settings.Default.Save();
                 ExchangeRatesSettings = json;
@@ -521,8 +528,16 @@ namespace Financier.Desktop.ViewModel
         {
             try
             {
-                return JsonConvert.DeserializeObject<SettingsDTO>(json)
+                var dto = JsonConvert.DeserializeObject<SettingsDTO>(json)
                     ?? new SettingsDTO { ExchangeRatesProvider = string.Empty, UpdateExchangeRatesOnStart = false };
+
+                if (!string.IsNullOrEmpty(dto.OpenExchangeRatesProviderAppId))
+                {
+                    dto.OpenExchangeRatesProviderAppId =
+                        SettingsProtection.TryDecrypt(dto.OpenExchangeRatesProviderAppId);
+                }
+
+                return dto;
             }
             catch (JsonException ex)
             {

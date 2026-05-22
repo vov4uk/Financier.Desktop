@@ -360,7 +360,7 @@
             await this.SetupDbManual();
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
-            this.trMock = new(MockBehavior.Strict);
+            this.trMock = new (MockBehavior.Strict);
             this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
             this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>())).ReturnsAsync(Array.Empty<Transaction>());
 
@@ -393,7 +393,7 @@
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new(MockBehavior.Strict);
+            this.trMock = new (MockBehavior.Strict);
             this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id))
                 .ReturnsAsync(transaction);
             this.dbMock.Setup(x => x.GetOrCreateAsync<Transaction>(It.IsAny<int>()))
@@ -433,7 +433,7 @@
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new(MockBehavior.Strict);
+            this.trMock = new (MockBehavior.Strict);
             this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id))
                 .ReturnsAsync(transaction);
 
@@ -496,7 +496,7 @@
 
             this.SetupRepo(new Mock<IBaseRepository<Account>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new(MockBehavior.Strict);
+            this.trMock = new (MockBehavior.Strict);
             this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
 
             this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Transaction[]>())).Returns(Task.CompletedTask);
@@ -529,7 +529,7 @@
             this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>())).Callback<IEnumerable<Project>>((x) => { actual = x.ToArray(); }).Returns(Task.CompletedTask);
             this.dialogMock.Setup(x => x.ShowDialog<TagControl>(It.IsAny<TagControlVM>(), 180, 300, nameof(Project))).Returns(result);
 
-            this.projMock = new();
+            this.projMock = new ();
             this.SetupRepo(this.projMock);
 
             var vm = this.GetFinancierVM();
@@ -551,7 +551,7 @@
 
             this.dialogMock.Setup(x => x.ShowDialog<TagControl>(It.IsAny<TagControlVM>(), 180, 300, nameof(Project))).Returns(null);
 
-            this.projMock = new();
+            this.projMock = new ();
             this.SetupRepo(this.projMock);
 
             var vm = this.GetFinancierVM();
@@ -677,7 +677,7 @@
                 .Returns(output);
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new(MockBehavior.Strict);
+            this.trMock = new (MockBehavior.Strict);
             this.uowMock.Setup(x => x.GetRepository<Transaction>())
                 .Returns(this.trMock.Object);
             this.dbMock.Setup(x => x.AddTransactionsAsync(It.IsAny<List<Transaction>>()))
