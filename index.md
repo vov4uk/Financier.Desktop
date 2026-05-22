@@ -3,7 +3,7 @@
 Desktop version of the great [Financisto](https://github.com/dsolonenko/financisto) app.
 It's cut-off version, not all features avaliable. \
 App helps to work with Financisto .backup file on PC.
-The main reason to create this application was the possibility to import bank statements. 3 providers supported for now (Monobank, A-Bank and PUMB)
+The main reason to create this application was the possibility to import bank statements. 6 providers supported for now (Monobank, A-Bank and PUMB, Pireus, Privat Bank, PKO)
 
 ### Features
 
@@ -12,6 +12,7 @@ The main reason to create this application was the possibility to import bank st
 - [Edit transfers](/pages/transfer.md)
 - [Edit entities](/pages/entities.md) (projects, locations ..)
 - [Import CSV report from Monobank](/pages/mono.md)
+- [Rules from Reports Import](/pages/rules.md)
 
 #### Video instruction
 ![Open](https://vov4uk.github.io/Financier.Desktop/img/mono.gif)
