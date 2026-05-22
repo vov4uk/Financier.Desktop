@@ -39,11 +39,14 @@ MVP (minimum viable product) application, with enough functions to work with Fin
 - Duplicate transactions/transfers
 - Edit entities (projects, locations, payees...)
 - Import CSV report from Monobank
-- Import PDF/XSLX report from A-Bank
+- Import PDF/XLSX report from A-Bank
 - Import PDF report from PUMB
 - Import PDF report from Pireus
-- Parse recipiet text to SPLIT transaction
+- Import CSV report from PKO Bank
+- Import CSV report from PrivatBank
+- Parse receipt text to SPLIT transaction
 - Save .backup as SQLite database (.db file)
+- Import rules – auto-assign category/payee/project for bank transactions based on configurable rules
 - Reporting (kudos to [@2ruslan](https://github.com/2ruslan))
 
 ![Alt text](Financier.Desktop.gif?raw=true "UI example")
