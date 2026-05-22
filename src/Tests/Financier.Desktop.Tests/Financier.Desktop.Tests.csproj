@@ -12,6 +12,10 @@
       <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\..\..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
     <ItemGroup>
         <PackageReference Include="AutoFixture" />
         <PackageReference Include="AutoFixture.AutoMoq" />

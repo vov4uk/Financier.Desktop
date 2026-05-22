@@ -25,34 +25,34 @@
     using Xunit;
     using Path = System.IO.Path;
 
-    public class FinancierVMTest
+    public class MainWindowVMTest
     {
-        private readonly Mock<IDialogWrapper> dialogMock;
+        private readonly Mock<IBaseRepository<Account>> accountsRepo;
+        private readonly Mock<IBackupWriter> backupWriterMock;
+        private readonly Mock<IBankHelperFactory> bankMock;
+        private readonly Mock<IBaseRepository<Category>> categoriesRepo;
+        private readonly Mock<IBankHelper> csvMock;
         private readonly Mock<IFinancierDatabaseFactory> dbFactoryMock;
         private readonly Mock<IFinancierDatabase> dbMock;
-        private readonly Mock<IBankHelper> csvMock;
-        private readonly Mock<IBankHelperFactory> bankMock;
-        private readonly Mock<IUnitOfWork> uowMock;
+        private readonly Mock<IDialogWrapper> dialogMock;
         private readonly Mock<IEntityReader> entityReaderMock;
-        private readonly Mock<IBackupWriter> backupWriterMock;
-        private readonly Mock<IBaseRepository<Account>> accountsRepo;
-        private readonly Mock<IBaseRepository<BlotterTransactions>> transactionsRepo;
-        private readonly Mock<IBaseRepository<Category>> categoriesRepo;
         private readonly Mock<IBaseRepository<CurrencyExchangeRate>> exchangeRatesRepo;
-
+        private readonly Mock<IBaseRepository<BlotterTransactions>> transactionsRepo;
+        private readonly Mock<IUnitOfWork> uowMock;
+        private readonly Mock<IToastNotifierWrapper> toastNotifierMock;
+        private Mock<IBaseRepository<AttributeDefinition>> adMock;
         private Mock<IBaseRepository<Budget>> budgetMock;
-        private Mock<IBaseRepository<TransactionAttribute>> trAMock;
+        private Mock<IBaseRepository<CategoryAttribute>> caMock;
+        private Mock<IBaseRepository<CCardClosingDate>> cccdMock;
         private Mock<IBaseRepository<Currency>> currMock;
         private Mock<IBaseRepository<Location>> locMock;
         private Mock<IBaseRepository<Payee>> payeeMock;
         private Mock<IBaseRepository<Project>> projMock;
-        private Mock<IBaseRepository<Transaction>> trMock;
-        private Mock<IBaseRepository<AttributeDefinition>> adMock;
-        private Mock<IBaseRepository<CategoryAttribute>> caMock;
-        private Mock<IBaseRepository<CCardClosingDate>> cccdMock;
         private Mock<IBaseRepository<SmsTemplate>> smsMock;
+        private Mock<IBaseRepository<TransactionAttribute>> trAMock;
+        private Mock<IBaseRepository<Transaction>> trMock;
 
-        public FinancierVMTest()
+        public MainWindowVMTest()
         {
             this.bankMock = new (MockBehavior.Strict);
             this.csvMock = new (MockBehavior.Strict);
@@ -62,6 +62,7 @@
             this.uowMock = new (MockBehavior.Strict);
             this.entityReaderMock = new (MockBehavior.Strict);
             this.backupWriterMock = new (MockBehavior.Strict);
+            this.toastNotifierMock = new ();
             this.accountsRepo = new ();
             this.transactionsRepo = new ();
             this.categoriesRepo = new ();
@@ -74,6 +75,80 @@
         }
 
         [Fact]
+        public async Task AbankCommand_OpenWizard_AddNewTransaction()
+        {
+            await this.SetupDbManual();
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
+            this.dialogMock.Setup(x => x.OpenFileDialog("pdf")).Returns(path);
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", " Import", false))
+                .Returns(true);
+
+            SetupImportWizard(path);
+
+            var vm = this.GetFinancierVM();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.ABank);
+
+            this.trMock.VerifyAll();
+            this.dbMock.Verify();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task AddTransaction_NewItem_AddedToRepo(
+            Transaction transaction,
+            TransactionDto output)
+        {
+            await this.SetupDbManual();
+            this.SetupWizardRepos();
+            this.SetupRepo(new Mock<IBaseRepository<Payee>>());
+            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
+            this.trMock = new(MockBehavior.Strict);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(0)).ReturnsAsync(transaction);
+
+            this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>())).ReturnsAsync(Array.Empty<Transaction>());
+
+            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<List<Transaction>>())).Returns(Task.CompletedTask);
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
+            this.uowMock.Setup(x => x.Dispose());
+            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
+                .Returns(output);
+
+            var vm = this.GetFinancierVM();
+            await vm.Blotter.AddCommand.ExecuteAsync();
+
+            this.trMock.VerifyAll();
+            this.dbMock.Verify();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task AddTransfer_NewTransfer_AddedToDb(
+            Transaction transaction,
+            TransferDto output)
+        {
+            await this.SetupDbManual();
+            this.SetupRepo(new Mock<IBaseRepository<Account>>());
+            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
+
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(0)).ReturnsAsync(transaction);
+            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
+            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Transaction[]>())).Returns(Task.CompletedTask);
+
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.Dispose());
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "Transfer"))
+                .Returns(output);
+
+            var vm = this.GetFinancierVM();
+            await vm.Blotter.AddTransferCommand.ExecuteAsync();
+
+            this.dbMock.Verify();
+            this.dbMock.Verify(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()), Times.Exactly(2));
+        }
+
+        [Fact]
         public void Constructor_NoParameters_PagesCreated()
         {
             var vm = this.GetFinancierVM();
@@ -82,6 +157,56 @@
             Assert.NotNull(vm.Locations);
             Assert.NotNull(vm.Payees);
             Assert.NotNull(vm.Projects);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task Locations_AddRaised_NewItemAdded(LocationDto result)
+        {
+            await this.SetupDbManual();
+            var location = new Location() { Id = 0 };
+            Location[] actual = null;
+
+            this.dbMock.Setup(x => x.GetOrCreateAsync<Location>(0)).ReturnsAsync(location);
+
+            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Location[]>())).Callback<IEnumerable<Location>>((x) => { actual = x.ToArray(); }).Returns(Task.CompletedTask);
+            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationControlVM>(), 240, 300, nameof(Location))).Returns(result);
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.Dispose()).Verifiable();
+            this.locMock = new Mock<IBaseRepository<Location>>();
+            this.SetupRepo(this.locMock);
+
+            var vm = this.GetFinancierVM();
+            await vm.Locations.AddCommand.ExecuteAsync();
+
+            this.dbMock.Verify();
+            this.dbMock.Verify(x => x.GetOrCreateAsync<Location>(0), Times.Once);
+            this.dbMock.Verify(x => x.InsertOrUpdateAsync(It.IsAny<Location[]>()), Times.Once);
+            Assert.Equal(result.Address, actual[0].Address);
+            Assert.Equal(result.IsActive, actual[0].IsActive);
+            Assert.Equal(result.Title, actual[0].Title);
+            Assert.Equal(0, actual[0].Id);
+            Assert.Equal(0, actual[0].Count);
+        }
+
+        [Fact]
+        public async Task Locations_AddRaisedCancelClicked_NoNewItemAdded()
+        {
+            var location = new Location() { Id = 0 };
+
+            this.dbMock.Setup(x => x.GetOrCreateAsync<Location>(0)).ReturnsAsync(location);
+
+            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationControlVM>(), 240, 300, nameof(Location))).Returns(null);
+
+            this.locMock = new();
+            this.SetupRepo(this.locMock);
+
+            var vm = this.GetFinancierVM();
+            await vm.Locations.AddCommand.ExecuteAsync();
+
+            this.dbMock.VerifyAll();
+            this.dbMock.Verify(x => x.GetOrCreateAsync<Location>(0), Times.Once);
+            this.dbMock.Verify(x => x.InsertOrUpdateAsync<Location>(It.IsAny<Location[]>()), Times.Never);
         }
 
         [Fact]
@@ -115,6 +240,91 @@
             Assert.True(vm.CurrentPage is ExchangeRatesVM);
         }
 
+        [Fact]
+        public async Task MonoCommand_Cancel_NoTransactionsAdded()
+        {
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
+            this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
+            this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<MonoWizardVM>())).Returns(null);
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skiped 1 duplicates.", "Monobank CSV Import", false))
+                .Returns(true);
+            this.SetupWizardRepos();
+
+            this.csvMock.Setup(x => x.ParseReport(csvPath))
+                .Returns(Array.Empty<BankTransaction>());
+            this.csvMock.SetupGet(x => x.BankTitle)
+                .Returns(string.Empty);
+
+            var vm = this.GetFinancierVM();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
+
+            this.dbMock.VerifyAll();
+        }
+
+        [Fact]
+        public async Task MonoCommand_DuplicatesFound_NoTransactionsAdded()
+        {
+            await this.SetupDbManual();
+            var outputTransaction = new Transaction()
+            {
+                Id = 0,
+                FromAmount = 100,
+                CategoryId = 1,
+                OriginalCurrencyId = 0,
+                FromAccountId = 2,
+                OriginalFromAmount = 0,
+                DateTime = 1639121044000,
+            };
+            var findManyOutput = new List<Transaction> { outputTransaction };
+
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
+            this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
+            this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<MonoWizardVM>())).Returns(findManyOutput);
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skipped 1 duplicates.", " Import", false)).Returns(true);
+
+            this.SetupWizardRepos();
+            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
+            this.trMock = new(MockBehavior.Strict);
+            this.uowMock.Setup(x => x.GetRepository<Transaction>())
+                .Returns(this.trMock.Object);
+            this.dbMock.Setup(x => x.AddTransactionsAsync(It.IsAny<List<Transaction>>()))
+                .Returns(Task.CompletedTask);
+            this.trMock.Setup(x => x.FindManyAsync(It.IsAny<Expression<Func<Transaction, bool>>>()))
+                .ReturnsAsync(findManyOutput);
+            this.dbMock.Setup(x => x.CreateUnitOfWork())
+                .Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.Dispose());
+            this.csvMock.Setup(x => x.ParseReport(csvPath))
+                .Returns(Array.Empty<BankTransaction>());
+            this.csvMock.SetupGet(x => x.BankTitle)
+                .Returns(string.Empty);
+
+            var vm = this.GetFinancierVM();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
+
+            this.trMock.VerifyAll();
+            this.dbMock.Verify();
+        }
+
+        [Fact]
+        public async Task MonoCommand_OpenWizard_AddNewTransaction()
+        {
+            await this.SetupDbManual();
+
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
+            this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", " Import", false))
+                .Returns(true);
+
+            SetupImportWizard(csvPath);
+
+            var vm = this.GetFinancierVM();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
+
+            this.trMock.VerifyAll();
+            this.dbMock.Verify();
+        }
+
         [Theory]
         [AutoMoqData]
         public async Task OpenBackup_ParseBackup_ImportEntities(
@@ -140,6 +350,235 @@
 
             Assert.True(vm.CurrentPage is BlotterVM);
             Assert.Equal(backupPath, vm.OpenBackupPath);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task OpenTransaction_Cancel_NoUpdateTransaction(BlotterModel eventArgs, Transaction transaction)
+        {
+            eventArgs.CategoryId = -1;
+            await this.SetupDbManual();
+            this.SetupWizardRepos();
+            this.SetupRepo(new Mock<IBaseRepository<Payee>>());
+            this.trMock = new(MockBehavior.Strict);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
+            this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>())).ReturnsAsync(Array.Empty<Transaction>());
+
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.Dispose());
+            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
+                .Returns(null);
+
+            var vm = this.GetFinancierVM();
+            vm.Blotter.SelectedValue = eventArgs;
+            await vm.Blotter.EditCommand.ExecuteAsync();
+
+            this.trMock.VerifyAll();
+            this.dbMock.Verify();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task OpenTransaction_ExistingTransaction_UpdateTransaction(
+            BlotterModel eventArgs,
+            Transaction transaction,
+            AccountFilterModel account,
+            IEnumerable<Transaction> subTransactions)
+        {
+            eventArgs.CategoryId = -1;
+            await this.SetupDbManual();
+            var output = new TransactionDto(transaction, subTransactions);
+            output.FromAccount = account;
+
+            this.SetupWizardRepos();
+            this.SetupRepo(new Mock<IBaseRepository<Payee>>());
+            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
+            this.trMock = new(MockBehavior.Strict);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id))
+                .ReturnsAsync(transaction);
+            this.dbMock.Setup(x => x.GetOrCreateAsync<Transaction>(It.IsAny<int>()))
+                .ReturnsAsync(new Transaction());
+            this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>()))
+                .ReturnsAsync(Array.Empty<Transaction>());
+
+            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<List<Transaction>>()))
+                .Returns(Task.CompletedTask);
+            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()))
+                .Returns(Task.CompletedTask);
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.Dispose());
+            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
+                .Returns(output);
+
+            var vm = this.GetFinancierVM();
+            vm.Blotter.SelectedValue = eventArgs;
+            await vm.Blotter.EditCommand.ExecuteAsync();
+
+            this.trMock.VerifyAll();
+            this.dbMock.Verify();
+            this.dbMock.Verify(x => x.GetOrCreateAsync<Transaction>(It.IsAny<int>()), Times.Exactly(subTransactions.Count()));
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task OpenTransaction_NoSubTransaction_UpdateTransaction(
+            BlotterModel eventArgs,
+            Transaction transaction,
+            TransactionDto output)
+        {
+            eventArgs.CategoryId = -1;
+            eventArgs.ToAccountId = 0;
+
+            await this.SetupDbManual();
+            this.SetupWizardRepos();
+            this.SetupRepo(new Mock<IBaseRepository<Payee>>());
+            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
+            this.trMock = new(MockBehavior.Strict);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id))
+                .ReturnsAsync(transaction);
+
+            this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>()))
+                .ReturnsAsync(Array.Empty<Transaction>());
+
+            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<List<Transaction>>()))
+                .Returns(Task.CompletedTask);
+            this.dbMock.Setup(x => x.CreateUnitOfWork())
+                .Returns(this.uowMock.Object);
+            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()))
+                .Returns(Task.CompletedTask);
+            this.uowMock.Setup(x => x.Dispose());
+            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
+                .Returns(output);
+
+            var vm = this.GetFinancierVM();
+            vm.Blotter.SelectedValue = eventArgs;
+            await vm.Blotter.EditCommand.ExecuteAsync();
+
+            this.trMock.VerifyAll();
+            this.dbMock.Verify();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task OpenTransfer_Cancel_NoUpdateTransaction(BlotterModel eventArgs, Transaction transaction)
+        {
+            eventArgs.FromAccountId = 1;
+            eventArgs.ToAccountId = 2;
+            eventArgs.CategoryId = 0;
+
+            this.SetupRepo(new Mock<IBaseRepository<Account>>());
+
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
+
+            this.uowMock.Setup(x => x.Dispose());
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "Transfer"))
+                .Returns(null);
+
+            var vm = this.GetFinancierVM();
+            vm.Blotter.SelectedValue = eventArgs;
+            await vm.Blotter.EditCommand.ExecuteAsync();
+
+            this.dbMock.VerifyAll();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task OpenTransfer_ExistingTransaction_UpdateTransaction(
+            BlotterModel eventArgs,
+            Transaction transaction,
+            TransferDto output)
+        {
+            eventArgs.FromAccountId = 1;
+            eventArgs.ToAccountId = 2;
+            eventArgs.CategoryId = 0;
+
+            await this.SetupDbManual();
+
+            this.SetupRepo(new Mock<IBaseRepository<Account>>());
+            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
+            this.trMock = new(MockBehavior.Strict);
+            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
+
+            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Transaction[]>())).Returns(Task.CompletedTask);
+            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
+
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.Dispose());
+
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "Transfer"))
+                .Returns(output);
+
+            var vm = this.GetFinancierVM();
+            vm.Blotter.SelectedValue = eventArgs;
+            await vm.Blotter.EditCommand.ExecuteAsync();
+
+            this.trMock.VerifyAll();
+            this.dbMock.Verify();
+            this.dbMock.Verify(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()), Times.Exactly(2));
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task Projects_AddRaised_NewItemAdded(TagDTO result)
+        {
+            var location = new Project() { Id = 0 };
+            Project[] actual = null;
+
+            this.dbMock.Setup(x => x.GetOrCreateAsync<Project>(0)).ReturnsAsync(location);
+            await this.SetupDbManual();
+            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>())).Callback<IEnumerable<Project>>((x) => { actual = x.ToArray(); }).Returns(Task.CompletedTask);
+            this.dialogMock.Setup(x => x.ShowDialog<TagControl>(It.IsAny<TagControlVM>(), 180, 300, nameof(Project))).Returns(result);
+
+            this.projMock = new();
+            this.SetupRepo(this.projMock);
+
+            var vm = this.GetFinancierVM();
+            await vm.Projects.AddCommand.ExecuteAsync();
+
+            this.dbMock.Verify(x => x.GetOrCreateAsync<Project>(0), Times.Once);
+            this.dbMock.Verify(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>()), Times.Once);
+            Assert.Equal(result.IsActive, actual[0].IsActive);
+            Assert.Equal(result.Title, actual[0].Title);
+            Assert.Equal(0, actual[0].Id);
+        }
+
+        [Fact]
+        public async Task Projects_AddRaisedCancelClicked_NoNewItemAdded()
+        {
+            var location = new Project() { Id = 0 };
+
+            this.dbMock.Setup(x => x.GetOrCreateAsync<Project>(0)).ReturnsAsync(location);
+
+            this.dialogMock.Setup(x => x.ShowDialog<TagControl>(It.IsAny<TagControlVM>(), 180, 300, nameof(Project))).Returns(null);
+
+            this.projMock = new();
+            this.SetupRepo(this.projMock);
+
+            var vm = this.GetFinancierVM();
+            await vm.Projects.AddCommand.ExecuteAsync();
+
+            this.dbMock.VerifyAll();
+            this.dbMock.Verify(x => x.GetOrCreateAsync<Project>(0), Times.Once);
+            this.dbMock.Verify(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task PumbCommand_OpenWizard_AddNewTransaction()
+        {
+            await this.SetupDbManual();
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb.pdf");
+            this.dialogMock.Setup(x => x.OpenFileDialog("pdf")).Returns(path);
+            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", " Import", false))
+                .Returns(true);
+
+            SetupImportWizard(path);
+
+            var vm = this.GetFinancierVM();
+            await vm.ImportCommand.ExecuteAsync(WizardTypes.Pumb);
+
+            this.trMock.VerifyAll();
+            this.dbMock.Verify();
         }
 
         [Theory]
@@ -201,461 +640,7 @@
             this.dialogMock.VerifyAll();
         }
 
-        [Theory]
-        [AutoMoqData]
-        public async Task Locations_AddRaised_NewItemAdded(LocationDto result)
-        {
-            await this.SetupDbManual();
-            var location = new Location() { Id = 0 };
-            Location[] actual = null;
-
-            this.dbMock.Setup(x => x.GetOrCreateAsync<Location>(0)).ReturnsAsync(location);
-
-            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Location[]>())).Callback<IEnumerable<Location>>((x) => { actual = x.ToArray(); }).Returns(Task.CompletedTask);
-            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationControlVM>(), 240, 300, nameof(Location))).Returns(result);
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.Dispose()).Verifiable();
-            this.locMock = new Mock<IBaseRepository<Location>>();
-            this.SetupRepo(this.locMock);
-
-            var vm = this.GetFinancierVM();
-            await vm.Locations.AddCommand.ExecuteAsync();
-
-            this.dbMock.Verify();
-            this.dbMock.Verify(x => x.GetOrCreateAsync<Location>(0), Times.Once);
-            this.dbMock.Verify(x => x.InsertOrUpdateAsync(It.IsAny<Location[]>()), Times.Once);
-            Assert.Equal(result.Address, actual[0].Address);
-            Assert.Equal(result.IsActive, actual[0].IsActive);
-            Assert.Equal(result.Title, actual[0].Title);
-            Assert.Equal(0, actual[0].Id);
-            Assert.Equal(0, actual[0].Count);
-        }
-
-        [Fact]
-        public async Task Locations_AddRaisedCancelClicked_NoNewItemAdded()
-        {
-            var location = new Location() { Id = 0 };
-
-            this.dbMock.Setup(x => x.GetOrCreateAsync<Location>(0)).ReturnsAsync(location);
-
-            this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationControlVM>(), 240, 300, nameof(Location))).Returns(null);
-
-            this.locMock = new ();
-            this.SetupRepo(this.locMock);
-
-            var vm = this.GetFinancierVM();
-            await vm.Locations.AddCommand.ExecuteAsync();
-
-            this.dbMock.VerifyAll();
-            this.dbMock.Verify(x => x.GetOrCreateAsync<Location>(0), Times.Once);
-            this.dbMock.Verify(x => x.InsertOrUpdateAsync<Location>(It.IsAny<Location[]>()), Times.Never);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task Projects_AddRaised_NewItemAdded(TagDTO result)
-        {
-            var location = new Project() { Id = 0 };
-            Project[] actual = null;
-
-            this.dbMock.Setup(x => x.GetOrCreateAsync<Project>(0)).ReturnsAsync(location);
-            await this.SetupDbManual();
-            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>())).Callback<IEnumerable<Project>>((x) => { actual = x.ToArray(); }).Returns(Task.CompletedTask);
-            this.dialogMock.Setup(x => x.ShowDialog<TagControl>(It.IsAny<TagControlVM>(), 180, 300, nameof(Project))).Returns(result);
-
-            this.projMock = new ();
-            this.SetupRepo(this.projMock);
-
-            var vm = this.GetFinancierVM();
-            await vm.Projects.AddCommand.ExecuteAsync();
-
-            this.dbMock.Verify(x => x.GetOrCreateAsync<Project>(0), Times.Once);
-            this.dbMock.Verify(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>()), Times.Once);
-            Assert.Equal(result.IsActive, actual[0].IsActive);
-            Assert.Equal(result.Title, actual[0].Title);
-            Assert.Equal(0, actual[0].Id);
-        }
-
-        [Fact]
-        public async Task Projects_AddRaisedCancelClicked_NoNewItemAdded()
-        {
-            var location = new Project() { Id = 0 };
-
-            this.dbMock.Setup(x => x.GetOrCreateAsync<Project>(0)).ReturnsAsync(location);
-
-            this.dialogMock.Setup(x => x.ShowDialog<TagControl>(It.IsAny<TagControlVM>(), 180, 300, nameof(Project))).Returns(null);
-
-            this.projMock = new ();
-            this.SetupRepo(this.projMock);
-
-            var vm = this.GetFinancierVM();
-            await vm.Projects.AddCommand.ExecuteAsync();
-
-            this.dbMock.VerifyAll();
-            this.dbMock.Verify(x => x.GetOrCreateAsync<Project>(0), Times.Once);
-            this.dbMock.Verify(x => x.InsertOrUpdateAsync(It.IsAny<Project[]>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task MonoCommand_OpenWizard_AddNewTransaction()
-        {
-            await this.SetupDbManual();
-
-            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", " Import", false))
-                .Returns(true);
-
-            SetupImportWizard(csvPath);
-
-            var vm = this.GetFinancierVM();
-            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
-
-            this.trMock.VerifyAll();
-            this.dbMock.Verify();
-        }
-
-        [Fact]
-        public async Task AbankCommand_OpenWizard_AddNewTransaction()
-        {
-            await this.SetupDbManual();
-
-            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.pdf");
-            this.dialogMock.Setup(x => x.OpenFileDialog("pdf")).Returns(path);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", " Import", false))
-                .Returns(true);
-
-            SetupImportWizard(path);
-
-            var vm = this.GetFinancierVM();
-            await vm.ImportCommand.ExecuteAsync(WizardTypes.ABank);
-
-            this.trMock.VerifyAll();
-            this.dbMock.Verify();
-        }
-
-        [Fact]
-        public async Task PumbCommand_OpenWizard_AddNewTransaction()
-        {
-            await this.SetupDbManual();
-
-            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pumb.pdf");
-            this.dialogMock.Setup(x => x.OpenFileDialog("pdf")).Returns(path);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 1 transactions.", " Import", false))
-                .Returns(true);
-
-            SetupImportWizard(path);
-
-            var vm = this.GetFinancierVM();
-            await vm.ImportCommand.ExecuteAsync(WizardTypes.Pumb);
-
-            this.trMock.VerifyAll();
-            this.dbMock.Verify();
-        }
-
-        [Fact]
-        public async Task MonoCommand_DuplicatesFound_NoTransactionsAdded()
-        {
-            await this.SetupDbManual();
-            var outputTransaction = new Transaction()
-            {
-                Id = 0,
-                FromAmount = 100,
-                CategoryId = 1,
-                OriginalCurrencyId = 0,
-                FromAccountId = 2,
-                OriginalFromAmount = 0,
-                DateTime = 1639121044000,
-            };
-            var findManyOutput = new List<Transaction> { outputTransaction };
-
-            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
-            this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<MonoWizardVM>())).Returns(findManyOutput);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skipped 1 duplicates.", " Import", false)).Returns(true);
-
-            this.SetupWizardRepos();
-            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new (MockBehavior.Strict);
-            this.uowMock.Setup(x => x.GetRepository<Transaction>())
-                .Returns(this.trMock.Object);
-            this.dbMock.Setup(x => x.AddTransactionsAsync(It.IsAny<List<Transaction>>()))
-                .Returns(Task.CompletedTask);
-            this.trMock.Setup(x => x.FindManyAsync(It.IsAny<Expression<Func<Transaction, bool>>>()))
-                .ReturnsAsync(findManyOutput);
-            this.dbMock.Setup(x => x.CreateUnitOfWork())
-                .Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.Dispose());
-            this.csvMock.Setup(x => x.ParseReport(csvPath))
-                .Returns(Array.Empty<BankTransaction>());
-            this.csvMock.SetupGet(x => x.BankTitle)
-                .Returns(string.Empty);
-
-            var vm = this.GetFinancierVM();
-            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
-
-            this.trMock.VerifyAll();
-            this.dbMock.Verify();
-        }
-
-        [Fact]
-        public async Task MonoCommand_Cancel_NoTransactionsAdded()
-        {
-            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            this.dialogMock.Setup(x => x.OpenFileDialog("csv")).Returns(csvPath);
-            this.dialogMock.Setup(x => x.ShowWizard(It.IsAny<MonoWizardVM>())).Returns(null);
-            this.dialogMock.Setup(x => x.ShowMessageBox("Imported 0 transactions. Skiped 1 duplicates.", "Monobank CSV Import", false))
-                .Returns(true);
-            this.SetupWizardRepos();
-
-            this.csvMock.Setup(x => x.ParseReport(csvPath))
-                .Returns(Array.Empty<BankTransaction>());
-            this.csvMock.SetupGet(x => x.BankTitle)
-                .Returns(string.Empty);
-
-            var vm = this.GetFinancierVM();
-            await vm.ImportCommand.ExecuteAsync(WizardTypes.Monobank);
-
-            this.dbMock.VerifyAll();
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task OpenTransaction_ExistingTransaction_UpdateTransaction(
-            BlotterModel eventArgs,
-            Transaction transaction,
-            AccountFilterModel account,
-            IEnumerable<Transaction> subTransactions)
-        {
-            eventArgs.CategoryId = -1;
-            await this.SetupDbManual();
-            var output = new TransactionDto(transaction, subTransactions);
-            output.FromAccount = account;
-
-            this.SetupWizardRepos();
-            this.SetupRepo(new Mock<IBaseRepository<Payee>>());
-            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new (MockBehavior.Strict);
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id))
-                .ReturnsAsync(transaction);
-            this.dbMock.Setup(x => x.GetOrCreateAsync<Transaction>(It.IsAny<int>()))
-                .ReturnsAsync(new Transaction());
-            this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>()))
-                .ReturnsAsync(Array.Empty<Transaction>());
-
-            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<List<Transaction>>()))
-                .Returns(Task.CompletedTask);
-            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()))
-                .Returns(Task.CompletedTask);
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
-                .Returns(output);
-
-            var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
-            await vm.Blotter.EditCommand.ExecuteAsync();
-
-            this.trMock.VerifyAll();
-            this.dbMock.Verify();
-            this.dbMock.Verify(x => x.GetOrCreateAsync<Transaction>(It.IsAny<int>()), Times.Exactly(subTransactions.Count()));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task OpenTransaction_NoSubTransaction_UpdateTransaction(
-            BlotterModel eventArgs,
-            Transaction transaction,
-            TransactionDto output)
-        {
-            eventArgs.CategoryId = -1;
-            eventArgs.ToAccountId = 0;
-
-            await this.SetupDbManual();
-            this.SetupWizardRepos();
-            this.SetupRepo(new Mock<IBaseRepository<Payee>>());
-            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new (MockBehavior.Strict);
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id))
-                .ReturnsAsync(transaction);
-
-            this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>()))
-                .ReturnsAsync(Array.Empty<Transaction>());
-
-            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<List<Transaction>>()))
-                .Returns(Task.CompletedTask);
-            this.dbMock.Setup(x => x.CreateUnitOfWork())
-                .Returns(this.uowMock.Object);
-            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()))
-                .Returns(Task.CompletedTask);
-            this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
-                .Returns(output);
-
-            var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
-            await vm.Blotter.EditCommand.ExecuteAsync();
-
-            this.trMock.VerifyAll();
-            this.dbMock.Verify();
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task AddTransaction_NewItem_AddedToRepo(
-            Transaction transaction,
-            TransactionDto output)
-        {
-            await this.SetupDbManual();
-            this.SetupWizardRepos();
-            this.SetupRepo(new Mock<IBaseRepository<Payee>>());
-            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new (MockBehavior.Strict);
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(0)).ReturnsAsync(transaction);
-
-            this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>())).ReturnsAsync(Array.Empty<Transaction>());
-
-            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<List<Transaction>>())).Returns(Task.CompletedTask);
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
-            this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
-                .Returns(output);
-
-            var vm = this.GetFinancierVM();
-            await vm.Blotter.AddCommand.ExecuteAsync();
-
-            this.trMock.VerifyAll();
-            this.dbMock.Verify();
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task OpenTransaction_Cancel_NoUpdateTransaction(BlotterModel eventArgs, Transaction transaction)
-        {
-            eventArgs.CategoryId = -1;
-            await this.SetupDbManual();
-            this.SetupWizardRepos();
-            this.SetupRepo(new Mock<IBaseRepository<Payee>>());
-            this.trMock = new (MockBehavior.Strict);
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
-            this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>())).ReturnsAsync(Array.Empty<Transaction>());
-
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
-                .Returns(null);
-
-            var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
-            await vm.Blotter.EditCommand.ExecuteAsync();
-
-            this.trMock.VerifyAll();
-            this.dbMock.Verify();
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task OpenTransfer_ExistingTransaction_UpdateTransaction(
-            BlotterModel eventArgs,
-            Transaction transaction,
-            TransferDto output)
-        {
-            eventArgs.FromAccountId = 1;
-            eventArgs.ToAccountId = 2;
-            eventArgs.CategoryId = 0;
-
-            await this.SetupDbManual();
-
-            this.SetupRepo(new Mock<IBaseRepository<Account>>());
-            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new (MockBehavior.Strict);
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
-
-            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Transaction[]>())).Returns(Task.CompletedTask);
-            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
-
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.Dispose());
-
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "Transfer"))
-                .Returns(output);
-
-            var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
-            await vm.Blotter.EditCommand.ExecuteAsync();
-
-            this.trMock.VerifyAll();
-            this.dbMock.Verify();
-            this.dbMock.Verify(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()), Times.Exactly(2));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task AddTransfer_NewTransfer_AddedToDb(
-            Transaction transaction,
-            TransferDto output)
-        {
-            await this.SetupDbManual();
-            this.SetupRepo(new Mock<IBaseRepository<Account>>());
-            this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(0)).ReturnsAsync(transaction);
-            this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
-            this.dbMock.Setup(x => x.InsertOrUpdateAsync(It.IsAny<Transaction[]>())).Returns(Task.CompletedTask);
-
-            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
-            this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "Transfer"))
-                .Returns(output);
-
-            var vm = this.GetFinancierVM();
-            await vm.Blotter.AddTransferCommand.ExecuteAsync();
-
-            this.dbMock.Verify();
-            this.dbMock.Verify(x => x.RebuildAccountBalanceAsync(It.IsAny<int>()), Times.Exactly(2));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task OpenTransfer_Cancel_NoUpdateTransaction(BlotterModel eventArgs, Transaction transaction)
-        {
-            eventArgs.FromAccountId = 1;
-            eventArgs.ToAccountId = 2;
-            eventArgs.CategoryId = 0;
-
-            this.SetupRepo(new Mock<IBaseRepository<Account>>());
-
-            this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
-
-            this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "Transfer"))
-                .Returns(null);
-
-            var vm = this.GetFinancierVM();
-            vm.Blotter.SelectedValue = eventArgs;
-            await vm.Blotter.EditCommand.ExecuteAsync();
-
-            this.dbMock.VerifyAll();
-        }
-
-        private void SetupWizardRepos()
-        {
-            this.SetupRepo(new Mock<IBaseRepository<Account>>());
-            this.SetupRepo(new Mock<IBaseRepository<Currency>>());
-            this.SetupRepo(new Mock<IBaseRepository<Location>>());
-            this.SetupRepo(new Mock<IBaseRepository<Category>>());
-            this.SetupRepo(new Mock<IBaseRepository<Project>>());
-        }
-
-        private MainWindowVM GetFinancierVM() => new MainWindowVM(this.dialogMock.Object, this.dbFactoryMock.Object, this.entityReaderMock.Object, this.backupWriterMock.Object, this.bankMock.Object);
-
-        private void SetupRepo<T>(Mock<IBaseRepository<T>> mock)
-            where T : Entity
-        {
-            this.uowMock.Setup(x => x.GetRepository<T>()).Returns(mock.Object);
-            mock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<T, object>>[]>())).ReturnsAsync(new List<T>());
-        }
+        private MainWindowVM GetFinancierVM() => new MainWindowVM(this.dialogMock.Object, this.dbFactoryMock.Object, this.entityReaderMock.Object, this.backupWriterMock.Object, this.toastNotifierMock.Object, this.bankMock.Object);
 
         private async Task SetupDbManual()
         {
@@ -692,7 +677,7 @@
                 .Returns(output);
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new (MockBehavior.Strict);
+            this.trMock = new(MockBehavior.Strict);
             this.uowMock.Setup(x => x.GetRepository<Transaction>())
                 .Returns(this.trMock.Object);
             this.dbMock.Setup(x => x.AddTransactionsAsync(It.IsAny<List<Transaction>>()))
@@ -707,6 +692,22 @@
             this.csvMock.Setup(x => x.ParseReport(path))
                 .Returns(Array.Empty<BankTransaction>());
             this.csvMock.SetupGet(x => x.BankTitle).Returns(string.Empty);
+        }
+
+        private void SetupRepo<T>(Mock<IBaseRepository<T>> mock)
+            where T : Entity
+        {
+            this.uowMock.Setup(x => x.GetRepository<T>()).Returns(mock.Object);
+            mock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<T, object>>[]>())).ReturnsAsync(new List<T>());
+        }
+
+        private void SetupWizardRepos()
+        {
+            this.SetupRepo(new Mock<IBaseRepository<Account>>());
+            this.SetupRepo(new Mock<IBaseRepository<Currency>>());
+            this.SetupRepo(new Mock<IBaseRepository<Location>>());
+            this.SetupRepo(new Mock<IBaseRepository<Category>>());
+            this.SetupRepo(new Mock<IBaseRepository<Project>>());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -35,31 +36,32 @@ namespace Financier.Common.Model
         private string BuildTitle()
         {
             string title = string.Empty;
+            List<string> conditions = new List<string>();
             if (PayeeId.HasValue)
             {
                 var pe = DbManual.Payee.FirstOrDefault(p => p.Id == PayeeId.Value);
-                title += $"Payee: {pe?.Title} ";
+                conditions.Add($"Assign Payee: {pe?.Title} ");
             }
             if (ProjectId.HasValue)
             {
                 var p = DbManual.Project.FirstOrDefault(p => p.Id == ProjectId.Value);
-                title += $"Project: {p?.Title} ";
+                conditions.Add($"Assign Project: {p?.Title} ");
             }
             if (CategoryId.HasValue)
             {
                 var c = DbManual.Category.FirstOrDefault(c => c.Id == CategoryId.Value);
-                title += $"Category: {c?.Title} ";
+                conditions.Add($"Assign Category: {c?.Title} ");
             }
             if (LocationId.HasValue)
             {
                 var l = DbManual.Location.FirstOrDefault(l => l.Id == LocationId.Value);
-                title += $"Location: {l?.Title} ";
+                conditions.Add($"Assign Location: {l?.Title} ");
             }
             if (!string.IsNullOrEmpty(MCCCategory))
             {
-                title += $"MCC: {MCCCategory} ";
+                conditions.Add($"MCC: {MCCCategory} ");
             }
-            return title.Trim();
+            return string.Join("and ", conditions).Trim();
         }
         public void UpdateTitle()
         {

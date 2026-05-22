@@ -1,22 +1,20 @@
-﻿using Financier.Common.Entities;
+﻿using System;
+using Financier.Common.Entities;
 using Financier.Common.Model;
-using Financier.DataAccess.Data;
 using Prism.Mvvm;
-using System;
 
 namespace Financier.Desktop.Data
 {
     public class RuleDTO : BindableBase
     {
-        private bool isActive;
-        private string description;
-        private string condition;
-        private int? payeeId;
-        private int? projectId;
         private CategoryModel category;
         private int? categoryId;
+        private string condition;
+        private string description;
+        private bool isActive;
         private int? locationId;
-
+        private int? payeeId;
+        private int? projectId;
         public RuleDTO()
         {
         }
@@ -31,38 +29,6 @@ namespace Financier.Desktop.Data
             CategoryId = rulesModel.CategoryId;
             LocationId = rulesModel.LocationId;
             Created = rulesModel.Created;
-        }
-
-        public DateTime Created { get; set; }
-
-        public string Description
-        {
-            get => description;
-            set
-            {
-                description = value;
-                RaisePropertyChanged(nameof(Description));
-            }
-        }
-
-        public string Condition
-        {
-            get => condition;
-            set
-            {
-                condition = value;
-                RaisePropertyChanged(nameof(Condition));
-            }
-        }
-
-        public bool IsActive
-        {
-            get => isActive;
-            set
-            {
-                isActive = value;
-                RaisePropertyChanged(nameof(IsActive));
-            }
         }
 
         public CategoryModel Category
@@ -89,6 +55,36 @@ namespace Financier.Desktop.Data
             }
         }
 
+        public string Condition
+        {
+            get => condition;
+            set
+            {
+                condition = value;
+                RaisePropertyChanged(nameof(Condition));
+            }
+        }
+
+        public DateTime Created { get; set; }
+
+        public string Description
+        {
+            get => description;
+            set
+            {
+                description = value;
+                RaisePropertyChanged(nameof(Description));
+            }
+        }
+        public bool IsActive
+        {
+            get => isActive;
+            set
+            {
+                isActive = value;
+                RaisePropertyChanged(nameof(IsActive));
+            }
+        }
         public int? LocationId
         {
             get => locationId;

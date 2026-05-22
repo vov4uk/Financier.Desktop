@@ -29,96 +29,38 @@
         }
 
         [Fact]
-        public void LoadTransactions_UkrHeaders_TransactionsLoaded()
-        {
-            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
-            var mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>(), new Mock<IDialogWrapper>().Object);
-
-            Assert.Equal(46, mono.Count());
-            Assert.Equal(46, ((Page2VM)vm.Pages[1]).GetMonoTransactions().Count);
-            Assert.NotNull(vm.CurrentPage);
-            Assert.Equal(3, vm.Pages.Count);
-        }
-
-        [Fact]
-        public void LoadTransactions_EngHeaders_TransactionsLoaded()
-        {
-            DbManual.SetupTests(new List<AccountFilterModel>());
-            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
-            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>(), new Mock<IDialogWrapper>().Object);
-
-            Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
-            Assert.NotNull(vm.CurrentPage);
-            Assert.Equal(3, vm.Pages.Count);
-        }
-
-        [Fact]
-        public void LoadTransactions_Monobank_ExpectedTransactions()
-        {
-            var expected = new List<BankTransaction>
-            {
-               new BankTransaction
-               {
-                    Date = new DateTime(2021, 11, 15, 10, 19, 11, DateTimeKind.Local),
-                    Description = "Київстар",
-                    Balance = 0.0,
-                    MCC = "4814",
-                    CardCurrencyAmount = -132.25,
-                    OperationAmount = -132.25,
-                    OperationCurrency = "UAH",
-               },
-            };
-
-            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
-            IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
-
-            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(mono.ToList()));
-        }
-
-        [Fact]
-        public void LoadTransactions_Monobank_EmptyList()
-        {
-            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", Guid.NewGuid().ToString());
-            IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
-
-            Assert.Empty(mono);
-        }
-
-        [Fact]
-        public void LoadTransactions_AbankMultiPages_ExpectedTransactions()
+        public void LoadTransactions_AbankEnglishExcel_ExpectedTransactions()
         {
             var first = new BankTransaction
             {
-                Date = new DateTime(2024, 4, 30, 19, 41, 0),
-                Description = "Монобанк",
-                Balance = 2072.28,
-                MCC = "6010",
+                Date = new DateTime(2024, 6, 21, 18, 29, 0),
+                Description = "Exchange. Rate 40.20",
+                Balance = 894.72,
+                MCC = "4829",
                 Commission = 0.0,
-                CardCurrencyAmount = 2000.0,
-                OperationAmount = 2000.0,
+                CardCurrencyAmount = 51.85,
+                OperationAmount = 51.85,
                 Cashback = 0.0,
                 ExchangeRate = 0.0,
             };
 
             var last = new BankTransaction
             {
-                Date = new DateTime(2024, 4, 4, 9, 51, 0),
-                Description = "Монобанк",
-                Balance = 3166.91,
+                Date = new DateTime(2024, 5, 24, 12, 44, 0),
+                Description = "ATB",
+                Balance = 2306.27,
                 Commission = 0.0,
-                MCC = "6010",
-                CardCurrencyAmount = 2000.0,
-                OperationAmount = 2000.0,
-                Cashback = 0.0,
+                MCC = "5411",
+                CardCurrencyAmount = -472.92,
+                OperationAmount = -472.92,
+                Cashback = 5.67,
                 ExchangeRate = 0.0,
             };
 
-            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank_3_pages.pdf");
-            IEnumerable<BankTransaction> abank = new Helpers.BankHelper.ABankHelper().ParseReport(path);
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.eng.xlsx");
+            IEnumerable<BankTransaction> abank = new AbankExcelHelper().ParseReport(path);
 
-            Assert.Equal(17, abank.Count());
+            Assert.Equal(26, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
         }
@@ -161,69 +103,85 @@
         }
 
         [Fact]
-        public void LoadTransactions_AbankEnglishExcel_ExpectedTransactions()
+        public void LoadTransactions_AbankMultiPages_ExpectedTransactions()
         {
             var first = new BankTransaction
             {
-                Date = new DateTime(2024, 6, 21, 18, 29, 0),
-                Description = "Exchange. Rate 40.20",
-                Balance = 894.72,
-                MCC = "4829",
+                Date = new DateTime(2024, 4, 30, 19, 41, 0),
+                Description = "Монобанк",
+                Balance = 2072.28,
+                MCC = "6010",
                 Commission = 0.0,
-                CardCurrencyAmount = 51.85,
-                OperationAmount = 51.85,
+                CardCurrencyAmount = 2000.0,
+                OperationAmount = 2000.0,
                 Cashback = 0.0,
                 ExchangeRate = 0.0,
             };
 
             var last = new BankTransaction
             {
-                Date = new DateTime(2024, 5, 24, 12, 44, 0),
-                Description = "ATB",
-                Balance = 2306.27,
+                Date = new DateTime(2024, 4, 4, 9, 51, 0),
+                Description = "Монобанк",
+                Balance = 3166.91,
                 Commission = 0.0,
-                MCC = "5411",
-                CardCurrencyAmount = -472.92,
-                OperationAmount = -472.92,
-                Cashback = 5.67,
+                MCC = "6010",
+                CardCurrencyAmount = 2000.0,
+                OperationAmount = 2000.0,
+                Cashback = 0.0,
                 ExchangeRate = 0.0,
             };
 
-            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank.eng.xlsx");
-            IEnumerable<BankTransaction> abank = new AbankExcelHelper().ParseReport(path);
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "abank_3_pages.pdf");
+            IEnumerable<BankTransaction> abank = new Helpers.BankHelper.ABankHelper().ParseReport(path);
 
-            Assert.Equal(26, abank.Count());
+            Assert.Equal(17, abank.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(abank.First()));
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(abank.Last()));
         }
 
         [Fact]
-        public void LoadTransactions_PrivatExcel_ExpectedTransactions()
+        public void LoadTransactions_EngHeaders_TransactionsLoaded()
         {
-            var first = new BankTransaction
+            DbManual.SetupTests(new List<AccountFilterModel>());
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
+            IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>(), new Mock<IDialogWrapper>().Object);
+
+            Assert.Single(((Page2VM)vm.Pages[1]).GetMonoTransactions());
+            Assert.NotNull(vm.CurrentPage);
+            Assert.Equal(3, vm.Pages.Count);
+        }
+
+        [Fact]
+        public void LoadTransactions_Monobank_EmptyList()
+        {
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", Guid.NewGuid().ToString());
+            IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
+
+            Assert.Empty(mono);
+        }
+
+        [Fact]
+        public void LoadTransactions_Monobank_ExpectedTransactions()
+        {
+            var expected = new List<BankTransaction>
             {
-                Date = new DateTime(2024, 6, 28, 15, 00, 19),
-                Description = "Туризм : ФОП",
-                Balance = 640.46,
-                CardCurrencyAmount = -2901,
-                OperationAmount = -2901,
+               new BankTransaction
+               {
+                    Date = new DateTime(2021, 11, 15, 10, 19, 11, DateTimeKind.Local),
+                    Description = "Київстар",
+                    Balance = 0.0,
+                    MCC = "4814",
+                    CardCurrencyAmount = -132.25,
+                    OperationAmount = -132.25,
+                    OperationCurrency = "UAH",
+               },
             };
 
-            var last = new BankTransaction
-            {
-                Date = new DateTime(2024, 5, 31, 9, 46, 08),
-                Description = "Перекази : ФОП",
-                Balance = 320.46,
-                CardCurrencyAmount = -455.0,
-                OperationAmount = -455.0,
-            };
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.eng.csv");
+            IEnumerable<BankTransaction> mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
 
-            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "privat.xlsx");
-            IEnumerable<BankTransaction> bank = new PrivatHelper().ParseReport(path);
-
-            Assert.Equal(9, bank.Count());
-            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
-            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
+            Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(mono.ToList()));
         }
 
         [Fact]
@@ -303,6 +261,35 @@
         }
 
         [Fact]
+        public void LoadTransactions_PrivatExcel_ExpectedTransactions()
+        {
+            var first = new BankTransaction
+            {
+                Date = new DateTime(2024, 6, 28, 15, 00, 19),
+                Description = "Туризм : ФОП",
+                Balance = 640.46,
+                CardCurrencyAmount = -2901,
+                OperationAmount = -2901,
+            };
+
+            var last = new BankTransaction
+            {
+                Date = new DateTime(2024, 5, 31, 9, 46, 08),
+                Description = "Перекази : ФОП",
+                Balance = 320.46,
+                CardCurrencyAmount = -455.0,
+                OperationAmount = -455.0,
+            };
+
+            var path = Path.Combine(Environment.CurrentDirectory, "Assets", "privat.xlsx");
+            IEnumerable<BankTransaction> bank = new PrivatHelper().ParseReport(path);
+
+            Assert.Equal(9, bank.Count());
+            Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(bank.First()));
+            Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
+        }
+
+        [Fact]
         public void LoadTransactions_Pumb_ExpectedTransactions()
         {
             var first = new BankTransaction
@@ -368,6 +355,18 @@
             Assert.Equal(JsonConvert.SerializeObject(last), JsonConvert.SerializeObject(bank.Last()));
         }
 
+        [Fact]
+        public void LoadTransactions_UkrHeaders_TransactionsLoaded()
+        {
+            var csvPath = Path.Combine(Environment.CurrentDirectory, "Assets", "mono.ukr.csv");
+            var mono = new Helpers.BankHelper.MonobankHelper().ParseReport(csvPath);
+            var vm = new MonoWizardVM("Monobank", mono, new Dictionary<int, BlotterModel>(), new Mock<IDialogWrapper>().Object);
+
+            Assert.Equal(46, mono.Count());
+            Assert.Equal(46, ((Page2VM)vm.Pages[1]).GetMonoTransactions().Count);
+            Assert.NotNull(vm.CurrentPage);
+            Assert.Equal(3, vm.Pages.Count);
+        }
         [Fact]
         public void MoveNextCommand_Execute3Times_TransactionsImpoted()
         {

@@ -5,8 +5,8 @@ namespace Financier.Desktop.Data
     public class SettingsDTO : BindableBase
     {
         private string exchangeRatesProvider;
-        private bool updateExchangeRatesOnStart;
         private string openExchangeRatesProviderAppId;
+        private bool updateExchangeRatesOnStart;
         public string ExchangeRatesProvider
         {
             get => exchangeRatesProvider;
@@ -19,18 +19,6 @@ namespace Financier.Desktop.Data
                 }
             }
         }
-        public bool UpdateExchangeRatesOnStart
-        {
-            get => updateExchangeRatesOnStart;
-            set
-            {
-                if (updateExchangeRatesOnStart != value)
-                {
-                    updateExchangeRatesOnStart = value;
-                    RaisePropertyChanged(nameof(UpdateExchangeRatesOnStart));
-                }
-            }
-        }
         public string OpenExchangeRatesProviderAppId
         {
             get => openExchangeRatesProviderAppId;
@@ -40,6 +28,19 @@ namespace Financier.Desktop.Data
                 {
                     openExchangeRatesProviderAppId = value;
                     RaisePropertyChanged(nameof(OpenExchangeRatesProviderAppId));
+                }
+            }
+        }
+
+        public bool UpdateExchangeRatesOnStart
+        {
+            get => updateExchangeRatesOnStart;
+            set
+            {
+                if (updateExchangeRatesOnStart != value)
+                {
+                    updateExchangeRatesOnStart = value;
+                    RaisePropertyChanged(nameof(UpdateExchangeRatesOnStart));
                 }
             }
         }

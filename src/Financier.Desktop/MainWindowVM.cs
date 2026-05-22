@@ -1,4 +1,11 @@
-﻿using Financier.Adapter;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Financier.Adapter;
 using Financier.Common;
 using Financier.Common.Entities;
 using Financier.Common.Model;
@@ -18,18 +25,6 @@ using Financier.Reports;
 using Newtonsoft.Json;
 using Prism.Commands;
 using Prism.Mvvm;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using ToastNotifications;
-using ToastNotifications.Lifetime;
-using ToastNotifications.Messages;
-using ToastNotifications.Position;
-using Application = System.Windows.Application;
 using IAsyncCommand = Financier.Common.IAsyncCommand;
 
 namespace Financier.Desktop.ViewModel
@@ -43,7 +38,7 @@ namespace Financier.Desktop.ViewModel
         private readonly IFinancierDatabaseFactory dbFactory;
         private readonly IDialogWrapper dialogWrapper;
         private readonly List<Entity> keyLessEntities = new();
-        private readonly Notifier notifier;
+        private readonly IToastNotifierWrapper notifier;
         private BackupVersion _backupVersion;
         private Dictionary<string, List<string>> _entityColumnsOrder;
         private IAsyncCommand<Type> _menuNavigateCommand;
@@ -71,33 +66,18 @@ namespace Financier.Desktop.ViewModel
             IFinancierDatabaseFactory dbFactory,
             IEntityReader entityReader,
             IBackupWriter backupWriter,
+            IToastNotifierWrapper notifier,
             IBankHelperFactory bankFactory)
         {
             this.dialogWrapper = dialogWrapper;
             this.dbFactory = dbFactory;
             this.entityReader = entityReader;
             this.backupWriter = backupWriter;
+            this.notifier = notifier;
             this.bankFactory = bankFactory;
             db = dbFactory.CreateDatabase();
 
             CreatePages();
-
-            this.notifier = new Notifier(cfg =>
-            {
-                cfg.PositionProvider = new WindowPositionProvider(
-                    parentWindow: Application.Current.MainWindow,
-                    corner: Corner.BottomRight,
-                    offsetX: 10,
-                    offsetY: 10);
-
-                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                    notificationLifetime: TimeSpan.FromSeconds(10),
-                    maximumNotificationCount: MaximumNotificationCount.FromCount(3));
-
-                cfg.Dispatcher = Application.Current.Dispatcher;
-
-                cfg.DisplayOptions.Width = 250;
-            });
         }
 
         public BlotterVM Blotter
@@ -225,7 +205,7 @@ namespace Financier.Desktop.ViewModel
 
                 await NavigateToType(typeof(BlotterModel));
 
-                notifier.ShowCustomMessage($"Successfully loaded {entities.Count()} entities", new ToastNotifications.Core.MessageOptions { ShowCloseButton = true });
+                notifier?.ShowMessage($"Successfully loaded {entities?.Count()} entities");
             }
             catch (Exception ex)
             {
@@ -527,13 +507,13 @@ namespace Financier.Desktop.ViewModel
                         var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();
                         await currencyExchangeRepo.AddRangeAsync(exchangeRates);
                         await uow.SaveChangesAsync();
-                        notifier.ShowCustomMessage("Exchange rates updated successfully.", new ToastNotifications.Core.MessageOptions { ShowCloseButton = true });
+                        notifier?.ShowMessage("Exchange rates updated successfully.");
                     }
                 }
             }
             else
             {
-                notifier.ShowWarning("Exchange rates provider not configured.", new ToastNotifications.Core.MessageOptions { ShowCloseButton = true });
+                notifier?.ShowWarning("Exchange rates provider not configured.");
             }
         }
     }
