@@ -12,7 +12,7 @@ The main reason to create this application was the possibility to import bank st
 - [Edit transfers](/pages/transfer.md)
 - [Edit entities](/pages/entities.md) (projects, locations ..)
 - [Import CSV report from Monobank](/pages/mono.md)
-- [Rules from Reports Import](/pages/rules.md)
+- [Rules for reports import](/pages/rules.md)
 
 #### Video instruction
 ![Open](https://vov4uk.github.io/Financier.Desktop/img/mono.gif)
