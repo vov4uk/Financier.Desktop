@@ -118,8 +118,8 @@ namespace Financier.Desktop.Helpers.BankHelper
                         }
 
                         // Parse the transaction data
-                        DateTime.TryParse(dateStr, CultureInfo.CurrentCulture, DateTimeStyles.None, out var transactionDate);
-                        DateTime.TryParse($"{dataWaluty.Value} {dataWalutyGodzinaStr}", CultureInfo.CurrentCulture, DateTimeStyles.None, out var currencyDate);
+                        DateTime.TryParseExact(dateStr, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var transactionDate);
+                        DateTime.TryParseExact($"{dataWaluty.Value} {dataWalutyGodzinaStr}", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var currencyDate);
 
                         var kwotaOryg = Regex.Match(transactionDescriprion, @"(Kwota oryg\.:) (-?\d+(?:,\d+)) ([A-Z]{3})");
                         if (kwotaOryg.Success)

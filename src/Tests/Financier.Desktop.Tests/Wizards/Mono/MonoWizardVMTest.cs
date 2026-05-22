@@ -226,7 +226,7 @@
         {
             var first = new BankTransaction
             {
-                Date = new DateTime(2025, 5, 20, 0, 0, 0),
+                Date = new DateTime(2025, 5, 20, 0, 0, 0, DateTimeKind.Local),
                 Description = "OTWARCIE RACHUNKU\r\n",
                 Balance = 0,
                 MCC = null,
@@ -240,7 +240,7 @@
 
             var last = new BankTransaction
             {
-                Date = new DateTime(2025, 6, 20, 0, 0, 0),
+                Date = new DateTime(2025, 6, 20, 0, 0, 0, DateTimeKind.Local),
                 Description = "PRZELEW NA TELEFON WYCHODZĄCY ZEW.\r\nPIWOOD:  DO: 487*****867ODBIORCA PRZELEWU NA TELEFON",
                 Balance = 151.53,
                 Commission = null,
