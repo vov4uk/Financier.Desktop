@@ -22,7 +22,7 @@
         <PackageReference Include="AutoFixture.Xunit3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Moq" />
-        <PackageReference Include="StyleCop.Analyzers">
+        <PackageReference Include="StyleCop.Analyzers" Condition="'$(Configuration)'=='Debug'">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
