@@ -8,7 +8,6 @@
                xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel"
                xmlns:View="clr-namespace:Financier.Desktop.Views"
                xmlns:Wizard="clr-namespace:Financier.Desktop.Wizards"
-               xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                AllowDrop="True"
                Loaded="RibbonWindow_Loaded">
@@ -221,12 +220,12 @@
                 </RibbonGroup>-->
                 <RibbonGroup Header="Import"
                              IsEnabled="True">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/monobank.png"
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/monobank.png"
                                   Label="Monobank CSV"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Monobank}" />
                     <RibbonMenuButton  Label="A-Bank"
-                                       LargeImageSource="pack://application:,,,/Images/abank.png" >
+                                       LargeImageSource="pack://application:,,,/Images/bank/abank.png" >
 
                         <RibbonMenuItem  Header="PDF"
                                          Foreground="Red"
@@ -238,19 +237,19 @@
                                          CommandParameter="{x:Static Wizard:WizardTypes.ABankExcel}" />
                     </RibbonMenuButton>
 
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/pumb.png"
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/pumb.png"
                                   Label="PUMB PDF"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pumb}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/pireus.png"
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/pireus.png"
                                   Label="Pireus PDF"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pireus}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/privat.png"
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/privat.png"
                                   Label="Privat XLSX"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Privat}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/pko.png"
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/pko.png"
                                   Label="PKO PDF"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pko}" />
@@ -377,7 +376,23 @@
         <Grid Grid.Row="1"
               AllowDrop="True"
               Visibility="{Binding Path=IsLoading, Converter={StaticResource BoolToVis}}">
-            <fa:IconImage Icon="Refresh" Foreground="#858585" Height="64" Width="64" fa:Awesome.Spin="True" />
+            <Image Height="64" Width="64" Source="{StaticResource IconRefresh}" RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform>
+                    <RotateTransform x:Name="SpinTransform" Angle="0"/>
+                </Image.RenderTransform>
+                <Image.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetName="SpinTransform"
+                                                 Storyboard.TargetProperty="Angle"
+                                                 From="0" To="360"
+                                                 Duration="0:0:1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Image.Triggers>
+            </Image>
         </Grid>
     </Grid>
 </RibbonWindow >

@@ -19,7 +19,6 @@
             <converters:AmountConverter x:Key="AmountConverter"/>
             <converters:UnixTimeConverter x:Key="DatetimeConverter" />
             <converters:MccConverter x:Key="MccConverter" />
-            <BitmapImage x:Key="IcActionCancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -246,7 +245,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                     <xctk:IconButton.Icon>
-                                        <Image Source="{StaticResource IcActionCancel}" />
+                                        <Image Source="{StaticResource IconXmark}" />
                                     </xctk:IconButton.Icon>
                                 </xctk:IconButton>
                             </Grid>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\abank.png" />
     <Resource Include="Images\AccountType\account_type_asset.png" />
     <Resource Include="Images\AccountType\account_type_bank.png" />
     <Resource Include="Images\AccountType\account_type_card.png" />
@@ -55,59 +54,21 @@
     <Resource Include="Images\AccountType\account_type_electronic.png" />
     <Resource Include="Images\AccountType\account_type_liability.png" />
     <Resource Include="Images\AccountType\account_type_other.png" />
-    <Resource Include="Images\actionbar_db_backup.png" />
-    <Resource Include="Images\actionbar_db_restore.png" />
-    <Resource Include="Images\actionbar_export.png" />
-    <Resource Include="Images\actionbar_filter_cancel.png" />
-    <Resource Include="Images\actionbar_tiles_large.png" />
-    <Resource Include="Images\backup_file.png" />
-    <Resource Include="Images\database.png" />
-    <Resource Include="Images\drag-drop-icon.png" />
-    <Resource Include="Images\ic_action_add.png" />
-    <Resource Include="Images\ic_action_arrow_left_bottom.png" />
-    <Resource Include="Images\ic_action_arrow_right_top.png" />
-    <Resource Include="Images\ic_action_arrow_top_down.png" />
-    <Resource Include="Images\ic_action_cancel.png" />
-    <Resource Include="Images\ic_action_category.png" />
-    <Resource Include="Images\ic_action_copy.png" />
-    <Resource Include="Images\ic_action_edit.png" />
-    <Resource Include="Images\ic_action_gear.png" />
-    <Resource Include="Images\ic_action_info.png" />
-    <Resource Include="Images\ic_action_minus.png" />
-    <Resource Include="Images\ic_action_share.png" />
-    <Resource Include="Images\ic_action_transfer.png" />
-    <Resource Include="Images\ic_action_trash.png" />
     <Resource Include="Images\ic_launcher.png" />
-    <Resource Include="Images\ic_launcher.ico" />
-    <Resource Include="Images\ic_menu_back.png" />
-    <Resource Include="Images\ic_tab_accounts_unselected.png" />
-    <Resource Include="Images\ic_tab_blotter_selected.png" />
-    <Resource Include="Images\ic_tab_budgets_unselected.png" />
-    <Resource Include="Images\ic_tab_reports_line_unselected.png" />
-    <Resource Include="Images\ic_tab_reports_selected.png" />
-    <Resource Include="Images\menu_entities.png" />
-    <Resource Include="Images\menu_entities_categories.png" />
-    <Resource Include="Images\menu_entities_currencies.png" />
-    <Resource Include="Images\menu_entities_exchange_rates.png" />
-    <Resource Include="Images\menu_entities_locations.png" />
-    <Resource Include="Images\menu_entities_payees.png" />
-    <Resource Include="Images\menu_entities_projects.png" />
-    <Resource Include="Images\monobank.png" />
-    <Resource Include="Images\pireus.png" />
-    <Resource Include="Images\pko.png" />
-    <Resource Include="Images\privat.png" />
-    <Resource Include="Images\pumb.png" />
-    <Resource Include="Images\save_as_db.png" />
-    <Resource Include="Images\folder.png" />
-    <Resource Include="Images\rules.png" />
-    <Resource Include="Images\ic_action_download.png" />
+    <Resource Include="Images\drag-drop-icon.png" />
+    <Resource Include="Images\bank\monobank.png" />
+    <Resource Include="Images\bank\pireus.png" />
+    <Resource Include="Images\bank\pko.png" />
+    <Resource Include="Images\bank\privat.png" />
+    <Resource Include="Images\bank\pumb.png" />
+    <Resource Include="Images\bank\abank.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="DataGridExtensions" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" />
-    <PackageReference Include="FontAwesome.Sharp" />
+
     <PackageReference Include="iNKORE.UI.WPF.Emojis" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
     <PackageReference Include="MiniExcel" />

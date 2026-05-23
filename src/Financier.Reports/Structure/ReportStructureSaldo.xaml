@@ -26,12 +26,12 @@
                                  ToolTip="Grapics"
                                  IsChecked="True"
                                  Style="{StaticResource IconRadioButton}" >
-                        <Image Source="{StaticResource report_both}"/>
+                        <Image Source="{StaticResource IconChartBar}"/>
                     </RadioButton>
                     <RadioButton ToolTip="Grid"
                                  x:Name="GridBtn"
                                  Style="{StaticResource IconRadioButton}">
-                        <Image Source="{StaticResource grid_icon}"/>
+                        <Image Source="{StaticResource IconTableGray}"/>
                     </RadioButton>
                 </DockPanel>
             </GroupBox>
@@ -60,7 +60,9 @@
 
             </GroupBox>
             <Button Grid.Column="1"
-                    Style="{StaticResource RefreshButton}" />
+                    Style="{StaticResource RefreshButton}">
+                <Image Source="{StaticResource ResourceKey=IconRefresh}" Width="16" Height="16"/>
+            </Button>
         </DockPanel>
         <oxy:PlotView Grid.Row="1"
                       Model="{Binding PlotModel}"

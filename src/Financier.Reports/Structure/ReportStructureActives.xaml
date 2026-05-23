@@ -24,19 +24,21 @@
                     <RadioButton x:Name="GraphicsBtn"
                                  ToolTip="Grapics"
                                  Style="{StaticResource IconRadioButton}" >
-                        <Image Source="{StaticResource pie_icon}"/>
+                        <Image Source="{StaticResource IconChartPie}"/>
                     </RadioButton>
                     <RadioButton ToolTip="Grid"
                                  x:Name="GridBtn"
                                  IsChecked="True"
                                  Style="{StaticResource IconRadioButton}">
-                        <Image Source="{StaticResource grid_icon}"/>
+                        <Image Source="{StaticResource IconTableGray}"/>
                     </RadioButton>
                 </DockPanel>
             </GroupBox>
             <filters:DateFilter Margin="4" />
             <Button Grid.Column="1"
-                    Style="{StaticResource RefreshButton}" />
+                    Style="{StaticResource RefreshButton}">
+                <Image Source="{StaticResource ResourceKey=IconRefresh}" Width="16" Height="16"/>
+            </Button>
         </DockPanel>
         <oxy:PlotView Grid.Row="1"
                       Model="{Binding PlotModel}"

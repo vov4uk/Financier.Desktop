@@ -8,7 +8,7 @@
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
     <PackageVersion Include="DataGridExtensions" Version="2.9.1" />
     <PackageVersion Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.129" />
-    <PackageVersion Include="FontAwesome.Sharp" Version="6.6.0" />
+
     <PackageVersion Include="iNKORE.UI.WPF.Emojis" Version="0.3.6.4" />
     <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
     <PackageVersion Include="MiniExcel" Version="1.44.1" />
