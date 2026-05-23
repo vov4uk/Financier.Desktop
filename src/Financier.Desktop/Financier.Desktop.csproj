@@ -100,7 +100,7 @@
     <Resource Include="Images\save_as_db.png" />
     <Resource Include="Images\folder.png" />
     <Resource Include="Images\rules.png" />
-    <Resource Include="Images\ic_action_refresh.png" />
+    <Resource Include="Images\ic_action_download.png" />
   </ItemGroup>
 
   <ItemGroup>

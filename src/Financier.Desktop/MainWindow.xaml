@@ -88,6 +88,9 @@
             <Style TargetType="RibbonGallery">
                 <Setter Property="RibbonGallery.ContextMenu" Value="{StaticResource HiddenContextMenu}"/>
             </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
     <Grid AllowDrop="True"
@@ -107,27 +110,25 @@
                 <RibbonApplicationMenu ContextMenu="{x:Null}"
                                        Background="#858585"
                                        BorderBrush="#858585">
-                    <RibbonApplicationMenuItem Header="Open"
-                                               ToolTip="Open backup file"
-                                               ToolTipDescription="Open backup file"
+                    <RibbonApplicationMenuItem Header="Open backup"
                                                Command="{Binding Path=OpenBackupCommand}"
-                                               ImageSource="pack://application:,,,/Images/actionbar_db_restore.png" />
-                    <RibbonApplicationMenuItem Header="Save"
+                                               ImageSource="{StaticResource ResourceKey=IconFileArrowUp}" />
+                    <RibbonApplicationMenuItem Header="Save backup"
                                                Command="{Binding Path=SaveBackupCommand}"
-                                               ImageSource="pack://application:,,,/Images/actionbar_db_backup.png" />
+                                               ImageSource="{StaticResource ResourceKey=IconFileArrowDown}" />
                     <RibbonApplicationMenuItem Header="Save as .db"
                                                Command="{Binding Path=SaveBackupAsDbCommand}"
-                                               ImageSource="pack://application:,,,/Images/save_as_db.png" />
+                                               ImageSource="{StaticResource ResourceKey=IconDatabase}" />
                     <RibbonApplicationMenuItem Header="Set default directory"
                                                Click="RibbonApplicationMenuItem_Click"
-                                               ImageSource="pack://application:,,,/Images/folder.png" />
+                                               ImageSource="{StaticResource ResourceKey=IconDropboxBrands}" />
                     <RibbonApplicationMenuItem Header="Settings"
                                                Command="{Binding Path=SettingsCommand}"
-                                               ImageSource="pack://application:,,,/Images/ic_action_gear.png" />
+                                               ImageSource="{StaticResource ResourceKey=IconGear}" />
                     <RibbonApplicationMenu.FooterPaneContent>
                         <DockPanel LastChildFill="False">
                             <RibbonButton Click="Exit_Click"
-                                          SmallImageSource="pack://application:,,,/Images/ic_menu_back.png"
+                                          SmallImageSource="{StaticResource IconArrowRightToBracket}"
                                           Label="Exit"
                                           ToolTipTitle="Exit"
                                           KeyTip="X"
@@ -164,26 +165,26 @@
             <RibbonTab Header="Main"
                        Selector.IsSelected="True">
                 <RibbonGroup Header="Entities" ContextMenu="{x:Null}">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_accounts_unselected.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconWallet}"
                                   Label="Accounts"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource AccountType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_categories.png"
+                    <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconFolderTree}"
                                   Label="Categories" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource CategoryType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_projects.png"
+                    <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconListCheck}"
                                   Label="Projects" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource ProjectType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_payees.png"
+                    <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconAddressBook}"
                                   Label="Payees" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource PayeeType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_locations.png"
+                    <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconMap}"
                                   Label="Locations" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource LocationType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_currencies.png"
-                                  Label="Currencies"  Command="{Binding Path=MenuNavigateCommand}"
+                    <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconDollarSign}"
+                                  Label="Currencies" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource CurrencyType}" />
-                    <RibbonButton SmallImageSource="pack://application:,,,/Images/menu_entities_exchange_rates.png"
+                    <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconArrowTrendUp}"
                                   Label="Exchange rates"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource CurrencyExchangeRateType}" />
@@ -191,7 +192,7 @@
 
                 <RibbonGroup x:Name="Blotter"
                              Header="Blotter">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_blotter_selected.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconReceipt}"
                                   Label="Blotter"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource TransactionsViewType}" />
@@ -200,14 +201,14 @@
 
                 <RibbonGroup x:Name="Reports"
                              Header="Reports">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_tab_reports_selected.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconChartBar}"
                                   Label="Reports"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource ReportsControl}" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="Rules"
                              Header="Rules">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/rules.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconBoltLightning}"
                                   Label="Rules"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource RulesType}" />
@@ -259,25 +260,25 @@
                              DataContext="{Binding}"
                              Visibility="{Binding Path=IsTransactionPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              Header="Transaction">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
                                   Label="Add Expense"
                                   Command="{Binding Path=Blotter.AddCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_transfer.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconArrowRightArrowLeft}"
                                   Label="Add Transfer"
                                   Command="{Binding Path=Blotter.AddTransferCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/actionbar_tiles_large.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTable}"
                                   Label="Add Template"
                                   Command="{Binding Path=Blotter.AddTemplateCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_edit.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
                                   Label="Edit"
                                   Command="{Binding Path=Blotter.EditCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_copy.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconCopy}"
                                   Label="Duplicate"
                                   Command="{Binding Path=Blotter.DuplicateCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
                                   Label="Delete"
                                   Command="{Binding Path=Blotter.DeleteCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_info.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconCircleInfo}"
                                   Label="Info"
                                   Command="{Binding Path=Blotter.InfoCommand}" />
                 </RibbonGroup>
@@ -285,13 +286,13 @@
                 <RibbonGroup Header="Locations"
                              Visibility="{Binding Path=IsLocationPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
                                   Label="Add"
                                   Command="{Binding Path=Locations.AddCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_edit.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
                                   Label="Edit"
                                   Command="{Binding Path=Locations.EditCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
                                   Label="Delete"
                                   IsEnabled="False"
                                   Command="{Binding Path=Locations.DeleteCommand}" />
@@ -301,13 +302,13 @@
                              Selector.IsSelected="{Binding Path=IsProjectPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsProjectPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
                                   Label="Add"
                                   Command="{Binding Path=Projects.AddCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_edit.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
                                   Label="Edit"
                                   Command="{Binding Path=Projects.EditCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
                                   Label="Delete"
                                   IsEnabled="False"
                                   Command="{Binding Path=Projects.DeleteCommand}" />
@@ -317,13 +318,13 @@
                              Selector.IsSelected="{Binding Path=IsPayeePageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsPayeePageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
                                   Label="Add"
                                   Command="{Binding Path=Payees.AddCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_edit.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
                                   Label="Edit"
                                   Command="{Binding Path=Payees.EditCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
                                   Label="Delete"
                                   IsEnabled="False"
                                   Command="{Binding Path=Payees.DeleteCommand}" />
@@ -332,13 +333,13 @@
                              Selector.IsSelected="{Binding Path=IsRulesPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsRulesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_add.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
                                   Label="Add"
                                   Command="{Binding Path=Rules.AddCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_edit.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
                                   Label="Edit"
                                   Command="{Binding Path=Rules.EditCommand}" />
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_trash.png"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
                                   Label="Delete"
                                   Command="{Binding Path=Rules.DeleteCommand}" />
                 </RibbonGroup>
@@ -346,8 +347,8 @@
                              Selector.IsSelected="{Binding Path=IsExchangeRatesPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsExchangeRatesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
-                    <RibbonButton LargeImageSource="pack://application:,,,/Images/ic_action_refresh.png"
-                                  Label="Refresh"
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconDownload}"
+                                  Label="Download"
                                   Command="{Binding Path=RefreshExchangeRatesCommand}" />
                 </RibbonGroup>
             </RibbonTab>

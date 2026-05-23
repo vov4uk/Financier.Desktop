@@ -11,25 +11,27 @@
              d:DesignHeight="450"
              d:DesignWidth="400">
     <UserControl.Resources>
-        <BitmapImage x:Key="ic_action_cancel"   UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
-        <BitmapImage x:Key="ic_action_add"      UriSource="pack://application:,,,/Images/ic_action_add.png" />
-        <BitmapImage x:Key="ic_action_minus"    UriSource="pack://application:,,,/Images/ic_action_minus.png" />
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <converters:AmountConverter x:Key="AmountConverter" />
-        <Style TargetType="{x:Type xctk:DecimalUpDown}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="true">
-                    <DataTrigger.Setters>
-                        <Setter Property="Background" Value="LightPink"/>
-                    </DataTrigger.Setters>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="false">
-                    <DataTrigger.Setters>
-                        <Setter Property="Background" Value="YellowGreen"/>
-                    </DataTrigger.Setters>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+            <converters:AmountConverter x:Key="AmountConverter" />
+            <Style TargetType="{x:Type xctk:DecimalUpDown}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="true">
+                        <DataTrigger.Setters>
+                            <Setter Property="Background" Value="LightPink"/>
+                        </DataTrigger.Setters>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="false">
+                        <DataTrigger.Setters>
+                            <Setter Property="Background" Value="YellowGreen"/>
+                        </DataTrigger.Setters>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -62,7 +64,7 @@
                             <DataTrigger.Setters>
                                 <Setter Property="Icon">
                                     <Setter.Value>
-                                        <Image Source="{StaticResource ic_action_minus}" />
+                                        <Image Source="{StaticResource IconMinus}" Height="16" Width="16" />
                                     </Setter.Value>
                                 </Setter>
                             </DataTrigger.Setters>
@@ -71,7 +73,7 @@
                             <DataTrigger.Setters>
                                 <Setter Property="Icon">
                                     <Setter.Value>
-                                        <Image Source="{StaticResource ic_action_add}" />
+                                        <Image Source="{StaticResource IconPlus}" Height="16" Width="16" />
                                     </Setter.Value>
                                 </Setter>
                             </DataTrigger.Setters>
@@ -95,7 +97,7 @@
                            Command="{Binding ClearOriginalFromAmountCommand}"
                            Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
             <xctk:IconButton.Icon>
-                <Image Source="{StaticResource ic_action_cancel}" />
+                <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
             </xctk:IconButton.Icon>
         </xctk:IconButton>
 
@@ -113,7 +115,7 @@
                             <DataTrigger.Setters>
                                 <Setter Property="Icon">
                                     <Setter.Value>
-                                        <Image Source="{StaticResource ic_action_minus}" />
+                                        <Image Source="{StaticResource IconMinus}" Height="16" Width="16" />
                                     </Setter.Value>
                                 </Setter>
                             </DataTrigger.Setters>
@@ -122,7 +124,7 @@
                             <DataTrigger.Setters>
                                 <Setter Property="Icon">
                                     <Setter.Value>
-                                        <Image Source="{StaticResource ic_action_add}" />
+                                        <Image Source="{StaticResource IconPlus}" Height="16" Width="16" />
                                     </Setter.Value>
                                 </Setter>
                             </DataTrigger.Setters>
@@ -161,7 +163,7 @@
                            Width="24"
                            Command="{Binding ClearFromAmountCommand}">
             <xctk:IconButton.Icon>
-                <Image Source="{StaticResource ic_action_cancel}" />
+                <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
             </xctk:IconButton.Icon>
         </xctk:IconButton>
 

@@ -57,7 +57,7 @@
                            Width="24"
                            Command="{Binding ClearTitleCommand}" >
                 <xctk:IconButton.Icon>
-                    <Image Source="{StaticResource IcActionCancel}" />
+                    <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                 </xctk:IconButton.Icon>
             </xctk:IconButton>
 

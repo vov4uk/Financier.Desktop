@@ -4,7 +4,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:oxy="http://oxyplot.org/wpf"
-             xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="800">
     <UserControl.Resources>
@@ -27,25 +26,27 @@
                 <ComboBox DisplayMemberPath="Name"
                       SelectedItem="{Binding Path=From}"
                       Margin="2 0"
-                      ItemsSource="{Binding Source={x:Static fcrd:DbManual.Currencies}, Mode=OneWay}" />
+                      ItemsSource="{Binding Path=FromCurrencies}" />
             </GroupBox>
             <GroupBox Header="To"
                       Width="120"
-                      BorderThickness="0">
+                      BorderThickness="0"
+                      IsEnabled="{Binding Path=From, Converter={StaticResource NullToBoolConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <ComboBox DisplayMemberPath="Name"
                       SelectedItem="{Binding Path=To}"
                       Margin="2 0"
-                      ItemsSource="{Binding Source={x:Static fcrd:DbManual.Currencies}, Mode=OneWay}" />
+                      ItemsSource="{Binding Path=ToCurrencies}" />
             </GroupBox>
             <Button ToolTip="Refresh"
-                            Content="{StaticResource ResourceKey=IconRefresh}"
                             Height="24"
                             Width="24"
                             BorderThickness="0"
                             Background="Transparent"
                             Grid.Column="0"
                             Command="{Binding RefreshDataCommand}"
-                            Margin="4"/>
+                            Margin="4">
+                <Image Source="{StaticResource ResourceKey=IconRefresh}" Width="16" Height="16"/>
+            </Button>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

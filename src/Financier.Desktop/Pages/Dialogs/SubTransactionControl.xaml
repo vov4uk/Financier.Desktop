@@ -88,7 +88,7 @@
                         <sys:Int32>0</sys:Int32>
                     </xctk:IconButton.CommandParameter>
                     <xctk:IconButton.Icon>
-                        <Image Source="{StaticResource IcActionCancel}" />
+                        <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                     </xctk:IconButton.Icon>
                 </xctk:IconButton>
 
@@ -110,7 +110,7 @@
                 <xctk:IconButton Grid.Row="6" Grid.Column="1"
                                  Command="{Binding ClearNotesCommand}">
                     <xctk:IconButton.Icon>
-                        <Image Source="{StaticResource IcActionCancel}" />
+                        <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                     </xctk:IconButton.Icon>
                 </xctk:IconButton>
 
@@ -127,7 +127,7 @@
                 <xctk:IconButton Grid.Row="8" Grid.Column="1"
                              Command="{Binding ClearProjectCommand}">
                     <xctk:IconButton.Icon>
-                        <Image Source="{StaticResource IcActionCancel}" />
+                        <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                     </xctk:IconButton.Icon>
                 </xctk:IconButton>
             </Grid>
