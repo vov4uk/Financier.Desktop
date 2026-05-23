@@ -22,6 +22,7 @@ using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Wizards;
 using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using Financier.Reports;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Prism.Commands;
@@ -513,7 +514,30 @@ namespace Financier.Desktop.ViewModel
                         using var uow = db.CreateUnitOfWork();
                         var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();
                         await currencyExchangeRepo.AddRangeAsync(exchangeRates);
-                        await uow.SaveChangesAsync();
+                        try
+                        {
+                            await uow.SaveChangesAsync();
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            string msg = ex?.InnerException?.Message;
+                            if (!string.IsNullOrEmpty(msg) && msg.Contains("UNIQUE constraint failed", StringComparison.OrdinalIgnoreCase))
+                            {
+                                notifier?.ShowWarning("Exchange rates for the specified currencies and date already exist.");
+                            }
+                            else
+                            {
+                                notifier?.ShowWarning("Exchange rates not updated.");
+                            }
+                            return;
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(ex, "Error saving exchange rates to database.");
+                            notifier?.ShowWarning("Exchange rates not updated.");
+                            return;
+                        }
+
                         notifier?.ShowMessage("Exchange rates updated successfully.");
                     }
                 }
