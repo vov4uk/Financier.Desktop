@@ -360,18 +360,16 @@
               AllowDrop="True"
               Visibility="{Binding Path=OpenBackupPath, Converter={StaticResource StringToVisibilityConverter}}"
               Drop="Grid_Drop">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="256" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Image Source="pack://application:,,,/Images/drag-drop-icon.png"
-                   Height="256"
-                   Width="265" />
-            <TextBlock Grid.Row="1"
-                       HorizontalAlignment="Center"
-                       FontSize="14"
-                       FontWeight="Bold"
-                       Text="Drop .backup file here" />
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <Image Source="{StaticResource IconDragDrop}"
+                       Height="256"
+                       Width="256" />
+                <TextBlock HorizontalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="Bold"
+                           Text="Drop .backup file here" />
+            </StackPanel>
         </Grid>
         <Grid Grid.Row="1"
               AllowDrop="True"

@@ -55,7 +55,6 @@
     <Resource Include="Images\AccountType\account_type_liability.png" />
     <Resource Include="Images\AccountType\account_type_other.png" />
     <Resource Include="Images\ic_launcher.png" />
-    <Resource Include="Images\drag-drop-icon.png" />
     <Resource Include="Images\bank\monobank.png" />
     <Resource Include="Images\bank\pireus.png" />
     <Resource Include="Images\bank\pko.png" />
