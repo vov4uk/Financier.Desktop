@@ -508,6 +508,10 @@ namespace Financier.Desktop.ViewModel
                     {
                         exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(dto.OpenExchangeRatesProviderAppId);
                     }
+                    else if (dto.ExchangeRatesProvider == "monobank.ua")
+                    {
+                        exchangeRates = await exchangeRateLoader.LoadMonobankRates();
+                    }
 
                     if (exchangeRates.Any())
                     {
@@ -538,7 +542,7 @@ namespace Financier.Desktop.ViewModel
                             return;
                         }
 
-                        notifier?.ShowMessage("Exchange rates updated successfully.");
+                        notifier?.ShowMessage($"Exchange rates updated successfully from {dto.ExchangeRatesProvider}.");
                     }
                 }
             }

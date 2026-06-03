@@ -29,7 +29,8 @@
                         <GroupBox Grid.Row="0" Grid.Column="0" Margin="5" Header="Providers">
                             <StackPanel>
                                 <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="openexchangerates.org" IsChecked="{Binding IsOpenExchangeRatesProviderSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="freecurrencyrates.com" IsChecked="{Binding IsfreecurrencyratesSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="freecurrencyrates.com" IsChecked="{Binding IsFreeCurrencyRatesProviderSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="monobank.ua" IsChecked="{Binding IsMonobankProviderSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Grid.Row="1"

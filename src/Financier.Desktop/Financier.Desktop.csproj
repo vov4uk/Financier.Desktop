@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -61,6 +61,10 @@
     <Resource Include="Images\bank\privat.png" />
     <Resource Include="Images\bank\pumb.png" />
     <Resource Include="Images\bank\abank.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\iso4217.csv" />
   </ItemGroup>
 
   <ItemGroup>

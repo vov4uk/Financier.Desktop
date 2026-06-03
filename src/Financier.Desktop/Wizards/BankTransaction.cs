@@ -17,7 +17,13 @@ namespace Financier.Desktop.Wizards
         [Name("MCC", "MCC"), Optional]
         public string MCC { get; set; }
 
-        [Name("Card currency amount, (UAH)", "Сума в валюті картки (UAH)"), TypeConverter(typeof(DoubleConverter))]
+        [Name(
+            "Card currency amount, (UAH)",
+            "Card currency amount, (EUR)",
+            "Card currency amount, (USD)",
+            "Сума в валюті картки (UAH)",
+            "Сума в валюті картки (EUR)",
+            "Сума в валюті картки (USD)"), TypeConverter(typeof(DoubleConverter))]
         public double CardCurrencyAmount { get; set; }
 
         [Name("Operation amount", "Сума в валюті операції")]
@@ -29,10 +35,22 @@ namespace Financier.Desktop.Wizards
         [Name("Exchange rate", "Курс"), TypeConverter(typeof(DoubleConvert)), Optional]
         public double? ExchangeRate { get; set; }
 
-        [Name("Commission, (UAH)", "Сума комісій (UAH)"), TypeConverter(typeof(DoubleConvert)), Optional]
+        [Name(
+            "Commission, (UAH)",
+            "Commission, (EUR)",
+            "Commission, (USD)",
+            "Сума комісій (UAH)",
+            "Сума комісій (EUR)",
+            "Сума комісій (USD)"), TypeConverter(typeof(DoubleConvert)), Optional]
         public double? Commission { get; set; }
 
-        [Name("Cashback amount, (UAH)", "Сума кешбеку (UAH)"), TypeConverter(typeof(DoubleConvert)), Optional]
+        [Name(
+            "Cashback amount, (UAH)",
+            "Cashback amount, (EUR)",
+            "Cashback amount, (USD)",
+            "Сума кешбеку (UAH)",
+            "Сума кешбеку (EUR)",
+            "Сума кешбеку (USD)"), TypeConverter(typeof(DoubleConvert)), Optional]
         public double? Cashback { get; set; }
 
         [Name("Balance", "Залишок після операції"), Optional]

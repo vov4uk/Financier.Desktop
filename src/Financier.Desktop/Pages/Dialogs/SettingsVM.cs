@@ -7,6 +7,7 @@ namespace Financier.Desktop.Pages.Dialogs
     {
         bool _isOpenExchangeRatesProviderSelected;
         bool _isfreecurrencyratesSelected;
+        bool _isMonobankProviderSelected;
 
         public bool IsOpenExchangeRatesProviderSelected
         {
@@ -21,7 +22,7 @@ namespace Financier.Desktop.Pages.Dialogs
             }
         }
 
-        public bool IsfreecurrencyratesSelected
+        public bool IsFreeCurrencyRatesProviderSelected
         {
             get => _isfreecurrencyratesSelected;
             set
@@ -29,7 +30,19 @@ namespace Financier.Desktop.Pages.Dialogs
                 if (_isfreecurrencyratesSelected != value)
                 {
                     _isfreecurrencyratesSelected = value;
-                    RaisePropertyChanged(nameof(IsfreecurrencyratesSelected));
+                    RaisePropertyChanged(nameof(IsFreeCurrencyRatesProviderSelected));
+                }
+            }
+        }
+        public bool IsMonobankProviderSelected
+        {
+            get => _isMonobankProviderSelected;
+            set
+            {
+                if (_isMonobankProviderSelected != value)
+                {
+                    _isMonobankProviderSelected = value;
+                    RaisePropertyChanged(nameof(IsMonobankProviderSelected));
                 }
             }
         }
@@ -38,7 +51,8 @@ namespace Financier.Desktop.Pages.Dialogs
         {
             this.Entity = entity;
             this.IsOpenExchangeRatesProviderSelected = entity.ExchangeRatesProvider == "openexchangerates.org";
-            this.IsfreecurrencyratesSelected = entity.ExchangeRatesProvider == "freecurrencyrates.com";
+            this.IsFreeCurrencyRatesProviderSelected = entity.ExchangeRatesProvider == "freecurrencyrates.com";
+            this.IsMonobankProviderSelected = entity.ExchangeRatesProvider == "monobank.ua";
         }
 
         public SettingsDTO Entity { get; }
@@ -49,9 +63,14 @@ namespace Financier.Desktop.Pages.Dialogs
             {
                 Entity.ExchangeRatesProvider = "openexchangerates.org";
             }
-            else
+            else if (IsFreeCurrencyRatesProviderSelected)
             {
                 Entity.ExchangeRatesProvider = "freecurrencyrates.com";
+                Entity.OpenExchangeRatesProviderAppId = "";
+            }
+            else if(IsMonobankProviderSelected)
+            {
+                Entity.ExchangeRatesProvider = "monobank.ua";
                 Entity.OpenExchangeRatesProviderAppId = "";
             }
             return Entity;
