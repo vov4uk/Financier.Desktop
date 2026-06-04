@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace Financier.Desktop.Wizards
 {
@@ -20,6 +15,8 @@ namespace Financier.Desktop.Wizards
         [Description("pdf")]
         Pumb,
         [Description("pdf")]
-        Pireus
+        Pireus,
+        [Description("pdf")]
+        Pko
     }
 }

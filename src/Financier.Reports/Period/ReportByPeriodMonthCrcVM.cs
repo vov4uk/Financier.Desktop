@@ -24,7 +24,7 @@ select
     date_month,
     sum( case when from_amount > 0 then (case when {0} = 1 then from_amount else from_amount_default_crr end ) else 0 end) / 100.00 as credit_sum,
     sum( case when from_amount < 0 then - (case when {0} = 1 then from_amount else from_amount_default_crr end ) else 0 end) / 100.00  as debit_sum
-from v_report_transactions 
+from v_report_transactions
 where to_account_id = 0 and (payee_id > 0 or category_id > 0 or project_id > 0)
      /*FILTERS*/
 {1}

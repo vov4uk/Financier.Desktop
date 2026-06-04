@@ -1,0 +1,74 @@
+<UserControl x:Class="Financier.Reports.ReportStructureSaldo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
+             xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
+             xmlns:local="clr-namespace:Financier.Reports"
+             xmlns:oxy="http://oxyplot.org/wpf">
+    <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="..\Generic.xaml" />
+                </ResourceDictionary.MergedDictionaries>
+                <BooleanToVisibilityConverter x:Key="boolToVis"/>
+            </ResourceDictionary>
+        </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0">
+            <GroupBox Header="View"
+                      BorderThickness="0">
+                <DockPanel Width="56">
+                    <RadioButton x:Name="GraphicsBtn"
+                                 ToolTip="Grapics"
+                                 IsChecked="True"
+                                 Style="{StaticResource IconRadioButton}" >
+                        <Image Source="{StaticResource IconChartBar}"/>
+                    </RadioButton>
+                    <RadioButton ToolTip="Grid"
+                                 x:Name="GridBtn"
+                                 Style="{StaticResource IconRadioButton}">
+                        <Image Source="{StaticResource IconTableGray}"/>
+                    </RadioButton>
+                </DockPanel>
+            </GroupBox>
+            <GroupBox Header="Currency"
+                      BorderThickness="0">
+                <DockPanel VerticalAlignment="Center">
+                    <RadioButton x:Name="DefaultBtn"
+                                 ToolTip="Default Currency">
+                        <TextBlock Text="Default" />
+                    </RadioButton>
+                    <RadioButton ToolTip="USD"
+                                 IsChecked="{Binding Path=IsUsdCurrencySelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 x:Name="UsdBtn">
+                        <TextBlock Text="USD" />
+                    </RadioButton>
+                </DockPanel>
+            </GroupBox>
+            <GroupBox Header="Period"
+                      Margin="4"
+                      BorderThickness="0">
+                <ComboBox IsEditable="False"
+                          Width="110"
+                          ItemsSource="{Binding Source={x:Static local:ReportStructureSaldoVM.Ranges}, Mode=OneWay}"
+                          SelectedItem="{Binding Path=Range}"
+                          Margin="2 0"/>
+
+            </GroupBox>
+            <Button Grid.Column="1"
+                    Style="{StaticResource RefreshButton}">
+                <Image Source="{StaticResource ResourceKey=IconRefresh}" Width="16" Height="16"/>
+            </Button>
+        </DockPanel>
+        <oxy:PlotView Grid.Row="1"
+                      Model="{Binding PlotModel}"
+                      Visibility="{Binding ElementName=GraphicsBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"/>
+        <fcrd:DataGridAutoHeaders Grid.Row="1"
+                                  Visibility="{Binding ElementName=GridBtn, Path=IsChecked, Converter={StaticResource boolToVis}}"
+                                  ItemsSource="{Binding Path=Entities}" />
+    </Grid>
+</UserControl>

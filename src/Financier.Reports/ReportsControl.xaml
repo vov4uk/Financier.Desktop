@@ -56,6 +56,9 @@
                 <DataTemplate DataType="{x:Type fcrd:ReportStructureActivesVM}">
                     <fcrd:ReportStructureActives />
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type fcrd:ReportStructureSaldoVM}">
+                    <fcrd:ReportStructureSaldo />
+                </DataTemplate>
                 <DataTemplate DataType="{x:Type fcrd:ReportStructureIncomeExpenseVM}">
                     <fcrd:ReportStructureIncomeExpense />
                 </DataTemplate>

@@ -18,8 +18,7 @@
     </UserControl.Resources>
     <GroupBox Margin="5"
               Header="Location details"
-              FontSize="12"
-              Background="{StaticResource WindowBackgroundBrush}">
+              FontSize="12">
         <GroupBox.Resources>
             <Style TargetType="{x:Type Image}">
                 <Setter Property="Height" Value="20" />
@@ -60,7 +59,7 @@
                              Width="24"
                              Command="{Binding ClearTitleCommand}" >
                 <xctk:IconButton.Icon>
-                    <Image Source="{StaticResource IcActionCancel}" />
+                    <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                 </xctk:IconButton.Icon>
             </xctk:IconButton>
 
@@ -79,7 +78,7 @@
                            Width="24"
                            Command="{Binding ClearAddressCommand}">
                 <xctk:IconButton.Icon>
-                    <Image Source="{StaticResource IcActionCancel}" />
+                    <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                 </xctk:IconButton.Icon>
             </xctk:IconButton>
 

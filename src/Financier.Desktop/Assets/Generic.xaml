@@ -5,13 +5,11 @@
             <ResourceDictionary Source="Pack://application:,,,/Financier.Common;component/Assets/Generic.xaml" />
         </ResourceDictionary.MergedDictionaries>
     <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF0F0F0" />
-    <BitmapImage x:Key="IcActionCancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
-    <BitmapImage x:Key="IcActionAdd"      UriSource="pack://application:,,,/Images/ic_action_add.png" />
-    <BitmapImage x:Key="IcActionMinus"    UriSource="pack://application:,,,/Images/ic_action_minus.png" />
     <BooleanToVisibilityConverter x:Key="BoolToVis" />
     <converters:AmountConverter x:Key="AmountConverter" />
     <converters:UnixTimeConverter x:Key="DatetimeConverter" />
     <converters:AccountTypeConverter x:Key="AccountTypeConverter"/>
+    <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
     <Style x:Key="Body_Content_DataGrid_Centering"
                            TargetType="{x:Type DataGridCell}">
         <Setter Property="Template">

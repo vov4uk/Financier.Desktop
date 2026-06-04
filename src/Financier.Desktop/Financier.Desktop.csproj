@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -10,6 +10,7 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,9 +27,12 @@
       <NeutralLanguage>uk-UA</NeutralLanguage>
       <ApplicationIcon>Images\ic_launcher.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\..\Directory.Packages.props" Link="Directory.Packages.props" />
+  </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\abank.png" />
     <Resource Include="Images\AccountType\account_type_asset.png" />
     <Resource Include="Images\AccountType\account_type_bank.png" />
     <Resource Include="Images\AccountType\account_type_card.png" />
@@ -50,68 +54,38 @@
     <Resource Include="Images\AccountType\account_type_electronic.png" />
     <Resource Include="Images\AccountType\account_type_liability.png" />
     <Resource Include="Images\AccountType\account_type_other.png" />
-    <Resource Include="Images\actionbar_db_backup.png" />
-    <Resource Include="Images\actionbar_db_restore.png" />
-    <Resource Include="Images\actionbar_export.png" />
-    <Resource Include="Images\actionbar_filter_cancel.png" />
-    <Resource Include="Images\actionbar_tiles_large.png" />
-    <Resource Include="Images\backup_file.png" />
-    <Resource Include="Images\database.png" />
-    <Resource Include="Images\drag-drop-icon.png" />
-    <Resource Include="Images\ic_action_add.png" />
-    <Resource Include="Images\ic_action_arrow_left_bottom.png" />
-    <Resource Include="Images\ic_action_arrow_right_top.png" />
-    <Resource Include="Images\ic_action_arrow_top_down.png" />
-    <Resource Include="Images\ic_action_cancel.png" />
-    <Resource Include="Images\ic_action_category.png" />
-    <Resource Include="Images\ic_action_copy.png" />
-    <Resource Include="Images\ic_action_edit.png" />
-    <Resource Include="Images\ic_action_gear.png" />
-    <Resource Include="Images\ic_action_info.png" />
-    <Resource Include="Images\ic_action_minus.png" />
-    <Resource Include="Images\ic_action_share.png" />
-    <Resource Include="Images\ic_action_transfer.png" />
-    <Resource Include="Images\ic_action_trash.png" />
     <Resource Include="Images\ic_launcher.png" />
-    <Resource Include="Images\ic_launcher.ico" />
-    <Resource Include="Images\ic_menu_back.png" />
-    <Resource Include="Images\ic_tab_accounts_unselected.png" />
-    <Resource Include="Images\ic_tab_blotter_selected.png" />
-    <Resource Include="Images\ic_tab_budgets_unselected.png" />
-    <Resource Include="Images\ic_tab_reports_line_unselected.png" />
-    <Resource Include="Images\ic_tab_reports_selected.png" />
-    <Resource Include="Images\menu_entities.png" />
-    <Resource Include="Images\menu_entities_categories.png" />
-    <Resource Include="Images\menu_entities_currencies.png" />
-    <Resource Include="Images\menu_entities_exchange_rates.png" />
-    <Resource Include="Images\menu_entities_locations.png" />
-    <Resource Include="Images\menu_entities_payees.png" />
-    <Resource Include="Images\menu_entities_projects.png" />
-    <Resource Include="Images\monobank.png" />
-    <Resource Include="Images\pireus.png" />
-    <Resource Include="Images\privat.png" />
-    <Resource Include="Images\pumb.png" />
-    <Resource Include="Images\save_as_db.png" />
-    <Resource Include="Images\folder.png" />
+    <Resource Include="Images\bank\monobank.png" />
+    <Resource Include="Images\bank\pireus.png" />
+    <Resource Include="Images\bank\pko.png" />
+    <Resource Include="Images\bank\privat.png" />
+    <Resource Include="Images\bank\pumb.png" />
+    <Resource Include="Images\bank\abank.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="33.1.0" />
-    <PackageReference Include="DataGridExtensions" Version="2.9.1" />
-    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.129" />
-    <PackageReference Include="Emoji.Wpf" Version="0.3.4" />
-    <PackageReference Include="FontAwesome.Sharp" Version="6.6.0" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
-    <PackageReference Include="MiniExcel" Version="1.44.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="NLog" Version="6.1.3" />
-    <PackageReference Include="Prism.Core" Version="9.0.537" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.25.0.139117">
+    <EmbeddedResource Include="Assets\iso4217.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="DataGridExtensions" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" />
+
+    <PackageReference Include="iNKORE.UI.WPF.Emojis" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" />
+    <PackageReference Include="MiniExcel" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NLog" />
+    <PackageReference Include="Prism.Core" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Condition="'$(Configuration)'=='Debug'">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Linq.Async" Version="7.0.1" />
-    <PackageReference Include="Tabula" Version="1.0.1" />
+    <PackageReference Include="System.Linq.Async" />
+    <PackageReference Include="Tabula" />
+    <PackageReference Include="ToastNotifications.Messages.Net5" />
+    <PackageReference Include="ToastNotifications.Net5" />
   </ItemGroup>
 
   <ItemGroup>

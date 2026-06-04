@@ -12,36 +12,6 @@ namespace Financier.Reports
     [Header("Balance dynamics")]
     public class ReportDynamicRestVM : BaseReportVM<ReportDynamicRestModel>
     {
-
-        // group by week
-//        SELECT cr.year                                           AS year,
-//               cr.month AS month,
-//               cr.week AS week,
-//               Round((SELECT Sum(from_amount_default_crr)
-//                      FROM   v_report_transactions trn
-//                      WHERE Date(trn.datetime / 1000, 'unixepoch') <= cr.date
-//                            AND to_account_id = 0
-//                     AND category_id != -1) / 100.00, 2) AS total
-//FROM(SELECT date_year                               AS year,
-//               date_month AS month,
-//               date_week AS week,
-//               Max(Date(datetime / 1000, 'unixepoch')) AS date
-//        FROM v_report_transactions
-//        WHERE  1 = 1
-//               AND((date_year = 2020
-//                       AND date_month >= 9 )
-//                      OR date_year > 2020 )
-//               AND((date_year = 2021
-//                       AND date_month <= 1 )
-//                      OR date_year< 2021 )
-//        GROUP BY date_year,
-//                  date_month,
-//                  date_week) cr
-//ORDER  BY year,
-//          month
-
-
-
         private const string BaseSqlText = @" /* ReportDynamicRestVM */
 SELECT cr.year  AS year,
        cr.month AS month,

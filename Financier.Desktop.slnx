@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="src/Tests/Financier.Adapter.Tests/Financier.Adapter.Tests.csproj" />
+    <Project Path="src/Tests/Financier.Converter.Test/Financier.Common.Test.csproj" />
+    <Project Path="src/Tests/Financier.DataAccess.Tests/Financier.DataAccess.Tests.csproj" />
+    <Project Path="src/Tests/Financier.Desktop.Tests/Financier.Desktop.Tests.csproj" />
+    <Project Path="src/Tests/Financier.Tests.Common/Financier.Tests.Common.csproj" />
+  </Folder>
+  <Project Path="src/Financier.Adapter/Financier.Adapter.csproj" />
+  <Project Path="src/Financier.Common/Financier.Common.csproj" />
+  <Project Path="src/Financier.DataAccess/Financier.DataAccess.csproj" />
+  <Project Path="src/Financier.Desktop/Financier.Desktop.csproj" />
+  <Project Path="src/Financier.Reports/Financier.Reports.csproj" />
+</Solution>

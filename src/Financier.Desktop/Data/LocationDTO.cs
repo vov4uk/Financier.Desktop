@@ -2,7 +2,7 @@
 
 namespace Financier.Desktop.Data
 {
-    public class LocationDto : TagDto
+    public class LocationDto : TagDTO
     {
         private string address;
 

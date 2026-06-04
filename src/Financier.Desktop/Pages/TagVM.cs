@@ -21,11 +21,11 @@ namespace Financier.Desktop.Pages
             where T : Tag, new()
         {
             T selectedEntity = await db.GetOrCreateAsync<T>(e);
-            TagControlVM context = new TagControlVM(new TagDto(selectedEntity));
+            TagControlVM context = new TagControlVM(new TagDTO(selectedEntity));
 
             var result = dialogWrapper.ShowDialog<TagControl>(context, 180, 300, typeof(T).Name);
 
-            var updatedItem = result as TagDto;
+            var updatedItem = result as TagDTO;
             if (updatedItem != null)
             {
                 selectedEntity.IsActive = updatedItem.IsActive;

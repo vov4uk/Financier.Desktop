@@ -1,9 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -12,22 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Images\ic_menu_report_both.png" />
-    <Resource Include="Images\ic_menu_report_expense.png" />
-    <Resource Include="Images\ic_menu_report_income.png" />
-    <Resource Include="Images\ic_menu_report_summary.png" />
-    <Resource Include="Images\ic_tab_blotter_unselected.png" />
-    <Resource Include="Images\ic_tab_budgets_unselected.png" />
-    <Resource Include="Images\ic_tab_reports_line_unselected.png" />
-    <Resource Include="Images\ic_tab_reports_unselected.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Emoji.Wpf" Version="0.3.4" />
-    <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
-    <PackageReference Include="Prism.Core" Version="9.0.537" />
-    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.129" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.25.0.139117">
+    <PackageReference Include="OxyPlot.Wpf" />
+    <PackageReference Include="Prism.Core" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Condition="'$(Configuration)'=='Debug'">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

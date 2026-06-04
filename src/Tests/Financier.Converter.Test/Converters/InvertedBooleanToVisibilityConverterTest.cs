@@ -2,14 +2,13 @@
 {
     using System.Globalization;
     using System.Windows;
-    using System.Windows.Data;
     using AutoFixture.Xunit3;
     using Financier.Converters;
     using Xunit;
 
     public class InvertedBooleanToVisibilityConverterTest
     {
-        private readonly IValueConverter converter = new InvertedBooleanToVisibilityConverter();
+        private readonly InvertedBooleanToVisibilityConverter converter = new InvertedBooleanToVisibilityConverter();
 
         [InlineAutoData(true, Visibility.Collapsed)]
         [InlineAutoData(false, Visibility.Visible)]

@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
-             xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
+             xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
              xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="480"
@@ -42,23 +42,25 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Button ToolTip="Refresh"
-                            Content="{StaticResource ResourceKey=IconRefresh}"
                             Height="24"
                             Width="24"
                             BorderThickness="0"
                             Background="Transparent"
                             Grid.Column="0"
                             Command="{Binding RefreshDataCommand}"
-                            Margin="4"/>
+                            Margin="4">
+                        <Image Source="{StaticResource ResourceKey=IconRefresh}" Width="16" Height="16"/>
+                    </Button>
                     <Button ToolTip="Clear"
-                            Content="{StaticResource ResourceKey=IconClearFilters}"
                             Height="24"
                             Width="24"
                             BorderThickness="0"
                             Background="Transparent"
                             Grid.Column="1"
                             Command="{Binding ClearFiltersCommand}"
-                            Margin="4"/>
+                            Margin="4">
+                        <Image Source="{StaticResource ResourceKey=IconClearFilters}" Width="16" Height="16"/>
+                    </Button>
                 </Grid>
 
             </StackPanel>
@@ -87,16 +89,16 @@
                                         dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Name="MyImage" Source="pack://application:,,,/Images/ic_action_arrow_right_top.png" Width="20" Height="20" />
+                            <Image Name="MyImage" Source="{StaticResource IconSquareUpRight}" Width="20" Height="20" />
                             <DataTemplate.Triggers>
                                 <DataTrigger Binding="{Binding Path=Type}" Value="Transfer">
-                                    <Setter TargetName="MyImage" Property="Source" Value="pack://application:,,,/Images/ic_action_arrow_top_down.png" />
+                                    <Setter TargetName="MyImage" Property="Source" Value="{StaticResource IconUpRightAndDownLeftFromCenter}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Type}" Value="Income">
-                                    <Setter TargetName="MyImage" Property="Source" Value="pack://application:,,,/Images/ic_action_arrow_left_bottom.png" />
+                                    <Setter TargetName="MyImage" Property="Source" Value="{StaticResource IconSquareDownRight}" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Type}" Value="Share">
-                                    <Setter TargetName="MyImage" Property="Source" Value="pack://application:,,,/Images/ic_action_share.png" />
+                                    <Setter TargetName="MyImage" Property="Source" Value="{StaticResource IconShareNodesRed}" />
                                 </DataTrigger>
                             </DataTemplate.Triggers>
                         </DataTemplate>
@@ -110,7 +112,7 @@
                 <DataGridTemplateColumn Header="">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <emoji:TextBlock Text="{Binding Path=TransactionTitle}" x:Name="Cell"/>
+                            <emoji:EmojiedTextBlock Text="{Binding Path=TransactionTitle}" x:Name="Cell"/>
                             <DataTemplate.Triggers>
                                 <DataTrigger Binding="{Binding Path=HasNoCategory}" Value="True">
                                     <Setter TargetName="Cell" Property="Background" Value="Pink" />

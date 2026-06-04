@@ -37,6 +37,9 @@ namespace Financier.Reports
         [DisplayName("Total (home currency)")]
         [Column("balance_default_crr")]
         public double? DefaultCurrencyBalance { get; protected set; }
+        [DisplayName("Total (USD)")]
+        [Column("balance_usd")]
+        public double? UsdBalance { get; protected set; }
 
         [Column("default_crr_symbol")]
         public string DefaultCurrencySymbol { get; protected set; }

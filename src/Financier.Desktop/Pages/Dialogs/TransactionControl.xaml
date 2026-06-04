@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
+             xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:entities="clr-namespace:Financier.Desktop.Views"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.Data"
@@ -20,9 +20,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <BitmapImage x:Key="IcActionTransfer" UriSource="pack://application:,,,/Images/ic_action_transfer.png" />
-            <BitmapImage x:Key="IcActionShare"    UriSource="pack://application:,,,/Images/ic_action_share.png" />
-            <BitmapImage x:Key="IcActionCopy"     UriSource="pack://application:,,,/Images/ic_action_copy.png" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:AmountConverter x:Key="AmountConverter" />
         </ResourceDictionary>
@@ -95,7 +92,7 @@
                         <xctk:IconButton Grid.Row="0" Grid.Column="0"
                                          IsEnabled="False">
                             <xctk:IconButton.Icon>
-                                <Image Source="pack://application:,,,/Images/ic_action_info.png" />
+                                <Image Source="{StaticResource ResourceKey=IconCircleInfo}" Height="16" Width="16" />
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
                         <DatePicker      Grid.Row="0" Grid.Column="1"
@@ -131,7 +128,7 @@
                     <xctk:IconButton Grid.Row="4" Grid.Column="1"
                                      Command="{Binding ClearPayeeCommand}">
                         <xctk:IconButton.Icon>
-                            <Image Source="{StaticResource IcActionCancel}" />
+                            <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                         </xctk:IconButton.Icon>
                     </xctk:IconButton>
 
@@ -159,7 +156,7 @@
                                 <sys:Int32>-1</sys:Int32>
                             </xctk:IconButton.CommandParameter>
                             <xctk:IconButton.Icon>
-                                <Image Source="{StaticResource IcActionShare}" />
+                                <Image Source="{StaticResource IconShareNodes}" Height="16" Width="16" />
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
                         <xctk:IconButton  Grid.Column="2"
@@ -168,7 +165,7 @@
                                 <sys:Int32>0</sys:Int32>
                             </xctk:IconButton.CommandParameter>
                             <xctk:IconButton.Icon>
-                                <Image Source="{StaticResource IcActionCancel}" />
+                                <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
                     </Grid>
@@ -214,7 +211,7 @@
                                              ToolTip="Open recipes wizard. Transform recipes text to Financisto transactions"
                                              Command="{Binding OpenRecipesDialogCommand}">
                                 <xctk:IconButton.Icon>
-                                    <Image Source="{StaticResource IcActionCopy}" />
+                                    <Image Source="{StaticResource ResourceKey=IconReceiptBlack}" Height="16" Width="16" />
                                 </xctk:IconButton.Icon>
                             </xctk:IconButton>
                             <xctk:IconButton Grid.Column="2"
@@ -225,7 +222,7 @@
                                              ToolTip="Add Split-transfers"
                                              Command="{Binding AddSubTransferCommand}">
                                 <xctk:IconButton.Icon>
-                                    <Image Source="{StaticResource IcActionTransfer}" />
+                                    <Image Source="{StaticResource ResourceKey=IconArrowRightArrowLeft}" Height="16" Width="16" />
                                 </xctk:IconButton.Icon>
                             </xctk:IconButton>
                             <xctk:IconButton  Grid.Row="0"
@@ -236,7 +233,7 @@
                                               ToolTip="Add Split-transactions"
                                               Command="{Binding AddSubTransactionCommand}">
                                 <xctk:IconButton.Icon>
-                                    <Image Source="{StaticResource IcActionAdd}" />
+                                    <Image Source="{StaticResource IconPlus}" Height="16" Width="16" />
                                 </xctk:IconButton.Icon>
                             </xctk:IconButton>
                         </Grid>
@@ -285,7 +282,7 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Grid.Style>
-                                    <emoji:TextBlock Grid.Column="0"
+                                    <emoji:EmojiedTextBlock Grid.Column="0"
                                                      Text="{Binding SubTransactionTitle}"
                                                      TextTrimming="CharacterEllipsis"
                                                      HorizontalAlignment="Stretch"
@@ -300,7 +297,7 @@
                                                      Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.DeleteSubTransactionCommand}"
                                                      CommandParameter="{Binding}">
                                         <xctk:IconButton.Icon>
-                                            <Image Source="{StaticResource IcActionMinus}" />
+                                            <Image Source="{StaticResource IconMinus}" Width="16" Height="16"/>
                                         </xctk:IconButton.Icon>
                                     </xctk:IconButton>
                                 </Grid>
@@ -321,7 +318,7 @@
                     <xctk:IconButton Grid.Row="14" Grid.Column="1"
                                      Command="{Binding ClearLocationCommand}">
                         <xctk:IconButton.Icon>
-                            <Image Source="{StaticResource IcActionCancel}" />
+                            <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                         </xctk:IconButton.Icon>
                     </xctk:IconButton>
 
@@ -333,7 +330,7 @@
                     <xctk:IconButton Grid.Row="16" Grid.Column="1"
                                      Command="{Binding ClearNotesCommand}">
                         <xctk:IconButton.Icon>
-                            <Image Source="{StaticResource IcActionCancel}" />
+                            <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                         </xctk:IconButton.Icon>
                     </xctk:IconButton>
 
@@ -365,7 +362,7 @@
                                      Visibility="{Binding ElementName=ProjectIdBox, Path=Visibility}"
                                      Command="{Binding ClearProjectCommand}">
                         <xctk:IconButton.Icon>
-                            <Image Source="{StaticResource IcActionCancel}" />
+                            <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
                         </xctk:IconButton.Icon>
                     </xctk:IconButton>
                 </Grid>

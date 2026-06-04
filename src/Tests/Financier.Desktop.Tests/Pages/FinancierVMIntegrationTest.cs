@@ -6,6 +6,7 @@
     using Financier.Adapter;
     using Financier.DataAccess;
     using Financier.Desktop.Helpers;
+    using Financier.Desktop.Helpers.BankHelper;
     using Financier.Desktop.ViewModel;
     using Moq;
     using Xunit;
@@ -20,13 +21,13 @@
             var dialogMock = new Mock<IDialogWrapper>();
             dialogMock.Setup(x => x.ShowMessageBox(It.IsAny<string>(), "Success", false)).Returns(true);
             var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
-            var vm = new MainWindowVM(dialogMock.Object, new FinancierDatabaseFactory(), new EntityReader(), null, null);
+            var vm = new MainWindowVM(dialogMock.Object, new FinancierDatabaseFactory(), new EntityReader(), null, null, null);
 
             await vm.OpenBackup(backupPath);
 
             Assert.True(vm.CurrentPage is BlotterVM);
             Assert.Equal(backupPath, vm.OpenBackupPath);
-        }
+        } 
 
         [Fact]
         public async Task SaveBackup_OpenBackup_ShouldSaveSameBackup()
@@ -34,7 +35,7 @@
             var dialogMock = new Mock<IDialogWrapper>();
             dialogMock.Setup(x => x.ShowMessageBox(It.IsAny<string>(), "Success", false)).Returns(true);
             var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
-            var vm = new MainWindowVM(dialogMock.Object, new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new BankHelperFactory());
+            var vm = new MainWindowVM(dialogMock.Object, new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), null, new BankHelperFactory());
 
             await vm.OpenBackup(backupPath);
 

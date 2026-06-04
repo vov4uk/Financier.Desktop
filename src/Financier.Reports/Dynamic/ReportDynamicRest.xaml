@@ -30,19 +30,21 @@
                                  x:Name="GraphicsBtn"
                                  IsChecked="True"
                                  Style="{StaticResource IconRadioButton}">
-                        <Image Source="{StaticResource line_icon}"/>
+                        <Image Source="{StaticResource IconArrowTrendUp}"/>
                     </RadioButton>
                     <RadioButton ToolTip="Grid"
                                  x:Name="GridBtn"
                                  Style="{StaticResource IconRadioButton}">
-                        <Image Source="{StaticResource grid_icon}"/>
+                        <Image Source="{StaticResource IconTableGray}"/>
                     </RadioButton>
                 </DockPanel>
             </GroupBox>
             <filters:StartYearMonthFilter Margin="4 2" />
             <filters:EndYearMonthFilter   Margin="4 2" />
             <Button Grid.Column="1"
-                    Style="{StaticResource RefreshButton}" />
+                    Style="{StaticResource RefreshButton}">
+                <Image Source="{StaticResource ResourceKey=IconRefresh}" Width="16" Height="16"/>
+            </Button>
         </DockPanel>
         <oxy:PlotView Grid.Row="1"
                       Model="{Binding PlotModel}"

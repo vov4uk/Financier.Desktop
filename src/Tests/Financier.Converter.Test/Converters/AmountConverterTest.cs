@@ -1,7 +1,6 @@
 ﻿namespace Financier.Converters.Tests
 {
     using System.Globalization;
-    using System.Windows.Data;
     using AutoFixture.Xunit3;
     using Financier.Converters;
     using Xunit;
@@ -10,7 +9,7 @@
     {
         private const long TenThousand = 10000L;
         private const long MinusTenThousand = -10000L;
-        private readonly IValueConverter converter = new AmountConverter();
+        private readonly AmountConverter converter = new AmountConverter();
 
         [InlineAutoData(-100, "false", -1.0)]
         [InlineAutoData(-100, "true", 1.0)]

@@ -15,7 +15,6 @@
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:AmountConverter x:Key="AmountConverter"/>
-            <BitmapImage x:Key="IcActionCancel" UriSource="pack://application:,,,/Images/ic_action_cancel.png" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -168,7 +167,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                     <xctk:IconButton.Icon>
-                                        <Image Source="{StaticResource IcActionCancel}" />
+                                        <Image Source="{StaticResource IconXmark}" />
                                     </xctk:IconButton.Icon>
                                 </xctk:IconButton>
                             </Grid>

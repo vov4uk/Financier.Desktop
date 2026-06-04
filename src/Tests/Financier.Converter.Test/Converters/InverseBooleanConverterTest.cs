@@ -1,14 +1,13 @@
 ﻿namespace Financier.Converters.Tests
 {
     using System.Globalization;
-    using System.Windows.Data;
     using AutoFixture.Xunit3;
     using Financier.Converters;
     using Xunit;
 
     public class InverseBooleanConverterTest
     {
-        private readonly IValueConverter converter = new InverseBooleanConverter();
+        private readonly InverseBooleanConverter converter = new InverseBooleanConverter();
 
         [InlineAutoData(true, false)]
         [InlineAutoData(false, true)]

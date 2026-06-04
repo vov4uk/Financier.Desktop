@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
-             xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
+             xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -31,14 +31,14 @@
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
-        <emoji:TextBlock Grid.Row="1" HorizontalAlignment="Left" FontWeight="Bold">
-            <emoji:TextBlock.Text>
+        <emoji:EmojiedTextBlock Grid.Row="1" HorizontalAlignment="Left" FontWeight="Bold">
+            <emoji:EmojiedTextBlock.Text>
                 <MultiBinding StringFormat="{} Last transaction {0} {1}">
                     <Binding Path="LastAccountTransaction.TransactionTitle"/>
                     <Binding Path="LastAccountTransaction.AmountTitle" />
                 </MultiBinding>
-            </emoji:TextBlock.Text>
-        </emoji:TextBlock>
+            </emoji:EmojiedTextBlock.Text>
+        </emoji:EmojiedTextBlock>
         <TextBlock Grid.Row="2" FontSize="12"
                    Text="Please select transaction with same balance as selected account, otherwise all transactions will be imported"/>
         <DataGrid Grid.Row="3"
@@ -58,7 +58,7 @@
                 <DataGridTextColumn Header="Date"
                                     Binding="{Binding Path=Date, StringFormat='yyyy.MM.dd HH:mm:ss'}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False"/>
-                <DataGridTextColumn Header="UAH"
+                <DataGridTextColumn Header="Amount"
                                     Binding="{Binding Path=CardCurrencyAmount, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
 

@@ -1,4 +1,5 @@
-﻿using Financier.Common.Model;
+﻿using Financier.Common.Entities;
+using Financier.Common.Model;
 using Financier.Converters;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
@@ -7,6 +8,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -28,6 +30,7 @@ namespace Financier.Desktop.ViewModel
                 if (SetProperty(ref _from, value))
                 {
                     RaisePropertyChanged(nameof(From));
+                    RaisePropertyChanged(nameof(ToCurrencies));
                 }
             }
         }
@@ -43,6 +46,12 @@ namespace Financier.Desktop.ViewModel
                 }
             }
         }
+
+        public IEnumerable<CurrencyModel> FromCurrencies =>
+            DbManual.Currencies.Where(x => x.Id > 0);
+
+        public IEnumerable<CurrencyModel> ToCurrencies =>
+            DbManual.Currencies.Where(x => x.Id > 0 && x.Id != _from?.Id);
 
         private PlotModel plotModel;
 

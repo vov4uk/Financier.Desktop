@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Financier.Desktop.Views.RulesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
+             xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <DataGrid ItemsSource="{Binding Path=Entities, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding SelectedValue}"
+                  CanUserAddRows="False"
+                  FontSize="14"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False">
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick"
+                              Command="{Binding EditCommand}"
+                              CommandParameter="{Binding SelectedValue}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Created" Binding="{Binding Created}" />
+                <DataGridTextColumn Header="Condition" Binding="{Binding Condition}" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" />
+                <DataGridTemplateColumn Header="Title">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <emoji:EmojiedTextBlock Text="{Binding Title}" x:Name="Cell"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

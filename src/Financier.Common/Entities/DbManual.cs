@@ -1,7 +1,10 @@
 ﻿using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,6 +22,7 @@ namespace Financier.Common.Entities
         private static List<ProjectModel> _project;
         private static List<YearMonths> _yearMonths;
         private static List<Years> _years;
+        private static List<RuleModel> _rules = new List<RuleModel>();
 
         public static async Task SetupAsync(IFinancierDatabase financierDatabase)
         {
@@ -163,30 +167,89 @@ ORDER  BY 1 DESC ");
 
         public static List<LocationModel> Location => _location ?? new();
 
+        public static List<RuleModel> Rules => _rules;
+
+        private static Dictionary<string, int[]> _mccCategories;
+
+        public static Dictionary<string, int[]> MCCCategories
+        {
+            get
+            {
+                if (_mccCategories == null)
+                {
+                    var asm = System.Reflection.Assembly.GetExecutingAssembly();
+                    using var stream = asm.GetManifestResourceStream("Financier.Common.Data.mcc.json");
+                    using var reader = new StreamReader(stream);
+                    var entries = JsonConvert.DeserializeObject<List<MccEntry>>(reader.ReadToEnd());
+                    _mccCategories = entries
+                        .GroupBy(e => e.ShortDescription)
+                        .ToDictionary(g => g.Key, g => g.Select(e => e.Mcc).ToArray());
+                }
+                return _mccCategories;
+            }
+        }
+
+        private sealed class MccEntry
+        {
+            [JsonProperty("shortDescription")]
+            public string ShortDescription { get; set; }
+
+            [JsonProperty("mcc")]
+            public int Mcc { get; set; }
+        }
+
+        public static List<string> MCCCategoriesKeys => MCCCategories.Keys.ToList();
+
         public static void ResetAllManuals()
         {
-            _accounts = null;
-            _category = null;
-            _topCategory = null;
-            _currencies = null;
-            _payee = null;
-            _project = null;
-            _yearMonths = null;
-            _years = null;
-            _location = null;
+            _accounts = null!;
+            _category = null!;
+            _topCategory = null!;
+            _currencies = null!;
+            _payee = null!;
+            _project = null!;
+            _yearMonths = null!;
+            _years = null!;
+            _location = null!;
         }
 
         public static void ResetManuals(string manual)
         {
             switch (manual)
             {
-                case nameof(Payee):    _payee = null; break;
-                case nameof(Location): _location = null; break;
-                case nameof(Project):  _project = null; break;
-                case nameof(Account):  _accounts = null; break;
+                case nameof(Payee):    _payee = null!; break;
+                case nameof(Location): _location = null!; break;
+                case nameof(Project):  _project = null!; break;
+                case nameof(Account):  _accounts = null!; break;
                 default:
                     break;
             }
+        }
+
+        public static async Task LoadRulesAsync()
+        {
+            var directory = Environment.CurrentDirectory;
+            var path = Path.Combine(directory, "rules.json");
+            if (File.Exists(path))
+            {
+                string rulesJson = await File.ReadAllTextAsync(path);
+                var rules = JsonConvert.DeserializeObject<List<RuleModel>>(rulesJson);
+                if (rules?.Any() == true)
+                {
+                    _rules = rules;
+                }
+            }
+        }
+        public static async Task SaveRulesAsync()
+        {
+            var directory = Environment.CurrentDirectory;
+            var path = Path.Combine(directory, "rules.json");
+            if (!File.Exists(path))
+            {
+                File.Create(path).Dispose();
+            }
+            string rulesJson = JsonConvert.SerializeObject(_rules);
+            await File.WriteAllTextAsync(path, rulesJson);
         }
 
         internal static void SetupTests(List<CategoryModel> categories)
@@ -217,6 +280,11 @@ ORDER  BY 1 DESC ");
         internal static void SetupTests(List<ProjectModel> pj)
         {
             _project = pj;
+        }
+
+        internal static void SetupTests(List<RuleModel> rl)
+        {
+            _rules = rl;
         }
     }
 }

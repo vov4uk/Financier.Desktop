@@ -58,36 +58,26 @@
 
         [Theory]
         [AutoMoqData]
-        public void OpenSubTransactionDialogCommand_Execute_TransactionUpdated(
-            TransactionDto transaction,
-            TransactionDto subTransaction)
+        public void ClearCommand_Execute_SetDefaultValues(
+            TransactionDto transaction)
         {
-            TransactionDto workingCopy = default;
-            transaction.SubTransactions.Clear();
-            transaction.FromAmount = 100;
-            transaction.IsAmountNegative = true;
-            transaction.IsSubTransaction = false;
-            transaction.OriginalCurrencyId = 0;
-            transaction.OriginalCurrency = default;
-
-            subTransaction.OriginalCurrencyId = 0;
-            subTransaction.OriginalCurrency = default;
-            subTransaction.IsSubTransaction = true;
-
-            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionControlVM>(), 340, 340, "Sub Transaction"))
-                .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionControlVM)a).Transaction; })
-                .Returns(subTransaction);
-
             var vm = new TransactionControlVM(
                 transaction,
                 this.dialogMock.Object);
 
-            vm.EditSubTransactionCommand.Execute(subTransaction);
+            vm.ClearLocationCommand.Execute();
+            vm.ClearNotesCommand.Execute();
+            vm.ClearPayeeCommand.Execute();
+            vm.ClearProjectCommand.Execute();
+            vm.ClearFromAmountCommand.Execute();
+            vm.ClearOriginalFromAmountCommand.Execute();
 
-            Assert.Empty(vm.Transaction.SubTransactions); // no new items added to collection
-            Assert.True(workingCopy.IsSubTransaction);
-            Assert.Equal(subTransaction.RealFromAmount < 0, workingCopy.IsAmountNegative);
-            Assert.Equal(Math.Abs(subTransaction.FromAmount), workingCopy.FromAmount);
+            Assert.Null(vm.Transaction.LocationId);
+            Assert.Null(vm.Transaction.Note);
+            Assert.Null(vm.Transaction.PayeeId);
+            Assert.Null(vm.Transaction.ProjectId);
+            Assert.Equal(0, vm.Transaction.FromAmount);
+            Assert.Equal(0, vm.Transaction.OriginalFromAmount);
         }
 
         [Theory]
@@ -119,26 +109,36 @@
 
         [Theory]
         [AutoMoqData]
-        public void ClearCommand_Execute_SetDefaultValues(
-            TransactionDto transaction)
+        public void OpenSubTransactionDialogCommand_Execute_TransactionUpdated(
+            TransactionDto transaction,
+            TransactionDto subTransaction)
         {
+            TransactionDto workingCopy = default;
+            transaction.SubTransactions.Clear();
+            transaction.FromAmount = 100;
+            transaction.IsAmountNegative = true;
+            transaction.IsSubTransaction = false;
+            transaction.OriginalCurrencyId = 0;
+            transaction.OriginalCurrency = default;
+
+            subTransaction.OriginalCurrencyId = 0;
+            subTransaction.OriginalCurrency = default;
+            subTransaction.IsSubTransaction = true;
+
+            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionControlVM>(), 340, 340, "Sub Transaction"))
+                .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionControlVM)a).Transaction; })
+                .Returns(subTransaction);
+
             var vm = new TransactionControlVM(
                 transaction,
                 this.dialogMock.Object);
 
-            vm.ClearLocationCommand.Execute();
-            vm.ClearNotesCommand.Execute();
-            vm.ClearPayeeCommand.Execute();
-            vm.ClearProjectCommand.Execute();
-            vm.ClearFromAmountCommand.Execute();
-            vm.ClearOriginalFromAmountCommand.Execute();
+            vm.EditSubTransactionCommand.Execute(subTransaction);
 
-            Assert.Null(vm.Transaction.LocationId);
-            Assert.Null(vm.Transaction.Note);
-            Assert.Null(vm.Transaction.PayeeId);
-            Assert.Null(vm.Transaction.ProjectId);
-            Assert.Equal(0, vm.Transaction.FromAmount);
-            Assert.Equal(0, vm.Transaction.OriginalFromAmount);
+            Assert.Empty(vm.Transaction.SubTransactions); // no new items added to collection
+            Assert.True(workingCopy.IsSubTransaction);
+            Assert.Equal(subTransaction.RealFromAmount < 0, workingCopy.IsAmountNegative);
+            Assert.Equal(Math.Abs(subTransaction.FromAmount), workingCopy.FromAmount);
         }
     }
 }

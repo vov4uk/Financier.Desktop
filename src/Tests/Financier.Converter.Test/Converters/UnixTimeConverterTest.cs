@@ -2,7 +2,6 @@
 {
     using System;
     using System.Globalization;
-    using System.Windows.Data;
     using AutoFixture.Xunit3;
     using Financier.Converters;
     using Xunit;
@@ -12,7 +11,7 @@
     {
         private static readonly DateTime StartDate = new DateTime(1970, 1, 1, 0, 0, 0, 0);
 
-        private readonly IValueConverter converter = new UnixTimeConverter();
+        private readonly UnixTimeConverter converter = new UnixTimeConverter();
 
         [InlineAutoData(1642152563000)]
         [InlineAutoData(1642111200000)]

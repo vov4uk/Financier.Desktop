@@ -1,19 +1,18 @@
 ﻿using System;
-using Financier.Desktop.ViewModel;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls.Ribbon;
-using DataFormats = System.Windows.DataFormats;
-using Financier.Desktop.Helpers;
-using Financier.DataAccess;
-using Financier.Adapter;
-using Financier.DataAccess.View;
-using Financier.Common.Model;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.Win32;
+using System.Windows;
+using System.Windows.Controls.Ribbon;
+using Financier.Adapter;
+using Financier.DataAccess;
+using Financier.Desktop.Helpers;
+using Financier.Desktop.Helpers.BankHelper;
 using Financier.Desktop.Properties;
+using Financier.Desktop.ViewModel;
+using Microsoft.Win32;
+using DataFormats = System.Windows.DataFormats;
 
 namespace Financier.Desktop
 {
@@ -37,11 +36,13 @@ namespace Financier.Desktop
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new BankHelperFactory());
+            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new ToastNotifierWrapper(), new BankHelperFactory());
 
             DataContext = ViewModel;
-            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            Title = $"Financier Desktop v.{version}";
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var buildDate = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Local)
+               .AddDays(version.Build).AddSeconds(version.Revision * 2);
+            Title = $"Financier Desktop v.{buildDate.Date.ToShortDateString()}";
             Logger.Info("App started");
         }
 
@@ -49,6 +50,7 @@ namespace Financier.Desktop
         {
             var bakupFolder = Settings.Default.DefaultBackupDir ?? @$"C:\Users\{Environment.UserName}\Dropbox\apps\Financisto Holo";
             ViewModel.DefaultBackupDirectory = Settings.Default.DefaultBackupDir;
+            ViewModel.ExchangeRatesSettings = Settings.Default.ExchangeRatesSettings;
             if (Directory.Exists(bakupFolder))
             {
                 var backupFile = Directory.EnumerateFiles(bakupFolder, BackupFormat).OrderByDescending(x => x).FirstOrDefault();
@@ -56,7 +58,7 @@ namespace Financier.Desktop
                 {
                     Logger.Info($"Loaded backup : {backupFile}");
                     Task.Run(() => ViewModel.OpenBackup(backupFile))
-                        .ContinueWith((t) => ViewModel.UpdateExchangeRates());
+                        .ContinueWith((t) => ViewModel.RefreshExchangeRatesCommand.ExecuteAsync());
                 }
             }
         }
