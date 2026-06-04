@@ -367,6 +367,7 @@
             Assert.NotNull(vm.CurrentPage);
             Assert.Equal(3, vm.Pages.Count);
         }
+
         [Fact]
         public void MoveNextCommand_Execute3Times_TransactionsImpoted()
         {

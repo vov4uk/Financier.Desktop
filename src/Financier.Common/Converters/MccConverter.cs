@@ -1,19 +1,15 @@
-﻿using Financier.Common.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
+using Financier.Common.Entities;
 
 namespace Financier.Converters
 {
-    [ExcludeFromCodeCoverage]
     public class MccConverter : IValueConverter
     {
-        private static Dictionary<int, string> mcc;
+        private static Dictionary<int, string> mcc = default!;
         private static Dictionary<int, string> MCC
         {
             get

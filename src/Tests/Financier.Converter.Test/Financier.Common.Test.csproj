@@ -10,7 +10,12 @@
     <IsTestProject>true</IsTestProject>
     <OutputType>Library</OutputType>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <AnalysisLevel>latest-minimum</AnalysisLevel>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoFixture.Xunit3" />
@@ -24,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Financier.Reports\Financier.Reports.csproj" />
+    <ProjectReference Include="..\..\Financier.Common\Financier.Common.csproj" />
   </ItemGroup>
 
 </Project>

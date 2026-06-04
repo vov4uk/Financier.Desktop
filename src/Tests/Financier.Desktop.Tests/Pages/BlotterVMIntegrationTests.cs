@@ -272,6 +272,7 @@
             Assert.Equal(834, result.Transactions.FirstOrDefault(x => x.Id == 27173).ToAmount); // added transfer
             Assert.Null(result.Transactions.FirstOrDefault(x => x.Id == 27169)); // transaction 27169 was deleted
         }
+
         [Fact]
         public async Task Filter_ApplyFilter_ReturnFilteredTransaction()
         {
@@ -510,9 +511,9 @@
 
         private async Task<(List<Account> Accounts, List<RunningBalance> Balances, List<Transaction> Transactions)> GetResults()
         {
-            List<Account> accounts = new();
-            List<Transaction> transactions = new();
-            List<RunningBalance> balances = new();
+            List<Account> accounts = new ();
+            List<Transaction> transactions = new ();
+            List<RunningBalance> balances = new ();
             using (var uow = db.CreateUnitOfWork())
             {
                 transactions = await uow.GetRepository<Transaction>().GetAllAsync();

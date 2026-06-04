@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
+using Financier.Common.Entities;
 using Financier.Common.Model;
-using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -19,16 +19,14 @@ namespace Financier.Desktop.Helpers
     public class ExchangeRateLoader
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        private readonly IFinancierDatabase _db;
-        public ExchangeRateLoader(IFinancierDatabase db)
+        public ExchangeRateLoader()
         {
-            _db = db;
         }
 
         public async Task<List<CurrencyExchangeRate>> LoadFreeCurrencyRates()
         {
             var result = new List<CurrencyExchangeRate>();
-            var currencies = await GetRatesPairsAsync(); ;
+            var currencies = GetRatesPairs();
 
             foreach (var pair in currencies)
             {
@@ -71,7 +69,7 @@ namespace Financier.Desktop.Helpers
         public async Task<List<CurrencyExchangeRate>> LoadOpenExchangeRates(string apiKey)
         {
             var result = new List<CurrencyExchangeRate>();
-            var currencies = await GetRatesPairsAsync();
+            var currencies = GetRatesPairs();
             try
             {
                 string url = $"https://openexchangerates.org/api/latest.json?app_id={apiKey}";
@@ -119,10 +117,10 @@ namespace Financier.Desktop.Helpers
             return result;
         }
 
-        private async Task<List<KeyValuePair<CurrencyModel, CurrencyModel>>> GetRatesPairsAsync()
+        private static List<KeyValuePair<CurrencyModel, CurrencyModel>> GetRatesPairs()
         {
             var result = new List<KeyValuePair<CurrencyModel, CurrencyModel>>();
-            var currencies = await _db.ExecuteQuery<CurrencyModel>("select * from currency");
+            var currencies = DbManual.Currencies;
 
             for (var i = 0; i < currencies.Count; i++)
             {
@@ -144,15 +142,13 @@ namespace Financier.Desktop.Helpers
             var result = new List<CurrencyExchangeRate>();
             try
             {
+                string monoUrl = "api.monobank.ua/bank/currency";
                 var numericToAlpha = LoadIso4217Map();
-                var dbCurrencies = await _db.ExecuteQuery<CurrencyModel>("select * from currency");
-                var dbByName = dbCurrencies
-                    .Where(c => !string.IsNullOrEmpty(c.Name))
-                    .ToDictionary(c => c.Name, c => c);
+
+                var currencies = GetRatesPairs();
 
                 using var client = new System.Net.Http.HttpClient();
-                client.DefaultRequestHeaders.Add("User-Agent", "Financier.Desktop");
-                var response = await client.GetAsync("https://api.monobank.ua/bank/currency");
+                var response = await client.GetAsync($"https://{monoUrl}");
                 if (!response.IsSuccessStatusCode)
                 {
                     Logger.Warn($"Monobank API returned {response.StatusCode}");
@@ -163,19 +159,25 @@ namespace Financier.Desktop.Helpers
                 var rates = JsonConvert.DeserializeObject<List<MonobankRate>>(content);
                 var updatedOn = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-                foreach (var rate in rates ?? [])
+                // Build a lookup: (numericA, numericB) -> rate
+                var alphaToNumeric = numericToAlpha.ToDictionary(kv => kv.Value, kv => kv.Key);
+                var rateIndex = (rates ?? [])
+                    .Where(r => r.RateBuy > 0 || r.RateCross > 0)
+                    .ToDictionary(r => (r.CurrencyCodeA, r.CurrencyCodeB));
+
+                foreach (var pair in currencies)
                 {
-                    if (!numericToAlpha.TryGetValue(rate.CurrencyCodeA, out var fromAlpha) ||
-                        !numericToAlpha.TryGetValue(rate.CurrencyCodeB, out var toAlpha))
+                    var fromCurrency = pair.Key;
+                    var toCurrency = pair.Value;
+
+                    if (!alphaToNumeric.TryGetValue(fromCurrency.Name, out var fromCode) ||
+                        !alphaToNumeric.TryGetValue(toCurrency.Name, out var toCode))
                         continue;
 
-                    if (!dbByName.TryGetValue(fromAlpha, out var fromCurrency) ||
-                        !dbByName.TryGetValue(toAlpha, out var toCurrency))
+                    if (!rateIndex.TryGetValue((fromCode, toCode), out var rate))
                         continue;
 
                     var exchangeRate = rate.RateBuy > 0 ? rate.RateBuy : rate.RateCross;
-                    if (exchangeRate <= 0)
-                        continue;
 
                     result.Add(new CurrencyExchangeRate
                     {

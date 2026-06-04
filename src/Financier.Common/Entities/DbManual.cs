@@ -202,25 +202,25 @@ ORDER  BY 1 DESC ");
 
         public static void ResetAllManuals()
         {
-            _accounts = null;
-            _category = null;
-            _topCategory = null;
-            _currencies = null;
-            _payee = null;
-            _project = null;
-            _yearMonths = null;
-            _years = null;
-            _location = null;
+            _accounts = null!;
+            _category = null!;
+            _topCategory = null!;
+            _currencies = null!;
+            _payee = null!;
+            _project = null!;
+            _yearMonths = null!;
+            _years = null!;
+            _location = null!;
         }
 
         public static void ResetManuals(string manual)
         {
             switch (manual)
             {
-                case nameof(Payee):    _payee = null; break;
-                case nameof(Location): _location = null; break;
-                case nameof(Project):  _project = null; break;
-                case nameof(Account):  _accounts = null; break;
+                case nameof(Payee):    _payee = null!; break;
+                case nameof(Location): _location = null!; break;
+                case nameof(Project):  _project = null!; break;
+                case nameof(Account):  _accounts = null!; break;
                 default:
                     break;
             }

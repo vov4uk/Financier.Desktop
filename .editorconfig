@@ -46,8 +46,10 @@ dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_event = false:suggestion
 dotnet_diagnostic.CA1416.severity = none
+dotnet_diagnostic.CS8618.severity = none
 dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1633.severity = none
+dotnet_diagnostic.SA1101.severity = none
 
 # Specify UTF-8 without byte-order mark
 [*.{csproj,locproj,nativeproj,proj,resx,slnx,vbproj}]

@@ -103,7 +103,7 @@
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<Payee>>());
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new(MockBehavior.Strict);
+            this.trMock = new (MockBehavior.Strict);
             this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(0)).ReturnsAsync(transaction);
 
             this.dbMock.Setup(x => x.GetSubTransactionsAsync(It.IsAny<int>())).ReturnsAsync(Array.Empty<Transaction>());
@@ -198,7 +198,7 @@
 
             this.dialogMock.Setup(x => x.ShowDialog<LocationControl>(It.IsAny<LocationControlVM>(), 240, 300, nameof(Location))).Returns(null);
 
-            this.locMock = new();
+            this.locMock = new ();
             this.SetupRepo(this.locMock);
 
             var vm = this.GetFinancierVM();
@@ -284,7 +284,7 @@
 
             this.SetupWizardRepos();
             this.SetupRepo(new Mock<IBaseRepository<BlotterTransactions>>());
-            this.trMock = new(MockBehavior.Strict);
+            this.trMock = new (MockBehavior.Strict);
             this.uowMock.Setup(x => x.GetRepository<Transaction>())
                 .Returns(this.trMock.Object);
             this.dbMock.Setup(x => x.AddTransactionsAsync(It.IsAny<List<Transaction>>()))

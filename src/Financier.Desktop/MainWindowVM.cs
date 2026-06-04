@@ -497,7 +497,7 @@ namespace Financier.Desktop.ViewModel
 
                 if (dto.UpdateExchangeRatesOnStart)
                 {
-                    var exchangeRateLoader = new ExchangeRateLoader(db);
+                    var exchangeRateLoader = new ExchangeRateLoader();
                     List<CurrencyExchangeRate> exchangeRates = new List<CurrencyExchangeRate>();
 
                     if (dto.ExchangeRatesProvider == "freecurrencyrates.com")
