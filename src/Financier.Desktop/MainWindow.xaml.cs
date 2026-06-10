@@ -56,8 +56,7 @@ namespace Financier.Desktop
                 {
                     Logger.Info($"Loaded backup : {backupFile}");
                     Task.Run(() => ViewModel.OpenBackup(backupFile))
-                        .ContinueWith((t) => ViewModel.RefreshExchangeRatesCommand.ExecuteAsync())
-                        .ContinueWith((t) => ViewModel.CheckForUpdateCommand.ExecuteAsync());
+                        .ContinueWith((t) => ViewModel.RefreshExchangeRatesCommand.ExecuteAsync());
                 }
             }
         }
