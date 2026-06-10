@@ -38,6 +38,7 @@ jobs:
         run: >
           dotnet build
           -p:CSharpier_Bypass=true
+          -p:EnableWindowsTargeting=true
           --configuration Release
 
       - name: Verify formatting
@@ -45,6 +46,7 @@ jobs:
         run: >
           dotnet build
           -t:CSharpierFormat
+          -p:EnableWindowsTargeting=true
           --configuration Release
           --no-restore
 
@@ -125,7 +127,7 @@ jobs:
           - win-x86
           - win-x64
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
 
     permissions:
