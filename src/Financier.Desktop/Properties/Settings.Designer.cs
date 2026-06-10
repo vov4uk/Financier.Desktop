@@ -20,10 +20,10 @@ namespace Financier.Desktop.Properties
         }
 
         [UserScopedSetting]
-        public string ExchangeRatesSettings
+        public string AppSettings
         {
-            get => (string)this[nameof(ExchangeRatesSettings)];
-            set => this[nameof(ExchangeRatesSettings)] = (object)value;
+            get => (string)this[nameof(AppSettings)];
+            set => this[nameof(AppSettings)] = (object)value;
         }
     }
 }

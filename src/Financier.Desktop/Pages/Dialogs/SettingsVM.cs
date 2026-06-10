@@ -50,9 +50,9 @@ namespace Financier.Desktop.Pages.Dialogs
         public SettingsVM(SettingsDTO entity)
         {
             this.Entity = entity;
-            this.IsOpenExchangeRatesProviderSelected = entity.ExchangeRatesProvider == "openexchangerates.org";
-            this.IsFreeCurrencyRatesProviderSelected = entity.ExchangeRatesProvider == "freecurrencyrates.com";
-            this.IsMonobankProviderSelected = entity.ExchangeRatesProvider == "monobank.ua";
+            this.IsOpenExchangeRatesProviderSelected = entity.ExchangeRates.Provider == "openexchangerates.org";
+            this.IsFreeCurrencyRatesProviderSelected = entity.ExchangeRates.Provider == "freecurrencyrates.com";
+            this.IsMonobankProviderSelected = entity.ExchangeRates.Provider == "monobank.ua";
         }
 
         public SettingsDTO Entity { get; }
@@ -61,17 +61,17 @@ namespace Financier.Desktop.Pages.Dialogs
         {
             if (IsOpenExchangeRatesProviderSelected)
             {
-                Entity.ExchangeRatesProvider = "openexchangerates.org";
+                Entity.ExchangeRates.Provider = "openexchangerates.org";
             }
             else if (IsFreeCurrencyRatesProviderSelected)
             {
-                Entity.ExchangeRatesProvider = "freecurrencyrates.com";
-                Entity.OpenExchangeRatesProviderAppId = "";
+                Entity.ExchangeRates.Provider = "freecurrencyrates.com";
+                Entity.ExchangeRates.OpenExchangeRatesProviderAppId = "";
             }
             else if(IsMonobankProviderSelected)
             {
-                Entity.ExchangeRatesProvider = "monobank.ua";
-                Entity.OpenExchangeRatesProviderAppId = "";
+                Entity.ExchangeRates.Provider = "monobank.ua";
+                Entity.ExchangeRates.OpenExchangeRatesProviderAppId = "";
             }
             return Entity;
         }
