@@ -80,6 +80,7 @@ jobs:
         run: >
           dotnet publish src/Financier.Desktop
           -p:Version=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
+          -p:PublishSingleFile=true
           --output Financier.Desktop/bin/publish
           --configuration Release
           --runtime ${{ matrix.rid }}
