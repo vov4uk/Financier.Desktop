@@ -36,13 +36,11 @@ namespace Financier.Desktop
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new ToastNotifierWrapper(), new BankHelperFactory());
+            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new ToastNotifierWrapper(), new BankHelperFactory(), new Services.UpdateService(new Data.SettingsDTO { IsAutoUpdateEnabled = true}));
 
             DataContext = ViewModel;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
-            var buildDate = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Local)
-               .AddDays(version.Build).AddSeconds(version.Revision * 2);
-            Title = $"Financier Desktop v.{buildDate.Date.ToShortDateString()}";
+            Title = $"Financier Desktop v.{version}";
             Logger.Info("App started");
         }
 

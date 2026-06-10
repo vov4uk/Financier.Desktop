@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
       <TargetFramework>net10.0-windows7.0</TargetFramework>
@@ -9,13 +9,7 @@
       <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
       <IsTestProject>true</IsTestProject>
       <OutputType>Library</OutputType>
-      <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Assets\min" />
-    <None Remove="Assets\min.backup" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\min">

@@ -5,7 +5,6 @@
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <AssemblyName>Financier.Tests.Common</AssemblyName>
     <RootNamespace>Financier.Tests.Common</RootNamespace>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemGroup>

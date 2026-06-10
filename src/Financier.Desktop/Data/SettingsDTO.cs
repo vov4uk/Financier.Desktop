@@ -4,9 +4,13 @@ namespace Financier.Desktop.Data
 {
     public class SettingsDTO : BindableBase
     {
+
         private string exchangeRatesProvider;
         private string openExchangeRatesProviderAppId;
         private bool updateExchangeRatesOnStart;
+
+        public bool IsAutoUpdateEnabled { get; init; }
+
         public string ExchangeRatesProvider
         {
             get => exchangeRatesProvider;
