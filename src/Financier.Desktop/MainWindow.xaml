@@ -9,6 +9,7 @@
                xmlns:View="clr-namespace:Financier.Desktop.Views"
                xmlns:Wizard="clr-namespace:Financier.Desktop.Wizards"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+               xmlns:s="clr-namespace:System;assembly=mscorlib"
                AllowDrop="True"
                Loaded="RibbonWindow_Loaded">
     <Window.Resources>
@@ -53,6 +54,7 @@
             <x:Type x:Key="TransactionsViewType" TypeName="data:BlotterModel" />
             <x:Type x:Key="ReportsControl" TypeName="reports:ReportsControlVM" />
             <x:Type x:Key="RulesType" TypeName="data:RuleModel" />
+            <s:Boolean x:Key="True">True</s:Boolean>
             <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InverseBooleanConverter x:Key="InverseBool" />
@@ -349,6 +351,13 @@
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconDownload}"
                                   Label="Download"
                                   Command="{Binding Path=RefreshExchangeRatesCommand}" />
+                </RibbonGroup>
+                <RibbonGroup Header="General"
+                         DataContext="{Binding}">
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconRefresh}"
+                              Label="Check for Updates"
+                              Command="{Binding Path=CheckForUpdateCommand}"
+                              CommandParameter="{StaticResource True}" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

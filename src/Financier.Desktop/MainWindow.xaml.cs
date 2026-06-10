@@ -36,7 +36,7 @@ namespace Financier.Desktop
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new ToastNotifierWrapper(), new BankHelperFactory(), new Services.UpdateService(new Data.SettingsDTO { IsAutoUpdateEnabled = true}));
+            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new ToastNotifierWrapper(), new BankHelperFactory(), new Services.UpdateService());
 
             DataContext = ViewModel;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -48,7 +48,7 @@ namespace Financier.Desktop
         {
             var bakupFolder = Settings.Default.DefaultBackupDir ?? @$"C:\Users\{Environment.UserName}\Dropbox\apps\Financisto Holo";
             ViewModel.DefaultBackupDirectory = Settings.Default.DefaultBackupDir;
-            ViewModel.ExchangeRatesSettings = Settings.Default.ExchangeRatesSettings;
+            ViewModel.AppSettings = Settings.Default.AppSettings;
             if (Directory.Exists(bakupFolder))
             {
                 var backupFile = Directory.EnumerateFiles(bakupFolder, BackupFormat).OrderByDescending(x => x).FirstOrDefault();
@@ -56,7 +56,11 @@ namespace Financier.Desktop
                 {
                     Logger.Info($"Loaded backup : {backupFile}");
                     Task.Run(() => ViewModel.OpenBackup(backupFile))
-                        .ContinueWith((t) => ViewModel.RefreshExchangeRatesCommand.ExecuteAsync());
+                        .ContinueWith((t) =>
+                        {
+                            ViewModel.RefreshExchangeRatesCommand.ExecuteAsync();
+                            ViewModel.CheckForUpdateCommand.ExecuteAsync(false);
+                        });
                 }
             }
         }

@@ -53,7 +53,7 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _saveBackupAsDbCommand;
         private IAsyncCommand _settingsCommand;
         private IAsyncCommand _refreshExchangeRatesCommand;
-        private IAsyncCommand _checkForUpdateCommand;
+        private IAsyncCommand<bool> _checkForUpdateCommand;
         private readonly IBackupWriter backupWriter;
         private BlotterVM blotterVm;
         private BindableBase currentPage;
@@ -134,7 +134,7 @@ namespace Financier.Desktop.ViewModel
             internal set => SetProperty(ref defaultBackupDirectory, value);
         }
 
-        public string ExchangeRatesSettings
+        public string AppSettings
         {
             get => exchangeRatesSettings;
             internal set => SetProperty(ref exchangeRatesSettings, value);
@@ -182,7 +182,7 @@ namespace Financier.Desktop.ViewModel
 
         public IAsyncCommand SettingsCommand => _settingsCommand ??= new AsyncCommand(Settings_Click);
         public IAsyncCommand RefreshExchangeRatesCommand => _refreshExchangeRatesCommand ??= new AsyncCommand(RefreshExchangeRates_Click);
-        public IAsyncCommand CheckForUpdateCommand => _checkForUpdateCommand ??= new AsyncCommand(CheckForUpdatesAsync);
+        public IAsyncCommand<bool> CheckForUpdateCommand => _checkForUpdateCommand ??= new AsyncCommand<bool>(CheckForUpdatesAsync);
 
         public async Task OpenBackup(string backupPath)
         {
@@ -464,58 +464,46 @@ namespace Financier.Desktop.ViewModel
 
         private async Task Settings_Click()
         {
-            SettingsDTO dto = null;
-            if (string.IsNullOrEmpty(ExchangeRatesSettings))
-            {
-                dto = new SettingsDTO()
-                {
-                    ExchangeRatesProvider = string.Empty,
-                    UpdateExchangeRatesOnStart = false,
-                };
-            }
-            else
-            {
-                dto = TryDeserializeSettings(ExchangeRatesSettings);
-            }
+            SettingsDTO settings = TryDeserializeSettings(AppSettings);
 
-            DialogBaseVM vm = new SettingsVM(dto);
+            DialogBaseVM vm = new SettingsVM(settings);
             var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, "Settings") as SettingsDTO;
 
             if (updated != null)
             {
                 var jObj = JObject.FromObject(updated);
-                if (!string.IsNullOrEmpty(updated.OpenExchangeRatesProviderAppId))
+                if (!string.IsNullOrEmpty(updated.ExchangeRates.OpenExchangeRatesProviderAppId))
                 {
-                    jObj[nameof(SettingsDTO.OpenExchangeRatesProviderAppId)] =
-                        SettingsProtection.Encrypt(updated.OpenExchangeRatesProviderAppId);
+                    jObj[nameof(SettingsDTO.ExchangeRates.OpenExchangeRatesProviderAppId)] =
+                        SettingsProtection.Encrypt(updated.ExchangeRates.OpenExchangeRatesProviderAppId);
                 }
                 string json = jObj.ToString(Formatting.Indented);
-                Settings.Default.ExchangeRatesSettings = json;
+                Settings.Default.AppSettings = json;
                 Settings.Default.Save();
-                ExchangeRatesSettings = json;
+                AppSettings = json;
             }
         }
 
         private async Task RefreshExchangeRates_Click()
         {
-            if (!string.IsNullOrEmpty(ExchangeRatesSettings))
+            if (!string.IsNullOrEmpty(AppSettings))
             {
-                var dto = TryDeserializeSettings(ExchangeRatesSettings);
+                var settings = TryDeserializeSettings(AppSettings);
 
-                if (dto.UpdateExchangeRatesOnStart)
+                if (settings.ExchangeRates.UpdateOnStart)
                 {
                     var exchangeRateLoader = new ExchangeRateLoader();
                     List<CurrencyExchangeRate> exchangeRates = new List<CurrencyExchangeRate>();
 
-                    if (dto.ExchangeRatesProvider == "freecurrencyrates.com")
+                    if (settings.ExchangeRates.Provider == "freecurrencyrates.com")
                     {
                         exchangeRates = await exchangeRateLoader.LoadFreeCurrencyRates();
                     }
-                    else if (dto.ExchangeRatesProvider == "openexchangerates.org")
+                    else if (settings.ExchangeRates.Provider == "openexchangerates.org")
                     {
-                        exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(dto.OpenExchangeRatesProviderAppId);
+                        exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(settings.ExchangeRates.OpenExchangeRatesProviderAppId);
                     }
-                    else if (dto.ExchangeRatesProvider == "monobank.ua")
+                    else if (settings.ExchangeRates.Provider == "monobank.ua")
                     {
                         exchangeRates = await exchangeRateLoader.LoadMonobankRates();
                     }
@@ -549,7 +537,7 @@ namespace Financier.Desktop.ViewModel
                             return;
                         }
 
-                        notifier?.ShowMessage($"Exchange rates updated successfully from {dto.ExchangeRatesProvider}.");
+                        notifier?.ShowMessage($"Exchange rates updated successfully from {settings.ExchangeRates.Provider}.");
                     }
                 }
             }
@@ -561,61 +549,89 @@ namespace Financier.Desktop.ViewModel
 
         private SettingsDTO TryDeserializeSettings(string json)
         {
-            try
+            if (!string.IsNullOrEmpty(json))
             {
-                var dto = JsonConvert.DeserializeObject<SettingsDTO>(json)
-                    ?? new SettingsDTO { ExchangeRatesProvider = string.Empty, UpdateExchangeRatesOnStart = false };
-
-                if (!string.IsNullOrEmpty(dto.OpenExchangeRatesProviderAppId))
+                try
                 {
-                    dto.OpenExchangeRatesProviderAppId =
-                        SettingsProtection.TryDecrypt(dto.OpenExchangeRatesProviderAppId);
-                }
+                    var dto = JsonConvert.DeserializeObject<SettingsDTO>(json);
 
-                return dto;
+                    if (!string.IsNullOrEmpty(dto.ExchangeRates?.OpenExchangeRatesProviderAppId))
+                    {
+                        dto.ExchangeRates.OpenExchangeRatesProviderAppId =
+                            SettingsProtection.TryDecrypt(dto.ExchangeRates.OpenExchangeRatesProviderAppId);
+                    }
+
+                    return dto;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn(ex, "Failed to deserialize AppSettings; resetting to defaults.");
+                    AppSettings = null;
+                    Settings.Default.AppSettings = null;
+                    Settings.Default.Save();
+                    notifier?.ShowWarning("Settings file was corrupted and has been reset. Please re-configure exchange rate settings.");
+
+                }
             }
-            catch (JsonException ex)
+
+            return new SettingsDTO()
             {
-                Logger.Warn(ex, "Failed to deserialize ExchangeRatesSettings; resetting to defaults.");
-                ExchangeRatesSettings = null;
-                Settings.Default.ExchangeRatesSettings = null;
-                Settings.Default.Save();
-                notifier?.ShowWarning("Settings file was corrupted and has been reset. Please re-configure exchange rate settings.");
-                return new SettingsDTO { ExchangeRatesProvider = string.Empty, UpdateExchangeRatesOnStart = false };
-            }
+                ExchangeRates = new SettingsExchangeRates
+                {
+                    Provider = string.Empty,
+                    UpdateOnStart = false,
+                },
+                General = new SettingsGeneralDTO
+                {
+                    CheckForUpdatesOnStart = true
+                }
+            };
         }
 
-        private async Task CheckForUpdatesAsync()
+        private async Task CheckForUpdatesAsync(bool showMessageIfLatest = true)
         {
             try
             {
                 if(updateService == null)
                     return;
 
-                var updateVersion = await updateService.CheckForUpdatesAsync();
+                var settings = TryDeserializeSettings(AppSettings);
+
+                var updateVersion = await updateService.CheckForUpdatesAsync(settings.General);
                 if (updateVersion is null)
+                {
+                    if (showMessageIfLatest)
+                    {
+                        notifier.ShowMessage("You are using the latest version.");
+                    }
                     return;
+                }
 
-                notifier.ShowMessage(
-                    string.Format(
-                        "Downloading update to {0} v{1}...",
+
+                var result = dialogWrapper.ShowMessageBox(
+                   "Would you like to restart app and apply the update?",
+                   $"Version {updateVersion} is available",
+                    true);
+
+                if (result)
+                {
+
+                    notifier.ShowMessage(string.Format("Downloading update to {0} v{1}...",
                         "Financier.Desktop",
-                        updateVersion
-                    )
-                );
-                await updateService.PrepareUpdateAsync(updateVersion);
+                        updateVersion));
 
-                notifier.ShowMessage(
-                    "Update has been downloaded and will be installed when you exit");
+                    await updateService.PrepareUpdateAsync(updateVersion, settings.General);
 
-                updateService.FinalizeUpdate(true);
-
-                Application.Current.Shutdown();
-
+                    notifier.ShowMessage("Update is downloaded. App will now restart to apply the update.");
+                    Task.Delay(3000).Wait();
+                    updateService.FinalizeUpdate(true, settings.General);
+                    Task.Delay(3000).Wait();
+                    Environment.Exit(0);
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                // Failure to update shouldn't crash the application
+                Logger.Error(ex, "Failed to perform application update");
                 notifier.ShowWarning("Failed to perform application update");
             }
         }

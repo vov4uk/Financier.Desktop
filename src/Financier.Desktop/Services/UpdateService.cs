@@ -8,7 +8,7 @@ using Onova.Services;
 
 namespace Financier.Desktop.Services
 {
-    public class UpdateService(SettingsDTO settingsService) : IDisposable
+    public class UpdateService() : IDisposable
     {
         private readonly IUpdateManager? _updateManager = new UpdateManager(
                     new GithubPackageResolver(
@@ -23,24 +23,24 @@ namespace Financier.Desktop.Services
         private bool _isUpdatePrepared;
         private bool _isUpdaterLaunched;
 
-        public async Task<Version?> CheckForUpdatesAsync()
+        public async Task<Version?> CheckForUpdatesAsync(SettingsGeneralDTO settingsService)
         {
             if (_updateManager is null)
                 return null;
 
-            if (!settingsService.IsAutoUpdateEnabled)
+            if (!settingsService.CheckForUpdatesOnStart)
                 return null;
 
             var check = await _updateManager.CheckForUpdatesAsync();
             return check.CanUpdate ? check.LastVersion : null;
         }
 
-        public async Task PrepareUpdateAsync(Version version)
+        public async Task PrepareUpdateAsync(Version version, SettingsGeneralDTO settingsService)
         {
             if (_updateManager is null)
                 return;
 
-            if (!settingsService.IsAutoUpdateEnabled)
+            if (!settingsService.CheckForUpdatesOnStart)
                 return;
 
             try
@@ -58,12 +58,12 @@ namespace Financier.Desktop.Services
             }
         }
 
-        public void FinalizeUpdate(bool needRestart)
+        public void FinalizeUpdate(bool needRestart, SettingsGeneralDTO settingsService)
         {
             if (_updateManager is null)
                 return;
 
-            if (!settingsService.IsAutoUpdateEnabled)
+            if (!settingsService.CheckForUpdatesOnStart)
                 return;
 
             if (_updateVersion is null || !_isUpdatePrepared || _isUpdaterLaunched)

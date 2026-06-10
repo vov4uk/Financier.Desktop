@@ -18,6 +18,13 @@
         <TabControl TabStripPlacement="Left" 
                     Margin="0, 0, 0, 10"
                     Grid.Row="0">
+            <TabItem Name="general" Header="General" IsSelected="True">
+                <TabItem.Content>
+                    <StackPanel Margin="5">
+                        <CheckBox Margin="5" Content="Check for updates on start?" IsChecked="{Binding Entity.General.CheckForUpdatesOnStart, Mode=TwoWay}"/>
+                    </StackPanel>
+                </TabItem.Content>
+            </TabItem>
             <TabItem Name="fontweight" Header="Exchange rates">
                 <TabItem.Content>
                     <Grid>
@@ -38,11 +45,11 @@
                                   Margin="5"
                                   Header="App id"
                                   Visibility="{Binding IsOpenExchangeRatesProviderSelected, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
-                            <TextBox Margin="5" Text="{Binding Entity.OpenExchangeRatesProviderAppId, Mode=TwoWay}"
+                            <TextBox Margin="5" Text="{Binding Entity.ExchangeRates.OpenExchangeRatesProviderAppId, Mode=TwoWay}"
                                      />
                         </GroupBox>
                         <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" Content="Update exchange rates on start?"
-                                  IsChecked="{Binding Entity.UpdateExchangeRatesOnStart, Mode=TwoWay}"/>
+                                  IsChecked="{Binding Entity.ExchangeRates.UpdateOnStart, Mode=TwoWay}"/>
                     </Grid>
                 </TabItem.Content>
             </TabItem>
