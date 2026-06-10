@@ -91,12 +91,12 @@ namespace Financier.Desktop.Helpers
         {
             if (yesNoButtons)
             {
-                var result = System.Windows.Forms.MessageBox.Show(text, caption, MessageBoxButtons.YesNo);
-                return result == DialogResult.Yes;
+                var result = System.Windows.MessageBox.Show(text, caption, MessageBoxButton.YesNo);
+                return result == MessageBoxResult.Yes;
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show(text, caption);
+                System.Windows.MessageBox.Show(text, caption);
                 return true;
             }
         }

@@ -44,7 +44,7 @@ namespace Financier.Desktop
             Logger.Info("App started");
         }
 
-        private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
             var bakupFolder = Settings.Default.DefaultBackupDir ?? @$"C:\Users\{Environment.UserName}\Dropbox\apps\Financisto Holo";
             ViewModel.DefaultBackupDirectory = Settings.Default.DefaultBackupDir;
@@ -55,12 +55,9 @@ namespace Financier.Desktop
                 if (!string.IsNullOrEmpty(backupFile) && File.Exists(backupFile))
                 {
                     Logger.Info($"Loaded backup : {backupFile}");
-                    Task.Run(() => ViewModel.OpenBackup(backupFile))
-                        .ContinueWith((t) =>
-                        {
-                            ViewModel.RefreshExchangeRatesCommand.ExecuteAsync();
-                            ViewModel.CheckForUpdateCommand.ExecuteAsync(false);
-                        });
+                    await Task.Run(() => ViewModel.OpenBackup(backupFile));
+                    await ViewModel.RefreshExchangeRatesCommand.ExecuteAsync();
+                    await ViewModel.CheckForUpdateCommand.ExecuteAsync(false);
                 }
             }
         }

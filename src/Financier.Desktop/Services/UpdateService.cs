@@ -23,24 +23,18 @@ namespace Financier.Desktop.Services
         private bool _isUpdatePrepared;
         private bool _isUpdaterLaunched;
 
-        public async Task<Version?> CheckForUpdatesAsync(SettingsGeneralDTO settingsService)
+        public async Task<Version?> CheckForUpdatesAsync()
         {
             if (_updateManager is null)
-                return null;
-
-            if (!settingsService.CheckForUpdatesOnStart)
                 return null;
 
             var check = await _updateManager.CheckForUpdatesAsync();
             return check.CanUpdate ? check.LastVersion : null;
         }
 
-        public async Task PrepareUpdateAsync(Version version, SettingsGeneralDTO settingsService)
+        public async Task PrepareUpdateAsync(Version version)
         {
             if (_updateManager is null)
-                return;
-
-            if (!settingsService.CheckForUpdatesOnStart)
                 return;
 
             try
@@ -58,12 +52,9 @@ namespace Financier.Desktop.Services
             }
         }
 
-        public void FinalizeUpdate(bool needRestart, SettingsGeneralDTO settingsService)
+        public void FinalizeUpdate(bool needRestart)
         {
             if (_updateManager is null)
-                return;
-
-            if (!settingsService.CheckForUpdatesOnStart)
                 return;
 
             if (_updateVersion is null || !_isUpdatePrepared || _isUpdaterLaunched)

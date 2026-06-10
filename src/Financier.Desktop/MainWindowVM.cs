@@ -474,7 +474,7 @@ namespace Financier.Desktop.ViewModel
                 var jObj = JObject.FromObject(updated);
                 if (!string.IsNullOrEmpty(updated.ExchangeRates.OpenExchangeRatesProviderAppId))
                 {
-                    jObj[nameof(SettingsDTO.ExchangeRates.OpenExchangeRatesProviderAppId)] =
+                    jObj[nameof(SettingsDTO.ExchangeRates)][nameof(SettingsExchangeRates.OpenExchangeRatesProviderAppId)] =
                         SettingsProtection.Encrypt(updated.ExchangeRates.OpenExchangeRatesProviderAppId);
                 }
                 string json = jObj.ToString(Formatting.Indented);
@@ -555,6 +555,12 @@ namespace Financier.Desktop.ViewModel
                 {
                     var dto = JsonConvert.DeserializeObject<SettingsDTO>(json);
 
+                    if (dto.ExchangeRates == null)
+                        dto.ExchangeRates = new SettingsExchangeRates();
+
+                    if (dto.General == null)
+                        dto.General = new SettingsGeneralDTO();
+
                     if (!string.IsNullOrEmpty(dto.ExchangeRates?.OpenExchangeRatesProviderAppId))
                     {
                         dto.ExchangeRates.OpenExchangeRatesProviderAppId =
@@ -597,7 +603,10 @@ namespace Financier.Desktop.ViewModel
 
                 var settings = TryDeserializeSettings(AppSettings);
 
-                var updateVersion = await updateService.CheckForUpdatesAsync(settings.General);
+                if (!settings.General.CheckForUpdatesOnStart || !showMessageIfLatest)
+                    return;
+
+                var updateVersion = await updateService.CheckForUpdatesAsync();
                 if (updateVersion is null)
                 {
                     if (showMessageIfLatest)
@@ -620,12 +629,12 @@ namespace Financier.Desktop.ViewModel
                         "Financier.Desktop",
                         updateVersion));
 
-                    await updateService.PrepareUpdateAsync(updateVersion, settings.General);
+                    await updateService.PrepareUpdateAsync(updateVersion);
 
                     notifier.ShowMessage("Update is downloaded. App will now restart to apply the update.");
-                    Task.Delay(3000).Wait();
-                    updateService.FinalizeUpdate(true, settings.General);
-                    Task.Delay(3000).Wait();
+                    await Task.Delay(3000);
+                    updateService.FinalizeUpdate(true);
+                    await Task.Delay(3000);
                     Environment.Exit(0);
                 }
             }
