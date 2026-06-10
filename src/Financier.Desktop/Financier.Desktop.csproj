@@ -1,16 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
     <StartupObject>Financier.Desktop.App</StartupObject>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <Deterministic>false</Deterministic>
+    <NeutralLanguage>uk-UA</NeutralLanguage>
+    <ApplicationIcon>Images\ic_launcher.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,15 +23,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <PropertyGroup>
-      <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-      <Deterministic>false</Deterministic>
-      <NeutralLanguage>uk-UA</NeutralLanguage>
-      <ApplicationIcon>Images\ic_launcher.ico</ApplicationIcon>
-  </PropertyGroup>
+
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />
-    <None Include="..\..\Directory.Packages.props" Link="Directory.Packages.props" />
   </ItemGroup>
 
   <ItemGroup>
@@ -77,6 +73,7 @@
     <PackageReference Include="MiniExcel" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="NLog" />
+    <PackageReference Include="Onova" />
     <PackageReference Include="Prism.Core" />
     <PackageReference Include="SonarAnalyzer.CSharp" Condition="'$(Configuration)'=='Debug'">
       <PrivateAssets>all</PrivateAssets>

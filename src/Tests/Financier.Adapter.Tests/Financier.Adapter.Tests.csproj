@@ -9,7 +9,6 @@
       <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
       <IsTestProject>true</IsTestProject>
       <OutputType>Library</OutputType>
-      <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemGroup>

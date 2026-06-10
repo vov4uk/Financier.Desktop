@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Financier.Adapter;
 using Financier.Common;
@@ -18,6 +19,7 @@ using Financier.Desktop.Helpers;
 using Financier.Desktop.Helpers.BankHelper;
 using Financier.Desktop.Pages.Dialogs;
 using Financier.Desktop.Properties;
+using Financier.Desktop.Services;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Wizards;
 using Financier.Desktop.Wizards.MonoWizard.ViewModel;
@@ -41,6 +43,7 @@ namespace Financier.Desktop.ViewModel
         private readonly IDialogWrapper dialogWrapper;
         private readonly List<Entity> keyLessEntities = new();
         private readonly IToastNotifierWrapper notifier;
+        private readonly UpdateService updateService;
         private BackupVersion _backupVersion;
         private Dictionary<string, List<string>> _entityColumnsOrder;
         private IAsyncCommand<Type> _menuNavigateCommand;
@@ -50,6 +53,7 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _saveBackupAsDbCommand;
         private IAsyncCommand _settingsCommand;
         private IAsyncCommand _refreshExchangeRatesCommand;
+        private IAsyncCommand _checkForUpdateCommand;
         private readonly IBackupWriter backupWriter;
         private BlotterVM blotterVm;
         private BindableBase currentPage;
@@ -69,7 +73,8 @@ namespace Financier.Desktop.ViewModel
             IEntityReader entityReader,
             IBackupWriter backupWriter,
             IToastNotifierWrapper notifier,
-            IBankHelperFactory bankFactory)
+            IBankHelperFactory bankFactory,
+            UpdateService updateService)
         {
             this.dialogWrapper = dialogWrapper;
             this.dbFactory = dbFactory;
@@ -77,6 +82,7 @@ namespace Financier.Desktop.ViewModel
             this.backupWriter = backupWriter;
             this.notifier = notifier;
             this.bankFactory = bankFactory;
+            this.updateService = updateService;
             db = dbFactory.CreateDatabase();
 
             CreatePages();
@@ -176,6 +182,7 @@ namespace Financier.Desktop.ViewModel
 
         public IAsyncCommand SettingsCommand => _settingsCommand ??= new AsyncCommand(Settings_Click);
         public IAsyncCommand RefreshExchangeRatesCommand => _refreshExchangeRatesCommand ??= new AsyncCommand(RefreshExchangeRates_Click);
+        public IAsyncCommand CheckForUpdateCommand => _checkForUpdateCommand ??= new AsyncCommand(CheckForUpdatesAsync);
 
         public async Task OpenBackup(string backupPath)
         {
@@ -575,6 +582,41 @@ namespace Financier.Desktop.ViewModel
                 Settings.Default.Save();
                 notifier?.ShowWarning("Settings file was corrupted and has been reset. Please re-configure exchange rate settings.");
                 return new SettingsDTO { ExchangeRatesProvider = string.Empty, UpdateExchangeRatesOnStart = false };
+            }
+        }
+
+        private async Task CheckForUpdatesAsync()
+        {
+            try
+            {
+                if(updateService == null)
+                    return;
+
+                var updateVersion = await updateService.CheckForUpdatesAsync();
+                if (updateVersion is null)
+                    return;
+
+                notifier.ShowMessage(
+                    string.Format(
+                        "Downloading update to {0} v{1}...",
+                        "Financier.Desktop",
+                        updateVersion
+                    )
+                );
+                await updateService.PrepareUpdateAsync(updateVersion);
+
+                notifier.ShowMessage(
+                    "Update has been downloaded and will be installed when you exit");
+
+                updateService.FinalizeUpdate(true);
+
+                Application.Current.Shutdown();
+
+            }
+            catch
+            {
+                // Failure to update shouldn't crash the application
+                notifier.ShowWarning("Failed to perform application update");
             }
         }
     }
