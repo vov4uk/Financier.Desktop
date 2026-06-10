@@ -18,7 +18,7 @@ env:
 
 jobs:
   format:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 10
 
     permissions:
@@ -37,7 +37,6 @@ jobs:
       - name: Build
         run: >
           dotnet build
-          -p:CSharpier_Bypass=true
           -p:EnableWindowsTargeting=true
           --configuration Release
 
@@ -55,9 +54,13 @@ jobs:
 
       - name: Test
         run: >
-          dotnet test --no-build --verbosity normal
+          dotnet test
+          -p:EnableWindowsTargeting=true
+          --no-build
+          --verbosity normal
 
   pack:
+    needs: format
     strategy:
       matrix:
         rid:
