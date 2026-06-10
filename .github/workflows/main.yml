@@ -53,6 +53,10 @@ jobs:
         if: ${{ failure() && steps.verify.outcome == 'failure' }}
         run: echo "::error title=Bad formatting::Formatting issues detected. Please build the solution locally to fix them."
 
+      - name: Test
+        run: >
+          dotnet test --no-build --verbosity normal
+
   pack:
     strategy:
       matrix:
