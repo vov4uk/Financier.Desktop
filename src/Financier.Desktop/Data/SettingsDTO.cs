@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using Financier.Desktop.Localization;
+using Prism.Mvvm;
 
 namespace Financier.Desktop.Data
 {
@@ -11,6 +12,7 @@ namespace Financier.Desktop.Data
     public class SettingsGeneralDTO : BindableBase
     {
         private bool checkForUpdatesOnStart;
+        private Language language;
 
         public bool CheckForUpdatesOnStart
         {
@@ -21,6 +23,19 @@ namespace Financier.Desktop.Data
                 {
                     checkForUpdatesOnStart = value;
                     RaisePropertyChanged(nameof(CheckForUpdatesOnStart));
+                }
+            }
+        }
+
+        public Language Language
+        {
+            get => language;
+            set
+            {
+                if (language != value)
+                {
+                    language = value;
+                    RaisePropertyChanged(nameof(Language));
                 }
             }
         }

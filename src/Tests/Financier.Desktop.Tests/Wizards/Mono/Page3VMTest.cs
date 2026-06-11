@@ -20,7 +20,7 @@
 
     public class Page3VMTest
     {
-        private readonly Mock<IDialogWrapper> _dialogWrapperMock = new Mock<IDialogWrapper>();
+        private readonly Mock<IDialogWrapper> dialogWrapperMock = new Mock<IDialogWrapper>();
 
         [Theory]
         [AutoMoqData]
@@ -29,7 +29,7 @@
         {
             var monoAccount = accounts.FirstOrDefault();
             DbManual.SetupTests(accounts);
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
 
             vm.MonoAccount = monoAccount;
 
@@ -225,7 +225,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { monoAccount });
             DbManual.SetupTests(rules);
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
 
             vm.MonoAccount = monoAccount;
             vm.SetMonoTransactions(transactions);
@@ -244,7 +244,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<LocationModel>());
             DbManual.SetupTests(new List<CategoryModel>());
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
 
             vm.MonoAccount = account;
             vm.SetMonoTransactions(transactions);
@@ -265,7 +265,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<LocationModel>());
             DbManual.SetupTests(new List<CategoryModel>());
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
 
             vm.MonoAccount = account;
             vm.SetMonoTransactions(transactions);
@@ -312,7 +312,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
@@ -358,7 +358,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
@@ -407,7 +407,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
@@ -452,7 +452,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
@@ -496,7 +496,7 @@
             DbManual.SetupTests(new List<RuleModel> { rule });
 
             // Act
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
@@ -540,7 +540,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
@@ -595,7 +595,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule1, rule2 });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
@@ -621,7 +621,7 @@
                 CategoryId = 1000,
             };
 
-            _dialogWrapperMock
+            dialogWrapperMock
                 .Setup(d => d.ShowDialog<RuleControl>(It.IsAny<RuleControlVM>(), 380, 400, "Rule"))
                 .Returns(ruleDto);
 
@@ -646,7 +646,7 @@
             DbManual.SetupTests(new List<LocationModel>());
             DbManual.SetupTests(new List<CategoryModel>());
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(transactions);
 
@@ -683,7 +683,7 @@
             var account = new AccountFilterModel { Id = 1 };
             var description = "Payment to Store";
 
-            _dialogWrapperMock
+            dialogWrapperMock
                 .Setup(d => d.ShowDialog<RuleControl>(It.IsAny<RuleControlVM>(), 380, 400, "Rule"))
                 .Returns((RuleDTO)null);
 
@@ -692,7 +692,7 @@
             DbManual.SetupTests(new List<CategoryModel>());
             DbManual.SetupTests(new List<RuleModel>());
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
 
             await vm.AddRuleCommand.Execute(new FinancierTransactionDto
@@ -743,7 +743,7 @@
                 },
             };
 
-            _dialogWrapperMock
+            dialogWrapperMock
                 .Setup(d => d.ShowDialog<RuleControl>(It.IsAny<RuleControlVM>(), 380, 400, "Rule"))
                 .Returns(ruleDto);
 
@@ -752,7 +752,7 @@
             DbManual.SetupTests(new List<CategoryModel>());
             DbManual.SetupTests(new List<RuleModel>());
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(transactions);
 

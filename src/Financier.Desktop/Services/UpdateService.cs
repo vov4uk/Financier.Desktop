@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Financier.Desktop.Data;
 using Onova;
 using Onova.Exceptions;
 using Onova.Services;

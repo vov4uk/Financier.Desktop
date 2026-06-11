@@ -17,6 +17,7 @@ using Financier.DataAccess.Utils;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Helpers.BankHelper;
+using Financier.Desktop.Localization;
 using Financier.Desktop.Pages.Dialogs;
 using Financier.Desktop.Properties;
 using Financier.Desktop.Services;
@@ -67,6 +68,7 @@ namespace Financier.Desktop.ViewModel
         private PayeesVM payeesVm;
         private ProjectsVM projectsVm;
         private RulesVM rulesVm;
+        private LocalizationManager localizationManager;
 
         public MainWindowVM(IDialogWrapper dialogWrapper,
             IFinancierDatabaseFactory dbFactory,
@@ -74,7 +76,8 @@ namespace Financier.Desktop.ViewModel
             IBackupWriter backupWriter,
             IToastNotifierWrapper notifier,
             IBankHelperFactory bankFactory,
-            UpdateService updateService)
+            UpdateService updateService,
+            LocalizationManager localizationManager)
         {
             this.dialogWrapper = dialogWrapper;
             this.dbFactory = dbFactory;
@@ -83,6 +86,7 @@ namespace Financier.Desktop.ViewModel
             this.notifier = notifier;
             this.bankFactory = bankFactory;
             this.updateService = updateService;
+            this.localizationManager = localizationManager;
             db = dbFactory.CreateDatabase();
 
             CreatePages();
@@ -168,6 +172,11 @@ namespace Financier.Desktop.ViewModel
         {
             get => isLoading;
             private set => SetProperty(ref isLoading, value);
+        }
+
+        public LocalizationManager LocalizationManager
+        {
+            get => localizationManager;
         }
 
         public IAsyncCommand<Type> MenuNavigateCommand => _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
@@ -640,7 +649,7 @@ namespace Financier.Desktop.ViewModel
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Failed to perform application update");
+                Logger.Error(ex, ex.ToString());
                 notifier.ShowWarning("Failed to perform application update");
             }
         }

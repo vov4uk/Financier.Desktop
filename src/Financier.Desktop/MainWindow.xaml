@@ -111,26 +111,26 @@
                 <RibbonApplicationMenu ContextMenu="{x:Null}"
                                        Background="#858585"
                                        BorderBrush="#858585">
-                    <RibbonApplicationMenuItem Header="Open backup"
+                    <RibbonApplicationMenuItem Header="{Binding LocalizationManager.openBackup}"
                                                Command="{Binding Path=OpenBackupCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconFileArrowUp}" />
-                    <RibbonApplicationMenuItem Header="Save backup"
+                    <RibbonApplicationMenuItem Header="{Binding LocalizationManager.saveBackup}"
                                                Command="{Binding Path=SaveBackupCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconFileArrowDown}" />
-                    <RibbonApplicationMenuItem Header="Save as .db"
+                    <RibbonApplicationMenuItem Header="{Binding LocalizationManager.saveAsDb}"
                                                Command="{Binding Path=SaveBackupAsDbCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconDatabase}" />
-                    <RibbonApplicationMenuItem Header="Set default directory"
+                    <RibbonApplicationMenuItem Header="{Binding LocalizationManager.setDefaultDirectory}"
                                                Click="RibbonApplicationMenuItem_Click"
                                                ImageSource="{StaticResource ResourceKey=IconDropboxBrands}" />
-                    <RibbonApplicationMenuItem Header="Settings"
+                    <RibbonApplicationMenuItem Header="{Binding LocalizationManager.settings}"
                                                Command="{Binding Path=SettingsCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconGear}" />
                     <RibbonApplicationMenu.FooterPaneContent>
                         <DockPanel LastChildFill="False">
                             <RibbonButton Click="Exit_Click"
                                           SmallImageSource="{StaticResource IconArrowRightToBracket}"
-                                          Label="Exit"
+                                          Label="{Binding LocalizationManager.exit}"
                                           ToolTipTitle="Exit"
                                           KeyTip="X"
                                           DockPanel.Dock="Right"
@@ -141,7 +141,7 @@
                     <RibbonApplicationMenu.AuxiliaryPaneContent>
                         <RibbonGallery CanUserFilter="False"
                                        ScrollViewer.VerticalScrollBarVisibility="Auto">
-                            <RibbonGalleryCategory Header="Default backup directory :"
+                            <RibbonGalleryCategory Header="{Binding LocalizationManager.defaultBackupDirectory}"
                                                    Background="Transparent">
                                 <RibbonGalleryCategory.Items>
                                     <RibbonGalleryItem IsEnabled="False">
@@ -163,54 +163,54 @@
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
 
-            <RibbonTab Header="Main"
+            <RibbonTab Header="{Binding LocalizationManager.main}"
                        Selector.IsSelected="True">
-                <RibbonGroup Header="Entities" ContextMenu="{x:Null}">
+                <RibbonGroup Header="{Binding LocalizationManager.entities}" ContextMenu="{x:Null}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconWallet}"
-                                  Label="Accounts"
+                                  Label="{Binding LocalizationManager.accounts}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource AccountType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconFolderTree}"
-                                  Label="Categories" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{Binding LocalizationManager.categories}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource CategoryType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconListCheck}"
-                                  Label="Projects" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{Binding LocalizationManager.projects}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource ProjectType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconAddressBook}"
-                                  Label="Payees" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{Binding LocalizationManager.payees}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource PayeeType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconMap}"
-                                  Label="Locations" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{Binding LocalizationManager.locations}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource LocationType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconDollarSign}"
-                                  Label="Currencies" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{Binding LocalizationManager.currencies}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource CurrencyType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconArrowTrendUp}"
-                                  Label="Exchange rates"
+                                  Label="{Binding LocalizationManager.exchange_rates}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource CurrencyExchangeRateType}" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Blotter"
-                             Header="Blotter">
+                             Header="{Binding LocalizationManager.blotter}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconReceipt}"
-                                  Label="Blotter"
+                                  Label="{Binding LocalizationManager.blotter}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource TransactionsViewType}" />
                     <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/actionbar_filter_cancel.png" Label="Clear filter" />-->
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Reports"
-                             Header="Reports">
+                             Header="{Binding LocalizationManager.reports}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconChartBar}"
-                                  Label="Reports"
+                                  Label="{Binding LocalizationManager.reports}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource ReportsControl}" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="Rules"
-                             Header="Rules">
+                             Header="{Binding LocalizationManager.rules}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconBoltLightning}"
-                                  Label="Rules"
+                                  Label="{Binding LocalizationManager.rules}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource RulesType}" />
                 </RibbonGroup>
@@ -220,39 +220,39 @@
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/backup_file.png"
                                   Label="Export to csv" />
                 </RibbonGroup>-->
-                <RibbonGroup Header="Import"
+                <RibbonGroup Header="{Binding LocalizationManager.import}"
                              IsEnabled="True">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/monobank.png"
-                                  Label="Monobank CSV"
+                                  Label="{Binding LocalizationManager.monobank_csv}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Monobank}" />
-                    <RibbonMenuButton  Label="A-Bank"
+                    <RibbonMenuButton  Label="{Binding LocalizationManager.a_bank}"
                                        LargeImageSource="pack://application:,,,/Images/bank/abank.png" >
 
-                        <RibbonMenuItem  Header="PDF"
+                        <RibbonMenuItem  Header="{Binding LocalizationManager.pdf}"
                                          Foreground="Red"
                                          Command="{Binding Path=ImportCommand}"
                                          CommandParameter="{x:Static Wizard:WizardTypes.ABank}" />
-                        <RibbonMenuItem  Header="XLSX"
+                        <RibbonMenuItem  Header="{Binding LocalizationManager.xlsx}"
                                          Foreground="Green"
                                          Command="{Binding Path=ImportCommand}"
                                          CommandParameter="{x:Static Wizard:WizardTypes.ABankExcel}" />
                     </RibbonMenuButton>
 
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/pumb.png"
-                                  Label="PUMB PDF"
+                                  Label="{Binding LocalizationManager.pumb_pdf}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pumb}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/pireus.png"
-                                  Label="Pireus PDF"
+                                  Label="{Binding LocalizationManager.pireus_pdf}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pireus}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/privat.png"
-                                  Label="Privat XLSX"
+                                  Label="{Binding LocalizationManager.privat_xlsx}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Privat}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/pko.png"
-                                  Label="PKO PDF"
+                                  Label="{Binding LocalizationManager.pko_pdf}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pko}" />
                 </RibbonGroup>
@@ -260,102 +260,102 @@
                 <RibbonGroup x:Name="Transaction"
                              DataContext="{Binding}"
                              Visibility="{Binding Path=IsTransactionPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                             Header="Transaction">
+                             Header="{Binding LocalizationManager.transaction}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add Expense"
+                                  Label="{Binding LocalizationManager.add_expense}"
                                   Command="{Binding Path=Blotter.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconArrowRightArrowLeft}"
-                                  Label="Add Transfer"
+                                  Label="{Binding LocalizationManager.add_transfer}"
                                   Command="{Binding Path=Blotter.AddTransferCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTable}"
-                                  Label="Add Template"
+                                  Label="{Binding LocalizationManager.add_template}"
                                   Command="{Binding Path=Blotter.AddTemplateCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{Binding LocalizationManager.edit}"
                                   Command="{Binding Path=Blotter.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconCopy}"
-                                  Label="Duplicate"
+                                  Label="{Binding LocalizationManager.duplicate}"
                                   Command="{Binding Path=Blotter.DuplicateCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{Binding LocalizationManager.delete}"
                                   Command="{Binding Path=Blotter.DeleteCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconCircleInfo}"
-                                  Label="Info"
+                                  Label="{Binding LocalizationManager.info}"
                                   Command="{Binding Path=Blotter.InfoCommand}" />
                 </RibbonGroup>
 
-                <RibbonGroup Header="Locations"
+                <RibbonGroup Header="{Binding LocalizationManager.locations}"
                              Visibility="{Binding Path=IsLocationPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add"
+                                  Label="{Binding LocalizationManager.add}"
                                   Command="{Binding Path=Locations.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{Binding LocalizationManager.edit}"
                                   Command="{Binding Path=Locations.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{Binding LocalizationManager.delete}"
                                   IsEnabled="False"
                                   Command="{Binding Path=Locations.DeleteCommand}" />
                 </RibbonGroup>
 
-                <RibbonGroup Header="Project"
+                <RibbonGroup Header="{Binding LocalizationManager.project}"
                              Selector.IsSelected="{Binding Path=IsProjectPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsProjectPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add"
+                                  Label="{Binding LocalizationManager.add}"
                                   Command="{Binding Path=Projects.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{Binding LocalizationManager.edit}"
                                   Command="{Binding Path=Projects.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{Binding LocalizationManager.delete}"
                                   IsEnabled="False"
                                   Command="{Binding Path=Projects.DeleteCommand}" />
                 </RibbonGroup>
 
-                <RibbonGroup Header="Payee"
+                <RibbonGroup Header="{Binding LocalizationManager.payee}"
                              Selector.IsSelected="{Binding Path=IsPayeePageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsPayeePageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add"
+                                  Label="{Binding LocalizationManager.add}"
                                   Command="{Binding Path=Payees.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{Binding LocalizationManager.edit}"
                                   Command="{Binding Path=Payees.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{Binding LocalizationManager.delete}"
                                   IsEnabled="False"
                                   Command="{Binding Path=Payees.DeleteCommand}" />
                 </RibbonGroup>
-                <RibbonGroup Header="Rule"
+                <RibbonGroup Header="{Binding LocalizationManager.rule}"
                              Selector.IsSelected="{Binding Path=IsRulesPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsRulesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add"
+                                  Label="{Binding LocalizationManager.add}"
                                   Command="{Binding Path=Rules.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{Binding LocalizationManager.edit}"
                                   Command="{Binding Path=Rules.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{Binding LocalizationManager.delete}"
                                   Command="{Binding Path=Rules.DeleteCommand}" />
                 </RibbonGroup>
-                <RibbonGroup Header="Exchange Rates"
+                <RibbonGroup Header="{Binding LocalizationManager.exchangeRates}"
                              Selector.IsSelected="{Binding Path=IsExchangeRatesPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsExchangeRatesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconDownload}"
-                                  Label="Download"
+                                  Label="{Binding LocalizationManager.download}"
                                   Command="{Binding Path=RefreshExchangeRatesCommand}" />
                 </RibbonGroup>
-                <RibbonGroup Header="General"
+                <RibbonGroup Header="{Binding LocalizationManager.general}"
                          DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconRefresh}"
-                              Label="Check for Updates"
+                              Label="{Binding LocalizationManager.checkForUpdates}"
                               Command="{Binding Path=CheckForUpdateCommand}"
                               CommandParameter="{StaticResource True}" />
                 </RibbonGroup>
