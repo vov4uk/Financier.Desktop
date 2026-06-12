@@ -6,6 +6,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:local="clr-namespace:Financier.Desktop.Views"
+             xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
@@ -19,10 +20,11 @@
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:AmountConverter x:Key="AmountConverter" />
+            <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
-              Header="Transaction details"
+              Header="{Binding Data.LocalizationManager.transaction_details, Source={StaticResource Proxy}}"
               FontSize="12"
               Background="{StaticResource WindowBackgroundBrush}">
         <GroupBox.Resources>
@@ -69,7 +71,7 @@
 
                 <TextBlock Grid.Row="0" Grid.Column="0"
                            Grid.ColumnSpan="2"
-                           Text="Category"/>
+                           Text="{Binding Data.LocalizationManager.category, Source={StaticResource Proxy}}"/>
 
                 <xctk:WatermarkComboBox  Grid.Column="0"
                                          Grid.Row="1"
@@ -97,14 +99,14 @@
 
                 <TextBlock Grid.Row="3" Grid.Column="0"
                            Grid.ColumnSpan="2"
-                           Text="Un-split amount"/>
+                           Text="{Binding Data.LocalizationManager.unsplit_amount, Source={StaticResource Proxy}}"/>
                 <TextBlock Grid.Row="4" Grid.Column="0"
                            Grid.ColumnSpan="2"
                            Text="{Binding Transaction.UnsplitAmount, Converter={StaticResource AmountConverter}, StringFormat=F2, ConverterParameter=false, Mode=OneWay}" />
 
                 <TextBlock Grid.Row="5" Grid.Column="0"
                            Grid.ColumnSpan="2"
-                           Text="Note"/>
+                           Text="{Binding Data.LocalizationManager.note, Source={StaticResource Proxy}}"/>
                 <TextBox   Grid.Row="6" Grid.Column="0"
                            Text="{Binding Transaction.Note}" />
                 <xctk:IconButton Grid.Row="6" Grid.Column="1"
@@ -115,7 +117,7 @@
                 </xctk:IconButton>
 
                 <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
-                           Text="Project"/>
+                           Text="{Binding Data.LocalizationManager.project, Source={StaticResource Proxy}}"/>
 
                 <xctk:WatermarkComboBox Grid.Row="8" Grid.Column="0"
                                         IsEditable="True"
@@ -138,10 +140,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Margin="2"
                         Command="{Binding SaveCommand}"
-                        Content="SAVE" />
+                        Content="{Binding Data.LocalizationManager.save, Source={StaticResource Proxy}}" />
                 <Button Grid.Column="1" Margin="2"
                         Command="{Binding CancelCommand}"
-                        Content="CANCEL" />
+                        Content="{Binding Data.LocalizationManager.cancel, Source={StaticResource Proxy}}" />
             </Grid>
         </Grid>
     </GroupBox>

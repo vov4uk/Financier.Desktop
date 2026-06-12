@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:local="clr-namespace:Financier.Desktop.ViewModel"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog" xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              mc:Ignorable="d"
@@ -16,10 +17,11 @@
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
-              Header="Transfer details"
+              Header="{Binding Data.LocalizationManager.transfer_details, Source={StaticResource Proxy}}"
               FontSize="12"
               Background="{StaticResource WindowBackgroundBrush}">
         <GroupBox.Resources>
@@ -91,7 +93,7 @@
                 </Grid>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                           Text="From Account"/>
+                           Text="{Binding Data.LocalizationManager.from_account, Source={StaticResource Proxy}}"/>
                 <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
                            ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                            SelectedItem="{Binding Transfer.FromAccount}"
@@ -103,7 +105,7 @@
                            ItemTemplate="{StaticResource ResourceKey=IActive}"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" 
-                           Text="To Account"/>
+                           Text="{Binding Data.LocalizationManager.to_account, Source={StaticResource Proxy}}"/>
                 <ComboBox  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
                            ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                            SelectedItem="{Binding Transfer.ToAccount}"
@@ -153,7 +155,7 @@
 
                 <TextBlock Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="3"
                            Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                           Text="Rate"/>
+                           Text="{Binding Data.LocalizationManager.rate, Source={StaticResource Proxy}}"/>
                 <xctk:DecimalUpDown Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3"
                                     Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                                     Value="{Binding Transfer.Rate}"
@@ -170,7 +172,7 @@
                 </Border>
 
                 <TextBlock Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3"
-                           Text="Note"/>
+                           Text="{Binding Data.LocalizationManager.note, Source={StaticResource Proxy}}"/>
                 <TextBox   Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2"
                            Text="{Binding Transfer.Note}" />
                 <xctk:IconButton Grid.Row="13" Grid.Column="2"
@@ -187,10 +189,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Margin="2"
                         Command="{Binding SaveCommand}"
-                        Content="SAVE" />
+                        Content="{Binding Data.LocalizationManager.save, Source={StaticResource Proxy}}" />
                 <Button Grid.Column="1" Margin="2"
                         Command="{Binding CancelCommand}"
-                        Content="CANCEL" />
+                        Content="{Binding Data.LocalizationManager.cancel, Source={StaticResource Proxy}}" />
             </Grid>
         </Grid>
     </GroupBox>

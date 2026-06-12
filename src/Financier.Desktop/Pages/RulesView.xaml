@@ -6,6 +6,7 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
              xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
+             xmlns:local="clr-namespace:Financier.Desktop.ViewModel"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="800">
     <UserControl.Resources>
@@ -13,6 +14,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -28,10 +30,10 @@
                               CommandParameter="{Binding SelectedValue}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Created" Binding="{Binding Created}" />
-                <DataGridTextColumn Header="Condition" Binding="{Binding Condition}" />
-                <DataGridTextColumn Header="Description" Binding="{Binding Description}" />
-                <DataGridTemplateColumn Header="Title">
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.created, Source={StaticResource Proxy}}" Binding="{Binding Created}" />
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.condition, Source={StaticResource Proxy}}" Binding="{Binding Condition}" />
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.description, Source={StaticResource Proxy}}" Binding="{Binding Description}" />
+                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.title, Source={StaticResource Proxy}}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <emoji:EmojiedTextBlock Text="{Binding Title}" x:Name="Cell"/>

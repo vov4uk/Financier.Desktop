@@ -5,6 +5,7 @@ using System.Text.Json;
 using Financier.Common.Model;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Helpers;
+using Financier.Desktop.Localization;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 {
@@ -14,13 +15,15 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private readonly List<BankTransaction> monoTransactions;
         private readonly Dictionary<int, BlotterModel> lastTransactions;
         private readonly string Bank;
+        private readonly LocalizationManager _localizationManager;
 
-        public MonoWizardVM(string bank, IEnumerable<BankTransaction> monoTransactions, Dictionary<int, BlotterModel> lastTransactions, IDialogWrapper dialogWrapper)
+        public MonoWizardVM(string bank, IEnumerable<BankTransaction> monoTransactions, Dictionary<int, BlotterModel> lastTransactions, IDialogWrapper dialogWrapper, LocalizationManager localizationManager = null)
         {
             this.monoTransactions = new(monoTransactions);
             this.Bank = bank;
             this.lastTransactions = lastTransactions;
             this._dialogWrapper = dialogWrapper;
+            this._localizationManager = localizationManager;
             CreatePages();
             CurrentPage = Pages[0];
         }
@@ -58,10 +61,11 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         {
             _pages = new List<WizardPageBaseVM>
                 {
-                    new Page1VM(Bank),
-                    new Page2VM(monoTransactions, lastTransactions),
-                    new Page3VM(_dialogWrapper)
+                    new Page1VM(Bank) { LocalizationManager = _localizationManager },
+                    new Page2VM(monoTransactions, lastTransactions) { LocalizationManager = _localizationManager },
+                    new Page3VM(_dialogWrapper, _localizationManager) { LocalizationManager = _localizationManager }
                 }.AsReadOnly();
+            LocalizationManager = _localizationManager;
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using Financier.Desktop.Data;
+using Financier.Desktop.Localization;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,9 +7,12 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
     public class RecipesVM : WizardBaseVM
     {
-        public RecipesVM(double totalAmount)
+        private readonly LocalizationManager _localizationManager;
+
+        public RecipesVM(double totalAmount, LocalizationManager localizationManager = null)
         {
             TotalAmount = totalAmount;
+            _localizationManager = localizationManager;
             CreatePages();
         }
 
@@ -34,7 +38,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
         public override void CreatePages()
         {
-            var page1 = new Page1VM(this.TotalAmount);
+            var page1 = new Page1VM(this.TotalAmount) { LocalizationManager = _localizationManager };
             page1.PropertyChanged += (_, e) => 
             {
                 if (e.PropertyName == nameof(page1.Text))
@@ -46,9 +50,10 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             _pages = new List<WizardPageBaseVM>()
             {
                 page1,
-                new Page2VM(this.TotalAmount),
+                new Page2VM(this.TotalAmount) { LocalizationManager = _localizationManager },
             }.AsReadOnly();
 
+            LocalizationManager = _localizationManager;
             CurrentPage = Pages[0];
         }
         public override object OnRequestClose(bool save)

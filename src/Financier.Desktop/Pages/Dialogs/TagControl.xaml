@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:local="clr-namespace:Financier.Desktop.ViewModel"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              d:DataContext="{d:DesignInstance {x:Type viewmodel:TagControlVM}, IsDesignTimeCreatable=False}"
              mc:Ignorable="d"
@@ -14,10 +15,11 @@
                 <ResourceDictionary.MergedDictionaries>
                     <ResourceDictionary Source="/Assets/Generic.xaml" />
                 </ResourceDictionary.MergedDictionaries>
+                <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
             </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
-              Header="Details"
+              Header="{Binding Data.LocalizationManager.details, Source={StaticResource Proxy}}"
               FontSize="12">
         <GroupBox.Resources>
             <Style TargetType="{x:Type Image}">
@@ -45,7 +47,7 @@
             <TextBlock          Grid.Column="0"
                             Grid.Row="0"
                             Grid.ColumnSpan="2"
-                            Text="Title"
+                            Text="{Binding Data.LocalizationManager.title, Source={StaticResource Proxy}}"
                             />
             <TextBox Grid.Column="0"
                      Grid.Row="1"
@@ -64,7 +66,7 @@
             <CheckBox   Grid.Column="0"
                         Grid.Row="2"
                         Grid.ColumnSpan="2"
-                        Content="Is Active"
+                        Content="{Binding Data.LocalizationManager.is_active, Source={StaticResource Proxy}}"
                         IsChecked="{Binding Entity.IsActive}" />
 
             <Grid Grid.Row="3"
@@ -76,10 +78,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Margin="2"
                         Command="{Binding SaveCommand}"
-                        Content="SAVE" />
+                        Content="{Binding Data.LocalizationManager.save, Source={StaticResource Proxy}}" />
                 <Button Grid.Column="1" Margin="2"
                         Command="{Binding CancelCommand}"
-                        Content="CANCEL" />
+                        Content="{Binding Data.LocalizationManager.cancel, Source={StaticResource Proxy}}" />
             </Grid>
         </Grid>
     </GroupBox>

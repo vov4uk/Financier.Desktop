@@ -1,10 +1,13 @@
-﻿using Prism.Mvvm;
+﻿using Financier.Desktop.Localization;
+using Prism.Mvvm;
 
 namespace Financier.Desktop.Wizards
 {
     public abstract class WizardPageBaseVM : BindableBase
     {
         bool _isCurrentPage;
+
+        public LocalizationManager LocalizationManager { get; set; }
         public bool IsCurrentPage
         {
             get => _isCurrentPage;

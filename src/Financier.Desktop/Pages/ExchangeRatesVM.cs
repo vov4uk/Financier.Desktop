@@ -1,18 +1,19 @@
-﻿using Financier.Common.Entities;
-using Financier.Common.Model;
-using Financier.Converters;
-using Financier.DataAccess.Abstractions;
-using Financier.DataAccess.Data;
-using Financier.Desktop.Helpers;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Financier.Common.Entities;
+using Financier.Common.Model;
+using Financier.Converters;
+using Financier.DataAccess.Abstractions;
+using Financier.DataAccess.Data;
+using Financier.Desktop.Helpers;
+using Financier.Desktop.Localization;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -21,6 +22,13 @@ namespace Financier.Desktop.ViewModel
     {
         private CurrencyModel _from;
         private CurrencyModel _to;
+
+        private PlotModel plotModel;
+
+        public ExchangeRatesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager)
+            : base(db, dialogWrapper, localizationManager)
+        {
+        }
 
         public CurrencyModel From
         {
@@ -35,6 +43,19 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
+        public IEnumerable<CurrencyModel> FromCurrencies =>
+            DbManual.Currencies.Where(x => x.Id > 0);
+
+        public PlotModel PlotModel
+        {
+            get => plotModel;
+            private set
+            {
+                plotModel = value;
+                RaisePropertyChanged(nameof(PlotModel));
+            }
+        }
+
         public CurrencyModel To
         {
             get => _to;
@@ -46,29 +67,13 @@ namespace Financier.Desktop.ViewModel
                 }
             }
         }
-
-        public IEnumerable<CurrencyModel> FromCurrencies =>
-            DbManual.Currencies.Where(x => x.Id > 0);
-
         public IEnumerable<CurrencyModel> ToCurrencies =>
             DbManual.Currencies.Where(x => x.Id > 0 && x.Id != _from?.Id);
+        protected override Task OnAdd() => throw new NotImplementedException();
 
-        private PlotModel plotModel;
+        protected override Task OnDelete(ExchangeRateModel item) => throw new NotImplementedException();
 
-        public ExchangeRatesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
-            : base(db, dialogWrapper)
-        {
-        }
-
-        public PlotModel PlotModel
-        {
-            get => plotModel;
-            private set
-            {
-                plotModel = value;
-                RaisePropertyChanged(nameof(PlotModel));
-            }
-        }
+        protected override Task OnEdit(ExchangeRateModel item) => throw new NotImplementedException();
 
         protected override async Task RefreshData()
         {
@@ -135,11 +140,5 @@ namespace Financier.Desktop.ViewModel
             PlotModel = model;
 
         }
-
-        protected override Task OnDelete(ExchangeRateModel item) => throw new NotImplementedException();
-
-        protected override Task OnEdit(ExchangeRateModel item) => throw new NotImplementedException();
-
-        protected override Task OnAdd() => throw new NotImplementedException();
     }
 }

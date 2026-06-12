@@ -5,18 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Financier.Desktop.Wizards.RecipesWizard.View"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450"
              d:DesignWidth="800">
+    <UserControl.Resources>
+        <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="34"/>
             <RowDefinition Height="34"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0">Paste recipes text. Make recipes photo and parse text via Google Lens or other OCR. I'll look for numbers with article symbol.
-        <LineBreak/> For example: "123.45 A", "-54,32-A", "100 Б", "123.01 a"
-        </TextBlock>
+        <TextBlock Grid.Row="0" Text="{Binding Data.LocalizationManager.recipes_instructions_line1, Source={StaticResource Proxy}}"/>
         <Grid Grid.Column="0"
               Grid.Row="1"
               Margin="10 10 0 0"
@@ -30,8 +32,8 @@
                     Width="65"
                     Margin="2"
                     HorizontalAlignment="Stretch"
-                    Content="Paste"
-                    ToolTip="Paste text from clipboard"
+                    Content="{Binding Data.LocalizationManager.paste, Source={StaticResource Proxy}}"
+                    ToolTip="{Binding Data.LocalizationManager.paste_tooltip, Source={StaticResource Proxy}}"
                     Command="ApplicationCommands.Paste"
                     CommandTarget="{Binding ElementName=_richTextBox}"
                 />
@@ -39,21 +41,14 @@
                     Width="65"
                     Margin="2"
                     HorizontalAlignment="Stretch"
-                    Content="Highlight"
-                    ToolTip="Highlight text. Yellow - transaction row, green - other numbers "
+                    Content="{Binding Data.LocalizationManager.highlight, Source={StaticResource Proxy}}"
+                    ToolTip="{Binding Data.LocalizationManager.highlight_tooltip, Source={StaticResource Proxy}}"
                     Command="{Binding Path=HighlightCommand}"
                     CommandParameter="{Binding ElementName=_richTextBox}"
                 />
             <TextBlock Grid.Column="2"
-                       HorizontalAlignment="Right">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{} Total : {0:F2} Current : {1:F2} Diff : {2:F2}">
-                        <Binding Path="TotalAmount" Mode="OneTime" />
-                        <Binding Path="CalculatedAmount" UpdateSourceTrigger="PropertyChanged"/>
-                        <Binding Path="Diff" UpdateSourceTrigger="PropertyChanged" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
+                       HorizontalAlignment="Right"
+                       Text="{Binding FormattedTotal}" />
         </Grid>
 
         <xctk:RichTextBox x:Name="_richTextBox"

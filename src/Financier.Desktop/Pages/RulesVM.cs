@@ -8,6 +8,7 @@ using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
+using Financier.Desktop.Localization;
 using Financier.Desktop.Pages.Dialogs;
 
 namespace Financier.Desktop.ViewModel
@@ -15,7 +16,8 @@ namespace Financier.Desktop.ViewModel
     [ExcludeFromCodeCoverage]
     public class RulesVM : EntityBaseVM<RuleModel>
     {
-        public RulesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper) : base(db, dialogWrapper)
+        public RulesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager)
+            : base(db, dialogWrapper, localizationManager)
         {
         }
 
@@ -81,7 +83,10 @@ namespace Financier.Desktop.ViewModel
                 };
             }
 
-            RuleControlVM ruleVm = new RuleControlVM(rule);
+            RuleControlVM ruleVm = new RuleControlVM(rule)
+            {
+                LocalizationManager = localizationManager
+            };
 
             var result = dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, "Rule");
 

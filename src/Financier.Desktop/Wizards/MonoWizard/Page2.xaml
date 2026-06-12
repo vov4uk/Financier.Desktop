@@ -6,11 +6,13 @@
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
+             xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:AmountConverter x:Key="AmountConverter"/>
         <converters:UnixTimeConverter x:Key="DatetimeConverter" />
+        <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
         <Style TargetType="DataGridCell">
             <Setter Property="TextBlock.TextAlignment" Value="Right" />
         </Style>
@@ -40,7 +42,7 @@
             </emoji:EmojiedTextBlock.Text>
         </emoji:EmojiedTextBlock>
         <TextBlock Grid.Row="2" FontSize="12"
-                   Text="Please select transaction with same balance as selected account, otherwise all transactions will be imported"/>
+                   Text="{Binding Data.LocalizationManager.please_select_transaction, Source={StaticResource Proxy}}"/>
         <DataGrid Grid.Row="3"
                   ItemsSource="{Binding Path=AllTransactions}"
                   AutoGenerateColumns="False"
@@ -55,14 +57,14 @@
                             CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Date"
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.date, Source={StaticResource Proxy}}"
                                     Binding="{Binding Path=Date, StringFormat='yyyy.MM.dd HH:mm:ss'}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False"/>
-                <DataGridTextColumn Header="Amount"
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.amount, Source={StaticResource Proxy}}"
                                     Binding="{Binding Path=CardCurrencyAmount, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
 
-                <DataGridTemplateColumn Header="Operation amount"
+                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.operation_amount, Source={StaticResource Proxy}}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -77,16 +79,16 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="ExchangeRate"
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.exchange_rate, Source={StaticResource Proxy}}"
                                     Binding="{Binding Path=ExchangeRate, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
-                <DataGridTextColumn Header="Commission"
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.commission, Source={StaticResource Proxy}}"
                                     Binding="{Binding Path=Commission, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
-                <DataGridTextColumn Header="Cashback"
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.cashback, Source={StaticResource Proxy}}"
                                     Binding="{Binding Path=Cashback, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
-                <DataGridTextColumn Header="Balance"
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.balance, Source={StaticResource Proxy}}"
                                     Binding="{Binding Path=Balance, StringFormat=F2}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTextColumn.ElementStyle>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Financier.Common.Entities;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
+using Financier.Desktop.Localization;
 using Financier.Desktop.Views;
 using Financier.Desktop.Wizards.RecipesWizard.ViewModel;
 using Prism.Commands;
@@ -12,6 +13,7 @@ namespace Financier.Desktop.ViewModel.Dialog
     public class TransactionControlVM : SubTransactionControlVM
     {
         private readonly IDialogWrapper dialogWrapper;
+        public LocalizationManager LocalizationManager { get; set; }
         private DelegateCommand _addSubTransactionCommand;
         private DelegateCommand _addSubTransferCommand;
         private DelegateCommand _clearLocationCommand;
@@ -73,7 +75,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private void ShowRecepiesDialog()
         {
-            var vm = new RecipesVM(Transaction.RealFromAmount / 100.0);
+            var vm = new RecipesVM(Transaction.RealFromAmount / 100.0, LocalizationManager);
 
             var output = dialogWrapper.ShowWizard(vm);
 
@@ -107,7 +109,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             if (Transaction.IsOriginalFromAmountVisible)
             {
-                this.dialogWrapper.ShowMessageBox("Split-transfers with a currency differ from account's currency are not yet supported", "Not supported");
+                this.dialogWrapper.ShowMessageBox(LocalizationManager.split_transfers_currency_not_supported, LocalizationManager.not_supported);
                 return;
             }
 
@@ -125,7 +127,10 @@ namespace Financier.Desktop.ViewModel.Dialog
                 CopySubTransfer(workingCopy, original);
             }
 
-            var viewModel = new TransferControlVM(workingCopy);
+            var viewModel = new TransferControlVM(workingCopy)
+            {
+                LocalizationManager = LocalizationManager
+            };
 
             var dialogResult = dialogWrapper.ShowDialog<TransferControl>(viewModel, 385, 340, "Transfer");
 
@@ -158,7 +163,10 @@ namespace Financier.Desktop.ViewModel.Dialog
                 workingCopy.ParentTransactionUnSplitAmount = Transaction.UnsplitAmount - Math.Abs(original.FromAmount);
             }
 
-            var viewModel = new SubTransactionControlVM(workingCopy);
+            var viewModel = new SubTransactionControlVM(workingCopy)
+            {
+                LocalizationManager = LocalizationManager
+            };
 
             var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, "Sub Transaction");
 

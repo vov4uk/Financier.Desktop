@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Financier.Desktop.Pages.Dialogs"
+             xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
@@ -17,10 +18,11 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InvertedBooleanToVisibilityConverter x:Key="invBoolToVis"/>
+            <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
-              Header="Rule details"
+              Header="{Binding Data.LocalizationManager.rule_details, Source={StaticResource Proxy}}"
               FontSize="12">
         <GroupBox.Resources>
             <Style TargetType="{x:Type Image}">
@@ -43,7 +45,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <GroupBox Grid.Row="0" Margin="5" Header="Conditions">
+            <GroupBox Grid.Row="0" Margin="5" Header="{Binding Data.LocalizationManager.conditions, Source={StaticResource Proxy}}">
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -71,7 +73,7 @@
                                             SelectedValue="{Binding SelectedMCC}" />
                 </Grid>
             </GroupBox>
-            <GroupBox Grid.Row="1" Margin="5" Header="Actions">
+            <GroupBox Grid.Row="1" Margin="5" Header="{Binding Data.LocalizationManager.actions, Source={StaticResource Proxy}}">
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -82,11 +84,11 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Content="What should happen, if conditions are met?"/>
+                    <Label Grid.Row="0" Grid.Column="0" Content="{Binding Data.LocalizationManager.what_should_happen, Source={StaticResource Proxy}}"/>
                     <GroupBox Grid.Row="1"
                           Grid.Column="0"
                           Margin="5"
-                          Header="Categories">
+                          Header="{Binding Data.LocalizationManager.categories, Source={StaticResource Proxy}}">
                         <xctk:WatermarkComboBox x:Name="CategoryIdBox"
                                                 IsEditable="True"
                                                 ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}"
@@ -99,7 +101,7 @@
                     <GroupBox Grid.Row="1"
                           Grid.Column="1"
                           Margin="5"
-                          Header="Locations">
+                          Header="{Binding Data.LocalizationManager.locations, Source={StaticResource Proxy}}">
                         <xctk:WatermarkComboBox x:Name="LocationIdBox"
                                                 IsEditable="True"
                                                 ItemsSource="{Binding Source={x:Static fcrd:DbManual.Location}, Mode=OneWay}"
@@ -111,7 +113,7 @@
                     <GroupBox Grid.Row="2"
                           Grid.Column="0"
                           Margin="5"
-                          Header="Projects">
+                          Header="{Binding Data.LocalizationManager.projects, Source={StaticResource Proxy}}">
                         <xctk:WatermarkComboBox x:Name="ProjectIdBox"
                                                 IsEditable="True"
                                                 ItemsSource="{Binding Source={x:Static fcrd:DbManual.Project}, Mode=OneWay}"
@@ -123,7 +125,7 @@
                     <GroupBox Grid.Row="2"
                           Grid.Column="1"
                           Margin="5"
-                          Header="Payees">
+                          Header="{Binding Data.LocalizationManager.payees, Source={StaticResource Proxy}}">
                         <xctk:WatermarkComboBox IsEditable="True"
                                                 ItemsSource="{Binding Source={x:Static fcrd:DbManual.Payee}, Mode=OneWay}"
                                                 SelectedValuePath="Id"
@@ -137,7 +139,7 @@
             <CheckBox   Grid.Column="0"
                     Grid.Row="2"
                     Grid.ColumnSpan="2"
-                    IsChecked="{Binding Entity.IsActive}">Is Active</CheckBox>
+                    IsChecked="{Binding Entity.IsActive}" Content="{Binding Data.LocalizationManager.is_active, Source={StaticResource Proxy}}" />
             <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -145,10 +147,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Margin="2"
                         Command="{Binding SaveCommand}"
-                        Content="SAVE" />
+                        Content="{Binding Data.LocalizationManager.save, Source={StaticResource Proxy}}" />
                 <Button Grid.Column="1" Margin="2"
                         Command="{Binding CancelCommand}"
-                        Content="CANCEL" />
+                        Content="{Binding Data.LocalizationManager.cancel, Source={StaticResource Proxy}}" />
             </Grid>
         </Grid>
     </GroupBox>

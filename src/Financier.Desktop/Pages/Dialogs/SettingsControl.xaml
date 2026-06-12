@@ -4,11 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Financier.Desktop.Pages.Dialogs"
+             xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=local:SettingsVM, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -18,14 +20,14 @@
         <TabControl TabStripPlacement="Left" 
                     Margin="0, 0, 0, 10"
                     Grid.Row="0">
-            <TabItem Name="general" Header="General" IsSelected="True">
+            <TabItem Name="general" Header="{Binding Data.LocalizationManager.general, Source={StaticResource Proxy}}" IsSelected="True">
                 <TabItem.Content>
                     <StackPanel Margin="5">
-                        <CheckBox Margin="5" Content="Check for updates on start?" IsChecked="{Binding Entity.General.CheckForUpdatesOnStart, Mode=TwoWay}"/>
+                        <CheckBox Margin="5" Content="{Binding Data.LocalizationManager.check_for_updates_on_start, Source={StaticResource Proxy}}" IsChecked="{Binding Entity.General.CheckForUpdatesOnStart, Mode=TwoWay}"/>
                     </StackPanel>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Name="fontweight" Header="Exchange rates">
+            <TabItem Name="fontweight" Header="{Binding Data.LocalizationManager.exchange_rates, Source={StaticResource Proxy}}">
                 <TabItem.Content>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -33,7 +35,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5" Header="Providers">
+                        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5" Header="{Binding Data.LocalizationManager.providers, Source={StaticResource Proxy}}">
                             <StackPanel>
                                 <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="openexchangerates.org" IsChecked="{Binding IsOpenExchangeRatesProviderSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="freecurrencyrates.com" IsChecked="{Binding IsFreeCurrencyRatesProviderSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -43,12 +45,12 @@
                         <GroupBox Grid.Row="1"
                                   Grid.Column="0"
                                   Margin="5"
-                                  Header="App id"
+                                  Header="{Binding Data.LocalizationManager.app_id, Source={StaticResource Proxy}}"
                                   Visibility="{Binding IsOpenExchangeRatesProviderSelected, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox Margin="5" Text="{Binding Entity.ExchangeRates.OpenExchangeRatesProviderAppId, Mode=TwoWay}"
                                      />
                         </GroupBox>
-                        <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" Content="Update exchange rates on start?"
+                        <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" Content="{Binding Data.LocalizationManager.update_exchange_rates_on_start, Source={StaticResource Proxy}}"
                                   IsChecked="{Binding Entity.ExchangeRates.UpdateOnStart, Mode=TwoWay}"/>
                     </Grid>
                 </TabItem.Content>
@@ -61,10 +63,10 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Margin="2"
                     Command="{Binding SaveCommand}"
-                    Content="SAVE" />
+                    Content="{Binding Data.LocalizationManager.save, Source={StaticResource Proxy}}" />
             <Button Grid.Column="1" Margin="2"
                     Command="{Binding CancelCommand}"
-                    Content="CANCEL" />
+                    Content="{Binding Data.LocalizationManager.cancel, Source={StaticResource Proxy}}" />
         </Grid>
     </Grid>
 </UserControl>

@@ -15,6 +15,7 @@
     using Financier.DataAccess.View;
     using Financier.Desktop.Data;
     using Financier.Desktop.Helpers;
+    using Financier.Desktop.Localization;
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;
 
@@ -35,8 +36,8 @@
         private ProjectModel _project;
         private LocationModel _location;
 
-        public BlotterVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
-            : base(db, dialogWrapper)
+        public BlotterVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager)
+            : base(db, dialogWrapper, localizationManager)
         {
         }
 
@@ -151,7 +152,7 @@
 
         protected override async Task OnDelete(BlotterModel item)
         {
-            if (this.dialogWrapper.ShowMessageBox("Are you sure you want to delete transaction?", "Delete", true))
+            if (this.dialogWrapper.ShowMessageBox(localizationManager.confirm_delete_transaction, localizationManager.delete, true))
             {
                 await DeleteTransaction(item.Id);
                 await db.RebuildAccountBalanceAsync(item.FromAccountId);
@@ -232,7 +233,10 @@
 
         private async Task OpenTransferDialogAsync(Transaction transfer)
         {
-            TransferControlVM dialogVm = new TransferControlVM(new TransferDto(transfer));
+            TransferControlVM dialogVm = new TransferControlVM(new TransferDto(transfer))
+            {
+                LocalizationManager = localizationManager
+            };
 
             var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
 
@@ -278,7 +282,10 @@
         {
             var transactionDto = new TransactionDto(transaction, subTransactions);
 
-            TransactionControlVM dialogVm = new TransactionControlVM(transactionDto, dialogWrapper);
+            TransactionControlVM dialogVm = new TransactionControlVM(transactionDto, dialogWrapper)
+            {
+                LocalizationManager = localizationManager
+            };
 
             var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
 

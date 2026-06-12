@@ -6,15 +6,17 @@ using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Helpers;
+using Financier.Desktop.Localization;
 
 namespace Financier.Desktop.ViewModel
 {
     [ExcludeFromCodeCoverage]
     public class CurrenciesVM : EntityBaseVM<CurrencyModel>
     {
-        public CurrenciesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper) : base(db, dialogWrapper)
+        public CurrenciesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager) : base(db, dialogWrapper, localizationManager)
         {
         }
+
 
         protected override Task OnAdd() => throw new System.NotImplementedException();
 

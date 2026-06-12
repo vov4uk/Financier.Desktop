@@ -344,7 +344,7 @@
                                   Label="{Binding LocalizationManager.delete}"
                                   Command="{Binding Path=Rules.DeleteCommand}" />
                 </RibbonGroup>
-                <RibbonGroup Header="{Binding LocalizationManager.exchangeRates}"
+                <RibbonGroup Header="{Binding LocalizationManager.exchange_rates}"
                              Selector.IsSelected="{Binding Path=IsExchangeRatesPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsExchangeRatesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
@@ -377,7 +377,7 @@
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            FontWeight="Bold"
-                           Text="Drop .backup file here" />
+                           Text="{Binding LocalizationManager.drag_and_drop}" />
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1"

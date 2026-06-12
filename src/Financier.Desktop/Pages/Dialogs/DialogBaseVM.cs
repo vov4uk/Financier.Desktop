@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Financier.Desktop.Localization;
 
 namespace Financier.Desktop.ViewModel.Dialog
 {
@@ -10,6 +11,8 @@ namespace Financier.Desktop.ViewModel.Dialog
     {
         private DelegateCommand _cancelCommand;
         private DelegateCommand _saveCommand;
+
+        public LocalizationManager LocalizationManager { get; set; }
 
         public event EventHandler RequestCancel;
         public event EventHandler RequestSave;

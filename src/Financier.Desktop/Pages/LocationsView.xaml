@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Financier.Desktop.ViewModel"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="450">
@@ -11,6 +12,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -27,9 +29,9 @@
                               CommandParameter="{Binding SelectedValue}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Active" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding Path=Title}"/>
-                <DataGridTextColumn Header="Address" Binding="{Binding Path=Address}"/>
+                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.active, Source={StaticResource Proxy}}" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.name, Source={StaticResource Proxy}}" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.address, Source={StaticResource Proxy}}" Binding="{Binding Path=Address}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

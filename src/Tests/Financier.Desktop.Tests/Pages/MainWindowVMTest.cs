@@ -640,7 +640,7 @@
             this.dialogMock.VerifyAll();
         }
 
-        private MainWindowVM GetFinancierVM() => new MainWindowVM(this.dialogMock.Object, this.dbFactoryMock.Object, this.entityReaderMock.Object, this.backupWriterMock.Object, this.toastNotifierMock.Object, this.bankMock.Object, null);
+        private MainWindowVM GetFinancierVM() => new MainWindowVM(this.dialogMock.Object, this.dbFactoryMock.Object, this.entityReaderMock.Object, this.backupWriterMock.Object, this.toastNotifierMock.Object, this.bankMock.Object, null, null);
 
         private async Task SetupDbManual()
         {

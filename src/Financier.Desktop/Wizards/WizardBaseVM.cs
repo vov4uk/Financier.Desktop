@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
+using Financier.Desktop.Localization;
 
 namespace Financier.Desktop.Wizards
 {
@@ -14,6 +15,8 @@ namespace Financier.Desktop.Wizards
         private DelegateCommand _moveNextCommand;
         private DelegateCommand _movePreviousCommand;
         public event EventHandler<bool> RequestClose;
+
+        public LocalizationManager LocalizationManager { get; set; }
 
         public DelegateCommand CancelCommand
         {

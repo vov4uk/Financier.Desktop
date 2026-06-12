@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
+             xmlns:local="clr-namespace:Financier.Desktop.ViewModel"
              xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="480"
@@ -14,6 +15,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -41,7 +43,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button ToolTip="Refresh"
+                    <Button ToolTip="{Binding Data.LocalizationManager.refresh, Source={StaticResource Proxy}}"
                             Height="24"
                             Width="24"
                             BorderThickness="0"
@@ -51,7 +53,7 @@
                             Margin="4">
                         <Image Source="{StaticResource ResourceKey=IconRefresh}" Width="16" Height="16"/>
                     </Button>
-                    <Button ToolTip="Clear"
+                    <Button ToolTip="{Binding Data.LocalizationManager.clear, Source={StaticResource Proxy}}"
                             Height="24"
                             Width="24"
                             BorderThickness="0"
@@ -104,7 +106,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Time"
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.time, Source={StaticResource Proxy}}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False"
                                     Binding="{Binding Path=Datetime, Converter= {StaticResource DatetimeConverter}}" />
                 <DataGridTextColumn Header=""
@@ -121,7 +123,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Amount"
+                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.amount, Source={StaticResource Proxy}}"
                                         dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -144,7 +146,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Balance"
+                <DataGridTextColumn Header="{Binding Data.LocalizationManager.balance, Source={StaticResource Proxy}}"
                                     Binding="{Binding Path=BalanceTitle}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTextColumn.ElementStyle>

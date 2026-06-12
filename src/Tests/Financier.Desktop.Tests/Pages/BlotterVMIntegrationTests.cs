@@ -125,7 +125,7 @@
             this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
                 .Returns(resultVm);
 
-            var vm = new BlotterVM(db, dialogMock.Object);
+            var vm = new BlotterVM(db, dialogMock.Object, null);
 
             await vm.AddCommand.ExecuteAsync();
 
@@ -146,7 +146,7 @@
             this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
                 .Returns(resultVm);
 
-            var vm = new BlotterVM(db, dialogMock.Object);
+            var vm = new BlotterVM(db, dialogMock.Object, null);
 
             await vm.AddCommand.ExecuteAsync();
 
@@ -168,7 +168,7 @@
             this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.Is<TransactionControlVM>(x => x.Transaction.Id == 0), 640, 340, nameof(Transaction)))
                 .Returns(resultVm);
 
-            var vm = new BlotterVM(db, dialogMock.Object);
+            var vm = new BlotterVM(db, dialogMock.Object, null);
 
             await vm.AddCommand.ExecuteAsync();
 
@@ -190,7 +190,7 @@
             this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.Is<TransferControlVM>(x => x.Transfer.Id == 0), 385, 340, "Transfer"))
                 .Returns(resultVm);
 
-            var vm = new BlotterVM(db, dialogMock.Object);
+            var vm = new BlotterVM(db, dialogMock.Object, null);
 
             await vm.AddTransferCommand.ExecuteAsync();
 
@@ -213,7 +213,7 @@
             this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.Is<TransactionControlVM>(x => x.Transaction.Id == 0), 640, 340, nameof(Transaction)))
                 .Returns(resultVm);
 
-            var vm = new BlotterVM(db, dialogMock.Object);
+            var vm = new BlotterVM(db, dialogMock.Object, null);
 
             vm.SelectedValue = new Common.Model.BlotterModel { Id = 1, CategoryId = 37, FromAmount = -1, FromAccountId = 2, ToAccountId = 0 };
             await vm.DuplicateCommand.ExecuteAsync();
@@ -237,7 +237,7 @@
             this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.Is<TransferControlVM>(x => x.Transfer.Id == 0), 385, 340, "Transfer"))
                 .Returns(resultVm);
 
-            var vm = new BlotterVM(db, dialogMock.Object);
+            var vm = new BlotterVM(db, dialogMock.Object, null);
 
             vm.SelectedValue = new Common.Model.BlotterModel { Id = 1, CategoryId = 0, FromAccountId = 1, ToAccountId = toAccount };
             await vm.DuplicateCommand.ExecuteAsync();
@@ -260,7 +260,7 @@
             this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
                 .Returns(resultVm);
 
-            var vm = new BlotterVM(db, dialogMock.Object);
+            var vm = new BlotterVM(db, dialogMock.Object, null);
             vm.SelectedValue = new Common.Model.BlotterModel { Id = 27160, CategoryId = -1 };
             await vm.EditCommand.ExecuteAsync();
 
@@ -294,7 +294,7 @@
             DbManual.ResetAllManuals();
             await DbManual.SetupAsync(db);
 
-            var vm = new BlotterVM(db, dialogMock.Object);
+            var vm = new BlotterVM(db, dialogMock.Object, null);
 
            // await db.SaveAsFile(@"c:\\test.db");
             await vm.RefreshDataCommand.ExecuteAsync();

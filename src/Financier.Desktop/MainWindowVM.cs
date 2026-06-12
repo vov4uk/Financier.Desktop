@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using Financier.Adapter;
 using Financier.Common;
@@ -223,7 +222,7 @@ namespace Financier.Desktop.ViewModel
 
                 await NavigateToType(typeof(BlotterModel));
 
-                notifier?.ShowMessage($"Successfully loaded {entities?.Count()} entities");
+                notifier?.ShowMessage(string.Format(localizationManager.entities_loaded, entities?.Count()));
             }
             catch (Exception ex)
             {
@@ -277,11 +276,11 @@ namespace Financier.Desktop.ViewModel
 
         private void CreatePages()
         {
-            Blotter = new BlotterVM(db, dialogWrapper);
-            Locations = new LocationsVM(db, dialogWrapper);
-            Payees = new PayeesVM(db, dialogWrapper);
-            Projects = new ProjectsVM(db, dialogWrapper);
-            Rules = new RulesVM(db, dialogWrapper);
+            Blotter = new BlotterVM(db, dialogWrapper, localizationManager);
+            Locations = new LocationsVM(db, dialogWrapper, localizationManager);
+            Payees = new PayeesVM(db, dialogWrapper, localizationManager);
+            Projects = new ProjectsVM(db, dialogWrapper, localizationManager);
+            Rules = new RulesVM(db, dialogWrapper, localizationManager);
 
             _pages.TryAdd(typeof(BlotterModel), Blotter);
             _pages.TryAdd(typeof(LocationModel), Locations);
@@ -332,7 +331,7 @@ namespace Financier.Desktop.ViewModel
             var type = typeof(TEntity);
             if (!_pages.ContainsKey(type))
             {
-                var viewModel = Activator.CreateInstance(typeof(VMType), db, dialogWrapper) as VMType;
+                var viewModel = Activator.CreateInstance(typeof(VMType), db, dialogWrapper, localizationManager) as VMType;
 
                 _pages.TryAdd(type, viewModel);
             }
@@ -373,7 +372,7 @@ namespace Financier.Desktop.ViewModel
                     lastTransactions.Add(acc.Id.Value, last);
                 }
 
-                var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions, dialogWrapper);
+                var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions, dialogWrapper, localizationManager);
 
                 var output = dialogWrapper.ShowWizard(vm);
 
@@ -398,10 +397,11 @@ namespace Financier.Desktop.ViewModel
                     await RefreshAffectedAccounts(monoToImport);
                     await RefreshCurrentPage();
 
-                    this.dialogWrapper.ShowMessageBox(
-                        $"Imported {monoToImport.Count} transactions."
-                        + ((duplicatesCount > 0) ? $" Skipped {duplicatesCount} duplicates." : string.Empty),
-                        $"{importHelper.BankTitle} Import");
+                    var message = duplicatesCount > 0
+                        ? string.Format(localizationManager.import_result_with_duplicates, monoToImport.Count, duplicatesCount)
+                        : string.Format(localizationManager.import_result, monoToImport.Count);
+
+                    this.dialogWrapper.ShowMessageBox(message, $"{importHelper.BankTitle} {localizationManager.import}");
 
                     Logger.Info($"Imported {monoToImport.Count} transactions. Found duplicates : {duplicatesCount}");
                 }
@@ -443,7 +443,7 @@ namespace Financier.Desktop.ViewModel
             {
                 await SaveBackup(backupPath);
 
-                dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
+                dialogWrapper.ShowMessageBox(string.Format(localizationManager.saved_message, backupPath), localizationManager.backup_done);
                 Logger.Info($"Backup done. Saved {backupPath}");
             }
         }
@@ -466,7 +466,7 @@ namespace Financier.Desktop.ViewModel
             {
                 await db.SaveAsFile(backupPath);
 
-                dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
+                dialogWrapper.ShowMessageBox(string.Format(localizationManager.saved_message, backupPath), localizationManager.backup_done);
                 Logger.Info($"Backup done. Saved {backupPath}");
             }
         }
@@ -475,7 +475,10 @@ namespace Financier.Desktop.ViewModel
         {
             SettingsDTO settings = TryDeserializeSettings(AppSettings);
 
-            DialogBaseVM vm = new SettingsVM(settings);
+            DialogBaseVM vm = new SettingsVM(settings)
+            {
+                LocalizationManager = localizationManager
+            };
             var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, "Settings") as SettingsDTO;
 
             if (updated != null)
@@ -531,28 +534,28 @@ namespace Financier.Desktop.ViewModel
                             string msg = ex?.InnerException?.Message;
                             if (!string.IsNullOrEmpty(msg) && msg.Contains("UNIQUE constraint failed", StringComparison.OrdinalIgnoreCase))
                             {
-                                notifier?.ShowWarning("Exchange rates for the specified currencies and date already exist.");
+                                notifier?.ShowWarning(localizationManager.exchange_rates_exist);
                             }
                             else
                             {
-                                notifier?.ShowWarning("Exchange rates not updated.");
+                                notifier?.ShowWarning(localizationManager.exchange_rates_not_updated);
                             }
                             return;
                         }
                         catch (Exception ex)
                         {
                             Logger.Error(ex, "Error saving exchange rates to database.");
-                            notifier?.ShowWarning("Exchange rates not updated.");
+                            notifier?.ShowWarning(localizationManager.exchange_rates_not_updated);
                             return;
                         }
 
-                        notifier?.ShowMessage($"Exchange rates updated successfully from {settings.ExchangeRates.Provider}.");
+                        notifier?.ShowMessage(string.Format(localizationManager.exchange_rates_updated, settings.ExchangeRates.Provider));
                     }
                 }
             }
             else
             {
-                notifier?.ShowWarning("Exchange rates provider not configured.");
+                notifier?.ShowWarning(localizationManager.exchange_rates_provider_not_configured);
             }
         }
 
@@ -584,7 +587,7 @@ namespace Financier.Desktop.ViewModel
                     AppSettings = null;
                     Settings.Default.AppSettings = null;
                     Settings.Default.Save();
-                    notifier?.ShowWarning("Settings file was corrupted and has been reset. Please re-configure exchange rate settings.");
+                    notifier?.ShowWarning(localizationManager.settings_corrupted);
 
                 }
             }
@@ -620,27 +623,27 @@ namespace Financier.Desktop.ViewModel
                 {
                     if (showMessageIfLatest)
                     {
-                        notifier.ShowMessage("You are using the latest version.");
+                        notifier.ShowMessage(localizationManager.latest_version);
                     }
                     return;
                 }
 
 
                 var result = dialogWrapper.ShowMessageBox(
-                   "Would you like to restart app and apply the update?",
-                   $"Version {updateVersion} is available",
+                   localizationManager.update_available_question,
+                   string.Format(localizationManager.update_available, updateVersion),
                     true);
 
                 if (result)
                 {
 
-                    notifier.ShowMessage(string.Format("Downloading update to {0} v{1}...",
+                    notifier.ShowMessage(string.Format(localizationManager.downloading_update,
                         "Financier.Desktop",
                         updateVersion));
 
                     await updateService.PrepareUpdateAsync(updateVersion);
 
-                    notifier.ShowMessage("Update is downloaded. App will now restart to apply the update.");
+                    notifier.ShowMessage(localizationManager.update_downloaded);
                     await Task.Delay(3000);
                     updateService.FinalizeUpdate(true);
                     await Task.Delay(3000);
@@ -650,7 +653,7 @@ namespace Financier.Desktop.ViewModel
             catch (Exception ex)
             {
                 Logger.Error(ex, ex.ToString());
-                notifier.ShowWarning("Failed to perform application update");
+                notifier.ShowWarning(localizationManager.update_failed);
             }
         }
     }

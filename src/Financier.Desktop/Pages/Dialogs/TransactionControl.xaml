@@ -9,6 +9,7 @@
              xmlns:entities="clr-namespace:Financier.Desktop.Views"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.Data"
              xmlns:dialog="clr-namespace:Financier.Desktop.ViewModel.Dialog"
+             xmlns:local="clr-namespace:Financier.Desktop.ViewModel"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
@@ -22,10 +23,11 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:AmountConverter x:Key="AmountConverter" />
+            <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
-              Header="Transaction details"
+              Header="{Binding Data.LocalizationManager.transaction_details, Source={StaticResource Proxy}}"
               FontSize="12"
               Background="{StaticResource WindowBackgroundBrush}">
         <GroupBox.Resources>
@@ -105,7 +107,7 @@
                     </Grid>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-                               Text="Account"/>
+                               Text="{Binding Data.LocalizationManager.account, Source={StaticResource Proxy}}"/>
                     <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                                SelectedItem="{Binding Transaction.FromAccount}"
@@ -116,7 +118,7 @@
                                ItemTemplate="{StaticResource ResourceKey=IActive}"/>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                               Text="Payee"/>
+                               Text="{Binding Data.LocalizationManager.payee, Source={StaticResource Proxy}}"/>
                     <xctk:WatermarkComboBox  Grid.Row="4" Grid.Column="0"
                                              IsEditable="True"
                                              ItemsSource="{Binding Source={x:Static fcrd:DbManual.Payee}, Mode=OneWay}"
@@ -133,7 +135,7 @@
                     </xctk:IconButton>
 
                     <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
-                               Text="Category"/>
+                               Text="{Binding Data.LocalizationManager.category, Source={StaticResource Proxy}}"/>
 
                     <Grid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
                         <Grid.ColumnDefinitions>
@@ -171,14 +173,14 @@
                     </Grid>
 
                     <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
-                               Text="Currency"/>
+                               Text="{Binding Data.LocalizationManager.currency, Source={StaticResource Proxy}}"/>
                     <xctk:WatermarkComboBox  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
                                              ItemsSource="{Binding Source={x:Static fcrd:DbManual.Currencies}, Mode=OneWay}"
                                              SelectedItem="{Binding Transaction.OriginalCurrency}"
                                              SelectedValue="{Binding Transaction.OriginalCurrencyId}"
                                              SelectedValuePath="Id"
                                              DisplayMemberPath="Title"
-                                             Watermark="Same as account" />
+                                             Watermark="{Binding Data.LocalizationManager.same_as_account, Source={StaticResource Proxy}}" />
 
                     <entities:AmountControl Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2"
                                             DataContext="{Binding}" />
@@ -200,7 +202,7 @@
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Column="0" Grid.Row="0"
                                        Grid.ColumnSpan="2"
-                                       Text="Un-split amount"/>
+                                       Text="{Binding Data.LocalizationManager.unsplit_amount, Source={StaticResource Proxy}}"/>
                             <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
                                        Text="{Binding Transaction.UnsplitAmount, Converter={StaticResource AmountConverter}, ConverterParameter=false, StringFormat=F2, Mode=OneWay}" />
                             <xctk:IconButton Grid.Column="1"
@@ -208,7 +210,7 @@
                                              Grid.RowSpan="2"
                                              Margin="0,3,0,0"
                                              VerticalAlignment="Top"
-                                             ToolTip="Open recipes wizard. Transform recipes text to Financisto transactions"
+                                             ToolTip="{Binding Data.LocalizationManager.open_recipes_wizard, Source={StaticResource Proxy}}"
                                              Command="{Binding OpenRecipesDialogCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource ResourceKey=IconReceiptBlack}" Height="16" Width="16" />
@@ -219,7 +221,7 @@
                                              Grid.RowSpan="2"
                                              Margin="0,3,0,0"
                                              VerticalAlignment="Top"
-                                             ToolTip="Add Split-transfers"
+                                             ToolTip="{Binding Data.LocalizationManager.add_split_transfers, Source={StaticResource Proxy}}"
                                              Command="{Binding AddSubTransferCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource ResourceKey=IconArrowRightArrowLeft}" Height="16" Width="16" />
@@ -230,7 +232,7 @@
                                               Grid.RowSpan="2"
                                               Margin="0,3,0,0"
                                               VerticalAlignment="Top"
-                                              ToolTip="Add Split-transactions"
+                                              ToolTip="{Binding Data.LocalizationManager.add_split_transactions, Source={StaticResource Proxy}}"
                                               Command="{Binding AddSubTransactionCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource IconPlus}" Height="16" Width="16" />
@@ -307,7 +309,7 @@
 
                     <TextBlock Grid.Row="13" Grid.Column="0"
                                Grid.ColumnSpan="2"
-                               Text="Location"/>
+                               Text="{Binding Data.LocalizationManager.location, Source={StaticResource Proxy}}"/>
                     <xctk:WatermarkComboBox   Grid.Row="14" Grid.Column="0"
                                               IsEditable="True"
                                               ItemsSource="{Binding Source={x:Static fcrd:DbManual.Location}, Mode=OneWay}"
@@ -324,7 +326,7 @@
 
                     <TextBlock Grid.Row="15" Grid.Column="0"
                                Grid.ColumnSpan="2"
-                               Text="Note"/>
+                               Text="{Binding Data.LocalizationManager.note, Source={StaticResource Proxy}}"/>
                     <TextBox   Grid.Row="16" Grid.Column="0"
                                Text="{Binding Transaction.Note}" />
                     <xctk:IconButton Grid.Row="16" Grid.Column="1"
@@ -337,7 +339,7 @@
                     <TextBlock Grid.Row="17" Grid.Column="0"
                                Grid.ColumnSpan="2"
                                Visibility="{Binding ElementName=ProjectIdBox, Path=Visibility}"
-                               Text="Project"/>
+                               Text="{Binding Data.LocalizationManager.project, Source={StaticResource Proxy}}"/>
 
                     <xctk:WatermarkComboBox  Grid.Row="18" Grid.Column="0"
                                              x:Name="ProjectIdBox"
@@ -374,10 +376,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Margin="2"
                         Command="{Binding SaveCommand}"
-                        Content="SAVE" />
+                        Content="{Binding Data.LocalizationManager.save, Source={StaticResource Proxy}}" />
                 <Button Grid.Column="1" Margin="2"
                         Command="{Binding CancelCommand}"
-                        Content="CANCEL" />
+                        Content="{Binding Data.LocalizationManager.cancel, Source={StaticResource Proxy}}" />
             </Grid>
         </Grid>
     </GroupBox>
