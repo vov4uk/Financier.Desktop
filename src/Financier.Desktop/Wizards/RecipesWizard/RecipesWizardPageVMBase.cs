@@ -1,4 +1,6 @@
-﻿namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
+﻿using Financier.Common.Localization;
+
+namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
     public abstract class RecipesWizardPageVMBase : WizardPageBaseVM
     {
@@ -20,7 +22,7 @@
 
         public string FormattedTotal =>
             string.Format(
-                LocalizationManager?.reciept_wizard_total_format ?? " Total : {0:F2} Current : {1:F2} Diff : {2:F2}",
+                LocalizationService.Instance.reciept_wizard_total_format,
                 TotalAmount, CalculatedAmount, Diff);
 
         public double TotalAmount

@@ -1,4 +1,4 @@
-namespace Financier.Desktop.Localization;
+namespace Financier.Common.Localization;
 
 public enum Language
 {

@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Financier.Common;
     using Financier.Common.Entities;
+    using Financier.Common.Localization;
     using Financier.Common.Model;
     using Financier.Converters;
     using Financier.DataAccess.Abstractions;
@@ -15,9 +16,9 @@
     using Financier.DataAccess.View;
     using Financier.Desktop.Data;
     using Financier.Desktop.Helpers;
-    using Financier.Desktop.Localization;
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;
+    using OxyPlot;
 
     public class BlotterVM : EntityBaseVM<BlotterModel>
     {
@@ -36,8 +37,8 @@
         private ProjectModel _project;
         private LocationModel _location;
 
-        public BlotterVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager)
-            : base(db, dialogWrapper, localizationManager)
+        public BlotterVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 
@@ -152,7 +153,7 @@
 
         protected override async Task OnDelete(BlotterModel item)
         {
-            if (this.dialogWrapper.ShowMessageBox(localizationManager.confirm_delete_transaction, localizationManager.delete, true))
+            if (this.dialogWrapper.ShowMessageBox(LocalizationService.Instance.confirm_delete_transaction, LocalizationService.Instance.delete, true))
             {
                 await DeleteTransaction(item.Id);
                 await db.RebuildAccountBalanceAsync(item.FromAccountId);
@@ -233,10 +234,7 @@
 
         private async Task OpenTransferDialogAsync(Transaction transfer)
         {
-            TransferControlVM dialogVm = new TransferControlVM(new TransferDto(transfer))
-            {
-                LocalizationManager = localizationManager
-            };
+            TransferControlVM dialogVm = new TransferControlVM(new TransferDto(transfer));
 
             var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
 
@@ -282,10 +280,7 @@
         {
             var transactionDto = new TransactionDto(transaction, subTransactions);
 
-            TransactionControlVM dialogVm = new TransactionControlVM(transactionDto, dialogWrapper)
-            {
-                LocalizationManager = localizationManager
-            };
+            TransactionControlVM dialogVm = new TransactionControlVM(transactionDto, dialogWrapper);
 
             var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
 

@@ -10,7 +10,6 @@ using Financier.Converters;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Helpers;
-using Financier.Desktop.Localization;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -25,8 +24,8 @@ namespace Financier.Desktop.ViewModel
 
         private PlotModel plotModel;
 
-        public ExchangeRatesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager)
-            : base(db, dialogWrapper, localizationManager)
+        public ExchangeRatesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 

@@ -8,7 +8,6 @@ using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
-using Financier.Desktop.Localization;
 using Financier.Desktop.Pages.Dialogs;
 using Prism.Commands;
 
@@ -17,7 +16,6 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
     public class Page3VM : WizardPageBaseVM
     {
         private readonly IDialogWrapper _dialogWrapper;
-        private readonly LocalizationManager _localizationManager;
         private DelegateCommand _clearAllNotesCommand;
         private DelegateCommand<FinancierTransactionDto> _deleteCommand;
         private AsyncDelegateCommand<FinancierTransactionDto> _addRuleCommand;
@@ -26,10 +24,9 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private ObservableCollection<FinancierTransactionDto> financierTransactions;
         private static readonly Regex CardNumberRegex = new Regex(@"(\*)([0-9]{4})", RegexOptions.None, TimeSpan.FromMilliseconds(1000));
 
-        public Page3VM(IDialogWrapper dialogWrapper, LocalizationManager localizationManager = null)
+        public Page3VM(IDialogWrapper dialogWrapper)
         {
             this._dialogWrapper = dialogWrapper;
-            this._localizationManager = localizationManager;
             Accounts = DbManual.Account
                 .OrderByDescending(x => x.IsActive)
                 .ThenBy(x => x.SortOrder)
@@ -278,10 +275,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 IsActive = true
             };
 
-            RuleControlVM ruleVm = new RuleControlVM(rule)
-            {
-                LocalizationManager = _localizationManager
-            };
+            RuleControlVM ruleVm = new RuleControlVM(rule);
 
             var result = _dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, "Rule");
 

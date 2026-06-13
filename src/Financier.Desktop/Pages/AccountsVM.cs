@@ -6,15 +6,14 @@ using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Helpers;
-using Financier.Desktop.Localization;
 
 namespace Financier.Desktop.ViewModel
 {
     [ExcludeFromCodeCoverage]
     public class AccountsVM : EntityBaseVM<AccountModel>
     {
-        public AccountsVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager)
-            : base(db, dialogWrapper, localizationManager)
+        public AccountsVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 

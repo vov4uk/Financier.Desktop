@@ -7,7 +7,6 @@ using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Helpers;
-using Financier.Desktop.Localization;
 using Financier.Desktop.Pages;
 
 namespace Financier.Desktop.ViewModel
@@ -15,7 +14,8 @@ namespace Financier.Desktop.ViewModel
     [ExcludeFromCodeCoverage]
     public class PayeesVM : TagBaseVM<PayeeModel>
     {
-        public PayeesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager) : base(db, dialogWrapper, localizationManager)
+        public PayeesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 

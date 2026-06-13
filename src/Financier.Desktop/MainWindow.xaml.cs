@@ -36,7 +36,7 @@ namespace Financier.Desktop
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new ToastNotifierWrapper(), new BankHelperFactory(), new Services.UpdateService(), new Localization.LocalizationManager(new Data.SettingsGeneralDTO { Language = Localization.Language.Ukrainian}));
+            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new ToastNotifierWrapper(), new BankHelperFactory(), new Services.UpdateService());
 
             DataContext = ViewModel;
             var version = Assembly.GetExecutingAssembly().GetName().Version;

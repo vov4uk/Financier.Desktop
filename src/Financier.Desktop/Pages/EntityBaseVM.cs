@@ -5,7 +5,6 @@ using Financier.Common;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Helpers;
-using Financier.Desktop.Localization;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -18,24 +17,17 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _editCommand;
         private T _selectedValue;
         protected readonly IDialogWrapper dialogWrapper;
-        protected LocalizationManager localizationManager;
 
-        protected EntityBaseVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager)
+        protected EntityBaseVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
             : base(db)
         {
             this.dialogWrapper = dialogWrapper;
-            this.localizationManager = localizationManager;
         }
         public IAsyncCommand AddCommand => _addCommand ??= new AsyncCommand(OnAdd);
 
         public IAsyncCommand DeleteCommand => _deleteCommand ??= new AsyncCommand(() => OnDelete(SelectedValue), () => SelectedValue != null);
 
         public IAsyncCommand EditCommand => _editCommand ??= new AsyncCommand(() => OnEdit(SelectedValue), () => SelectedValue != null);
-
-        public LocalizationManager LocalizationManager
-        {
-            get => localizationManager;
-        }
 
         public T SelectedValue
         {

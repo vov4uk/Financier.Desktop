@@ -67,7 +67,6 @@
 
   <ItemGroup>
     <PackageReference Include="Cogwheel" />
-    <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="DataGridExtensions" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" />
@@ -78,7 +77,6 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="NLog" />
     <PackageReference Include="Onova" />
-    <PackageReference Include="PowerKit" />
     <PackageReference Include="Prism.Core" />
     <PackageReference Include="SonarAnalyzer.CSharp" Condition="'$(Configuration)'=='Debug'">
       <PrivateAssets>all</PrivateAssets>

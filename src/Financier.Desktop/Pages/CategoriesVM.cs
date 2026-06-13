@@ -7,7 +7,6 @@ using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Helpers;
-using Financier.Desktop.Localization;
 
 namespace Financier.Desktop.ViewModel
 {
@@ -16,8 +15,8 @@ namespace Financier.Desktop.ViewModel
     {
         private readonly List<CategoryTreeModel> _nodes = new List<CategoryTreeModel>();
 
-        public CategoriesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager)
-            : base(db, dialogWrapper, localizationManager)
+        public CategoriesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 

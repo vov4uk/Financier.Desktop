@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Financier.Common.Filters.DateFilter"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Financier.Common.Localization"
              Width="120">
     <GroupBox Header="Date"
               BorderThickness="0">

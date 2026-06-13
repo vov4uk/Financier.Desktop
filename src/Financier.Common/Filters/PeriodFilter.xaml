@@ -7,6 +7,7 @@
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:converters="clr-namespace:Financier.Converters"
              xmlns:ent=       "clr-namespace:Financier.Common.Entities"
+             xmlns:loc=       "clr-namespace:Financier.Common.Localization"
              x:Name="PeriodFilterInstance"
              mc:Ignorable="d"
              d:DesignHeight="480"

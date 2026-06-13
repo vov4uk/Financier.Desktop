@@ -1,4 +1,4 @@
-﻿using Financier.Desktop.Localization;
+﻿using Financier.Common.Localization;
 using Prism.Mvvm;
 
 namespace Financier.Desktop.Data

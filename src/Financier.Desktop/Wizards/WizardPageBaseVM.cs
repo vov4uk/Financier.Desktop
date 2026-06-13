@@ -1,5 +1,4 @@
-﻿using Financier.Desktop.Localization;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 
 namespace Financier.Desktop.Wizards
 {
@@ -7,7 +6,6 @@ namespace Financier.Desktop.Wizards
     {
         bool _isCurrentPage;
 
-        public LocalizationManager LocalizationManager { get; set; }
         public bool IsCurrentPage
         {
             get => _isCurrentPage;

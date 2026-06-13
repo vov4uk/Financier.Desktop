@@ -39,6 +39,7 @@ namespace Financier.Desktop.Pages.Dialogs
             get => SelectedConditionType == "MCC";
         }
 
+        //TODO : localization, use enum instead of string and convert to user friendly name in the view
         public static ObservableCollection<string> ConditionTypes { get; } = new ObservableCollection<string>
         {
            "Description contains",

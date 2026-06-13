@@ -7,7 +7,6 @@ using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
-using Financier.Desktop.Localization;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Views.Controls;
 
@@ -16,8 +15,8 @@ namespace Financier.Desktop.ViewModel
     [ExcludeFromCodeCoverage]
     public class LocationsVM : EntityBaseVM<LocationModel>
     {
-        public LocationsVM(IFinancierDatabase db, IDialogWrapper dialogWrapper, LocalizationManager localizationManager)
-            : base(db, dialogWrapper, localizationManager)
+        public LocationsVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 
@@ -37,10 +36,7 @@ namespace Financier.Desktop.ViewModel
         private async Task OpenLocationDialogAsync(int id)
         {
             Location selectedValue = await db.GetOrCreateAsync<Location>(id);
-            LocationControlVM locationVm = new LocationControlVM(new LocationDto(selectedValue))
-            {
-                LocalizationManager = localizationManager
-            };
+            LocationControlVM locationVm = new LocationControlVM(new LocationDto(selectedValue));
 
             var result = dialogWrapper.ShowDialog<LocationControl>(locationVm, 240, 300, nameof(Location));
 
