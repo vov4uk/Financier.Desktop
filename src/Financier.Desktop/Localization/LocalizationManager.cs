@@ -240,5 +240,10 @@ public partial class LocalizationManager
     // Dialog Messages
     public string split_transfers_currency_not_supported => Get();
     public string not_supported => Get();
+
+    // Reports
+    public string income_expense_period => Get();
+    public string structure => Get();
+    public string dynamics => Get();
 }
 

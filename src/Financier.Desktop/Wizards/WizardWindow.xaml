@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Financier.Desktop.Wizards.WizardWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
+        xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
         Title="{Binding Title}"
         Width="1100"
         Height="620"
@@ -17,7 +17,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Wizards/Assets/Resource.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -44,7 +43,7 @@
             VerticalAlignment="Bottom"
             Grid.ColumnSpan="3"
             Grid.Column="0" />
-        <Button Content="{Binding Data.LocalizationManager.back, Source={StaticResource Proxy}}"
+        <Button Content="{loc:Translate Key=back}"
             Margin="0,0,183,13"
             VerticalAlignment="Bottom"
             FontSize="12"
@@ -53,7 +52,7 @@
             Grid.Row="2"
             Grid.Column="1"
             Command="{Binding MovePreviousCommand}" />
-        <Button Content="{Binding Data.LocalizationManager.next_step, Source={StaticResource Proxy}}"
+        <Button Content="{loc:Translate Key=next_step}"
             Margin="0,0,103,13"
             VerticalAlignment="Bottom"
             FontSize="12"
@@ -64,7 +63,7 @@
             Command="{Binding MoveNextCommand}"
             Style="{StaticResource moveNextButtonStyle}" />
 
-        <Button Content="{Binding Data.LocalizationManager.cancel, Source={StaticResource Proxy}}"
+        <Button Content="{loc:Translate Key=cancel}"
             Margin="0,0,23,13"
             VerticalAlignment="Bottom"
             FontSize="12"

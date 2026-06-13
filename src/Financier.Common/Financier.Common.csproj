@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
@@ -6,7 +6,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\mcc.json"/>
+    <EmbeddedResource Include="Data\mcc.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Default (English) resources — code-gen produces Resources.Designer.cs with public access -->
+    <EmbeddedResource Update="Localization\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <!-- Polish satellite resources — culture detected from filename suffix (.pl) -->
+    <EmbeddedResource Update="Localization\Resources.pl.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </EmbeddedResource>
+    <!-- Ukrainian satellite resources — culture detected from filename suffix (.uk) -->
+    <EmbeddedResource Update="Localization\Resources.uk.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </EmbeddedResource>
+    <!-- Link the designer file to its parent .resx so VS nests it correctly -->
   </ItemGroup>
 
   <ItemGroup>
@@ -21,11 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Filters\DateFilter.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Filters\TopCategoryFilter.xaml.cs">
-      <SubType>Code</SubType>
+    <Compile Update="Localization\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 

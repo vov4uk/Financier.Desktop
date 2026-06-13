@@ -64,7 +64,7 @@ ORDER BY year, month, day";
 
             foreach (var item in list.OrderBy(x => x.Year).ThenBy(x => x.Month).ThenBy(x => x.Day))
             {
-                lineSeries.Points.Add(DateTimeAxis.CreateDataPoint(new DateTime(item.Year, item.Month, item.Day), item.Total ?? 0));
+                lineSeries.Points.Add(DateTimeAxis.CreateDataPoint(new DateTime(item.Year, item.Month, item.Day, 0, 0, 0, DateTimeKind.Local), item.Total ?? 0));
             }
 
             model.Axes.Add(dateTimeAxis);

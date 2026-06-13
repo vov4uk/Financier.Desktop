@@ -6,7 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
-             xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -17,7 +17,6 @@
                     <converters:AmountConverter x:Key="AmountConverter"/>
                 </ResourceDictionary>
                 </ResourceDictionary.MergedDictionaries>
-                <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
             </ResourceDictionary>
 
     </UserControl.Resources>
@@ -27,7 +26,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Center" FontWeight="Bold"
-                   Text="{Binding Data.LocalizationManager.select_account, Source={StaticResource Proxy}}"/>
+                   Text="{loc:Translate Key=select_account}"/>
         <DataGrid Margin="5" Grid.Row="1" 
                   ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                   AutoGenerateColumns="False"
@@ -36,7 +35,7 @@
                   CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
                   SelectedItem="{Binding MonoAccount}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.active, Source={StaticResource Proxy}}" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
+                <DataGridTemplateColumn Header="{loc:Translate Key=active}" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
                 <DataGridTemplateColumn Header=""
                                         dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
@@ -53,8 +52,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Binding Data.LocalizationManager.title, Source={StaticResource Proxy}}" Binding="{Binding Path=Title}"/>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.total_amount, Source={StaticResource Proxy}}">
+                <DataGridTextColumn Header="{loc:Translate Key=title}" Binding="{Binding Path=Title}"/>
+                <DataGridTemplateColumn Header="{loc:Translate Key=total_amount}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock HorizontalAlignment="Right"
@@ -66,7 +65,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Binding Data.LocalizationManager.currency, Source={StaticResource Proxy}}" Binding="{Binding Path=CurrencyName}"/>
+                <DataGridTextColumn Header="{loc:Translate Key=currency}" Binding="{Binding Path=CurrencyName}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

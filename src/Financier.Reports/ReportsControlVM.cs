@@ -125,7 +125,7 @@ namespace Financier.Reports
                 Type type = Type.GetType(reportType, false, true);
                 if (type != null)
                 {
-                    ConstructorInfo constructor = type.GetConstructors().First();
+                    ConstructorInfo constructor = type.GetConstructors().FirstOrDefault();
                     if (constructor != null)
                     {
                         BindableBase newReport = (BindableBase)constructor.Invoke(new[] { financierDatabase });

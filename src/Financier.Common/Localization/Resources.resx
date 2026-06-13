@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_title" xml:space="preserve">
+    <value>Financier Desktop</value>
+  </data>
+  <data name="openBackup" xml:space="preserve">
+    <value>Open Backup</value>
+  </data>
+  <data name="saveBackup" xml:space="preserve">
+    <value>Save Backup</value>
+  </data>
+  <data name="saveAsDb" xml:space="preserve">
+    <value>Save as .db</value>
+  </data>
+  <data name="setDefaultDirectory" xml:space="preserve">
+    <value>Set default directory</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="defaultBackupDirectory" xml:space="preserve">
+    <value>Default backup directory :</value>
+  </data>
+  <data name="main" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="entities" xml:space="preserve">
+    <value>Entities</value>
+  </data>
+  <data name="accounts" xml:space="preserve">
+    <value>Accounts</value>
+  </data>
+  <data name="categories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="projects" xml:space="preserve">
+    <value>Projects</value>
+  </data>
+  <data name="payees" xml:space="preserve">
+    <value>Payees</value>
+  </data>
+  <data name="locations" xml:space="preserve">
+    <value>Locations</value>
+  </data>
+  <data name="currencies" xml:space="preserve">
+    <value>Currencies</value>
+  </data>
+  <data name="exchange_rates" xml:space="preserve">
+    <value>Exchange Rates</value>
+  </data>
+  <data name="blotter" xml:space="preserve">
+    <value>Blotter</value>
+  </data>
+  <data name="reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="rules" xml:space="preserve">
+    <value>Rules</value>
+  </data>
+  <data name="import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="monobank_csv" xml:space="preserve">
+    <value>Monobank CSV</value>
+  </data>
+  <data name="a_bank" xml:space="preserve">
+    <value>A Bank</value>
+  </data>
+  <data name="pdf" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="xlsx" xml:space="preserve">
+    <value>XLSX</value>
+  </data>
+  <data name="pumb_pdf" xml:space="preserve">
+    <value>PUMB PDF</value>
+  </data>
+  <data name="pireus_pdf" xml:space="preserve">
+    <value>Pireus PDF</value>
+  </data>
+  <data name="privat_xlsx" xml:space="preserve">
+    <value>Privat XLSX</value>
+  </data>
+  <data name="pko_pdf" xml:space="preserve">
+    <value>PKO PDF</value>
+  </data>
+  <data name="transaction" xml:space="preserve">
+    <value>Transaction</value>
+  </data>
+  <data name="add_expense" xml:space="preserve">
+    <value>Add Expense</value>
+  </data>
+  <data name="add_transfer" xml:space="preserve">
+    <value>Add Transfer</value>
+  </data>
+  <data name="add_template" xml:space="preserve">
+    <value>Add Template</value>
+  </data>
+  <data name="edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="duplicate" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="project" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="payee" xml:space="preserve">
+    <value>Payee</value>
+  </data>
+  <data name="rule" xml:space="preserve">
+    <value>Rule</value>
+  </data>
+  <data name="download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="general" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="checkForUpdates" xml:space="preserve">
+    <value>Check for Updates</value>
+  </data>
+  <data name="drag_and_drop" xml:space="preserve">
+    <value>Drop .backup file here</value>
+  </data>
+  <data name="address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="transaction_details" xml:space="preserve">
+    <value>Transaction details</value>
+  </data>
+  <data name="account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="currency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="same_as_account" xml:space="preserve">
+    <value>Same as account</value>
+  </data>
+  <data name="unsplit_amount" xml:space="preserve">
+    <value>Un-split amount</value>
+  </data>
+  <data name="open_recipes_wizard" xml:space="preserve">
+    <value>Open recipes wizard</value>
+  </data>
+  <data name="add_split_transfers" xml:space="preserve">
+    <value>Add Split-transfers</value>
+  </data>
+  <data name="add_split_transactions" xml:space="preserve">
+    <value>Add Split-transactions</value>
+  </data>
+  <data name="location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="balance" xml:space="preserve">
+    <value>Balance</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="total_amount" xml:space="preserve">
+    <value>Total Amount</value>
+  </data>
+  <data name="include" xml:space="preserve">
+    <value>Include</value>
+  </data>
+  <data name="last_transaction" xml:space="preserve">
+    <value>Last transaction</value>
+  </data>
+  <data name="symbol" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="is_default" xml:space="preserve">
+    <value>Is Default</value>
+  </data>
+  <data name="location_details" xml:space="preserve">
+    <value>Location details</value>
+  </data>
+  <data name="is_active" xml:space="preserve">
+    <value>Is Active</value>
+  </data>
+  <data name="rule_details" xml:space="preserve">
+    <value>Rule details</value>
+  </data>
+  <data name="conditions" xml:space="preserve">
+    <value>Conditions</value>
+  </data>
+  <data name="actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="what_should_happen" xml:space="preserve">
+    <value>What should happen, if conditions are met?</value>
+  </data>
+  <data name="check_for_updates_on_start" xml:space="preserve">
+    <value>Check for updates on start?</value>
+  </data>
+  <data name="providers" xml:space="preserve">
+    <value>Providers</value>
+  </data>
+  <data name="app_id" xml:space="preserve">
+    <value>App id</value>
+  </data>
+  <data name="update_exchange_rates_on_start" xml:space="preserve">
+    <value>Update exchange rates on start?</value>
+  </data>
+  <data name="details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="transfer_details" xml:space="preserve">
+    <value>Transfer details</value>
+  </data>
+  <data name="from_account" xml:space="preserve">
+    <value>From Account</value>
+  </data>
+  <data name="to_account" xml:space="preserve">
+    <value>To Account</value>
+  </data>
+  <data name="rate" xml:space="preserve">
+    <value>Rate</value>
+  </data>
+  <data name="from" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="to" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="created" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="condition" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="finish" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="next_step" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="select_account" xml:space="preserve">
+    <value>Select account</value>
+  </data>
+  <data name="please_select_transaction" xml:space="preserve">
+    <value>Please select transaction with same balance as selected account, otherwise all transactions will be imported</value>
+  </data>
+  <data name="operation_amount" xml:space="preserve">
+    <value>Operation amount</value>
+  </data>
+  <data name="exchange_rate" xml:space="preserve">
+    <value>Exchange Rate</value>
+  </data>
+  <data name="commission" xml:space="preserve">
+    <value>Commission</value>
+  </data>
+  <data name="cashback" xml:space="preserve">
+    <value>Cashback</value>
+  </data>
+  <data name="please_select_category_account" xml:space="preserve">
+    <value>Please select Category, From/To Account, Location ...</value>
+  </data>
+  <data name="new_rule" xml:space="preserve">
+    <value>New Rule</value>
+  </data>
+  <data name="delete_row" xml:space="preserve">
+    <value>Delete row</value>
+  </data>
+  <data name="clear_notes" xml:space="preserve">
+    <value>Clear notes</value>
+  </data>
+  <data name="add_rule_tooltip" xml:space="preserve">
+    <value>Add new rule and apply it to all transactions</value>
+  </data>
+  <data name="delete_row_tooltip" xml:space="preserve">
+    <value>Delete selected row (Del)</value>
+  </data>
+  <data name="clear_notes_tooltip" xml:space="preserve">
+    <value>Clear note for all transactions</value>
+  </data>
+  <data name="mcc" xml:space="preserve">
+    <value>MCC</value>
+  </data>
+  <data name="original" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="recipes_instructions_line1" xml:space="preserve">
+    <value>Paste recipes text. Make recipes photo and parse text via Google Lens or other OCR. I'll look for numbers with article symbol.</value>
+  </data>
+  <data name="recipes_instructions_line2" xml:space="preserve">
+    <value>For example: "123.45 A", "-54,32-A", "100 Б", "123.01 a"</value>
+  </data>
+  <data name="paste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="highlight" xml:space="preserve">
+    <value>Highlight</value>
+  </data>
+  <data name="paste_tooltip" xml:space="preserve">
+    <value>Paste text from clipboard</value>
+  </data>
+  <data name="highlight_tooltip" xml:space="preserve">
+    <value>Highlight text. Yellow - transaction row, green - other numbers</value>
+  </data>
+  <data name="reciept_wizard_total_format" xml:space="preserve">
+    <value>Total : {0:F2} Current : {1:F2} Diff : {2:F2}</value>
+  </data>
+  <data name="please_select_category_project" xml:space="preserve">
+    <value>Please select Category, Project...</value>
+  </data>
+  <data name="total_label" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="add_row" xml:space="preserve">
+    <value>Add row</value>
+  </data>
+  <data name="order" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="calculate_totals" xml:space="preserve">
+    <value>Calculate totals</value>
+  </data>
+  <data name="add_new_transaction" xml:space="preserve">
+    <value>Add new transaction</value>
+  </data>
+  <data name="backup_done" xml:space="preserve">
+    <value>Backup done.</value>
+  </data>
+  <data name="import_result" xml:space="preserve">
+    <value>Imported {0} transactions.</value>
+  </data>
+  <data name="import_result_with_duplicates" xml:space="preserve">
+    <value>Imported {0} transactions. Skipped {1} duplicates.</value>
+  </data>
+  <data name="saved_message" xml:space="preserve">
+    <value>Saved {0}</value>
+  </data>
+  <data name="latest_version" xml:space="preserve">
+    <value>You are using the latest version.</value>
+  </data>
+  <data name="update_available" xml:space="preserve">
+    <value>Version {0} is available</value>
+  </data>
+  <data name="update_available_question" xml:space="preserve">
+    <value>Would you like to restart app and apply the update?</value>
+  </data>
+  <data name="downloading_update" xml:space="preserve">
+    <value>Downloading update to {0} v{1}...</value>
+  </data>
+  <data name="update_downloaded" xml:space="preserve">
+    <value>Update is downloaded. App will now restart to apply the update.</value>
+  </data>
+  <data name="update_failed" xml:space="preserve">
+    <value>Failed to perform application update</value>
+  </data>
+  <data name="exchange_rates_updated" xml:space="preserve">
+    <value>Exchange rates updated successfully from {0}.</value>
+  </data>
+  <data name="exchange_rates_exist" xml:space="preserve">
+    <value>Exchange rates for the specified currencies and date already exist.</value>
+  </data>
+  <data name="exchange_rates_not_updated" xml:space="preserve">
+    <value>Exchange rates not updated.</value>
+  </data>
+  <data name="exchange_rates_provider_not_configured" xml:space="preserve">
+    <value>Exchange rates provider not configured.</value>
+  </data>
+  <data name="settings_corrupted" xml:space="preserve">
+    <value>Settings file was corrupted and has been reset. Please re-configure exchange rate settings.</value>
+  </data>
+  <data name="entities_loaded" xml:space="preserve">
+    <value>Successfully loaded {0} entities</value>
+  </data>
+  <data name="confirm_delete_transaction" xml:space="preserve">
+    <value>Are you sure you want to delete transaction?</value>
+  </data>
+  <data name="split_transfers_currency_not_supported" xml:space="preserve">
+    <value>Split-transfers with a currency differ from account's currency are not yet supported</value>
+  </data>
+  <data name="not_supported" xml:space="preserve">
+    <value>Not supported</value>
+  </data>
+  <data name="income_expense_period" xml:space="preserve">
+    <value>Income / expense for the period</value>
+  </data>
+  <data name="structure" xml:space="preserve">
+    <value>Structure</value>
+  </data>
+  <data name="dynamics" xml:space="preserve">
+    <value>Dynamics</value>
+  </data>
+  <data name="csv" xml:space="preserve">
+    <value>CSV</value>
+  </data>
+</root>

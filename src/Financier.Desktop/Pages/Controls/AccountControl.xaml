@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Financier.Desktop.Pages.Controls"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              xmlns:UI="clr-namespace:Financier.Common.Model;assembly=Financier.Common"
              xmlns:converter="clr-namespace:Financier.Converters;assembly=Financier.Common"
              mc:Ignorable="d"

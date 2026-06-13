@@ -96,7 +96,7 @@ order by
 
             foreach (var item in list.OrderBy(x => x.Year).ThenBy(x => x.Month))
             {
-                values.Points.Add(DateTimeAxis.CreateDataPoint(new DateTime(item.Year, item.Month, 1), item.Total ?? 0));
+                values.Points.Add(DateTimeAxis.CreateDataPoint(new DateTime(item.Year, item.Month, 1, 0, 0, 0, DateTimeKind.Local), item.Total ?? 0));
             }
 
             model.Series.Add(values);

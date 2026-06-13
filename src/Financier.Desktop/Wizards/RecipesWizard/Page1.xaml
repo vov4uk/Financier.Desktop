@@ -5,20 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Financier.Desktop.Wizards.RecipesWizard.View"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d" 
              d:DesignHeight="450"
              d:DesignWidth="800">
-    <UserControl.Resources>
-        <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="34"/>
             <RowDefinition Height="34"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="{Binding Data.LocalizationManager.recipes_instructions_line1, Source={StaticResource Proxy}}"/>
+        <TextBlock Grid.Row="0" Text="{loc:Translate Key=recipes_instructions_line1}"/>
         <Grid Grid.Column="0"
               Grid.Row="1"
               Margin="10 10 0 0"
@@ -32,8 +29,8 @@
                     Width="65"
                     Margin="2"
                     HorizontalAlignment="Stretch"
-                    Content="{Binding Data.LocalizationManager.paste, Source={StaticResource Proxy}}"
-                    ToolTip="{Binding Data.LocalizationManager.paste_tooltip, Source={StaticResource Proxy}}"
+                    Content="{loc:Translate Key=paste}"
+                    ToolTip="{loc:Translate Key=paste_tooltip}"
                     Command="ApplicationCommands.Paste"
                     CommandTarget="{Binding ElementName=_richTextBox}"
                 />
@@ -41,8 +38,8 @@
                     Width="65"
                     Margin="2"
                     HorizontalAlignment="Stretch"
-                    Content="{Binding Data.LocalizationManager.highlight, Source={StaticResource Proxy}}"
-                    ToolTip="{Binding Data.LocalizationManager.highlight_tooltip, Source={StaticResource Proxy}}"
+                    Content="{loc:Translate Key=highlight}"
+                    ToolTip="{loc:Translate Key=highlight_tooltip}"
                     Command="{Binding Path=HighlightCommand}"
                     CommandParameter="{Binding ElementName=_richTextBox}"
                 />

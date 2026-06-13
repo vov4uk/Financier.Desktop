@@ -151,6 +151,10 @@ public partial class LocalizationManager
             // Dialog Messages
             [nameof(split_transfers_currency_not_supported)] = "Podziałowe transfery z walutą różną od waluty rachunku nie są jeszcze obsługiwane",
             [nameof(not_supported)] = "Nie obsługiwane",
+            // Reports
+            [nameof(income_expense_period)] = "Dochody / wydatki za okres",
+            [nameof(structure)] = "Struktura",
+            [nameof(dynamics)] = "Dynamika",
         };
 }
 

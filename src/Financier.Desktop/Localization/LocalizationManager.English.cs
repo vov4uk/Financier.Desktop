@@ -159,5 +159,9 @@ public partial class LocalizationManager
             // Dialog Messages
             [nameof(split_transfers_currency_not_supported)] = "Split-transfers with a currency differ from account's currency are not yet supported",
             [nameof(not_supported)] = "Not supported",
+            // Reports
+            [nameof(income_expense_period)] = "Income / expense for the period",
+            [nameof(structure)] = "Structure",
+            [nameof(dynamics)] = "Dynamics",
         };
 }

@@ -8,7 +8,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
-             xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="900">
@@ -20,7 +20,6 @@
             <converters:AmountConverter x:Key="AmountConverter"/>
             <converters:UnixTimeConverter x:Key="DatetimeConverter" />
             <converters:MccConverter x:Key="MccConverter" />
-            <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -38,13 +37,13 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" FontSize="12"
-                   Text="{Binding Data.LocalizationManager.please_select_category_account, Source={StaticResource Proxy}}"/>
+                   Text="{loc:Translate Key=please_select_category_account}"/>
             <Button Grid.Column="1"
                     Margin="2"
                     Width="65"
                     HorizontalAlignment="Stretch"
-                    Content="{Binding Data.LocalizationManager.new_rule, Source={StaticResource Proxy}}"
-                    ToolTip="{Binding Data.LocalizationManager.add_rule_tooltip, Source={StaticResource Proxy}}"
+                    Content="{loc:Translate Key=new_rule}"
+                    ToolTip="{loc:Translate Key=add_rule_tooltip}"
                     Command="{Binding Path=AddRuleCommand}"
                     CommandParameter="{Binding SelectedItem, ElementName=MainGrid}"
                 />
@@ -52,8 +51,8 @@
                     Margin="2"
                     Width="65"
                     HorizontalAlignment="Stretch"
-                    Content="{Binding Data.LocalizationManager.delete_row, Source={StaticResource Proxy}}"
-                    ToolTip="{Binding Data.LocalizationManager.delete_row_tooltip, Source={StaticResource Proxy}}"
+                    Content="{loc:Translate Key=delete_row}"
+                    ToolTip="{loc:Translate Key=delete_row_tooltip}"
                     Command="{Binding Path=DeleteCommand}"
                     CommandParameter="{Binding SelectedItem, ElementName=MainGrid}"
                 />
@@ -61,8 +60,8 @@
                     Margin="2"
                     Width="65"
                     HorizontalAlignment="Stretch"
-                    Content="{Binding Data.LocalizationManager.clear_notes, Source={StaticResource Proxy}}"
-                    ToolTip="{Binding Data.LocalizationManager.clear_notes_tooltip, Source={StaticResource Proxy}}"
+                    Content="{loc:Translate Key=clear_notes}"
+                    ToolTip="{loc:Translate Key=clear_notes_tooltip}"
                     Command="{Binding Path=ClearAllNotesCommand}"
                 />
         </Grid>
@@ -87,13 +86,13 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Binding Data.LocalizationManager.date, Source={StaticResource Proxy}}"
+                <DataGridTextColumn Header="{loc:Translate Key=date}"
                                     Binding="{Binding Path=DateTime, Converter= {StaticResource DatetimeConverter}}"
                                     IsReadOnly="True"/>
-                <DataGridTextColumn Header="{Binding Data.LocalizationManager.mcc, Source={StaticResource Proxy}}"
+                <DataGridTextColumn Header="{loc:Translate Key=mcc}"
                                     Binding="{Binding Path=MCC, Converter= {StaticResource MccConverter}}"
                                     IsReadOnly="True"/>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.from_account, Source={StaticResource Proxy}}" IsReadOnly="False">
+                <DataGridTemplateColumn Header="{loc:Translate Key=from_account}" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
@@ -119,7 +118,7 @@
                                               AncestorType={x:Type DataGrid}},
                                               Path=DataContext.MonoAccount.Title}"
                                     IsReadOnly="True"/>-->
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.category, Source={StaticResource Proxy}}" IsReadOnly="False" MaxWidth="140">
+                <DataGridTemplateColumn Header="{loc:Translate Key=category}" IsReadOnly="False" MaxWidth="140">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
@@ -135,7 +134,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.to_account, Source={StaticResource Proxy}}" IsReadOnly="False">
+                <DataGridTemplateColumn Header="{loc:Translate Key=to_account}" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
@@ -155,7 +154,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.amount, Source={StaticResource Proxy}}"
+                <DataGridTemplateColumn Header="{loc:Translate Key=amount}"
                                         dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -182,7 +181,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.original, Source={StaticResource Proxy}}"
+                <DataGridTemplateColumn Header="{loc:Translate Key=original}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -196,7 +195,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.location, Source={StaticResource Proxy}}"
+                <DataGridTemplateColumn Header="{loc:Translate Key=location}"
                                         IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -213,7 +212,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.note, Source={StaticResource Proxy}}"
+                <DataGridTemplateColumn Header="{loc:Translate Key=note}"
                                         IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -254,7 +253,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.project, Source={StaticResource Proxy}}" IsReadOnly="False">
+                <DataGridTemplateColumn Header="{loc:Translate Key=project}" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
@@ -270,7 +269,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.payee, Source={StaticResource Proxy}}" IsReadOnly="False">
+                <DataGridTemplateColumn Header="{loc:Translate Key=payee}" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"

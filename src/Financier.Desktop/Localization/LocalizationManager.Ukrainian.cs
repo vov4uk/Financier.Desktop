@@ -151,6 +151,10 @@ public partial class LocalizationManager
             // Dialog Messages
             [nameof(split_transfers_currency_not_supported)] = "Розділені перекази з валютою, яка відрізняється від валюти рахунку, ще не підтримуються",
             [nameof(not_supported)] = "Не підтримується",
+            // Reports
+            [nameof(income_expense_period)] = "Доходи / видатки за період",
+            [nameof(structure)] = "Структура",
+            [nameof(dynamics)] = "Динаміка",
         };
 }
 

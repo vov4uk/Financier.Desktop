@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
@@ -11,7 +11,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -28,9 +27,9 @@
                               CommandParameter="{Binding SelectedValue}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="{Binding Data.LocalizationManager.id, Source={StaticResource Proxy}}" Binding="{Binding Path=Id}" />
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.active, Source={StaticResource Proxy}}" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
-                <DataGridTextColumn Header="{Binding Data.LocalizationManager.title, Source={StaticResource Proxy}}" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn Header="{loc:Translate Key=id}" Binding="{Binding Path=Id}" />
+                <DataGridTemplateColumn Header="{loc:Translate Key=active}" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
+                <DataGridTextColumn Header="{loc:Translate Key=title}" Binding="{Binding Path=Title}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

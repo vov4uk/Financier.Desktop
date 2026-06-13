@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_title" xml:space="preserve">
+    <value>Financier Desktop</value>
+  </data>
+  <data name="openBackup" xml:space="preserve">
+    <value>Відкрити резервну копію</value>
+  </data>
+  <data name="saveBackup" xml:space="preserve">
+    <value>Зберегти резервну копію</value>
+  </data>
+  <data name="saveAsDb" xml:space="preserve">
+    <value>Зберегти як .db</value>
+  </data>
+  <data name="setDefaultDirectory" xml:space="preserve">
+    <value>Встановити каталог за замовчуванням</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>Налаштування</value>
+  </data>
+  <data name="exit" xml:space="preserve">
+    <value>Вихід</value>
+  </data>
+  <data name="defaultBackupDirectory" xml:space="preserve">
+    <value>Каталог за замовчуванням :</value>
+  </data>
+  <data name="main" xml:space="preserve">
+    <value>Головна</value>
+  </data>
+  <data name="entities" xml:space="preserve">
+    <value>Сутності</value>
+  </data>
+  <data name="accounts" xml:space="preserve">
+    <value>Рахунки</value>
+  </data>
+  <data name="categories" xml:space="preserve">
+    <value>Категорії</value>
+  </data>
+  <data name="projects" xml:space="preserve">
+    <value>Проекти</value>
+  </data>
+  <data name="payees" xml:space="preserve">
+    <value>Одержувачі</value>
+  </data>
+  <data name="locations" xml:space="preserve">
+    <value>Місцезнаходження</value>
+  </data>
+  <data name="currencies" xml:space="preserve">
+    <value>Валюти</value>
+  </data>
+  <data name="exchange_rates" xml:space="preserve">
+    <value>Обмінні курси</value>
+  </data>
+  <data name="blotter" xml:space="preserve">
+    <value>Журнал</value>
+  </data>
+  <data name="reports" xml:space="preserve">
+    <value>Звіти</value>
+  </data>
+  <data name="rules" xml:space="preserve">
+    <value>Правила</value>
+  </data>
+  <data name="import" xml:space="preserve">
+    <value>Імпорт</value>
+  </data>
+  <data name="monobank_csv" xml:space="preserve">
+    <value>Монобанк CSV</value>
+  </data>
+  <data name="a_bank" xml:space="preserve">
+    <value>А Банк</value>
+  </data>
+  <data name="pdf" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="xlsx" xml:space="preserve">
+    <value>XLSX</value>
+  </data>
+  <data name="pumb_pdf" xml:space="preserve">
+    <value>ПУМБ PDF</value>
+  </data>
+  <data name="pireus_pdf" xml:space="preserve">
+    <value>Піреус PDF</value>
+  </data>
+  <data name="privat_xlsx" xml:space="preserve">
+    <value>Приват XLSX</value>
+  </data>
+  <data name="pko_pdf" xml:space="preserve">
+    <value>PKO PDF</value>
+  </data>
+  <data name="transaction" xml:space="preserve">
+    <value>Операція</value>
+  </data>
+  <data name="add_expense" xml:space="preserve">
+    <value>Додати витрату</value>
+  </data>
+  <data name="add_transfer" xml:space="preserve">
+    <value>Додати переказ</value>
+  </data>
+  <data name="add_template" xml:space="preserve">
+    <value>Додати шаблон</value>
+  </data>
+  <data name="edit" xml:space="preserve">
+    <value>Редагувати</value>
+  </data>
+  <data name="duplicate" xml:space="preserve">
+    <value>Дублювати</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="info" xml:space="preserve">
+    <value>Інформація</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>Додати</value>
+  </data>
+  <data name="project" xml:space="preserve">
+    <value>Проект</value>
+  </data>
+  <data name="payee" xml:space="preserve">
+    <value>Одержувач</value>
+  </data>
+  <data name="rule" xml:space="preserve">
+    <value>Правило</value>
+  </data>
+  <data name="download" xml:space="preserve">
+    <value>Завантажити</value>
+  </data>
+  <data name="general" xml:space="preserve">
+    <value>Загальні</value>
+  </data>
+  <data name="checkForUpdates" xml:space="preserve">
+    <value>Перевірити оновлення</value>
+  </data>
+  <data name="drag_and_drop" xml:space="preserve">
+    <value>Перетягніть файл .backup сюди</value>
+  </data>
+  <data name="address" xml:space="preserve">
+    <value>Адреса</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Назва</value>
+  </data>
+  <data name="active" xml:space="preserve">
+    <value>Активний</value>
+  </data>
+  <data name="id" xml:space="preserve">
+    <value>Ідентифікатор</value>
+  </data>
+  <data name="transaction_details" xml:space="preserve">
+    <value>Деталі операції</value>
+  </data>
+  <data name="account" xml:space="preserve">
+    <value>Рахунок</value>
+  </data>
+  <data name="category" xml:space="preserve">
+    <value>Категорія</value>
+  </data>
+  <data name="currency" xml:space="preserve">
+    <value>Валюта</value>
+  </data>
+  <data name="same_as_account" xml:space="preserve">
+    <value>Як у рахунку</value>
+  </data>
+  <data name="unsplit_amount" xml:space="preserve">
+    <value>Невинесена сума</value>
+  </data>
+  <data name="open_recipes_wizard" xml:space="preserve">
+    <value>Відкрити майстер рецептів</value>
+  </data>
+  <data name="add_split_transfers" xml:space="preserve">
+    <value>Додати розділені перекази</value>
+  </data>
+  <data name="add_split_transactions" xml:space="preserve">
+    <value>Додати розділені операції</value>
+  </data>
+  <data name="location" xml:space="preserve">
+    <value>Місцезнаходження</value>
+  </data>
+  <data name="note" xml:space="preserve">
+    <value>Примітка</value>
+  </data>
+  <data name="save" xml:space="preserve">
+    <value>Зберегти</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="refresh" xml:space="preserve">
+    <value>Оновити</value>
+  </data>
+  <data name="clear" xml:space="preserve">
+    <value>Очистити</value>
+  </data>
+  <data name="time" xml:space="preserve">
+    <value>Час</value>
+  </data>
+  <data name="amount" xml:space="preserve">
+    <value>Сума</value>
+  </data>
+  <data name="balance" xml:space="preserve">
+    <value>Залишок</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Опис</value>
+  </data>
+  <data name="total_amount" xml:space="preserve">
+    <value>Загальна сума</value>
+  </data>
+  <data name="include" xml:space="preserve">
+    <value>Включити</value>
+  </data>
+  <data name="last_transaction" xml:space="preserve">
+    <value>Остання операція</value>
+  </data>
+  <data name="symbol" xml:space="preserve">
+    <value>Символ</value>
+  </data>
+  <data name="is_default" xml:space="preserve">
+    <value>За замовчуванням</value>
+  </data>
+  <data name="location_details" xml:space="preserve">
+    <value>Деталі місцезнаходження</value>
+  </data>
+  <data name="is_active" xml:space="preserve">
+    <value>Активне</value>
+  </data>
+  <data name="rule_details" xml:space="preserve">
+    <value>Деталі правила</value>
+  </data>
+  <data name="conditions" xml:space="preserve">
+    <value>Умови</value>
+  </data>
+  <data name="actions" xml:space="preserve">
+    <value>Дії</value>
+  </data>
+  <data name="what_should_happen" xml:space="preserve">
+    <value>Що повинно статися, якщо умови виконані?</value>
+  </data>
+  <data name="check_for_updates_on_start" xml:space="preserve">
+    <value>Перевірити оновлення при запуску?</value>
+  </data>
+  <data name="providers" xml:space="preserve">
+    <value>Постачальники</value>
+  </data>
+  <data name="app_id" xml:space="preserve">
+    <value>ID програми</value>
+  </data>
+  <data name="update_exchange_rates_on_start" xml:space="preserve">
+    <value>Оновити обмінні курси при запуску?</value>
+  </data>
+  <data name="details" xml:space="preserve">
+    <value>Деталі</value>
+  </data>
+  <data name="transfer_details" xml:space="preserve">
+    <value>Деталі переказу</value>
+  </data>
+  <data name="from_account" xml:space="preserve">
+    <value>З рахунку</value>
+  </data>
+  <data name="to_account" xml:space="preserve">
+    <value>На рахунок</value>
+  </data>
+  <data name="rate" xml:space="preserve">
+    <value>Коефіцієнт</value>
+  </data>
+  <data name="from" xml:space="preserve">
+    <value>З</value>
+  </data>
+  <data name="to" xml:space="preserve">
+    <value>На</value>
+  </data>
+  <data name="date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="created" xml:space="preserve">
+    <value>Створено</value>
+  </data>
+  <data name="condition" xml:space="preserve">
+    <value>Умова</value>
+  </data>
+  <data name="back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="finish" xml:space="preserve">
+    <value>Завершити</value>
+  </data>
+  <data name="next_step" xml:space="preserve">
+    <value>Далі</value>
+  </data>
+  <data name="select_account" xml:space="preserve">
+    <value>Виберіть рахунок</value>
+  </data>
+  <data name="please_select_transaction" xml:space="preserve">
+    <value>Виберіть операцію з таким же залишком як вибраний рахунок, інакше будуть імпортовані всі операції</value>
+  </data>
+  <data name="operation_amount" xml:space="preserve">
+    <value>Сума операції</value>
+  </data>
+  <data name="exchange_rate" xml:space="preserve">
+    <value>Обмінний курс</value>
+  </data>
+  <data name="commission" xml:space="preserve">
+    <value>Комісія</value>
+  </data>
+  <data name="cashback" xml:space="preserve">
+    <value>Кешбек</value>
+  </data>
+  <data name="please_select_category_account" xml:space="preserve">
+    <value>Виберіть Категорію, З/На рахунок, Місцезнаходження ...</value>
+  </data>
+  <data name="new_rule" xml:space="preserve">
+    <value>Нове правило</value>
+  </data>
+  <data name="delete_row" xml:space="preserve">
+    <value>Видалити рядок</value>
+  </data>
+  <data name="clear_notes" xml:space="preserve">
+    <value>Очистити примітки</value>
+  </data>
+  <data name="add_rule_tooltip" xml:space="preserve">
+    <value>Додати нове правило та застосувати його до всіх операцій</value>
+  </data>
+  <data name="delete_row_tooltip" xml:space="preserve">
+    <value>Видалити вибраний рядок (Del)</value>
+  </data>
+  <data name="clear_notes_tooltip" xml:space="preserve">
+    <value>Очистити примітку для всіх операцій</value>
+  </data>
+  <data name="mcc" xml:space="preserve">
+    <value>MCC</value>
+  </data>
+  <data name="original" xml:space="preserve">
+    <value>Оригіналь</value>
+  </data>
+  <data name="recipes_instructions_line1" xml:space="preserve">
+    <value>Вставте текст рецепту. Зробіть фото рецепту та розберіть текст за допомогою Google Lens чи іншого OCR. Я шукатиму числа з символом товару.</value>
+  </data>
+  <data name="recipes_instructions_line2" xml:space="preserve">
+    <value>Наприклад: "123.45 A", "-54,32-A", "100 Б", "123.01 a"</value>
+  </data>
+  <data name="paste" xml:space="preserve">
+    <value>Вставити</value>
+  </data>
+  <data name="highlight" xml:space="preserve">
+    <value>Виділити</value>
+  </data>
+  <data name="paste_tooltip" xml:space="preserve">
+    <value>Вставити текст з буфера обміну</value>
+  </data>
+  <data name="highlight_tooltip" xml:space="preserve">
+    <value>Виділити текст. Жовтий - рядок операції, зелений - інші числа</value>
+  </data>
+  <data name="reciept_wizard_total_format" xml:space="preserve">
+    <value>Всього : {0:F2} Поточне : {1:F2} Різниця : {2:F2}</value>
+  </data>
+  <data name="please_select_category_project" xml:space="preserve">
+    <value>Виберіть Категорію, Проект...</value>
+  </data>
+  <data name="total_label" xml:space="preserve">
+    <value>Всього</value>
+  </data>
+  <data name="add_row" xml:space="preserve">
+    <value>Додати рядок</value>
+  </data>
+  <data name="order" xml:space="preserve">
+    <value>Замовлення</value>
+  </data>
+  <data name="calculate_totals" xml:space="preserve">
+    <value>Обчислити загальні суми</value>
+  </data>
+  <data name="add_new_transaction" xml:space="preserve">
+    <value>Додати нову операцію</value>
+  </data>
+  <data name="backup_done" xml:space="preserve">
+    <value>Резервну копію збережено.</value>
+  </data>
+  <data name="import_result" xml:space="preserve">
+    <value>Імпортовано {0} операцій.</value>
+  </data>
+  <data name="import_result_with_duplicates" xml:space="preserve">
+    <value>Імпортовано {0} операцій. Пропущено {1} дублікатів.</value>
+  </data>
+  <data name="saved_message" xml:space="preserve">
+    <value>Збережено {0}</value>
+  </data>
+  <data name="latest_version" xml:space="preserve">
+    <value>Ви використовуєте найновішу версію.</value>
+  </data>
+  <data name="update_available" xml:space="preserve">
+    <value>Доступна версія {0}</value>
+  </data>
+  <data name="update_available_question" xml:space="preserve">
+    <value>Ви хочете перезагрузити програму та застосувати оновлення?</value>
+  </data>
+  <data name="downloading_update" xml:space="preserve">
+    <value>Завантажуємо оновлення до {0} v{1}...</value>
+  </data>
+  <data name="update_downloaded" xml:space="preserve">
+    <value>Оновлення завантажено. Програма зараз перезагрузиться для застосування оновлення.</value>
+  </data>
+  <data name="update_failed" xml:space="preserve">
+    <value>Не вдалося виконати оновлення програми</value>
+  </data>
+  <data name="exchange_rates_updated" xml:space="preserve">
+    <value>Обмінні курси успішно оновлені від {0}.</value>
+  </data>
+  <data name="exchange_rates_exist" xml:space="preserve">
+    <value>Обмінні курси для вказаних валют та дати вже існують.</value>
+  </data>
+  <data name="exchange_rates_not_updated" xml:space="preserve">
+    <value>Обмінні курси не оновлені.</value>
+  </data>
+  <data name="exchange_rates_provider_not_configured" xml:space="preserve">
+    <value>Постачальник обмінних курсів не налаштований.</value>
+  </data>
+  <data name="settings_corrupted" xml:space="preserve">
+    <value>Файл налаштувань був пошкоджений і скинутий до замовчуванням. Будь ласка, перенастройте налаштування обмінних курсів.</value>
+  </data>
+  <data name="entities_loaded" xml:space="preserve">
+    <value>Успішно завантажено {0} сутностей</value>
+  </data>
+  <data name="confirm_delete_transaction" xml:space="preserve">
+    <value>Ви впевнені, що хочете видалити операцію?</value>
+  </data>
+  <data name="split_transfers_currency_not_supported" xml:space="preserve">
+    <value>Розділені перекази з валютою, яка відрізняється від валюти рахунку, ще не підтримуються</value>
+  </data>
+  <data name="not_supported" xml:space="preserve">
+    <value>Не підтримується</value>
+  </data>
+  <data name="income_expense_period" xml:space="preserve">
+    <value>Доходи / видатки за період</value>
+  </data>
+  <data name="structure" xml:space="preserve">
+    <value>Структура</value>
+  </data>
+  <data name="dynamics" xml:space="preserve">
+    <value>Динаміка</value>
+  </data>
+  <data name="csv" xml:space="preserve">
+    <value>CSV</value>
+  </data>
+</root>

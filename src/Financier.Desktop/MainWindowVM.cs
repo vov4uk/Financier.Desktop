@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Financier.Common.Localization;
 using Financier.Adapter;
 using Financier.Common;
 using Financier.Common.Entities;
@@ -54,6 +56,7 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _settingsCommand;
         private IAsyncCommand _refreshExchangeRatesCommand;
         private IAsyncCommand<bool> _checkForUpdateCommand;
+        private ICommand _changeLanguageCommand;
         private readonly IBackupWriter backupWriter;
         private BlotterVM blotterVm;
         private BindableBase currentPage;
@@ -191,6 +194,14 @@ namespace Financier.Desktop.ViewModel
         public IAsyncCommand SettingsCommand => _settingsCommand ??= new AsyncCommand(Settings_Click);
         public IAsyncCommand RefreshExchangeRatesCommand => _refreshExchangeRatesCommand ??= new AsyncCommand(RefreshExchangeRates_Click);
         public IAsyncCommand<bool> CheckForUpdateCommand => _checkForUpdateCommand ??= new AsyncCommand<bool>(CheckForUpdatesAsync);
+
+        public ICommand ChangeLanguageCommand => _changeLanguageCommand ??= new DelegateCommand(() =>
+        {
+            var svc = LocalizationService.Instance;
+            svc.CurrentCulture = svc.CurrentCulture.Name == "pl"
+                ? CultureInfo.GetCultureInfo("en")
+                : CultureInfo.GetCultureInfo("pl");
+        });
 
         public async Task OpenBackup(string backupPath)
         {

@@ -31,12 +31,12 @@ namespace Financier.Desktop.Helpers.BankHelper
                 var operationAmount = GetDouble(item.OperationAmount);
                 var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
 
-                if (cardCurrencyAmount == 0)
+                if (Math.Abs(cardCurrencyAmount) < 0.0001)
                 {
                     cardCurrencyAmount = operationAmount;
                 }
 
-                if (operationAmount == 0)
+                if (Math.Abs(operationAmount) < 0.0001)
                 {
                     continue;
                 }

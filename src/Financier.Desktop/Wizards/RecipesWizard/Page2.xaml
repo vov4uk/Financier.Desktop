@@ -7,16 +7,16 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
-             xmlns:vm="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="900">
+             d:DesignHeight="300"
+             d:DesignWidth="900">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:AmountConverter x:Key="AmountConverter"/>
-            <vm:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -38,29 +38,29 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" FontSize="12"
                    VerticalAlignment="Center"
-                   Text="{Binding Data.LocalizationManager.please_select_category_project, Source={StaticResource Proxy}}"/>
+                   Text="{loc:Translate Key=please_select_category_project}"/>
             <Button Grid.Column="1"
                     MinWidth="65"
                     Margin="2"
                     HorizontalAlignment="Stretch"
-                    Content="{Binding Data.LocalizationManager.total_label, Source={StaticResource Proxy}}"
-                    ToolTip="{Binding Data.LocalizationManager.calculate_totals, Source={StaticResource Proxy}}"
+                    Content="{loc:Translate Key=total_label}"
+                    ToolTip="{loc:Translate Key=calculate_totals}"
                     Command="{Binding Path=TotalCommand}"
                     />
             <Button Grid.Column="2"
                     MinWidth="65"
                     Margin="2"
                     HorizontalAlignment="Stretch"
-                    Content="{Binding Data.LocalizationManager.add_row, Source={StaticResource Proxy}}"
-                    ToolTip="{Binding Data.LocalizationManager.add_new_transaction, Source={StaticResource Proxy}}"
+                    Content="{loc:Translate Key=add_row}"
+                    ToolTip="{loc:Translate Key=add_new_transaction}"
                     Command="{Binding Path=AddRowCommand}"
                 />
             <Button Grid.Column="3"
                     Margin="2"
                     Width="65"
                     HorizontalAlignment="Stretch"
-                    Content="{Binding Data.LocalizationManager.delete_row, Source={StaticResource Proxy}}"
-                    ToolTip="{Binding Data.LocalizationManager.delete_row_tooltip, Source={StaticResource Proxy}}"
+                    Content="{loc:Translate Key=delete_row}"
+                    ToolTip="{loc:Translate Key=delete_row_tooltip}"
                     Command="{Binding Path=DeleteRowCommand}"
                     CommandParameter="{Binding SelectedItem, ElementName=MainGrid}"
                 />
@@ -68,8 +68,8 @@
                     Margin="2"
                     Width="65"
                     HorizontalAlignment="Stretch"
-                    Content="{Binding Data.LocalizationManager.clear_notes, Source={StaticResource Proxy}}"
-                    ToolTip="{Binding Data.LocalizationManager.clear_notes_tooltip, Source={StaticResource Proxy}}"
+                    Content="{loc:Translate Key=clear_notes}"
+                    ToolTip="{loc:Translate Key=clear_notes_tooltip}"
                     Command="{Binding Path=ClearAllNotesCommand}"
                 />
         </Grid>
@@ -89,10 +89,10 @@
                             CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="{Binding Data.LocalizationManager.order, Source={StaticResource Proxy}}"
+                <DataGridTextColumn Header="{loc:Translate Key=order}"
                                     Binding="{Binding Path=Order, UpdateSourceTrigger=PropertyChanged}"
                                     IsReadOnly="True"/>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.category, Source={StaticResource Proxy}}" IsReadOnly="False">
+                <DataGridTemplateColumn Header="{loc:Translate Key=category}" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"
@@ -108,7 +108,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.amount, Source={StaticResource Proxy}}"
+                <DataGridTemplateColumn Header="{loc:Translate Key=amount}"
                                         IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -125,7 +125,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.note, Source={StaticResource Proxy}}"
+                <DataGridTemplateColumn Header="{loc:Translate Key=note}"
                                         MaxWidth="200"
                                         MinWidth="100"
                                         IsReadOnly="False">
@@ -169,7 +169,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="{Binding Data.LocalizationManager.project, Source={StaticResource Proxy}}" IsReadOnly="False">
+                <DataGridTemplateColumn Header="{loc:Translate Key=project}" IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:WatermarkComboBox IsEditable="True"

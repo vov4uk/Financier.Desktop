@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:oxy="http://oxyplot.org/wpf"
-             xmlns:local="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="800">
     <UserControl.Resources>
@@ -12,7 +12,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -22,7 +21,7 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal"
                     Grid.Row="0">
-            <GroupBox Header="{Binding Data.LocalizationManager.from, Source={StaticResource Proxy}}"
+            <GroupBox Header="{loc:Translate Key=from}"
                       Width="120"
                       BorderThickness="0">
                 <ComboBox DisplayMemberPath="Name"
@@ -30,7 +29,7 @@
                       Margin="2 0"
                       ItemsSource="{Binding Path=FromCurrencies}" />
             </GroupBox>
-            <GroupBox Header="{Binding Data.LocalizationManager.to, Source={StaticResource Proxy}}"
+            <GroupBox Header="{loc:Translate Key=to}"
                       Width="120"
                       BorderThickness="0"
                       IsEnabled="{Binding Path=From, Converter={StaticResource NullToBoolConverter}, UpdateSourceTrigger=PropertyChanged}">
@@ -39,7 +38,7 @@
                       Margin="2 0"
                       ItemsSource="{Binding Path=ToCurrencies}" />
             </GroupBox>
-            <Button ToolTip="{Binding Data.LocalizationManager.refresh, Source={StaticResource Proxy}}"
+            <Button ToolTip="{loc:Translate Key=refresh}"
                             Height="24"
                             Width="24"
                             BorderThickness="0"
@@ -66,10 +65,10 @@
                   FontSize="14"
                   IsReadOnly="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="{Binding Data.LocalizationManager.date, Source={StaticResource Proxy}}" Binding="{Binding Path=Date, Converter= {StaticResource DatetimeConverter}}"/>
-                    <DataGridTextColumn Header="{Binding Data.LocalizationManager.from, Source={StaticResource Proxy}}" Binding="{Binding Path=FromCurrency.Name}"/>
-                    <DataGridTextColumn Header="{Binding Data.LocalizationManager.to, Source={StaticResource Proxy}}" Binding="{Binding Path=ToCurrency.Name}"/>
-                    <DataGridTextColumn Header="{Binding Data.LocalizationManager.rate, Source={StaticResource Proxy}}" Binding="{Binding Path=Rate}"/>
+                    <DataGridTextColumn Header="{loc:Translate Key=date}" Binding="{Binding Path=Date, Converter= {StaticResource DatetimeConverter}}"/>
+                    <DataGridTextColumn Header="{loc:Translate Key=from}" Binding="{Binding Path=FromCurrency.Name}"/>
+                    <DataGridTextColumn Header="{loc:Translate Key=to}" Binding="{Binding Path=ToCurrency.Name}"/>
+                    <DataGridTextColumn Header="{loc:Translate Key=rate}" Binding="{Binding Path=Rate}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

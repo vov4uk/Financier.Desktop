@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
-             xmlns:local="clr-namespace:Financier.Desktop.ViewModel"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionControlVM}, IsDesignTimeCreatable=False}"
@@ -18,7 +18,6 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:AmountConverter x:Key="AmountConverter" />
-            <local:BindingProxy x:Key="Proxy" Data="{Binding}" />
             <Style TargetType="{x:Type xctk:DecimalUpDown}">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Transaction.IsAmountNegative}" Value="true">
@@ -171,7 +170,7 @@
 
         <TextBlock          Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3"
                             Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                            Text="{Binding Data.LocalizationManager.rate, Source={StaticResource Proxy}}"/>
+                            Text="{loc:Translate Key=rate}"/>
         <xctk:DecimalUpDown Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3"
                             Value="{Binding Transaction.Rate}"
                             Increment="0.00001"
