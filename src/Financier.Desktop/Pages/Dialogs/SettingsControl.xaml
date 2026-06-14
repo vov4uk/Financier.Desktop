@@ -23,6 +23,12 @@
                 <TabItem.Content>
                     <StackPanel Margin="5">
                         <CheckBox Margin="5" Content="{loc:Translate Key=check_for_updates_on_start}" IsChecked="{Binding Entity.General.CheckForUpdatesOnStart, Mode=TwoWay}"/>
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="{loc:Translate Key=language}" VerticalAlignment="Center" Padding="0"/>
+                            <ComboBox Width="150" Margin="5,0,0,0"
+                                      ItemsSource="{loc:EnumBinding {x:Type loc:Language}}"
+                                      SelectedItem="{Binding Entity.General.Language, Mode=TwoWay}"/>
+                        </StackPanel>
                     </StackPanel>
                 </TabItem.Content>
             </TabItem>

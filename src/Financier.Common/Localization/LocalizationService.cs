@@ -65,6 +65,17 @@ public sealed class LocalizationService : INotifyPropertyChanged
         }
     }
 
+    public void ApplyLanguage(Language language)
+    {
+        CurrentCulture = language switch
+        {
+            Language.English => CultureInfo.GetCultureInfo("en"),
+            Language.Ukrainian => CultureInfo.GetCultureInfo("uk"),
+            Language.Polish => CultureInfo.GetCultureInfo("pl"),
+            _ => CultureInfo.InstalledUICulture,
+        };
+    }
+
     public XmlLanguage XmlLanguage
     {
         get
@@ -196,6 +207,7 @@ public sealed class LocalizationService : INotifyPropertyChanged
     public string actions => Get();
     public string what_should_happen => Get();
     public string check_for_updates_on_start => Get();
+    public string language => Get();
     public string providers => Get();
     public string app_id => Get();
     public string update_exchange_rates_on_start => Get();
@@ -270,6 +282,7 @@ public sealed class LocalizationService : INotifyPropertyChanged
     public string exchange_rates_provider_not_configured => Get();
     public string settings_corrupted => Get();
     public string entities_loaded => Get();
+    public string sub_transaction => Get();
 
     // Delete Confirmation Messages
     public string confirm_delete_transaction => Get();
@@ -282,4 +295,5 @@ public sealed class LocalizationService : INotifyPropertyChanged
     public string income_expense_period => Get();
     public string structure => Get();
     public string dynamics => Get();
+    public string transfer => Get();
 }

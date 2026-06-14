@@ -142,7 +142,7 @@
                     <RibbonApplicationMenu.AuxiliaryPaneContent>
                         <RibbonGallery CanUserFilter="False"
                                        ScrollViewer.VerticalScrollBarVisibility="Auto">
-                            <RibbonGalleryCategory Header="{loc:Translate Key=defaultBackupDirectory}"
+                            <RibbonGalleryCategory Header="{loc:Translate Key=default_backup_directory}"
                                                    Background="Transparent">
                                 <RibbonGalleryCategory.Items>
                                     <RibbonGalleryItem IsEnabled="False">

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 using Financier.Adapter;
+using Financier.Common.Localization;
 using Financier.DataAccess;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Helpers.BankHelper;
@@ -47,6 +48,7 @@ namespace Financier.Desktop
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
             SettingsService.Current.Load();
+            LocalizationService.Instance.ApplyLanguage(SettingsService.Current.Language);
             var bakupFolder = SettingsService.Current.DefaultBackupDir ?? @$"C:\Users\{Environment.UserName}\Dropbox\apps\Financisto Holo";
             ViewModel.DefaultBackupDirectory = SettingsService.Current.DefaultBackupDir;
             ViewModel.AppSettings = SettingsService.Current.AppSettings;
