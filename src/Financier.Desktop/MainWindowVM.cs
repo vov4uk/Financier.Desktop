@@ -19,7 +19,6 @@ using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Helpers.BankHelper;
 using Financier.Desktop.Pages.Dialogs;
-using Financier.Desktop.Properties;
 using Financier.Desktop.Services;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Wizards;
@@ -493,8 +492,8 @@ namespace Financier.Desktop.ViewModel
                         SettingsProtection.Encrypt(updated.ExchangeRates.OpenExchangeRatesProviderAppId);
                 }
                 string json = jObj.ToString(Formatting.Indented);
-                Settings.Default.AppSettings = json;
-                Settings.Default.Save();
+                SettingsService.Current.AppSettings = json;
+                SettingsService.Current.Save();
                 AppSettings = json;
             }
         }
@@ -588,8 +587,8 @@ namespace Financier.Desktop.ViewModel
                 {
                     Logger.Warn(ex, "Failed to deserialize AppSettings; resetting to defaults.");
                     AppSettings = null;
-                    Settings.Default.AppSettings = null;
-                    Settings.Default.Save();
+                    SettingsService.Current.AppSettings = null;
+                    SettingsService.Current.Save();
                     notifier?.ShowWarning(LocalizationService.Instance.settings_corrupted);
 
                 }
