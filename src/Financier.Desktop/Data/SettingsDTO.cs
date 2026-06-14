@@ -1,4 +1,5 @@
-﻿using Financier.Common.Localization;
+﻿using Financier.Common.Entities;
+using Financier.Common.Localization;
 using Prism.Mvvm;
 
 namespace Financier.Desktop.Data
@@ -43,13 +44,13 @@ namespace Financier.Desktop.Data
 
     public class SettingsExchangeRates: BindableBase
     {
-        private string exchangeRatesProvider;
+        private ExchangeRatesProviders exchangeRatesProvider;
         private string openExchangeRatesProviderAppId;
         private bool updateOnStart;
 
 
 
-        public string Provider
+        public ExchangeRatesProviders Provider
         {
             get => exchangeRatesProvider;
             set

@@ -138,7 +138,7 @@
   <data name="exit" xml:space="preserve">
     <value>Вихід</value>
   </data>
-  <data name="defaultBackupDirectory" xml:space="preserve">
+  <data name="default_backup_directory" xml:space="preserve">
     <value>Каталог за замовчуванням :</value>
   </data>
   <data name="main" xml:space="preserve">
@@ -557,5 +557,101 @@
   </data>
   <data name="csv" xml:space="preserve">
     <value>CSV</value>
+  </data>
+  <data name="reports_income_expense_for_period" xml:space="preserve">
+    <value>Доходи/витрати за період</value>
+  </data>
+  <data name="reports_structure" xml:space="preserve">
+    <value>Структура</value>
+  </data>
+  <data name="reports_dynamics" xml:space="preserve">
+    <value>Динаміка</value>
+  </data>
+  <data name="reports_by_months" xml:space="preserve">
+    <value>За місяцями</value>
+  </data>
+  <data name="reports_assets_structure" xml:space="preserve">
+    <value>Структура активів</value>
+  </data>
+  <data name="reports_income_expense_structure" xml:space="preserve">
+    <value>Структура доходів-витрат</value>
+  </data>
+  <data name="reports_by_category" xml:space="preserve">
+    <value>За категоріями</value>
+  </data>
+  <data name="reports_saldo" xml:space="preserve">
+    <value>Сальдо</value>
+  </data>
+  <data name="reports_dynamics_of_expences_incomes" xml:space="preserve">
+    <value>Динаміка доходів-витрат</value>
+  </data>
+  <data name="reports_balance_dynamics" xml:space="preserve">
+    <value>Динаміка балансу</value>
+  </data>
+  <data name="view" xml:space="preserve">
+    <value>Вигляд</value>
+  </data>
+  <data name="graphics" xml:space="preserve">
+    <value>Графік</value>
+  </data>
+  <data name="grid" xml:space="preserve">
+    <value>Таблиця</value>
+  </data>
+  <data name="default" xml:space="preserve">
+    <value>За замовчуванням</value>
+  </data>
+  <data name="usd" xml:space="preserve">
+    <value>USD</value>
+  </data>
+  <data name="period" xml:space="preserve">
+    <value>Період</value>
+  </data>
+  <data name="type" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="income" xml:space="preserve">
+    <value>Доходи</value>
+  </data>
+  <data name="expense" xml:space="preserve">
+    <value>Витрати</value>
+  </data>
+  <data name="pie_chart" xml:space="preserve">
+    <value>Кругова діаграма</value>
+  </data>
+  <data name="from_" xml:space="preserve">
+    <value>Від :</value>
+  </data>
+  <data name="to_" xml:space="preserve">
+    <value>До :</value>
+  </data>
+  <data name="period_type_all_time" xml:space="preserve">
+    <value>Весь час</value>
+  </data>
+  <data name="period_type_today" xml:space="preserve">
+    <value>Сьогодні</value>
+  </data>
+  <data name="period_type_yesterday" xml:space="preserve">
+    <value>Вчора</value>
+  </data>
+  <data name="period_type_current_week" xml:space="preserve">
+    <value>Поточний тиждень</value>
+  </data>
+  <data name="period_type_previous_week" xml:space="preserve">
+    <value>Попередній тиждень</value>
+  </data>
+  <data name="period_type_previous_and_current_week" xml:space="preserve">
+    <value>Попередній та поточний тиждень</value>
+  </data>
+  <data name="period_type_current_month" xml:space="preserve">
+    <value>Поточний місяць</value>
+  </data>
+  <data name="period_type_previous_month" xml:space="preserve">
+    <value>Попередній місяць</value>
+  </data>
+  <data name="period_type_previous_and_current_month" xml:space="preserve">
+    <value>Попередній та поточний місяць</value>
+  </data>
+  <data name="period_type_custom" xml:space="preserve">
+    <value>Інше</value>
   </data>
 </root>

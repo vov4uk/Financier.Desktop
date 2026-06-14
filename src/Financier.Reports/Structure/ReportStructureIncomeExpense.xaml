@@ -4,7 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
              xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
-             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common">
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,36 +22,36 @@
         </Grid.RowDefinitions>
         <Grid Row="0">
             <DockPanel>
-                <GroupBox Header="Type"
+                <GroupBox Header="{loc:Translate Key=type}"
                           BorderThickness="0">
                     <DockPanel Width="56">
-                        <RadioButton ToolTip="Expense"
+                        <RadioButton ToolTip="{loc:Translate Key=expense}"
                                      Style="{StaticResource IconRadioButton}"
                                      IsChecked="True" >
                             <Image Source="{StaticResource IconExpense}"/>
                         </RadioButton>
-                        <RadioButton ToolTip="Income"
+                        <RadioButton ToolTip="{loc:Translate Key=income}"
                                      IsChecked="{Binding IsIncome, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Style="{StaticResource IconRadioButton}">
                             <Image Source="{StaticResource IconIncome}"/>
                         </RadioButton>
                     </DockPanel>
                 </GroupBox>
-                <GroupBox Header="View"
+                <GroupBox Header="{loc:Translate Key=view}"
                           BorderThickness="0">
                     <DockPanel Width="84">
-                        <RadioButton ToolTip="Pie chart"
+                        <RadioButton ToolTip="{loc:Translate Key=pie_chart}"
                                      x:Name="PieBtn"
                                      Style="{StaticResource IconRadioButton}">
                             <Image Source="{StaticResource IconChartPie}"/>
                         </RadioButton>
-                        <RadioButton ToolTip="Bar chart"
+                        <RadioButton ToolTip="{loc:Translate Key=bar_chart}"
                                      x:Name="BarBtn"
                                      IsChecked="True"
                                      Style="{StaticResource IconRadioButton}" >
                             <Image Source="{StaticResource IconChartBarVertical}"/>
                         </RadioButton>
-                        <RadioButton ToolTip="Grid"
+                        <RadioButton ToolTip="{loc:Translate Key=grid}"
                                      x:Name="GridBtn"
                                      Style="{StaticResource IconRadioButton}">
                             <Image Source="{StaticResource IconTableGray}"/>

@@ -138,7 +138,7 @@
   <data name="exit" xml:space="preserve">
     <value>Exit</value>
   </data>
-  <data name="defaultBackupDirectory" xml:space="preserve">
+  <data name="default_backup_directory" xml:space="preserve">
     <value>Default backup directory :</value>
   </data>
   <data name="main" xml:space="preserve">
@@ -557,5 +557,107 @@
   </data>
   <data name="csv" xml:space="preserve">
     <value>CSV</value>
+  </data>
+  <data name="reports_income_expense_for_period" xml:space="preserve">
+    <value>Income / expense for the period</value>
+  </data>
+  <data name="reports_structure" xml:space="preserve">
+    <value>Structure</value>
+  </data>
+  <data name="reports_dynamics" xml:space="preserve">
+    <value>Dynamics</value>
+  </data>
+  <data name="reports_by_months" xml:space="preserve">
+    <value>By months</value>
+  </data>
+  <data name="reports_assets_structure" xml:space="preserve">
+    <value>Asset structure</value>
+  </data>
+  <data name="reports_income_expense_structure" xml:space="preserve">
+    <value>Income-Expense structure</value>
+  </data>
+  <data name="reports_by_category" xml:space="preserve">
+    <value>By category</value>
+  </data>
+  <data name="reports_saldo" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="reports_dynamics_of_expences_incomes" xml:space="preserve">
+    <value>Dynamics of incomes-expenses</value>
+  </data>
+  <data name="reports_balance_dynamics" xml:space="preserve">
+    <value>Balance dynamics</value>
+  </data>
+  <data name="view" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="graphics" xml:space="preserve">
+    <value>Graphics</value>
+  </data>
+  <data name="grid" xml:space="preserve">
+    <value>Grid</value>
+  </data>
+  <data name="default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="usd" xml:space="preserve">
+    <value>USD</value>
+  </data>
+  <data name="period" xml:space="preserve">
+    <value>Period</value>
+  </data>
+  <data name="type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="income" xml:space="preserve">
+    <value>Income</value>
+  </data>
+  <data name="expense" xml:space="preserve">
+    <value>Expense</value>
+  </data>
+  <data name="bar_chart" xml:space="preserve">
+    <value>Bar Chart</value>
+  </data>
+  <data name="pie_chart" xml:space="preserve">
+    <value>Pie chart</value>
+  </data>
+  <data name="from_" xml:space="preserve">
+    <value>From :</value>
+  </data>
+  <data name="to_" xml:space="preserve">
+    <value>To :</value>
+  </data>
+  <data name="top_category" xml:space="preserve">
+    <value>Top category</value>
+  </data>
+  <data name="period_type_all_time" xml:space="preserve">
+    <value>All time</value>
+  </data>
+  <data name="period_type_today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="period_type_yesterday" xml:space="preserve">
+    <value>Yesterday</value>
+  </data>
+  <data name="period_type_current_week" xml:space="preserve">
+    <value>Current week</value>
+  </data>
+  <data name="period_type_previous_week" xml:space="preserve">
+    <value>Previous week</value>
+  </data>
+  <data name="period_type_previous_and_current_week" xml:space="preserve">
+    <value>Previous and current week</value>
+  </data>
+  <data name="period_type_current_month" xml:space="preserve">
+    <value>Current month</value>
+  </data>
+  <data name="period_type_previous_month" xml:space="preserve">
+    <value>Previous month</value>
+  </data>
+  <data name="period_type_previous_and_current_month" xml:space="preserve">
+    <value>Previous and current month</value>
+  </data>
+  <data name="period_type_custom" xml:space="preserve">
+    <value>Custom</value>
   </data>
 </root>

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:loc="clr-namespace:Financier.Common.Localization"
              MinWidth="140">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -11,7 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <GroupBox Header="Payee"
+    <GroupBox Header="{loc:Translate Key=payee}"
               BorderThickness="0">
         <ComboBox ItemTemplate="{StaticResource ResourceKey=IActive}"
                   TextSearch.TextPath="Title"

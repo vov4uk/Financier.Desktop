@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:loc="clr-namespace:Financier.Common.Localization"
              Width="120">
-    <GroupBox Header="Date"
+    <GroupBox Header="{loc:Translate Key=date}"
               BorderThickness="0">
         <DatePicker SelectedDate="{Binding DateFilter}"
                     Margin="2 0"/>

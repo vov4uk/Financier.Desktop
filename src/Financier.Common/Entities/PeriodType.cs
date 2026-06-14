@@ -1,38 +1,41 @@
 ﻿using System.ComponentModel;
+using Financier.Common.Attribute;
+using Financier.Converters;
 
 namespace Financier.Common.Entities
 {
+    [TypeConverter(typeof(EnumDescritpionTypeConverter))]
     public enum PeriodType
     {
 
-        [Description("All time")]
+        [LocalizedDescription("period_type_all_time")]
         AllTime,
 
-        [Description("Today")]
+        [LocalizedDescription("period_type_today")]
         Today,
 
-        [Description("Yesterday")]
+        [LocalizedDescription("period_type_yesterday")]
         Yesterday,
 
-        [Description("Current week")]
+        [LocalizedDescription("period_type_current_week")]
         CurrentWeek,
 
-        [Description("Previous week")]
+        [LocalizedDescription("period_type_previous_week")]
         PreviousWeek,
 
-        [Description("Previous and current week")]
+        [LocalizedDescription("period_type_previous_and_current_week")]
         PreviousAndCurrentWeek,
 
-        [Description("Current month")]
+        [LocalizedDescription("period_type_current_month")]
         CurrentMonth,
 
-        [Description("Previous month")]
+        [LocalizedDescription("period_type_previous_month")]
         PreviousMonth,
 
-        [Description("Previous and current month")]
+        [LocalizedDescription("period_type_previous_and_current_month")]
         PreviousAndCurrentMonth,
 
-        [Description("Custom")]
+        [LocalizedDescription("period_type_custom")]
         Custom,
     }
 }

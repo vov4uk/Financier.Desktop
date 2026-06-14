@@ -1,7 +1,8 @@
-﻿using Financier.Common.Attribute;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Financier.Common.Attribute;
+using Financier.Common.Localization;
 
 namespace Financier.Common.Model
 {
@@ -14,21 +15,22 @@ namespace Financier.Common.Model
 
         public List<TreeNode> Child { get; set; }
 
-        private TreeNode(string name, string type)
+        private TreeNode(string key, string type)
         {
-            Name = name;
+            Name = LocalizationService.Instance[key];
             Type = type;
         }
 
-        public TreeNode(string name)
-          : this(name, string.Empty)
+        public TreeNode(string key)
+          : this(key, string.Empty)
         {
         }
 
         public TreeNode(Type type)
         {
             Type = type.ToString();
-            Name = ((HeaderAttribute)System.Attribute.GetCustomAttribute(type, typeof(HeaderAttribute))).Header;
+            string key = ((HeaderAttribute)System.Attribute.GetCustomAttribute(type, typeof(HeaderAttribute))).Header;
+            Name = LocalizationService.Instance[key];
         }
     }
 }

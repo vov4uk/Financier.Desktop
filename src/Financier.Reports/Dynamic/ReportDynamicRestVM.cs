@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Financier.Reports
 {
-    [Header("Balance dynamics")]
+    [Header("reports_balance_dynamics")]
     public class ReportDynamicRestVM : BaseReportVM<ReportDynamicRestModel>
     {
         private const string BaseSqlText = @" /* ReportDynamicRestVM */

@@ -1,21 +1,19 @@
-﻿using Financier.Common.Attribute;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using Financier.Common.Attribute;
 using Financier.DataAccess.Abstractions;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Legends;
 using OxyPlot.Series;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace Financier.Reports
 {
-    [Header("Saldo")]
+    [Header("reports_saldo")]
     public class ReportStructureSaldoVM : BaseReportVM<ReportStructureSaldoModel>
     {
         public static ObservableCollection<string> Ranges { get; } = new ObservableCollection<string>

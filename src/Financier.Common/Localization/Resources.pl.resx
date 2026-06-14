@@ -138,7 +138,7 @@
   <data name="exit" xml:space="preserve">
     <value>Wyjście</value>
   </data>
-  <data name="defaultBackupDirectory" xml:space="preserve">
+  <data name="default_backup_directory" xml:space="preserve">
     <value>Katalog kopii zapasowej domyślnie :</value>
   </data>
   <data name="main" xml:space="preserve">
@@ -557,5 +557,41 @@
   </data>
   <data name="csv" xml:space="preserve">
     <value>CSV</value>
+  </data>
+  <data name="reports_income_expense_for_period" xml:space="preserve">
+    <value>Przychody/wydatki za okres</value>
+  </data>
+  <data name="reports_structure" xml:space="preserve">
+    <value>Struktura</value>
+  </data>
+  <data name="reports_dynamics" xml:space="preserve">
+    <value>Dynamika</value>
+  </data>
+  <data name="reports_by_months" xml:space="preserve">
+    <value>Według miesięcy</value>
+  </data>
+  <data name="reports_assets_structure" xml:space="preserve">
+    <value>Struktura aktywów</value>
+  </data>
+  <data name="reports_income_expense_structure" xml:space="preserve">
+    <value>Struktura przychodów-wydatków</value>
+  </data>
+  <data name="reports_by_category" xml:space="preserve">
+    <value>Według kategorii</value>
+  </data>
+  <data name="reports_saldo" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="reports_dynamics_of_expences_incomes" xml:space="preserve">
+    <value>Dynamika przychodów-wydatków</value>
+  </data>
+  <data name="reports_balance_dynamics" xml:space="preserve">
+    <value>Dynamika salda</value>
+  </data>
+  <data name="view" xml:space="preserve">
+    <value>Widik</value>
+  </data>
+  <data name="usd" xml:space="preserve">
+    <value>USD</value>
   </data>
 </root>

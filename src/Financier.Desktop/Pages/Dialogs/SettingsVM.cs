@@ -1,4 +1,5 @@
-﻿using Financier.Desktop.Data;
+﻿using Financier.Common.Entities;
+using Financier.Desktop.Data;
 using Financier.Desktop.ViewModel.Dialog;
 
 namespace Financier.Desktop.Pages.Dialogs
@@ -50,9 +51,9 @@ namespace Financier.Desktop.Pages.Dialogs
         public SettingsVM(SettingsDTO entity)
         {
             this.Entity = entity;
-            this.IsOpenExchangeRatesProviderSelected = entity.ExchangeRates.Provider == "openexchangerates.org";
-            this.IsFreeCurrencyRatesProviderSelected = entity.ExchangeRates.Provider == "freecurrencyrates.com";
-            this.IsMonobankProviderSelected = entity.ExchangeRates.Provider == "monobank.ua";
+            this.IsOpenExchangeRatesProviderSelected = entity.ExchangeRates.Provider == ExchangeRatesProviders.OpenExchangeRates;
+            this.IsFreeCurrencyRatesProviderSelected = entity.ExchangeRates.Provider == ExchangeRatesProviders.FreeCurrencyRates;
+            this.IsMonobankProviderSelected = entity.ExchangeRates.Provider == ExchangeRatesProviders.Monobank;
         }
 
         public SettingsDTO Entity { get; }
@@ -61,16 +62,16 @@ namespace Financier.Desktop.Pages.Dialogs
         {
             if (IsOpenExchangeRatesProviderSelected)
             {
-                Entity.ExchangeRates.Provider = "openexchangerates.org";
+                Entity.ExchangeRates.Provider = ExchangeRatesProviders.OpenExchangeRates;
             }
             else if (IsFreeCurrencyRatesProviderSelected)
             {
-                Entity.ExchangeRates.Provider = "freecurrencyrates.com";
+                Entity.ExchangeRates.Provider = ExchangeRatesProviders.FreeCurrencyRates;
                 Entity.ExchangeRates.OpenExchangeRatesProviderAppId = "";
             }
             else if(IsMonobankProviderSelected)
             {
-                Entity.ExchangeRates.Provider = "monobank.ua";
+                Entity.ExchangeRates.Provider = ExchangeRatesProviders.Monobank;
                 Entity.ExchangeRates.OpenExchangeRatesProviderAppId = "";
             }
             return Entity;

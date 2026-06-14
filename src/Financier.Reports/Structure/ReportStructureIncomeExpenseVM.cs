@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Financier.Reports
 {
-    [Header("Income-Expense structure")]
+    [Header("reports_income_expense_structure")]
     public class ReportStructureIncomeExpenseVM : BaseReportVM<ReportStructureIncomeExpenseModel>
     {
         private bool isIncome;

@@ -3,7 +3,8 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common">
+             xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -31,16 +32,16 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <GroupBox Header="View" Grid.Column="0" Grid.Row="0"
+            <GroupBox Header="{loc:Translate Key=view}" Grid.Column="0" Grid.Row="0"
                       BorderThickness="0">
                 <DockPanel Width="56" DockPanel.Dock="Top">
-                    <RadioButton ToolTip="Graphic"
+                    <RadioButton ToolTip="{loc:Translate Key=graphics}"
                                  x:Name="GraphicsBtn"
                                  IsChecked="True"
                                  Style="{StaticResource IconRadioButton}" >
                         <Image Source="{StaticResource IconChartBar}"/>
                     </RadioButton>
-                    <RadioButton ToolTip="Grid"
+                    <RadioButton ToolTip="{loc:Translate Key=grid}"
                                  x:Name="GridBtn"
                                  Style="{StaticResource IconRadioButton}" >
                         <Image Source="{StaticResource IconTableGray}"/>

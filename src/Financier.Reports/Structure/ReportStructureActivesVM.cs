@@ -1,15 +1,14 @@
-﻿using Financier.Common.Attribute;
-using Financier.DataAccess.Abstractions;
-using OxyPlot;
-using OxyPlot.Series;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Financier.Common.Attribute;
+using Financier.DataAccess.Abstractions;
+using OxyPlot.Series;
 
 namespace Financier.Reports
 {
-    [Header("Asset structure")]
+    [Header("reports_assets_structure")]
     public class ReportStructureActivesVM : BaseReportVM<ReportStructureActivesModel>
     {
         private const string BaseSqlText = @" /* ReportStructureActivesVM */

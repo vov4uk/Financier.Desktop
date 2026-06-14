@@ -49,7 +49,7 @@ namespace Financier.Desktop.ViewModel
         private Dictionary<string, List<string>> _entityColumnsOrder;
         private IAsyncCommand<Type> _menuNavigateCommand;
         private IAsyncCommand<WizardTypes> _importCommand;
-        private ICommand _openBackupCommand;
+        private IAsyncCommand _openBackupCommand;
         private IAsyncCommand _saveBackupCommand;
         private IAsyncCommand _saveBackupAsDbCommand;
         private IAsyncCommand _settingsCommand;
@@ -176,7 +176,7 @@ namespace Financier.Desktop.ViewModel
 
         public IAsyncCommand<WizardTypes> ImportCommand => _importCommand ??= new AsyncCommand<WizardTypes>(OpenImportWizardAsync);
 
-        public ICommand OpenBackupCommand => _openBackupCommand ??= new DelegateCommand(OpenBackup_Click);
+        public IAsyncCommand OpenBackupCommand => _openBackupCommand ??= new AsyncCommand(OpenBackup_Click);
 
         public IAsyncCommand SaveBackupCommand => _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
 
@@ -347,19 +347,20 @@ namespace Financier.Desktop.ViewModel
             await RefreshCurrentPage();
         }
 
-        private void OpenBackup_Click()
+        private async Task OpenBackup_Click()
         {
+            if (IsLoading) return;
             var backupPath = dialogWrapper.OpenFileDialog(Backup);
             if (!string.IsNullOrEmpty(backupPath))
             {
                 Logger.Info($"Opened backup : {backupPath}");
-                Task.Run(() => OpenBackup(backupPath));
+                await OpenBackup(backupPath);
             }
         }
 
         private async Task OpenImportWizardAsync(WizardTypes bankType)
         {
-            var fileExtension = EnumDescriptionConverter.GetEnumDescription(bankType);
+            var fileExtension = bankType.GetEnumDescription();
             var fileName = dialogWrapper.OpenFileDialog(fileExtension);
             Logger.Info($"{fileExtension} fileName -> {fileName}");
             if (!string.IsNullOrEmpty(fileName))
@@ -440,7 +441,10 @@ namespace Financier.Desktop.ViewModel
 
         private async Task SaveBackup_Click()
         {
-            var backupPath = dialogWrapper.SaveFileDialog(Backup, Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName()));
+            string defaultPath = string.IsNullOrEmpty(OpenBackupPath)
+                ? BackupWriter.GenerateFileName()
+                : Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName());
+            var backupPath = dialogWrapper.SaveFileDialog(Backup, defaultPath);
             if (!string.IsNullOrEmpty(backupPath))
             {
                 await SaveBackup(backupPath);
@@ -506,17 +510,17 @@ namespace Financier.Desktop.ViewModel
                     var exchangeRateLoader = new ExchangeRateLoader();
                     List<CurrencyExchangeRate> exchangeRates = new List<CurrencyExchangeRate>();
 
-                    if (settings.ExchangeRates.Provider == "freecurrencyrates.com")
+                    switch (settings.ExchangeRates.Provider)
                     {
-                        exchangeRates = await exchangeRateLoader.LoadFreeCurrencyRates();
-                    }
-                    else if (settings.ExchangeRates.Provider == "openexchangerates.org")
-                    {
-                        exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(settings.ExchangeRates.OpenExchangeRatesProviderAppId);
-                    }
-                    else if (settings.ExchangeRates.Provider == "monobank.ua")
-                    {
-                        exchangeRates = await exchangeRateLoader.LoadMonobankRates();
+                        case ExchangeRatesProviders.FreeCurrencyRates:
+                            exchangeRates = await exchangeRateLoader.LoadFreeCurrencyRates();
+                            break;
+                        case ExchangeRatesProviders.OpenExchangeRates:
+                            exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(settings.ExchangeRates.OpenExchangeRatesProviderAppId);
+                            break;
+                        case ExchangeRatesProviders.Monobank:
+                            exchangeRates = await exchangeRateLoader.LoadMonobankRates();
+                            break;
                     }
 
                     if (exchangeRates.Any())
@@ -595,7 +599,7 @@ namespace Financier.Desktop.ViewModel
             {
                 ExchangeRates = new SettingsExchangeRates
                 {
-                    Provider = string.Empty,
+                    Provider = ExchangeRatesProviders.None,
                     UpdateOnStart = false,
                 },
                 General = new SettingsGeneralDTO

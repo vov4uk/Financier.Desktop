@@ -11,7 +11,7 @@ using OxyPlot.Series;
 
 namespace Financier.Reports
 {
-    [Header("By category")]
+    [Header("reports_by_category")]
     public class ByCategoryReportVM : BaseReportVM<ByCategoryReportModel>
     {
         private const string BaseSqlText = @" /* ByCategoryReportModel */

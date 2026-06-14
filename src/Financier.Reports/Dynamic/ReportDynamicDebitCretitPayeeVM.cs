@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace Financier.Reports
 {
-    [Header("Dynamics of expenses-incomes")]
+    [Header("reports_dynamics_of_expences_incomes")]
     public class ReportDynamicDebitCretitPayeeVM : BaseReportVM<ReportDynamicDebitCretitPayeeModel>
     {
         private const string BaseSqlText = @" /* ReportDynamicDebitCretitPayeeVM */

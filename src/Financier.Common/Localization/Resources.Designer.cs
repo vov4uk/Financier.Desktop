@@ -61,6 +61,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        public static string _default {
+            get {
+                return ResourceManager.GetString("default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A Bank.
         /// </summary>
         public static string a_bank {
@@ -250,6 +259,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bar Chart.
+        /// </summary>
+        public static string bar_chart {
+            get {
+                return ResourceManager.GetString("bar_chart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Blotter.
         /// </summary>
         public static string blotter {
@@ -432,9 +450,9 @@ namespace Financier.Common.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Default backup directory :.
         /// </summary>
-        public static string defaultBackupDirectory {
+        public static string default_backup_directory {
             get {
-                return ResourceManager.GetString("defaultBackupDirectory", resourceCulture);
+                return ResourceManager.GetString("default_backup_directory", resourceCulture);
             }
         }
         
@@ -619,6 +637,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expense.
+        /// </summary>
+        public static string expense {
+            get {
+                return ResourceManager.GetString("expense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Finish.
         /// </summary>
         public static string finish {
@@ -637,6 +664,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to From :.
+        /// </summary>
+        public static string from_ {
+            get {
+                return ResourceManager.GetString("from_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to From Account.
         /// </summary>
         public static string from_account {
@@ -651,6 +687,24 @@ namespace Financier.Common.Localization {
         public static string general {
             get {
                 return ResourceManager.GetString("general", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graphics.
+        /// </summary>
+        public static string graphics {
+            get {
+                return ResourceManager.GetString("graphics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grid.
+        /// </summary>
+        public static string grid {
+            get {
+                return ResourceManager.GetString("grid", resourceCulture);
             }
         }
         
@@ -714,6 +768,15 @@ namespace Financier.Common.Localization {
         public static string include {
             get {
                 return ResourceManager.GetString("include", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Income.
+        /// </summary>
+        public static string income {
+            get {
+                return ResourceManager.GetString("income", resourceCulture);
             }
         }
         
@@ -952,6 +1015,114 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Period.
+        /// </summary>
+        public static string period {
+            get {
+                return ResourceManager.GetString("period", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All time.
+        /// </summary>
+        public static string period_type_all_time {
+            get {
+                return ResourceManager.GetString("period_type_all_time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current month.
+        /// </summary>
+        public static string period_type_current_month {
+            get {
+                return ResourceManager.GetString("period_type_current_month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current week.
+        /// </summary>
+        public static string period_type_current_week {
+            get {
+                return ResourceManager.GetString("period_type_current_week", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom.
+        /// </summary>
+        public static string period_type_custom {
+            get {
+                return ResourceManager.GetString("period_type_custom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous and current month.
+        /// </summary>
+        public static string period_type_previous_and_current_month {
+            get {
+                return ResourceManager.GetString("period_type_previous_and_current_month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous and current week.
+        /// </summary>
+        public static string period_type_previous_and_current_week {
+            get {
+                return ResourceManager.GetString("period_type_previous_and_current_week", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous month.
+        /// </summary>
+        public static string period_type_previous_month {
+            get {
+                return ResourceManager.GetString("period_type_previous_month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous week.
+        /// </summary>
+        public static string period_type_previous_week {
+            get {
+                return ResourceManager.GetString("period_type_previous_week", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Today.
+        /// </summary>
+        public static string period_type_today {
+            get {
+                return ResourceManager.GetString("period_type_today", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yesterday.
+        /// </summary>
+        public static string period_type_yesterday {
+            get {
+                return ResourceManager.GetString("period_type_yesterday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pie chart.
+        /// </summary>
+        public static string pie_chart {
+            get {
+                return ResourceManager.GetString("pie_chart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pireus PDF.
         /// </summary>
         public static string pireus_pdf {
@@ -1092,6 +1263,96 @@ namespace Financier.Common.Localization {
         public static string reports {
             get {
                 return ResourceManager.GetString("reports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Asset structure.
+        /// </summary>
+        public static string reports_assets_structure {
+            get {
+                return ResourceManager.GetString("reports_assets_structure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Balance dynamics.
+        /// </summary>
+        public static string reports_balance_dynamics {
+            get {
+                return ResourceManager.GetString("reports_balance_dynamics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By category.
+        /// </summary>
+        public static string reports_by_category {
+            get {
+                return ResourceManager.GetString("reports_by_category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By months.
+        /// </summary>
+        public static string reports_by_months {
+            get {
+                return ResourceManager.GetString("reports_by_months", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamics.
+        /// </summary>
+        public static string reports_dynamics {
+            get {
+                return ResourceManager.GetString("reports_dynamics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamics of incomes-expenses.
+        /// </summary>
+        public static string reports_dynamics_of_expences_incomes {
+            get {
+                return ResourceManager.GetString("reports_dynamics_of_expences_incomes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Income / expense for the period.
+        /// </summary>
+        public static string reports_income_expense_for_period {
+            get {
+                return ResourceManager.GetString("reports_income_expense_for_period", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Income-Expense structure.
+        /// </summary>
+        public static string reports_income_expense_structure {
+            get {
+                return ResourceManager.GetString("reports_income_expense_structure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saldo.
+        /// </summary>
+        public static string reports_saldo {
+            get {
+                return ResourceManager.GetString("reports_saldo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Structure.
+        /// </summary>
+        public static string reports_structure {
+            get {
+                return ResourceManager.GetString("reports_structure", resourceCulture);
             }
         }
         
@@ -1258,11 +1519,29 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To :.
+        /// </summary>
+        public static string to_ {
+            get {
+                return ResourceManager.GetString("to_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To Account.
         /// </summary>
         public static string to_account {
             get {
                 return ResourceManager.GetString("to_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top category.
+        /// </summary>
+        public static string top_category {
+            get {
+                return ResourceManager.GetString("top_category", resourceCulture);
             }
         }
         
@@ -1308,6 +1587,15 @@ namespace Financier.Common.Localization {
         public static string transfer_details {
             get {
                 return ResourceManager.GetString("transfer_details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string type {
+            get {
+                return ResourceManager.GetString("type", resourceCulture);
             }
         }
         
@@ -1362,6 +1650,24 @@ namespace Financier.Common.Localization {
         public static string update_failed {
             get {
                 return ResourceManager.GetString("update_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USD.
+        /// </summary>
+        public static string usd {
+            get {
+                return ResourceManager.GetString("usd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        public static string view {
+            get {
+                return ResourceManager.GetString("view", resourceCulture);
             }
         }
         

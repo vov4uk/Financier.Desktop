@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
              xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              xmlns:oxy="http://oxyplot.org/wpf">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -30,7 +31,9 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <GroupBox Header="View" Grid.Column="0" Grid.Row="0"
+            <GroupBox Header="{loc:Translate Key=view}"
+                      Grid.Column="0"
+                      Grid.Row="0"
                       BorderThickness="0">
                 <DockPanel Width="56" DockPanel.Dock="Top">
                     <RadioButton ToolTip="Graphic"

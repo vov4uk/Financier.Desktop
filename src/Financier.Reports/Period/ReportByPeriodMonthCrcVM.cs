@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Financier.Reports
 {
-    [Header("By months")]
+    [Header("reports_by_months")]
     public class ReportByPeriodMonthCrcVM : BaseReportVM<ReportByPeriodMonthCrcModel>
     {
         private const string BaseSqlText = @" /* ReportByPeriodMonthCrcVM */

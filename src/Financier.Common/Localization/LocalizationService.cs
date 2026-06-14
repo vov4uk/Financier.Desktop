@@ -58,8 +58,6 @@ public sealed class LocalizationService : INotifyPropertyChanged
             Thread.CurrentThread.CurrentCulture = _currentCulture;
             Thread.CurrentThread.CurrentUICulture = _currentCulture;
 
-            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
-
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentCulture)));
             // Raise Item[] to refresh every active indexer binding at once.
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));

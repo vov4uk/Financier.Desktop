@@ -3,7 +3,8 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
-             xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common">
+             xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,7 +24,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Row="0" Grid.ColumnSpan="2">
-            <GroupBox Header="View"
+            <GroupBox Header="{loc:Translate Key=view}"
                       BorderThickness="0">
                 <DockPanel Width="56">
                     <RadioButton ToolTip="Graphic"

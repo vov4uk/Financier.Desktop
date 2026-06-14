@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
              xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              xmlns:oxy="http://oxyplot.org/wpf">
     <UserControl.Resources>
             <ResourceDictionary>
@@ -18,15 +19,15 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
-            <GroupBox Header="View"
+            <GroupBox Header="{loc:Translate Key=view}"
                       BorderThickness="0">
                 <DockPanel Width="56">
                     <RadioButton x:Name="GraphicsBtn"
-                                 ToolTip="Grapics"
+                                 ToolTip="{loc:Translate Key=graphics}"
                                  Style="{StaticResource IconRadioButton}" >
                         <Image Source="{StaticResource IconChartPie}"/>
                     </RadioButton>
-                    <RadioButton ToolTip="Grid"
+                    <RadioButton ToolTip="{loc:Translate Key=grid}"
                                  x:Name="GridBtn"
                                  IsChecked="True"
                                  Style="{StaticResource IconRadioButton}">

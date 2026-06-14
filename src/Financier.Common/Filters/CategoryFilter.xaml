@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities"
              xmlns:model="clr-namespace:Financier.Common.Model"
+             xmlns:loc="clr-namespace:Financier.Common.Localization"
              MinWidth="140">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -11,7 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <GroupBox Header="Category"
+    <GroupBox Header="{loc:Translate Key=category}"
               BorderThickness="0">
         <ComboBox Margin="2 0"
                   IsEditable="True"
