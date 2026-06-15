@@ -173,31 +173,7 @@ ORDER  BY 1 DESC ");
 
         public static List<RuleModel> Rules => _rules;
 
-        private static SortedDictionary<string, int[]> _mccCategories;
         private static SortedDictionary<Mcc, int[]> _mccEnums;
-
-        public static SortedDictionary<string, int[]> MCCCategories
-        {
-            get
-            {
-                string lang_symbol = LocalizationService.Instance.CurrentCulture.Name;
-                if (_mccCategories == null)
-                {
-                    var asm = System.Reflection.Assembly.GetExecutingAssembly();
-                    using var stream = asm.GetManifestResourceStream($"Financier.Common.Data.mcc_{lang_symbol}.json");
-                    if (stream != null)
-                    {
-                        using var reader = new StreamReader(stream);
-                        var mccCategories = JsonConvert.DeserializeObject<Dictionary<string, int[]>>(reader.ReadToEnd());
-                        _mccCategories = new SortedDictionary<string, int[]>(mccCategories);
-                    }
-                }
-
-                Array result = Enum.GetValues(typeof(Mcc));
-
-                return _mccCategories;
-            }
-        }
 
         public static SortedDictionary<Mcc, int[]> MCCEnums
         {
@@ -223,8 +199,6 @@ ORDER  BY 1 DESC ");
             }
         }
 
-
-        public static List<string> MCCCategoriesKeys => MCCCategories.Keys.ToList();
         public static List<Mcc> MCCEnumsKeys => MCCEnums.Keys.ToList();
 
         public static void ResetAllManuals()
@@ -248,7 +222,6 @@ ORDER  BY 1 DESC ");
                 case nameof(Location):         _location = null!; break;
                 case nameof(Project):          _project = null!; break;
                 case nameof(Account):          _accounts = null!; break;
-                case nameof(MCCCategories):    _mccCategories = null!; break;
                 default:
                     break;
             }

@@ -615,6 +615,9 @@
   <data name="expense" xml:space="preserve">
     <value>Витрати</value>
   </data>
+  <data name="bar_chart" xml:space="preserve">
+    <value>Гістограма</value>
+  </data>
   <data name="pie_chart" xml:space="preserve">
     <value>Кругова діаграма</value>
   </data>
@@ -623,6 +626,9 @@
   </data>
   <data name="to_" xml:space="preserve">
     <value>До :</value>
+  </data>
+  <data name="top_category" xml:space="preserve">
+    <value>Найвища категорія</value>
   </data>
   <data name="period_type_all_time" xml:space="preserve">
     <value>Весь час</value>
@@ -656,5 +662,14 @@
   </data>
   <data name="language" xml:space="preserve">
     <value>Мова</value>
+  </data>
+  <data name="rule_condition_type_mcc" xml:space="preserve">
+    <value>MCC</value>
+  </data>
+  <data name="rule_condition_type_description_matches" xml:space="preserve">
+    <value>Опис відповідає</value>
+  </data>
+  <data name="rule_condition_type_description_contains" xml:space="preserve">
+    <value>Опис містить</value>
   </data>
 </root>

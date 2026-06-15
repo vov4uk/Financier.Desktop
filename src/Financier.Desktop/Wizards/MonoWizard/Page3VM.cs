@@ -141,9 +141,9 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             foreach (var rule in DbManual.Rules.Where(r => r.IsActive))
             {
                 HashSet<int> mccCodes = new HashSet<int>();
-                if (rule.Condition == RuleConditionType.MCC && DbManual.MCCCategories.ContainsKey(rule.Description))
+                if (rule.Condition == RuleConditionType.MCC && Enum.TryParse<Mcc>(rule.Description, out var mcc) && DbManual.MCCEnums.ContainsKey(mcc))
                 {
-                    var list = DbManual.MCCCategories[rule.Description];
+                    var list = DbManual.MCCEnums[mcc];
                     mccCodes = new HashSet<int>(list);
                 }
 

@@ -6,13 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\mcc_en.json" />
-    <EmbeddedResource Include="Data\mcc.json" />
-    <EmbeddedResource Include="Data\mcc_pl.json" />
-    <EmbeddedResource Include="Data\mcc_uk.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <!-- Default (English) resources — code-gen produces Resources.Designer.cs with public access -->
     <EmbeddedResource Update="Localization\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

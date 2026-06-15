@@ -19,7 +19,6 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InvertedBooleanToVisibilityConverter x:Key="invBoolToVis"/>
-            <converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"

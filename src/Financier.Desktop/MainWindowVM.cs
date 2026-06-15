@@ -484,7 +484,6 @@ namespace Financier.Desktop.ViewModel
                 SettingsService.Current.Language = updated.General.Language;
                 SettingsService.Current.Save();
                 LocalizationService.Instance.ApplyLanguage(updated.General.Language);
-                DbManual.ResetManuals(nameof(DbManual.MCCCategories));
                 AppSettings = json;
             }
         }

@@ -591,10 +591,85 @@
   <data name="view" xml:space="preserve">
     <value>Widik</value>
   </data>
+  <data name="graphics" xml:space="preserve">
+    <value>Grafika</value>
+  </data>
+  <data name="grid" xml:space="preserve">
+    <value>Tabela</value>
+  </data>
+  <data name="default" xml:space="preserve">
+    <value>Domyślny</value>
+  </data>
   <data name="usd" xml:space="preserve">
     <value>USD</value>
   </data>
+  <data name="period" xml:space="preserve">
+    <value>Okres</value>
+  </data>
+  <data name="type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="income" xml:space="preserve">
+    <value>Dochód</value>
+  </data>
+  <data name="expense" xml:space="preserve">
+    <value>Wydatek</value>
+  </data>
+  <data name="bar_chart" xml:space="preserve">
+    <value>Wykres słupkowy</value>
+  </data>
+  <data name="pie_chart" xml:space="preserve">
+    <value>Wykres kołowy</value>
+  </data>
+  <data name="from_" xml:space="preserve">
+    <value>Od :</value>
+  </data>
+  <data name="to_" xml:space="preserve">
+    <value>Po :</value>
+  </data>
+  <data name="top_category" xml:space="preserve">
+    <value>Najwyższa kategoria</value>
+  </data>
+  <data name="period_type_all_time" xml:space="preserve">
+    <value>Cały czas</value>
+  </data>
+  <data name="period_type_today" xml:space="preserve">
+    <value>Dzisiaj</value>
+  </data>
+  <data name="period_type_yesterday" xml:space="preserve">
+    <value>Wczoraj</value>
+  </data>
+  <data name="period_type_current_week" xml:space="preserve">
+    <value>Bieżący tydzień</value>
+  </data>
+  <data name="period_type_previous_week" xml:space="preserve">
+    <value>Poprzedni tydzień</value>
+  </data>
+  <data name="period_type_previous_and_current_week" xml:space="preserve">
+    <value>Poprzedni i bieżący tydzień</value>
+  </data>
+  <data name="period_type_current_month" xml:space="preserve">
+    <value>Bieżący miesiąc</value>
+  </data>
+  <data name="period_type_previous_month" xml:space="preserve">
+    <value>Poprzedni miesiąc</value>
+  </data>
+  <data name="period_type_previous_and_current_month" xml:space="preserve">
+    <value>Poprzedni i bieżący miesiąc</value>
+  </data>
+  <data name="period_type_custom" xml:space="preserve">
+    <value>Niestandardowy</value>
+  </data>
   <data name="language" xml:space="preserve">
     <value>Język</value>
+  </data>
+  <data name="rule_condition_type_mcc" xml:space="preserve">
+    <value>MCC</value>
+  </data>
+  <data name="rule_condition_type_description_matches" xml:space="preserve">
+    <value>Opis pasuje</value>
+  </data>
+  <data name="rule_condition_type_description_contains" xml:space="preserve">
+    <value>Opis zawiera</value>
   </data>
 </root>

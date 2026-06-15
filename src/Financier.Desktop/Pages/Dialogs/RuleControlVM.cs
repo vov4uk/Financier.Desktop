@@ -46,9 +46,9 @@ namespace Financier.Desktop.Pages.Dialogs
         {
             this.Entity = entity;
             SelectedConditionType = entity.Condition;
-            if (IsMCCSelected)
+            if (IsMCCSelected && Enum.TryParse<Mcc>(Entity.Description, out var mcc))
             {
-                SelectedMCC = (Mcc)Enum.Parse(typeof(Mcc), Entity.Description);
+                SelectedMCC = mcc;
             }
         }
 

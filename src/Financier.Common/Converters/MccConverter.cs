@@ -9,21 +9,21 @@ namespace Financier.Converters
 {
     public class MccConverter : IValueConverter
     {
-        private static Dictionary<int, string> mcc = default!;
-        private static Dictionary<int, string> MCC
+        private static Dictionary<int, Mcc> mccenum = default!;
+        private static Dictionary<int, Mcc> MCCenum
         {
             get
             {
-                return mcc ??= DbManual.MCCCategories.SelectMany(x => x.Value.Select(y => new KeyValuePair<int, string>(y, x.Key))).ToDictionary(x => x.Key, y => y.Value);
+                return mccenum ??= DbManual.MCCEnums.SelectMany(x => x.Value.Select(y => new KeyValuePair<int, Mcc>(y, x.Key))).ToDictionary(x => x.Key, y => y.Value);
             }
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int code = (int)value;
-            if (MCC.ContainsKey(code))
+            if (MCCenum.ContainsKey(code))
             {
-                  return MCC[code];
+                  return MCCenum[code];
             }
             return value;
         }
