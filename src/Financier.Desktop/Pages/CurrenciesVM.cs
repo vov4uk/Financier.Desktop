@@ -17,7 +17,6 @@ namespace Financier.Desktop.ViewModel
         {
         }
 
-
         protected override Task OnAdd() => throw new System.NotImplementedException();
 
         protected override Task OnDelete(CurrencyModel item) => throw new System.NotImplementedException();

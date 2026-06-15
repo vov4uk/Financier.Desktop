@@ -18,7 +18,6 @@
     using Financier.Desktop.Helpers;
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;
-    using OxyPlot;
 
     public class BlotterVM : EntityBaseVM<BlotterModel>
     {
