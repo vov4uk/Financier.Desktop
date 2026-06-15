@@ -3,9 +3,9 @@ namespace Financier.Adapter.Tests
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading.Tasks;
     using Financier.DataAccess.Data;
     using Financier.Tests.Common;
-    using System.Threading.Tasks;
     using Xunit;
 
     public class BackupWriterTests

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using Prism.Commands;
 
@@ -80,7 +81,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public override string Title => "Please select transaction";
+        public override string Title => LocalizationService.Instance.please_select_transaction_title;
         public override bool IsValid()
         {
             return true;

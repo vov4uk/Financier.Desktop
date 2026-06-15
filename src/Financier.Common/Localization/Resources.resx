@@ -120,16 +120,16 @@
   <data name="app_title" xml:space="preserve">
     <value>Financier Desktop</value>
   </data>
-  <data name="openBackup" xml:space="preserve">
+  <data name="open_backup" xml:space="preserve">
     <value>Open Backup</value>
   </data>
-  <data name="saveBackup" xml:space="preserve">
+  <data name="save_backup" xml:space="preserve">
     <value>Save Backup</value>
   </data>
-  <data name="saveAsDb" xml:space="preserve">
+  <data name="save_as_db" xml:space="preserve">
     <value>Save as .db</value>
   </data>
-  <data name="setDefaultDirectory" xml:space="preserve">
+  <data name="set_default_directory" xml:space="preserve">
     <value>Set default directory</value>
   </data>
   <data name="settings" xml:space="preserve">
@@ -246,7 +246,7 @@
   <data name="general" xml:space="preserve">
     <value>General</value>
   </data>
-  <data name="checkForUpdates" xml:space="preserve">
+  <data name="check_for_updates" xml:space="preserve">
     <value>Check for Updates</value>
   </data>
   <data name="drag_and_drop" xml:space="preserve">
@@ -411,6 +411,9 @@
   <data name="please_select_transaction" xml:space="preserve">
     <value>Please select transaction with same balance as selected account, otherwise all transactions will be imported</value>
   </data>
+  <data name="please_select_transaction_title" xml:space="preserve">
+    <value>Please select transaction</value>
+  </data>
   <data name="operation_amount" xml:space="preserve">
     <value>Operation amount</value>
   </data>
@@ -473,6 +476,12 @@
   </data>
   <data name="please_select_category_project" xml:space="preserve">
     <value>Please select Category, Project...</value>
+  </data>
+  <data name="please_select_categories" xml:space="preserve">
+    <value>Please select categories</value>
+  </data>
+  <data name="please_select_account" xml:space="preserve">
+    <value>Please select account</value>
   </data>
   <data name="total_label" xml:space="preserve">
     <value>Total</value>

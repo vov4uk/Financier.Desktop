@@ -22,20 +22,24 @@
                     Grid.Row="0">
             <TabItem Name="general" Header="{loc:Translate Key=general}" IsSelected="True">
                 <TabItem.Content>
-                    <StackPanel Margin="5">
-                        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5" Header="{loc:Translate Key=language}">
+                    <StackPanel>
+                        <GroupBox Grid.Row="0"
+                                  Grid.Column="0"
+                                   Margin="5,0,0,0"
+                                  Header="{loc:Translate Key=language}">
                             <ComboBox Width="180"
-                                      Margin="5,0,0,0"
                                       HorizontalAlignment="Left"
                                       ItemsSource="{loc:EnumBinding {x:Type loc:Language}}"
                                       SelectedItem="{Binding Entity.General.Language, Mode=TwoWay}"/>
                         </GroupBox>
 
-                        <CheckBox Margin="5" Content="{loc:Translate Key=check_for_updates_on_start}" IsChecked="{Binding Entity.General.CheckForUpdatesOnStart, Mode=TwoWay}"/>
+                        <CheckBox Margin="5,0,0,0"
+                                  Content="{loc:Translate Key=check_for_updates_on_start}"
+                                  IsChecked="{Binding Entity.General.CheckForUpdatesOnStart, Mode=TwoWay}"/>
                     </StackPanel>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Name="fontweight" Header="{loc:Translate Key=exchange_rates}">
+            <TabItem Name="fontweight" Header="{loc:Translate Key=exchange_rates}" Height="24" Margin="-2,0,0,-2" VerticalAlignment="Bottom">
                 <TabItem.Content>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -43,21 +47,27 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5" Header="{loc:Translate Key=providers}">
-                            <ComboBox Width="200" Margin="5,0,0,0"
+                        <GroupBox Grid.Row="0"
+                                  Grid.Column="0"
+                                  Margin="5,0,0,0"
+                                  Header="{loc:Translate Key=providers}">
+                            <ComboBox Width="200"
                                       HorizontalAlignment="Left"
                                       ItemsSource="{loc:EnumBinding {x:Type ent:ExchangeRatesProviders}}"
                                       SelectedItem="{Binding SelectedProvider, Mode=TwoWay}"/>
                         </GroupBox>
                         <GroupBox Grid.Row="1"
                                   Grid.Column="0"
-                                  Margin="5"
+                                  Margin="5,0,0,0"
                                   Header="{loc:Translate Key=app_id}"
                                   Visibility="{Binding IsOpenExchangeRatesProviderSelected, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
-                            <TextBox Margin="5" Text="{Binding Entity.ExchangeRates.OpenExchangeRatesProviderAppId, Mode=TwoWay}"
+                            <TextBox Text="{Binding Entity.ExchangeRates.OpenExchangeRatesProviderAppId, Mode=TwoWay}"
                                      />
                         </GroupBox>
-                        <CheckBox Grid.Row="2" Grid.Column="0" Margin="5" Content="{loc:Translate Key=update_exchange_rates_on_start}"
+                        <CheckBox Grid.Row="2"
+                                  Grid.Column="0"
+                                  Margin="5,0,0,0"
+                                  Content="{loc:Translate Key=update_exchange_rates_on_start}"
                                   IsChecked="{Binding Entity.ExchangeRates.UpdateOnStart, Mode=TwoWay}"/>
                     </Grid>
                 </TabItem.Content>

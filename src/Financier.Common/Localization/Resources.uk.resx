@@ -120,16 +120,16 @@
   <data name="app_title" xml:space="preserve">
     <value>Financier Desktop</value>
   </data>
-  <data name="openBackup" xml:space="preserve">
+  <data name="open_backup" xml:space="preserve">
     <value>Відкрити резервну копію</value>
   </data>
-  <data name="saveBackup" xml:space="preserve">
+  <data name="save_backup" xml:space="preserve">
     <value>Зберегти резервну копію</value>
   </data>
-  <data name="saveAsDb" xml:space="preserve">
+  <data name="save_as_db" xml:space="preserve">
     <value>Зберегти як .db</value>
   </data>
-  <data name="setDefaultDirectory" xml:space="preserve">
+  <data name="set_default_directory" xml:space="preserve">
     <value>Встановити каталог за замовчуванням</value>
   </data>
   <data name="settings" xml:space="preserve">
@@ -246,7 +246,7 @@
   <data name="general" xml:space="preserve">
     <value>Загальні</value>
   </data>
-  <data name="checkForUpdates" xml:space="preserve">
+  <data name="check_for_updates" xml:space="preserve">
     <value>Перевірити оновлення</value>
   </data>
   <data name="drag_and_drop" xml:space="preserve">
@@ -411,6 +411,9 @@
   <data name="please_select_transaction" xml:space="preserve">
     <value>Виберіть операцію з таким же залишком як вибраний рахунок, інакше будуть імпортовані всі операції</value>
   </data>
+  <data name="please_select_transaction_title" xml:space="preserve">
+    <value>Виберіть операцію</value>
+  </data>
   <data name="operation_amount" xml:space="preserve">
     <value>Сума операції</value>
   </data>
@@ -474,6 +477,12 @@
   <data name="please_select_category_project" xml:space="preserve">
     <value>Виберіть Категорію, Проект...</value>
   </data>
+  <data name="please_select_categories" xml:space="preserve">
+    <value>Виберіть категорії</value>
+  </data>
+  <data name="please_select_account" xml:space="preserve">
+    <value>Виберіть рахунок</value>
+  </data>
   <data name="total_label" xml:space="preserve">
     <value>Всього</value>
   </data>
@@ -535,7 +544,7 @@
     <value>Файл налаштувань був пошкоджений і скинутий до замовчуванням. Будь ласка, перенастройте налаштування обмінних курсів.</value>
   </data>
   <data name="entities_loaded" xml:space="preserve">
-    <value>Успішно завантажено {0} сутностей</value>
+    <value>Успішно завантажено {0} сутності</value>
   </data>
   <data name="confirm_delete_transaction" xml:space="preserve">
     <value>Ви впевнені, що хочете видалити операцію?</value>

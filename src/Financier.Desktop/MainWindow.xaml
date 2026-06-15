@@ -112,16 +112,16 @@
                 <RibbonApplicationMenu ContextMenu="{x:Null}"
                                        Background="#858585"
                                        BorderBrush="#858585">
-                    <RibbonApplicationMenuItem Header="{loc:Translate Key=openBackup}"
+                    <RibbonApplicationMenuItem Header="{loc:Translate Key=open_backup}"
                                                Command="{Binding Path=OpenBackupCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconFileArrowUp}" />
-                    <RibbonApplicationMenuItem Header="{loc:Translate Key=saveBackup}"
+                    <RibbonApplicationMenuItem Header="{loc:Translate Key=save_backup}"
                                                Command="{Binding Path=SaveBackupCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconFileArrowDown}" />
-                    <RibbonApplicationMenuItem Header="{loc:Translate Key=saveAsDb}"
+                    <RibbonApplicationMenuItem Header="{loc:Translate Key=save_as_db}"
                                                Command="{Binding Path=SaveBackupAsDbCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconDatabase}" />
-                    <RibbonApplicationMenuItem Header="{loc:Translate Key=setDefaultDirectory}"
+                    <RibbonApplicationMenuItem Header="{loc:Translate Key=set_default_directory}"
                                                Click="RibbonApplicationMenuItem_Click"
                                                ImageSource="{StaticResource ResourceKey=IconDropboxBrands}" />
                     <RibbonApplicationMenuItem Header="{loc:Translate Key=settings}"
@@ -268,9 +268,9 @@
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconArrowRightArrowLeft}"
                                   Label="{loc:Translate Key=add_transfer}"
                                   Command="{Binding Path=Blotter.AddTransferCommand}" />
-                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTable}"
+                    <!--<RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTable}"
                                   Label="{loc:Translate Key=add_template}"
-                                  Command="{Binding Path=Blotter.AddTemplateCommand}" />
+                                  Command="{Binding Path=Blotter.AddTemplateCommand}" />-->
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
                                   Label="{loc:Translate Key=edit}"
                                   Command="{Binding Path=Blotter.EditCommand}" />
@@ -280,9 +280,9 @@
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
                                   Label="{loc:Translate Key=delete}"
                                   Command="{Binding Path=Blotter.DeleteCommand}" />
-                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconCircleInfo}"
+                    <!--<RibbonButton LargeImageSource="{StaticResource ResourceKey=IconCircleInfo}"
                                   Label="{loc:Translate Key=info}"
-                                  Command="{Binding Path=Blotter.InfoCommand}" />
+                                  Command="{Binding Path=Blotter.InfoCommand}" />-->
                 </RibbonGroup>
 
                 <RibbonGroup Header="{loc:Translate Key=locations}"
@@ -356,7 +356,7 @@
                 <RibbonGroup Header="{loc:Translate Key=general}"
                          DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconRefresh}"
-                              Label="{loc:Translate Key=checkForUpdates}"
+                              Label="{loc:Translate Key=check_for_updates}"
                               Command="{Binding Path=CheckForUpdateCommand}"
                               CommandParameter="{StaticResource True}" />
                 </RibbonGroup>

@@ -1,4 +1,5 @@
 ﻿using Financier.Common.Entities;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using System.Linq;
 
@@ -24,7 +25,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public override string Title => "Please select account";
+        public override string Title => LocalizationService.Instance.please_select_account;
 
         public override bool IsValid()
         {

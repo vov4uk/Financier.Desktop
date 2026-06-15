@@ -120,16 +120,16 @@
   <data name="app_title" xml:space="preserve">
     <value>Financier Desktop</value>
   </data>
-  <data name="openBackup" xml:space="preserve">
+  <data name="open_backup" xml:space="preserve">
     <value>Otwórz kopię zapasową</value>
   </data>
-  <data name="saveBackup" xml:space="preserve">
+  <data name="save_backup" xml:space="preserve">
     <value>Zapisz kopię zapasową</value>
   </data>
-  <data name="saveAsDb" xml:space="preserve">
+  <data name="save_as_db" xml:space="preserve">
     <value>Zapisz jako .db</value>
   </data>
-  <data name="setDefaultDirectory" xml:space="preserve">
+  <data name="set_default_directory" xml:space="preserve">
     <value>Ustaw katalog domyślny</value>
   </data>
   <data name="settings" xml:space="preserve">
@@ -246,7 +246,7 @@
   <data name="general" xml:space="preserve">
     <value>Ogólne</value>
   </data>
-  <data name="checkForUpdates" xml:space="preserve">
+  <data name="check_for_updates" xml:space="preserve">
     <value>Sprawdź aktualizacje</value>
   </data>
   <data name="drag_and_drop" xml:space="preserve">
@@ -411,6 +411,9 @@
   <data name="please_select_transaction" xml:space="preserve">
     <value>Proszę wybrać transakcję z tym samym saldem co wybrany rachunek, w przeciwnym razie wszystkie transakcje będą importowane</value>
   </data>
+  <data name="please_select_transaction_title" xml:space="preserve">
+    <value>Proszę wybrać transakcję</value>
+  </data>
   <data name="operation_amount" xml:space="preserve">
     <value>Kwota operacji</value>
   </data>
@@ -473,6 +476,12 @@
   </data>
   <data name="please_select_category_project" xml:space="preserve">
     <value>Proszę wybrać Kategorię, Projekt...</value>
+  </data>
+  <data name="please_select_categories" xml:space="preserve">
+    <value>Proszę wybrać kategorie</value>
+  </data>
+  <data name="please_select_account" xml:space="preserve">
+    <value>Proszę wybrać konto</value>
   </data>
   <data name="total_label" xml:space="preserve">
     <value>Suma</value>

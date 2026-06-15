@@ -322,20 +322,20 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check for Updates.
+        /// </summary>
+        public static string check_for_updates {
+            get {
+                return ResourceManager.GetString("check_for_updates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check for updates on start?.
         /// </summary>
         public static string check_for_updates_on_start {
             get {
                 return ResourceManager.GetString("check_for_updates_on_start", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Check for Updates.
-        /// </summary>
-        public static string checkForUpdates {
-            get {
-                return ResourceManager.GetString("checkForUpdates", resourceCulture);
             }
         }
         
@@ -934,20 +934,20 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open Backup.
+        /// </summary>
+        public static string open_backup {
+            get {
+                return ResourceManager.GetString("open_backup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open recipes wizard.
         /// </summary>
         public static string open_recipes_wizard {
             get {
                 return ResourceManager.GetString("open_recipes_wizard", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Backup.
-        /// </summary>
-        public static string openBackup {
-            get {
-                return ResourceManager.GetString("openBackup", resourceCulture);
             }
         }
         
@@ -1150,6 +1150,24 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select account.
+        /// </summary>
+        public static string please_select_account {
+            get {
+                return ResourceManager.GetString("please_select_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select categories.
+        /// </summary>
+        public static string please_select_categories {
+            get {
+                return ResourceManager.GetString("please_select_categories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select Category, From/To Account, Location ....
         /// </summary>
         public static string please_select_category_account {
@@ -1173,6 +1191,15 @@ namespace Financier.Common.Localization {
         public static string please_select_transaction {
             get {
                 return ResourceManager.GetString("please_select_transaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select transaction.
+        /// </summary>
+        public static string please_select_transaction_title {
+            get {
+                return ResourceManager.GetString("please_select_transaction_title", resourceCulture);
             }
         }
         
@@ -1485,18 +1512,18 @@ namespace Financier.Common.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Save as .db.
         /// </summary>
-        public static string saveAsDb {
+        public static string save_as_db {
             get {
-                return ResourceManager.GetString("saveAsDb", resourceCulture);
+                return ResourceManager.GetString("save_as_db", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Save Backup.
         /// </summary>
-        public static string saveBackup {
+        public static string save_backup {
             get {
-                return ResourceManager.GetString("saveBackup", resourceCulture);
+                return ResourceManager.GetString("save_backup", resourceCulture);
             }
         }
         
@@ -1521,9 +1548,9 @@ namespace Financier.Common.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Set default directory.
         /// </summary>
-        public static string setDefaultDirectory {
+        public static string set_default_directory {
             get {
-                return ResourceManager.GetString("setDefaultDirectory", resourceCulture);
+                return ResourceManager.GetString("set_default_directory", resourceCulture);
             }
         }
         

@@ -46,7 +46,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         {
             get
             {
-                return _addRuleCommand ??= new AsyncDelegateCommand<FinancierTransactionDto>(tr => OpenRulesDialogAsync(tr.Note));
+                return _addRuleCommand ??= new AsyncDelegateCommand<FinancierTransactionDto>(tr => OpenRulesDialogAsync(tr?.Note));
             }
         }
 
@@ -93,7 +93,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public override string Title => "Please select categories";
+        public override string Title => LocalizationService.Instance.please_select_categories;
         public override bool IsValid()
         {
             return true;
