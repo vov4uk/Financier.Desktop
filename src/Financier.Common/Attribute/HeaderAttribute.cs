@@ -11,4 +11,12 @@ namespace Financier.Common.Attribute
 
         public HeaderAttribute(string header) => Header = header;
     }
+
+    [ExcludeFromCodeCoverage]
+    public class MccCodesAttribute : System.Attribute
+    {
+        public int[] Codes { get; set; }
+
+        public MccCodesAttribute(params int[] codes) => Codes = codes;
+    }
 }

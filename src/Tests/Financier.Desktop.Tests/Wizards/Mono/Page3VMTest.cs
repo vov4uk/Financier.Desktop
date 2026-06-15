@@ -47,7 +47,7 @@
                 {
                  Id = 8,
                  Created = new DateTime(2026, 5, 16, 22, 32, 55, 354),
-                 Condition = "Description contains",
+                 Condition = RuleConditionType.DescriptionContains,
                  Description = "Google",
                  Title = null,
                  IsActive = true,
@@ -61,7 +61,7 @@
                 {
                  Id = 0,
                  Created = new DateTime(2026, 5, 16, 22, 32, 55, 354),
-                 Condition = "Description contains",
+                 Condition = RuleConditionType.DescriptionContains,
                  Description = "Hot Water",
                  Title = null,
                  IsActive = true,
@@ -289,7 +289,7 @@
             {
                 Id = 101,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "Amazon",
                 CategoryId = categoryId,
                 Created = DateTime.Now,
@@ -334,7 +334,7 @@
             {
                 Id = 100,
                 IsActive = true,
-                Condition = "Description matches",
+                Condition = RuleConditionType.DescriptionMatches,
                 Description = "Exact Match",
                 CategoryId = categoryId,
                 PayeeId = payeeId,
@@ -382,7 +382,7 @@
             {
                 Id = 105,
                 IsActive = true,
-                Condition = "MCC",
+                Condition = RuleConditionType.MCC,
                 Description = "Готелі та курорти",
                 CategoryId = categoryId,
                 LocationId = locationId,
@@ -429,7 +429,7 @@
             {
                 Id = 102,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "NonExistentText",
                 CategoryId = 100,
                 Created = DateTime.Now,
@@ -472,7 +472,7 @@
             {
                 Id = 106,
                 IsActive = false,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "Apple",
                 CategoryId = 100,
                 Created = DateTime.Now,
@@ -517,7 +517,7 @@
             {
                 Id = 103,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "google",
                 CategoryId = categoryId,
                 Created = DateTime.Now,
@@ -562,7 +562,7 @@
             {
                 Id = 201,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "Meta",
                 CategoryId = categoryId1,
                 Created = DateTime.Now,
@@ -572,7 +572,7 @@
             {
                 Id = 202,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "Paymnt",
                 CategoryId = categoryId2,
                 Created = DateTime.Now.AddSeconds(1),
@@ -615,7 +615,7 @@
             object ruleDto = new RuleDTO
             {
                 Description = description,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Created = DateTime.Now,
                 IsActive = true,
                 CategoryId = 1000,
@@ -664,7 +664,7 @@
             var addedRule = DbManual.Rules.LastOrDefault();
             Assert.NotNull(addedRule);
             Assert.Equal(description, addedRule.Description);
-            Assert.Equal("Description contains", addedRule.Condition);
+            Assert.Equal(RuleConditionType.DescriptionContains, addedRule.Condition);
             Assert.True(addedRule.IsActive);
             Assert.Equal(1000, addedRule.CategoryId);
 
@@ -717,7 +717,7 @@
             var ruleDto = new RuleDTO
             {
                 Description = description,
-                Condition = "Description matches",
+                Condition = RuleConditionType.DescriptionMatches,
                 Created = DateTime.Now,
                 IsActive = true,
                 CategoryId = 100,
@@ -769,7 +769,7 @@
             Assert.Single(DbManual.Rules);
             var addedRule = DbManual.Rules.First();
             Assert.Equal(description, addedRule.Description);
-            Assert.Equal("Description matches", addedRule.Condition);
+            Assert.Equal(RuleConditionType.DescriptionMatches, addedRule.Condition);
             Assert.True(addedRule.IsActive);
             Assert.Equal(100, addedRule.CategoryId);
             Assert.Equal(50, addedRule.LocationId);

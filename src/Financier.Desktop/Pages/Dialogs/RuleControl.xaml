@@ -19,6 +19,7 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <converters:InvertedBooleanToVisibilityConverter x:Key="invBoolToVis"/>
+            <converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
@@ -67,10 +68,11 @@
                     <xctk:WatermarkComboBox x:Name="MCCBox"
                                             Grid.Column="1"
                                             Margin="2"
-                                            IsEditable="True"
                                             Visibility="{Binding Path=IsMCCSelected, Converter={StaticResource BoolToVis}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                            ItemsSource="{Binding Source={x:Static fcrd:DbManual.MCCCategoriesKeys}, Mode=OneWay}"
-                                            SelectedValue="{Binding SelectedMCC}" />
+                                            ItemsSource="{Binding Source={loc:EnumBinding {x:Type fcrd:Mcc}}}"
+                                            SelectedValue="{Binding SelectedMCC}"
+                                            IsTextSearchEnabled="True"
+                                            />
                 </Grid>
             </GroupBox>
             <GroupBox Grid.Row="1" Margin="5" Header="{loc:Translate Key=actions}">

@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Data\mcc_en.json" />
     <EmbeddedResource Include="Data\mcc.json" />
+    <EmbeddedResource Include="Data\mcc_pl.json" />
+    <EmbeddedResource Include="Data\mcc_uk.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +25,16 @@
     <!-- Ukrainian satellite resources — culture detected from filename suffix (.uk) -->
     <EmbeddedResource Update="Localization\Resources.uk.resx">
       <DependentUpon>Resources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\ResourcesMcc.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourcesMcc.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\ResourcesMcc.pl.resx">
+      <DependentUpon>ResourcesMcc.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\ResourcesMcc.uk.resx">
+      <DependentUpon>ResourcesMcc.resx</DependentUpon>
     </EmbeddedResource>
     <!-- Link the designer file to its parent .resx so VS nests it correctly -->
   </ItemGroup>
@@ -42,6 +55,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Localization\ResourcesMcc.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResourcesMcc.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -83,8 +101,5 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>Financier.Desktop.Tests</_Parameter1>
     </AssemblyAttribute>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\..\..\..\..\Users\vkhmelovskyi\Downloads\mcc_codes.json" Link="Data\mcc_codes.json" />
   </ItemGroup>
 </Project>

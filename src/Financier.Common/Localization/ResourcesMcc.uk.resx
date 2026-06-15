@@ -1,0 +1,842 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+ <data name="mcc_veterinary_services" xml:space="preserve">
+    <value>Ветеринарні послуги</value>
+  </data>
+  <data name="mcc_wine_producers" xml:space="preserve">
+    <value>Виноробники</value>
+  </data>
+  <data name="mcc_champagne_producers" xml:space="preserve">
+    <value>Виробники шампанського</value>
+  </data>
+  <data name="mcc_agricultural_co_operatives" xml:space="preserve">
+    <value>Сільскогосподарські кооперативи</value>
+  </data>
+  <data name="mcc_horticultural_and_landscaping" xml:space="preserve">
+    <value>Садівництво. Ландшафтний дизайн</value>
+  </data>
+  <data name="mcc_general_contractors" xml:space="preserve">
+    <value>Будівництво. Підрядники</value>
+  </data>
+  <data name="mcc_heating_plumbing_a_c" xml:space="preserve">
+    <value>Кондиціонери. Встановлення</value>
+  </data>
+  <data name="mcc_electrical_contractors" xml:space="preserve">
+    <value>Електрики</value>
+  </data>
+  <data name="mcc_masonry_stonework_and_plaster" xml:space="preserve">
+    <value>Будівники. Облицювання</value>
+  </data>
+  <data name="mcc_carpentry_contractors" xml:space="preserve">
+    <value>Столярні роботи</value>
+  </data>
+  <data name="mcc_roofing_siding_sheet_metal" xml:space="preserve">
+    <value>Будівники. Облицювання</value>
+  </data>
+  <data name="mcc_concrete_work_contractors" xml:space="preserve">
+    <value>Будівництво. Бетон</value>
+  </data>
+  <data name="mcc_special_trade_contractors" xml:space="preserve">
+    <value>Спеціалізовані підрядники</value>
+  </data>
+  <data name="mcc_miscellaneous_publishing_and_printing" xml:space="preserve">
+    <value>Друкарська справа</value>
+  </data>
+  <data name="mcc_typesetting_plate_making" xml:space="preserve">
+    <value>Набір текстів та друк</value>
+  </data>
+  <data name="mcc_specialty_cleaning" xml:space="preserve">
+    <value>Спеціалізоване прибирання</value>
+  </data>
+  <data name="mcc_airlines" xml:space="preserve">
+    <value>Авіалінії</value>
+  </data>
+  <data name="mcc_car_rent" xml:space="preserve">
+    <value>Оренда автомобілів</value>
+  </data>
+  <data name="mcc_hotels_and_resorts" xml:space="preserve">
+    <value>Готелі та курорти</value>
+  </data>
+  <data name="mcc_ashing" xml:space="preserve">
+    <value>Переведення в готівку</value>
+  </data>
+  <data name="mcc_railway" xml:space="preserve">
+    <value>Залізниця</value>
+  </data>
+  <data name="mcc_passenger_transportation" xml:space="preserve">
+    <value>Пасажирські перевезення</value>
+  </data>
+  <data name="mcc_passenger_railways" xml:space="preserve">
+    <value>Пасажирські залізничні перевезення</value>
+  </data>
+  <data name="mcc_ambulance" xml:space="preserve">
+    <value>Швидка допомога</value>
+  </data>
+  <data name="mcc_taxi" xml:space="preserve">
+    <value>Таксі</value>
+  </data>
+  <data name="mcc_transportation_bus" xml:space="preserve">
+    <value>Перевезення. Автобус</value>
+  </data>
+  <data name="mcc_transportation_delivery" xml:space="preserve">
+    <value>Транспортування. Доставка</value>
+  </data>
+  <data name="mcc_delivery_service" xml:space="preserve">
+    <value>Кур'єрська служба</value>
+  </data>
+  <data name="mcc_storage" xml:space="preserve">
+    <value>Сховище</value>
+  </data>
+  <data name="mcc_miscellaneous" xml:space="preserve">
+    <value>Різне</value>
+  </data>
+  <data name="mcc_cruise_lines" xml:space="preserve">
+    <value>Круїзні лінії</value>
+  </data>
+  <data name="mcc_boat_rentals" xml:space="preserve">
+    <value>Оренда суден</value>
+  </data>
+  <data name="mcc_yachting_service" xml:space="preserve">
+    <value>Яхтинговий сервіс</value>
+  </data>
+  <data name="mcc_airports" xml:space="preserve">
+    <value>Аеропорти</value>
+  </data>
+  <data name="mcc_tourism" xml:space="preserve">
+    <value>Туризм</value>
+  </data>
+  <data name="mcc_tour_operators" xml:space="preserve">
+    <value>Туроператори</value>
+  </data>
+  <data name="mcc_transportation_services" xml:space="preserve">
+    <value>Транспортні послуги</value>
+  </data>
+  <data name="mcc_telemarketing" xml:space="preserve">
+    <value>Телемаркетинг</value>
+  </data>
+  <data name="mcc_toll_roads" xml:space="preserve">
+    <value>Платні дороги</value>
+  </data>
+  <data name="mcc_telecommunication_equipment" xml:space="preserve">
+    <value>Телекомунікаційне обладнання</value>
+  </data>
+  <data name="mcc_retail_outlets_with_telephony" xml:space="preserve">
+    <value>Торгові точки з телефонією</value>
+  </data>
+  <data name="mcc_mobile_connection" xml:space="preserve">
+    <value>Мобільний зв'язок</value>
+  </data>
+  <data name="mcc_telephone_services" xml:space="preserve">
+    <value>Телефонні послуги</value>
+  </data>
+  <data name="mcc_information_services" xml:space="preserve">
+    <value>Інформаційні послуги</value>
+  </data>
+  <data name="mcc_telegraph" xml:space="preserve">
+    <value>Телеграф</value>
+  </data>
+  <data name="mcc_money_transfer" xml:space="preserve">
+    <value>Переказ коштів</value>
+  </data>
+  <data name="mcc_the_television" xml:space="preserve">
+    <value>Телебачення</value>
+  </data>
+  <data name="mcc_utilities" xml:space="preserve">
+    <value>Комунальні послуги</value>
+  </data>
+  <data name="mcc_auto_parts" xml:space="preserve">
+    <value>Автозапчастини</value>
+  </data>
+  <data name="mcc_furniture" xml:space="preserve">
+    <value>Меблі</value>
+  </data>
+  <data name="mcc_building_materials" xml:space="preserve">
+    <value>Будматеріали</value>
+  </data>
+  <data name="mcc_office_equipment" xml:space="preserve">
+    <value>Офісне приладдя</value>
+  </data>
+  <data name="mcc_computers_and_software" xml:space="preserve">
+    <value>Комп'ютери та програмне забезпечення</value>
+  </data>
+  <data name="mcc_equipment" xml:space="preserve">
+    <value>Обладнання</value>
+  </data>
+  <data name="mcc_medical_equipment" xml:space="preserve">
+    <value>Медичне обладнання</value>
+  </data>
+  <data name="mcc_metal_processing" xml:space="preserve">
+    <value>Обробка металу</value>
+  </data>
+  <data name="mcc_electronics" xml:space="preserve">
+    <value>Електроніка</value>
+  </data>
+  <data name="mcc_plumbing" xml:space="preserve">
+    <value>Сантехніка</value>
+  </data>
+  <data name="mcc_industry" xml:space="preserve">
+    <value>Промисловість</value>
+  </data>
+  <data name="mcc_jewelry" xml:space="preserve">
+    <value>Дорогоцінності</value>
+  </data>
+  <data name="mcc_goods" xml:space="preserve">
+    <value>Товари</value>
+  </data>
+  <data name="mcc_chancery" xml:space="preserve">
+    <value>Канцелярія</value>
+  </data>
+  <data name="mcc_drugs" xml:space="preserve">
+    <value>Ліки</value>
+  </data>
+  <data name="mcc_haberdashery" xml:space="preserve">
+    <value>Галантерея</value>
+  </data>
+  <data name="mcc_clothing" xml:space="preserve">
+    <value>Одяг</value>
+  </data>
+  <data name="mcc_footwear" xml:space="preserve">
+    <value>Взуття</value>
+  </data>
+  <data name="mcc_chemicals" xml:space="preserve">
+    <value>Хімія</value>
+  </data>
+  <data name="mcc_petroleum" xml:space="preserve">
+    <value>Бензин</value>
+  </data>
+  <data name="mcc_books_press" xml:space="preserve">
+    <value>Книги. Преса</value>
+  </data>
+  <data name="mcc_flowers" xml:space="preserve">
+    <value>Квіти</value>
+  </data>
+  <data name="mcc_paints" xml:space="preserve">
+    <value>Фарби</value>
+  </data>
+  <data name="mcc_household_products" xml:space="preserve">
+    <value>Товари для дому</value>
+  </data>
+  <data name="mcc_renovation" xml:space="preserve">
+    <value>Ремонт</value>
+  </data>
+  <data name="mcc_hardware_stores" xml:space="preserve">
+    <value>Господарських товари</value>
+  </data>
+  <data name="mcc_garden_accessories" xml:space="preserve">
+    <value>Садове приладдя</value>
+  </data>
+  <data name="mcc_marketplaces" xml:space="preserve">
+    <value>Маркетплейси</value>
+  </data>
+  <data name="mcc_mobile_homes" xml:space="preserve">
+    <value>Будинки на колесах</value>
+  </data>
+  <data name="mcc_retail_stores" xml:space="preserve">
+    <value>Роздрібні магазини</value>
+  </data>
+  <data name="mcc_gas_sales" xml:space="preserve">
+    <value>Продаж газу</value>
+  </data>
+  <data name="mcc_wholesalers" xml:space="preserve">
+    <value>Оптовики</value>
+  </data>
+  <data name="mcc_duty_free" xml:space="preserve">
+    <value>Duty Free</value>
+  </data>
+  <data name="mcc_discounters" xml:space="preserve">
+    <value>Дискаунтери</value>
+  </data>
+  <data name="mcc_department_stores" xml:space="preserve">
+    <value>Універмаги</value>
+  </data>
+  <data name="mcc_variety_stores" xml:space="preserve">
+    <value>Універсальні магазини</value>
+  </data>
+  <data name="mcc_merchandise_stores" xml:space="preserve">
+    <value>Універсальні магазини</value>
+  </data>
+  <data name="mcc_grocery" xml:space="preserve">
+    <value>Продукти</value>
+  </data>
+  <data name="mcc_meat" xml:space="preserve">
+    <value>М'ясо</value>
+  </data>
+  <data name="mcc_sweets" xml:space="preserve">
+    <value>Солодощі</value>
+  </data>
+  <data name="mcc_farm_goods" xml:space="preserve">
+    <value>Фермерські товари</value>
+  </data>
+  <data name="mcc_bakeries" xml:space="preserve">
+    <value>Пекарні</value>
+  </data>
+  <data name="mcc_food_stores" xml:space="preserve">
+    <value>Продукти</value>
+  </data>
+  <data name="mcc_car_dealerships" xml:space="preserve">
+    <value>Автосалони</value>
+  </data>
+  <data name="mcc_tires" xml:space="preserve">
+    <value>Шини</value>
+  </data>
+  <data name="mcc_auto_shops" xml:space="preserve">
+    <value>Автомагазини</value>
+  </data>
+  <data name="mcc_service_stations" xml:space="preserve">
+    <value>СТО</value>
+  </data>
+  <data name="mcc_gas_station" xml:space="preserve">
+    <value>АЗС</value>
+  </data>
+  <data name="mcc_boats" xml:space="preserve">
+    <value>Човни</value>
+  </data>
+  <data name="mcc_charging_stations" xml:space="preserve">
+    <value>Зарядка електромобілів</value>
+  </data>
+  <data name="mcc_mens_clothing" xml:space="preserve">
+    <value>Чоловічий одяг</value>
+  </data>
+  <data name="mcc_womens_clothing" xml:space="preserve">
+    <value>Жіночий одяг</value>
+  </data>
+  <data name="mcc_clothing_stores" xml:space="preserve">
+    <value>Жіночий одяг</value>
+  </data>
+  <data name="mcc_baby_clothes" xml:space="preserve">
+    <value>Дитячий одяг</value>
+  </data>
+  <data name="mcc_clothes" xml:space="preserve">
+    <value>Одяг</value>
+  </data>
+  <data name="mcc_sportswear" xml:space="preserve">
+    <value>Спортивний одяг</value>
+  </data>
+  <data name="mcc_shoes" xml:space="preserve">
+    <value>Взуття</value>
+  </data>
+  <data name="mcc_fur" xml:space="preserve">
+    <value>Хутро</value>
+  </data>
+  <data name="mcc_atelier" xml:space="preserve">
+    <value>Ательє</value>
+  </data>
+  <data name="mcc_wigs" xml:space="preserve">
+    <value>Перуки</value>
+  </data>
+  <data name="mcc_accessories" xml:space="preserve">
+    <value>Аксесуари</value>
+  </data>
+  <data name="mcc_floor_coverings" xml:space="preserve">
+    <value>Покриття для підлоги</value>
+  </data>
+  <data name="mcc_curtains" xml:space="preserve">
+    <value>Штори. Фіранки</value>
+  </data>
+  <data name="mcc_alcohol" xml:space="preserve">
+    <value>Спиртні напої</value>
+  </data>
+  <data name="mcc_fireplaces" xml:space="preserve">
+    <value>Каміни</value>
+  </data>
+  <data name="mcc_household_appliance" xml:space="preserve">
+    <value>Побутова техніка</value>
+  </data>
+  <data name="mcc_musical_instruments" xml:space="preserve">
+    <value>Музичні інструменти</value>
+  </data>
+  <data name="mcc_computer_software" xml:space="preserve">
+    <value>Комп'ютерне ПЗ</value>
+  </data>
+  <data name="mcc_record_shops" xml:space="preserve">
+    <value>Магазини звукозапису</value>
+  </data>
+  <data name="mcc_caterers" xml:space="preserve">
+    <value>Доставка їжі</value>
+  </data>
+  <data name="mcc_cafe_restaurants" xml:space="preserve">
+    <value>Кафе. Ресторани</value>
+  </data>
+  <data name="mcc_bars" xml:space="preserve">
+    <value>Бари</value>
+  </data>
+  <data name="mcc_fast_food" xml:space="preserve">
+    <value>Фаст-фуд</value>
+  </data>
+  <data name="mcc_digital_goods" xml:space="preserve">
+    <value>Цифрові товари</value>
+  </data>
+  <data name="mcc_games" xml:space="preserve">
+    <value>Ігри</value>
+  </data>
+  <data name="mcc_applications" xml:space="preserve">
+    <value>Програмне забезпечення</value>
+  </data>
+  <data name="mcc_antiques" xml:space="preserve">
+    <value>Антикваріат</value>
+  </data>
+  <data name="mcc_drug_stores" xml:space="preserve">
+    <value>Аптеки</value>
+  </data>
+  <data name="mcc_second_hand" xml:space="preserve">
+    <value>Секонд-хенд</value>
+  </data>
+  <data name="mcc_pawn_shops" xml:space="preserve">
+    <value>Ломбарди</value>
+  </data>
+  <data name="mcc_car_dump" xml:space="preserve">
+    <value>Автозвалище</value>
+  </data>
+  <data name="mcc_reproduction_stores" xml:space="preserve">
+    <value>Магазини репродукцій</value>
+  </data>
+  <data name="mcc_bicycles" xml:space="preserve">
+    <value>Велосипеди</value>
+  </data>
+  <data name="mcc_sports_goods" xml:space="preserve">
+    <value>Товари для спорту</value>
+  </data>
+  <data name="mcc_book_stores" xml:space="preserve">
+    <value>Книгарні</value>
+  </data>
+  <data name="mcc_stationery" xml:space="preserve">
+    <value>Канцтовари</value>
+  </data>
+  <data name="mcc_clock" xml:space="preserve">
+    <value>Годинники</value>
+  </data>
+  <data name="mcc_toys" xml:space="preserve">
+    <value>Іграшки</value>
+  </data>
+  <data name="mcc_photo_goods" xml:space="preserve">
+    <value>Фототовари</value>
+  </data>
+  <data name="mcc_souvenirs" xml:space="preserve">
+    <value>Сувеніри</value>
+  </data>
+  <data name="mcc_leather_products" xml:space="preserve">
+    <value>Шкіряні вироби</value>
+  </data>
+  <data name="mcc_sewing_supplies" xml:space="preserve">
+    <value>Товари для шиття</value>
+  </data>
+  <data name="mcc_crystal_glassware" xml:space="preserve">
+    <value>Кришталь / посуд</value>
+  </data>
+  <data name="mcc_insurance" xml:space="preserve">
+    <value>Страхування</value>
+  </data>
+  <data name="mcc_goods_by_mail" xml:space="preserve">
+    <value>Товари поштою</value>
+  </data>
+  <data name="mcc_travels" xml:space="preserve">
+    <value>Подорожі</value>
+  </data>
+  <data name="mcc_salesmen" xml:space="preserve">
+    <value>Комівояжери</value>
+  </data>
+  <data name="mcc_subscriptions" xml:space="preserve">
+    <value>Підписки</value>
+  </data>
+  <data name="mcc_art_goods" xml:space="preserve">
+    <value>Художні товари</value>
+  </data>
+  <data name="mcc_galleries" xml:space="preserve">
+    <value>Галереї</value>
+  </data>
+  <data name="mcc_philatelicism" xml:space="preserve">
+    <value>Філателістика</value>
+  </data>
+  <data name="mcc_church_shops" xml:space="preserve">
+    <value>Церковні лавки</value>
+  </data>
+  <data name="mcc_rubber_stamp" xml:space="preserve">
+    <value>Штампи</value>
+  </data>
+  <data name="mcc_hearing_aids" xml:space="preserve">
+    <value>Слухові апарати</value>
+  </data>
+  <data name="mcc_prostheses" xml:space="preserve">
+    <value>Протези</value>
+  </data>
+  <data name="mcc_cosmetics" xml:space="preserve">
+    <value>Косметика</value>
+  </data>
+  <data name="mcc_printing_machines" xml:space="preserve">
+    <value>Друкарські машини</value>
+  </data>
+  <data name="mcc_fuel" xml:space="preserve">
+    <value>Паливо</value>
+  </data>
+  <data name="mcc_florists" xml:space="preserve">
+    <value>Флористика</value>
+  </data>
+  <data name="mcc_tobacco_products" xml:space="preserve">
+    <value>Тютюнові вироби</value>
+  </data>
+  <data name="mcc_newspapers_magazines" xml:space="preserve">
+    <value>Газети. Журнали</value>
+  </data>
+  <data name="mcc_pet_supplies" xml:space="preserve">
+    <value>Зоотовари</value>
+  </data>
+  <data name="mcc_swimming_pools" xml:space="preserve">
+    <value>Басейни</value>
+  </data>
+  <data name="mcc_razors" xml:space="preserve">
+    <value>Бритви</value>
+  </data>
+  <data name="mcc_tents" xml:space="preserve">
+    <value>Тенти</value>
+  </data>
+  <data name="mcc_ashier_s_office" xml:space="preserve">
+    <value>Каси</value>
+  </data>
+  <data name="mcc_financial_services" xml:space="preserve">
+    <value>Фінансові послуги</value>
+  </data>
+  <data name="mcc_banks" xml:space="preserve">
+    <value>Банки</value>
+  </data>
+  <data name="mcc_quasi_cash" xml:space="preserve">
+    <value>Квазі-кеш</value>
+  </data>
+  <data name="mcc_securities" xml:space="preserve">
+    <value>Цінні папери</value>
+  </data>
+  <data name="mcc_rental_property" xml:space="preserve">
+    <value>Оренда нерухомості</value>
+  </data>
+  <data name="mcc_ard_replenishment" xml:space="preserve">
+    <value>Поповнення картки</value>
+  </data>
+  <data name="mcc_bonds" xml:space="preserve">
+    <value>Облігації</value>
+  </data>
+  <data name="mcc_timeshares" xml:space="preserve">
+    <value>Тайм-шери</value>
+  </data>
+  <data name="mcc_recreation" xml:space="preserve">
+    <value>Рекреація</value>
+  </data>
+  <data name="mcc_campgrounds" xml:space="preserve">
+    <value>Кемпінг</value>
+  </data>
+  <data name="mcc_cleaning" xml:space="preserve">
+    <value>Прання й прибирання</value>
+  </data>
+  <data name="mcc_laundry" xml:space="preserve">
+    <value>Прання</value>
+  </data>
+  <data name="mcc_dry_cleaners" xml:space="preserve">
+    <value>Хімчистка</value>
+  </data>
+  <data name="mcc_photographic_studios" xml:space="preserve">
+    <value>Фотостудія</value>
+  </data>
+  <data name="mcc_the_beauty" xml:space="preserve">
+    <value>Краса</value>
+  </data>
+  <data name="mcc_clothing_repair" xml:space="preserve">
+    <value>Ремонт одягу</value>
+  </data>
+  <data name="mcc_funeral_services" xml:space="preserve">
+    <value>Ритуальні послуги</value>
+  </data>
+  <data name="mcc_escort" xml:space="preserve">
+    <value>Ескорт</value>
+  </data>
+  <data name="mcc_dating_escort" xml:space="preserve">
+    <value>Знайомства. Ескорт</value>
+  </data>
+  <data name="mcc_taxes" xml:space="preserve">
+    <value>Податки</value>
+  </data>
+  <data name="mcc_consultation" xml:space="preserve">
+    <value>Консультація</value>
+  </data>
+  <data name="mcc_shopping" xml:space="preserve">
+    <value>Покупки</value>
+  </data>
+  <data name="mcc_hospitals" xml:space="preserve">
+    <value>Лікарні</value>
+  </data>
+  <data name="mcc_babysitters" xml:space="preserve">
+    <value>Няні</value>
+  </data>
+  <data name="mcc_clothing_rental" xml:space="preserve">
+    <value>Прокат одягу</value>
+  </data>
+  <data name="mcc_massage" xml:space="preserve">
+    <value>Масаж</value>
+  </data>
+  <data name="mcc_health_and_beauty" xml:space="preserve">
+    <value>Здоров'я й краса</value>
+  </data>
+  <data name="mcc_advertising" xml:space="preserve">
+    <value>Реклама</value>
+  </data>
+  <data name="mcc_credit_bureaus" xml:space="preserve">
+    <value>БКІ</value>
+  </data>
+  <data name="mcc_collection_agencies" xml:space="preserve">
+    <value>Колектори</value>
+  </data>
+  <data name="mcc_copy_centers" xml:space="preserve">
+    <value>Копі-центри</value>
+  </data>
+  <data name="mcc_photography_and_art" xml:space="preserve">
+    <value>Фотографія й мистецтво</value>
+  </data>
+  <data name="mcc_stenography" xml:space="preserve">
+    <value>Стенографія</value>
+  </data>
+  <data name="mcc_disinfecting" xml:space="preserve">
+    <value>Дезінфекція</value>
+  </data>
+  <data name="mcc_cleaning_and_maintenance" xml:space="preserve">
+    <value>Чистка й обслуговування</value>
+  </data>
+  <data name="mcc_employment" xml:space="preserve">
+    <value>Працевлаштування</value>
+  </data>
+  <data name="mcc_programming" xml:space="preserve">
+    <value>Програмування</value>
+  </data>
+  <data name="mcc_computer_repair" xml:space="preserve">
+    <value>Ремонт комп'ютерів</value>
+  </data>
+  <data name="mcc_business_services" xml:space="preserve">
+    <value>Бізнес послуги</value>
+  </data>
+  <data name="mcc_consulting_pr" xml:space="preserve">
+    <value>Консультації, PR</value>
+  </data>
+  <data name="mcc_detective_agencies" xml:space="preserve">
+    <value>Детективні агентства</value>
+  </data>
+  <data name="mcc_equipment_rental" xml:space="preserve">
+    <value>Оренда спорядження</value>
+  </data>
+  <data name="mcc_photo_printing" xml:space="preserve">
+    <value>Фотодрук</value>
+  </data>
+  <data name="mcc_parking" xml:space="preserve">
+    <value>Паркування</value>
+  </data>
+  <data name="mcc_truck_rental" xml:space="preserve">
+    <value>Оренда вантажівок</value>
+  </data>
+  <data name="mcc_auto_repair" xml:space="preserve">
+    <value>Ремонт авто</value>
+  </data>
+  <data name="mcc_tire_service" xml:space="preserve">
+    <value>Шиномонтаж</value>
+  </data>
+  <data name="mcc_car_paints" xml:space="preserve">
+    <value>Автомобільні фарби</value>
+  </data>
+  <data name="mcc_maintenance_stations" xml:space="preserve">
+    <value>СТО</value>
+  </data>
+  <data name="mcc_car_washes" xml:space="preserve">
+    <value>Автомийки</value>
+  </data>
+  <data name="mcc_tow_truck" xml:space="preserve">
+    <value>Евакуатор</value>
+  </data>
+  <data name="mcc_repair_of_equipment" xml:space="preserve">
+    <value>Ремонт техніки</value>
+  </data>
+  <data name="mcc_hvac_equipment_repair" xml:space="preserve">
+    <value>Ремонт кліматичної техніки</value>
+  </data>
+  <data name="mcc_repair_of_watches_and_jewelry" xml:space="preserve">
+    <value>Ремонт годинників й ювелірних виробів</value>
+  </data>
+  <data name="mcc_furniture_repair" xml:space="preserve">
+    <value>Ремонт меблів</value>
+  </data>
+  <data name="mcc_welding_works" xml:space="preserve">
+    <value>Зравювальні роботи</value>
+  </data>
+  <data name="mcc_repairs" xml:space="preserve">
+    <value>Ремонт</value>
+  </data>
+  <data name="mcc_government_owned_lottery" xml:space="preserve">
+    <value>Державна лотерея</value>
+  </data>
+  <data name="mcc_online_casino" xml:space="preserve">
+    <value>Онлайн-казино</value>
+  </data>
+  <data name="mcc_horse_dog_racing" xml:space="preserve">
+    <value>Скачки</value>
+  </data>
+  <data name="mcc_video_rental" xml:space="preserve">
+    <value>Прокат відео</value>
+  </data>
+  <data name="mcc_cinemas" xml:space="preserve">
+    <value>Кінотеатри</value>
+  </data>
+  <data name="mcc_dance_studios_dance_schools" xml:space="preserve">
+    <value>Танцювальні студії. Школи танцю</value>
+  </data>
+  <data name="mcc_tickets" xml:space="preserve">
+    <value>Квитки</value>
+  </data>
+  <data name="mcc_music_bands_orchestras" xml:space="preserve">
+    <value>Музичні групи. Оркестри</value>
+  </data>
+  <data name="mcc_billiard" xml:space="preserve">
+    <value>Більярд</value>
+  </data>
+  <data name="mcc_bowling_clubs" xml:space="preserve">
+    <value>Боулінг-клуби</value>
+  </data>
+  <data name="mcc_sports_clubs" xml:space="preserve">
+    <value>Спортклуби</value>
+  </data>
+  <data name="mcc_golf" xml:space="preserve">
+    <value>Гольф</value>
+  </data>
+  <data name="mcc_videogames" xml:space="preserve">
+    <value>Відеоігри</value>
+  </data>
+  <data name="mcc_gambling" xml:space="preserve">
+    <value>Азартні ігри</value>
+  </data>
+  <data name="mcc_entertainment" xml:space="preserve">
+    <value>Розваги</value>
+  </data>
+  <data name="mcc_entertainment_and_sport" xml:space="preserve">
+    <value>Розваги та спорт</value>
+  </data>
+  <data name="mcc_aquariums_dolphinariums" xml:space="preserve">
+    <value>Акваріуми. Дельфінарії</value>
+  </data>
+  <data name="mcc_medicine" xml:space="preserve">
+    <value>Медицина</value>
+  </data>
+  <data name="mcc_dentistry" xml:space="preserve">
+    <value>Стоматологія</value>
+  </data>
+  <data name="mcc_chiropractors" xml:space="preserve">
+    <value>Хіропрактики</value>
+  </data>
+  <data name="mcc_optics" xml:space="preserve">
+    <value>Оптика</value>
+  </data>
+  <data name="mcc_podiatrists" xml:space="preserve">
+    <value>Ортопеди</value>
+  </data>
+  <data name="mcc_caregiver_nurse" xml:space="preserve">
+    <value>Доглядальниці</value>
+  </data>
+  <data name="mcc_medicine_and_dentistry" xml:space="preserve">
+    <value>Медицина та стоматологія</value>
+  </data>
+  <data name="mcc_medical_services" xml:space="preserve">
+    <value>Медичні послуги</value>
+  </data>
+  <data name="mcc_lawyers" xml:space="preserve">
+    <value>Юристи. Адвокати</value>
+  </data>
+  <data name="mcc_school" xml:space="preserve">
+    <value>Школа</value>
+  </data>
+  <data name="mcc_education_university" xml:space="preserve">
+    <value>Освіта. Університет</value>
+  </data>
+  <data name="mcc_schools_correspondence" xml:space="preserve">
+    <value>Дистанційна освіта</value>
+  </data>
+  <data name="mcc_education_business" xml:space="preserve">
+    <value>Освіта. Бізнес</value>
+  </data>
+  <data name="mcc_education" xml:space="preserve">
+    <value>Освіта</value>
+  </data>
+  <data name="mcc_kindergarten" xml:space="preserve">
+    <value>Дитячий садок</value>
+  </data>
+  <data name="mcc_charity" xml:space="preserve">
+    <value>Благодійність</value>
+  </data>
+  <data name="mcc_public_organizations" xml:space="preserve">
+    <value>Громадські організації</value>
+  </data>
+  <data name="mcc_organizations_political" xml:space="preserve">
+    <value>Політичні організації</value>
+  </data>
+  <data name="mcc_organizations_religious" xml:space="preserve">
+    <value>Релігійні організації</value>
+  </data>
+  <data name="mcc_autoclub" xml:space="preserve">
+    <value>Автоклуб</value>
+  </data>
+  <data name="mcc_organizations_membership" xml:space="preserve">
+    <value>Членські організації</value>
+  </data>
+  <data name="mcc_testing_laboratories" xml:space="preserve">
+    <value>Випробувальні лабораторії</value>
+  </data>
+  <data name="mcc_architects" xml:space="preserve">
+    <value>Архітектори</value>
+  </data>
+  <data name="mcc_accounting_audit" xml:space="preserve">
+    <value>Бухгалтерія. Аудит</value>
+  </data>
+  <data name="mcc_professional_services" xml:space="preserve">
+    <value>Професійні послуги</value>
+  </data>
+  <data name="mcc_i_purchasing_pilot" xml:space="preserve">
+    <value>I-Purchasing Pilot</value>
+  </data>
+  <data name="mcc_court" xml:space="preserve">
+    <value>Суд</value>
+  </data>
+  <data name="mcc_fines" xml:space="preserve">
+    <value>Штрафи</value>
+  </data>
+  <data name="mcc_payouts_bonds" xml:space="preserve">
+    <value>Виплати. Облігації</value>
+  </data>
+  <data name="mcc_government_services" xml:space="preserve">
+    <value>Державні послуги</value>
+  </data>
+  <data name="mcc_mail" xml:space="preserve">
+    <value>Пошта</value>
+  </data>
+  <data name="mcc_government_procurement" xml:space="preserve">
+    <value>Урядові закупівлі</value>
+  </data>
+  <data name="mcc_cashback" xml:space="preserve">
+    <value>Кешбек</value>
+  </data>
+  <data name="mcc_visa" xml:space="preserve">
+    <value>VISA</value>
+  </data>
+  <data name="mcc_emergency_services" xml:space="preserve">
+    <value>Аварійні служби</value>
+  </data>
+  <data name="mcc_document_flow" xml:space="preserve">
+    <value>Документообіг</value>
+  </data>
+  <data name="mcc_in_company_purchases" xml:space="preserve">
+    <value>Купівлі всередині компанії</value>
+  </data>
+</root>

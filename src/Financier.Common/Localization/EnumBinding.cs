@@ -3,8 +3,7 @@ using System.Windows.Markup;
 
 namespace Financier.Common.Localization;
 
-public class EnumBinding
-       : MarkupExtension
+public class EnumBinding : MarkupExtension
 {
     public Type EnumType { get; }
 

@@ -1,0 +1,927 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+		Microsoft ResX Schema
+
+		Version 1.3
+
+		The primary goals of this format is to allow a simple XML format 
+		that is mostly human readable. The generation and parsing of the 
+		various data types are done through the TypeConverter classes 
+		associated with the data types.
+
+		Example:
+
+		... ado.net/XML headers & schema ...
+		<resheader name="resmimetype">text/microsoft-resx</resheader>
+		<resheader name="version">1.3</resheader>
+		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+		<data name="Name1">this is my long string</data>
+		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+			[base64 mime encoded serialized .NET Framework object]
+		</data>
+		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+			[base64 mime encoded string representing a byte array form of the .NET Framework object]
+		</data>
+
+		There are any number of "resheader" rows that contain simple 
+		name/value pairs.
+
+		Each data row contains a name, and value. The row also contains a 
+		type or mimetype. Type corresponds to a .NET class that support 
+		text/value conversion through the TypeConverter architecture. 
+		Classes that don't support this are serialized and stored with the 
+		mimetype set.
+
+		The mimetype is used for serialized objects, and tells the 
+		ResXResourceReader how to depersist the object. This is currently not 
+		extensible. For a given mimetype the value must be set accordingly:
+
+		Note - application/x-microsoft.net.object.binary.base64 is the format 
+		that the ResXResourceWriter will generate, however the reader can 
+		read any of the formats listed below.
+
+		mimetype: application/x-microsoft.net.object.binary.base64
+		value   : The object must be serialized with 
+			: System.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.soap.base64
+		value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
+
+		mimetype: application/x-microsoft.net.object.bytearray.base64
+		value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
+	
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+<data name="mcc_veterinary_services" xml:space="preserve">
+    <value>Usługi weterynaryjne</value>
+  </data>
+  <data name="mcc_wine_producers" xml:space="preserve">
+    <value>Producenci wina</value>
+  </data>
+  <data name="mcc_champagne_producers" xml:space="preserve">
+    <value>Producenci szampana</value>
+  </data>
+  <data name="mcc_agricultural_co_operatives" xml:space="preserve">
+    <value>Spółdzielnie rolnicze</value>
+  </data>
+  <data name="mcc_horticultural_and_landscaping" xml:space="preserve">
+    <value>Ogrodnictwo i architektura krajobrazu</value>
+  </data>
+  <data name="mcc_general_contractors" xml:space="preserve">
+    <value>Generalni wykonawcy</value>
+  </data>
+  <data name="mcc_heating_plumbing_a_c" xml:space="preserve">
+    <value>Ogrzewanie, hydraulika, klimatyzacja</value>
+  </data>
+  <data name="mcc_electrical_contractors" xml:space="preserve">
+    <value>Firmy elektryczne</value>
+  </data>
+  <data name="mcc_masonry_stonework_and_plaster" xml:space="preserve">
+    <value>Murarstwo, kamieniarstwo i tynkowanie</value>
+  </data>
+  <data name="mcc_carpentry_contractors" xml:space="preserve">
+    <value>Firmy stolarskie</value>
+  </data>
+  <data name="mcc_roofing_siding_sheet_metal" xml:space="preserve">
+    <value>Dekarstwo, elewacje, blacharstwo</value>
+  </data>
+  <data name="mcc_concrete_work_contractors" xml:space="preserve">
+    <value>Firmy betoniarskie</value>
+  </data>
+  <data name="mcc_special_trade_contractors" xml:space="preserve">
+    <value>Wyspecjalizowane firmy budowlane</value>
+  </data>
+  <data name="mcc_miscellaneous_publishing_and_printing" xml:space="preserve">
+    <value>Różne wydawnictwa i drukarnie</value>
+  </data>
+  <data name="mcc_typesetting_plate_making" xml:space="preserve">
+    <value>Skład tekstu, produkcja form druk.</value>
+  </data>
+  <data name="mcc_specialty_cleaning" xml:space="preserve">
+    <value>Specjalistyczne sprzątanie</value>
+  </data>
+  <data name="mcc_airlines" xml:space="preserve">
+    <value>Linie lotnicze</value>
+  </data>
+  <data name="mcc_car_rent" xml:space="preserve">
+    <value>Wynajem samochodów</value>
+  </data>
+  <data name="mcc_hotels_and_resorts" xml:space="preserve">
+    <value>Hotele i kurorty</value>
+  </data>
+  <data name="mcc_ashing" xml:space="preserve">
+    <value>Wypłata gotówki</value>
+  </data>
+  <data name="mcc_railway" xml:space="preserve">
+    <value>Kolej</value>
+  </data>
+  <data name="mcc_passenger_transportation" xml:space="preserve">
+    <value>Transport pasażerski</value>
+  </data>
+  <data name="mcc_passenger_railways" xml:space="preserve">
+    <value>Pasażerskie linie kolejowe</value>
+  </data>
+  <data name="mcc_ambulance" xml:space="preserve">
+    <value>Pogotowie ratunkowe</value>
+  </data>
+  <data name="mcc_taxi" xml:space="preserve">
+    <value>Taksówka</value>
+  </data>
+  <data name="mcc_transportation_bus" xml:space="preserve">
+    <value>Transport. Autobus</value>
+  </data>
+  <data name="mcc_transportation_delivery" xml:space="preserve">
+    <value>Transport. Dostawa</value>
+  </data>
+  <data name="mcc_delivery_service" xml:space="preserve">
+    <value>Usługi dostawcze</value>
+  </data>
+  <data name="mcc_storage" xml:space="preserve">
+    <value>Magazynowanie</value>
+  </data>
+  <data name="mcc_miscellaneous" xml:space="preserve">
+    <value>Różne</value>
+  </data>
+  <data name="mcc_cruise_lines" xml:space="preserve">
+    <value>Linie wycieczkowe</value>
+  </data>
+  <data name="mcc_boat_rentals" xml:space="preserve">
+    <value>Wynajem łodzi</value>
+  </data>
+  <data name="mcc_yachting_service" xml:space="preserve">
+    <value>Usługi jachtingowe</value>
+  </data>
+  <data name="mcc_airports" xml:space="preserve">
+    <value>Lotniska</value>
+  </data>
+  <data name="mcc_tourism" xml:space="preserve">
+    <value>Turystyka</value>
+  </data>
+  <data name="mcc_tour_operators" xml:space="preserve">
+    <value>Biura podróży</value>
+  </data>
+  <data name="mcc_transportation_services" xml:space="preserve">
+    <value>Usługi transportowe</value>
+  </data>
+  <data name="mcc_telemarketing" xml:space="preserve">
+    <value>Telemarketing</value>
+  </data>
+  <data name="mcc_toll_roads" xml:space="preserve">
+    <value>Drogi płatne</value>
+  </data>
+  <data name="mcc_telecommunication_equipment" xml:space="preserve">
+    <value>Sprzęt telekomunikacyjny</value>
+  </data>
+  <data name="mcc_retail_outlets_with_telephony" xml:space="preserve">
+    <value>Sklepy z telefonią</value>
+  </data>
+  <data name="mcc_mobile_connection" xml:space="preserve">
+    <value>Połączenia mobilne</value>
+  </data>
+  <data name="mcc_telephone_services" xml:space="preserve">
+    <value>Usługi telefoniczne</value>
+  </data>
+  <data name="mcc_information_services" xml:space="preserve">
+    <value>Usługi informacyjne</value>
+  </data>
+  <data name="mcc_telegraph" xml:space="preserve">
+    <value>Telegraf</value>
+  </data>
+  <data name="mcc_money_transfer" xml:space="preserve">
+    <value>Przelewy pieniężne</value>
+  </data>
+  <data name="mcc_the_television" xml:space="preserve">
+    <value>Telewizja</value>
+  </data>
+  <data name="mcc_utilities" xml:space="preserve">
+    <value>Media i utilities</value>
+  </data>
+  <data name="mcc_auto_parts" xml:space="preserve">
+    <value>Części samochodowe</value>
+  </data>
+  <data name="mcc_furniture" xml:space="preserve">
+    <value>Meble</value>
+  </data>
+  <data name="mcc_building_materials" xml:space="preserve">
+    <value>Materiały budowlane</value>
+  </data>
+  <data name="mcc_office_equipment" xml:space="preserve">
+    <value>Wyposażenie biurowe</value>
+  </data>
+  <data name="mcc_computers_and_software" xml:space="preserve">
+    <value>Komputery i oprogramowanie</value>
+  </data>
+  <data name="mcc_equipment" xml:space="preserve">
+    <value>Sprzęt</value>
+  </data>
+  <data name="mcc_medical_equipment" xml:space="preserve">
+    <value>Sprzęt medyczny</value>
+  </data>
+  <data name="mcc_metal_processing" xml:space="preserve">
+    <value>Obróbka metali</value>
+  </data>
+  <data name="mcc_electronics" xml:space="preserve">
+    <value>Elektronika</value>
+  </data>
+  <data name="mcc_plumbing" xml:space="preserve">
+    <value>Hydraulika</value>
+  </data>
+  <data name="mcc_industry" xml:space="preserve">
+    <value>Przemysł</value>
+  </data>
+  <data name="mcc_jewelry" xml:space="preserve">
+    <value>Biżuteria</value>
+  </data>
+  <data name="mcc_goods" xml:space="preserve">
+    <value>Towary</value>
+  </data>
+  <data name="mcc_chancery" xml:space="preserve">
+    <value>Kancelaria</value>
+  </data>
+  <data name="mcc_drugs" xml:space="preserve">
+    <value>Leki</value>
+  </data>
+  <data name="mcc_haberdashery" xml:space="preserve">
+    <value>Pasmanterja</value>
+  </data>
+  <data name="mcc_clothing" xml:space="preserve">
+    <value>Odzież</value>
+  </data>
+  <data name="mcc_footwear" xml:space="preserve">
+    <value>Obuwie</value>
+  </data>
+  <data name="mcc_chemicals" xml:space="preserve">
+    <value>Chemia</value>
+  </data>
+  <data name="mcc_petroleum" xml:space="preserve">
+    <value>Produkty naftowe</value>
+  </data>
+  <data name="mcc_books_press" xml:space="preserve">
+    <value>Książki. Prasa</value>
+  </data>
+  <data name="mcc_flowers" xml:space="preserve">
+    <value>Kwiaty</value>
+  </data>
+  <data name="mcc_paints" xml:space="preserve">
+    <value>Farby</value>
+  </data>
+  <data name="mcc_household_products" xml:space="preserve">
+    <value>Artykuły gospodarstwa domowego</value>
+  </data>
+  <data name="mcc_renovation" xml:space="preserve">
+    <value>Remont</value>
+  </data>
+  <data name="mcc_hardware_stores" xml:space="preserve">
+    <value>Sklepy z narzędziami</value>
+  </data>
+  <data name="mcc_garden_accessories" xml:space="preserve">
+    <value>Akcesoria ogrodowe</value>
+  </data>
+  <data name="mcc_marketplaces" xml:space="preserve">
+    <value>Targowiska</value>
+  </data>
+  <data name="mcc_mobile_homes" xml:space="preserve">
+    <value>Domy mobilne</value>
+  </data>
+  <data name="mcc_retail_stores" xml:space="preserve">
+    <value>Sklepy detaliczne</value>
+  </data>
+  <data name="mcc_gas_sales" xml:space="preserve">
+    <value>Sprzedaż gazu</value>
+  </data>
+  <data name="mcc_wholesalers" xml:space="preserve">
+    <value>Hurtownie</value>
+  </data>
+  <data name="mcc_duty_free" xml:space="preserve">
+    <value>Duty Free</value>
+  </data>
+  <data name="mcc_discounters" xml:space="preserve">
+    <value>Sklepy dyskontowe</value>
+  </data>
+  <data name="mcc_department_stores" xml:space="preserve">
+    <value>Domy towarowe</value>
+  </data>
+  <data name="mcc_variety_stores" xml:space="preserve">
+    <value>Sklepy wielobranżowe</value>
+  </data>
+  <data name="mcc_merchandise_stores" xml:space="preserve">
+    <value>Sklepy towarowe</value>
+  </data>
+  <data name="mcc_grocery" xml:space="preserve">
+    <value>Spożywcze</value>
+  </data>
+  <data name="mcc_meat" xml:space="preserve">
+    <value>Mięso</value>
+  </data>
+  <data name="mcc_sweets" xml:space="preserve">
+    <value>Słodycze</value>
+  </data>
+  <data name="mcc_farm_goods" xml:space="preserve">
+    <value>Produkty rolne</value>
+  </data>
+  <data name="mcc_bakeries" xml:space="preserve">
+    <value>Piekarnie</value>
+  </data>
+  <data name="mcc_food_stores" xml:space="preserve">
+    <value>Sklepy spożywcze</value>
+  </data>
+  <data name="mcc_car_dealerships" xml:space="preserve">
+    <value>Salony samochodowe</value>
+  </data>
+  <data name="mcc_tires" xml:space="preserve">
+    <value>Opony</value>
+  </data>
+  <data name="mcc_auto_shops" xml:space="preserve">
+    <value>Warsztaty samochodowe</value>
+  </data>
+  <data name="mcc_service_stations" xml:space="preserve">
+    <value>Stacje obsługi</value>
+  </data>
+  <data name="mcc_gas_station" xml:space="preserve">
+    <value>Stacja benzynowa</value>
+  </data>
+  <data name="mcc_boats" xml:space="preserve">
+    <value>Łodzie</value>
+  </data>
+  <data name="mcc_charging_stations" xml:space="preserve">
+    <value>Stacje ładowania</value>
+  </data>
+  <data name="mcc_mens_clothing" xml:space="preserve">
+    <value>Odzież męska</value>
+  </data>
+  <data name="mcc_womens_clothing" xml:space="preserve">
+    <value>Odzież damska</value>
+  </data>
+  <data name="mcc_clothing_stores" xml:space="preserve">
+    <value>Sklepy odzieżowe</value>
+  </data>
+  <data name="mcc_baby_clothes" xml:space="preserve">
+    <value>Odzież dziecięca</value>
+  </data>
+  <data name="mcc_clothes" xml:space="preserve">
+    <value>Ubrania</value>
+  </data>
+  <data name="mcc_sportswear" xml:space="preserve">
+    <value>Odzież sportowa</value>
+  </data>
+  <data name="mcc_shoes" xml:space="preserve">
+    <value>Buty</value>
+  </data>
+  <data name="mcc_fur" xml:space="preserve">
+    <value>Futra</value>
+  </data>
+  <data name="mcc_atelier" xml:space="preserve">
+    <value>Atelier</value>
+  </data>
+  <data name="mcc_wigs" xml:space="preserve">
+    <value>Peruki</value>
+  </data>
+  <data name="mcc_accessories" xml:space="preserve">
+    <value>Akcesoria</value>
+  </data>
+  <data name="mcc_floor_coverings" xml:space="preserve">
+    <value>Wykładziny podłogowe</value>
+  </data>
+  <data name="mcc_curtains" xml:space="preserve">
+    <value>Zasłony</value>
+  </data>
+  <data name="mcc_alcohol" xml:space="preserve">
+    <value>Alkohol</value>
+  </data>
+  <data name="mcc_fireplaces" xml:space="preserve">
+    <value>Kominki</value>
+  </data>
+  <data name="mcc_household_appliance" xml:space="preserve">
+    <value>Sprzęt AGD</value>
+  </data>
+  <data name="mcc_musical_instruments" xml:space="preserve">
+    <value>Instrumenty muzyczne</value>
+  </data>
+  <data name="mcc_computer_software" xml:space="preserve">
+    <value>Oprogramowanie komputerowe</value>
+  </data>
+  <data name="mcc_record_shops" xml:space="preserve">
+    <value>Sklepy muzyczne</value>
+  </data>
+  <data name="mcc_caterers" xml:space="preserve">
+    <value>Catering</value>
+  </data>
+  <data name="mcc_cafe_restaurants" xml:space="preserve">
+    <value>Kawiarnie. Restauracje</value>
+  </data>
+  <data name="mcc_bars" xml:space="preserve">
+    <value>Bary</value>
+  </data>
+  <data name="mcc_fast_food" xml:space="preserve">
+    <value>Fast food</value>
+  </data>
+  <data name="mcc_digital_goods" xml:space="preserve">
+    <value>Towary cyfrowe</value>
+  </data>
+  <data name="mcc_games" xml:space="preserve">
+    <value>Gry</value>
+  </data>
+  <data name="mcc_applications" xml:space="preserve">
+    <value>Aplikacje</value>
+  </data>
+  <data name="mcc_antiques" xml:space="preserve">
+    <value>Antyki</value>
+  </data>
+  <data name="mcc_drug_stores" xml:space="preserve">
+    <value>Apteki</value>
+  </data>
+  <data name="mcc_second_hand" xml:space="preserve">
+    <value>Second hand</value>
+  </data>
+  <data name="mcc_pawn_shops" xml:space="preserve">
+    <value>Lombard</value>
+  </data>
+  <data name="mcc_car_dump" xml:space="preserve">
+    <value>Złomowisko samochodów</value>
+  </data>
+  <data name="mcc_reproduction_stores" xml:space="preserve">
+    <value>Sklepy z reprodukcjami</value>
+  </data>
+  <data name="mcc_bicycles" xml:space="preserve">
+    <value>Rowery</value>
+  </data>
+  <data name="mcc_sports_goods" xml:space="preserve">
+    <value>Artykuły sportowe</value>
+  </data>
+  <data name="mcc_book_stores" xml:space="preserve">
+    <value>Księgarnie</value>
+  </data>
+  <data name="mcc_stationery" xml:space="preserve">
+    <value>Artykuły papiernicze</value>
+  </data>
+  <data name="mcc_clock" xml:space="preserve">
+    <value>Zegarki</value>
+  </data>
+  <data name="mcc_toys" xml:space="preserve">
+    <value>Zabawki</value>
+  </data>
+  <data name="mcc_photo_goods" xml:space="preserve">
+    <value>Artykuły fotograficzne</value>
+  </data>
+  <data name="mcc_souvenirs" xml:space="preserve">
+    <value>Pamiątki</value>
+  </data>
+  <data name="mcc_leather_products" xml:space="preserve">
+    <value>Wyroby skórzane</value>
+  </data>
+  <data name="mcc_sewing_supplies" xml:space="preserve">
+    <value>Artykuły krawieckie</value>
+  </data>
+  <data name="mcc_crystal_glassware" xml:space="preserve">
+    <value>Kryształy / szkło</value>
+  </data>
+  <data name="mcc_insurance" xml:space="preserve">
+    <value>Ubezpieczenia</value>
+  </data>
+  <data name="mcc_goods_by_mail" xml:space="preserve">
+    <value>Towary wysyłkowe</value>
+  </data>
+  <data name="mcc_travels" xml:space="preserve">
+    <value>Podróże</value>
+  </data>
+  <data name="mcc_salesmen" xml:space="preserve">
+    <value>Sprzedawcy</value>
+  </data>
+  <data name="mcc_subscriptions" xml:space="preserve">
+    <value>Subskrypcje</value>
+  </data>
+  <data name="mcc_art_goods" xml:space="preserve">
+    <value>Artykuły artystyczne</value>
+  </data>
+  <data name="mcc_galleries" xml:space="preserve">
+    <value>Galerie</value>
+  </data>
+  <data name="mcc_philatelicism" xml:space="preserve">
+    <value>Filatelistyka</value>
+  </data>
+  <data name="mcc_church_shops" xml:space="preserve">
+    <value>Sklepy kościelne</value>
+  </data>
+  <data name="mcc_rubber_stamp" xml:space="preserve">
+    <value>Pieczątki</value>
+  </data>
+  <data name="mcc_hearing_aids" xml:space="preserve">
+    <value>Aparaty słuchowe</value>
+  </data>
+  <data name="mcc_prostheses" xml:space="preserve">
+    <value>Protezy</value>
+  </data>
+  <data name="mcc_cosmetics" xml:space="preserve">
+    <value>Kosmetyki</value>
+  </data>
+  <data name="mcc_printing_machines" xml:space="preserve">
+    <value>Maszyny drukarskie</value>
+  </data>
+  <data name="mcc_fuel" xml:space="preserve">
+    <value>Paliwo</value>
+  </data>
+  <data name="mcc_florists" xml:space="preserve">
+    <value>Kwiaciarnie</value>
+  </data>
+  <data name="mcc_tobacco_products" xml:space="preserve">
+    <value>Wyroby tytoniowe</value>
+  </data>
+  <data name="mcc_newspapers_magazines" xml:space="preserve">
+    <value>Gazety. Czasopisma</value>
+  </data>
+  <data name="mcc_pet_supplies" xml:space="preserve">
+    <value>Artykuły dla zwierząt</value>
+  </data>
+  <data name="mcc_swimming_pools" xml:space="preserve">
+    <value>Baseny</value>
+  </data>
+  <data name="mcc_razors" xml:space="preserve">
+    <value>Maszynki do golenia</value>
+  </data>
+  <data name="mcc_tents" xml:space="preserve">
+    <value>Namioty</value>
+  </data>
+  <data name="mcc_ashier_s_office" xml:space="preserve">
+    <value>Kasa</value>
+  </data>
+  <data name="mcc_financial_services" xml:space="preserve">
+    <value>Usługi finansowe</value>
+  </data>
+  <data name="mcc_banks" xml:space="preserve">
+    <value>Banki</value>
+  </data>
+  <data name="mcc_quasi_cash" xml:space="preserve">
+    <value>Quasi-gotówka</value>
+  </data>
+  <data name="mcc_securities" xml:space="preserve">
+    <value>Papiery wartościowe</value>
+  </data>
+  <data name="mcc_rental_property" xml:space="preserve">
+    <value>Wynajem nieruchomości</value>
+  </data>
+  <data name="mcc_ard_replenishment" xml:space="preserve">
+    <value>Doładowanie karty</value>
+  </data>
+  <data name="mcc_bonds" xml:space="preserve">
+    <value>Obligacje</value>
+  </data>
+  <data name="mcc_timeshares" xml:space="preserve">
+    <value>Timesharing</value>
+  </data>
+  <data name="mcc_recreation" xml:space="preserve">
+    <value>Rekreacja</value>
+  </data>
+  <data name="mcc_campgrounds" xml:space="preserve">
+    <value>Kempingi</value>
+  </data>
+  <data name="mcc_cleaning" xml:space="preserve">
+    <value>Sprzątanie</value>
+  </data>
+  <data name="mcc_laundry" xml:space="preserve">
+    <value>Pralnia</value>
+  </data>
+  <data name="mcc_dry_cleaners" xml:space="preserve">
+    <value>Pralnia chemiczna</value>
+  </data>
+  <data name="mcc_photographic_studios" xml:space="preserve">
+    <value>Studia fotograficzne</value>
+  </data>
+  <data name="mcc_the_beauty" xml:space="preserve">
+    <value>Uroda</value>
+  </data>
+  <data name="mcc_clothing_repair" xml:space="preserve">
+    <value>Naprawa odzieży</value>
+  </data>
+  <data name="mcc_funeral_services" xml:space="preserve">
+    <value>Usługi pogrzebowe</value>
+  </data>
+  <data name="mcc_escort" xml:space="preserve">
+    <value>Escort</value>
+  </data>
+  <data name="mcc_dating_escort" xml:space="preserve">
+    <value>Randki. Escort</value>
+  </data>
+  <data name="mcc_taxes" xml:space="preserve">
+    <value>Podatki</value>
+  </data>
+  <data name="mcc_consultation" xml:space="preserve">
+    <value>Konsultacje</value>
+  </data>
+  <data name="mcc_shopping" xml:space="preserve">
+    <value>Zakupy</value>
+  </data>
+  <data name="mcc_hospitals" xml:space="preserve">
+    <value>Szpitale</value>
+  </data>
+  <data name="mcc_babysitters" xml:space="preserve">
+    <value>Nianie</value>
+  </data>
+  <data name="mcc_clothing_rental" xml:space="preserve">
+    <value>Wypożyczalnia odzieży</value>
+  </data>
+  <data name="mcc_massage" xml:space="preserve">
+    <value>Masaż</value>
+  </data>
+  <data name="mcc_health_and_beauty" xml:space="preserve">
+    <value>Zdrowie i uroda</value>
+  </data>
+  <data name="mcc_advertising" xml:space="preserve">
+    <value>Reklama</value>
+  </data>
+  <data name="mcc_credit_bureaus" xml:space="preserve">
+    <value>Biura kredytowe</value>
+  </data>
+  <data name="mcc_collection_agencies" xml:space="preserve">
+    <value>Agencje windykacyjne</value>
+  </data>
+  <data name="mcc_copy_centers" xml:space="preserve">
+    <value>Centra kopiowania</value>
+  </data>
+  <data name="mcc_photography_and_art" xml:space="preserve">
+    <value>Fotografia i sztuka</value>
+  </data>
+  <data name="mcc_stenography" xml:space="preserve">
+    <value>Stenografia</value>
+  </data>
+  <data name="mcc_disinfecting" xml:space="preserve">
+    <value>Dezynfekcja</value>
+  </data>
+  <data name="mcc_cleaning_and_maintenance" xml:space="preserve">
+    <value>Sprzątanie i konserwacja</value>
+  </data>
+  <data name="mcc_employment" xml:space="preserve">
+    <value>Zatrudnienie</value>
+  </data>
+  <data name="mcc_programming" xml:space="preserve">
+    <value>Programowanie</value>
+  </data>
+  <data name="mcc_computer_repair" xml:space="preserve">
+    <value>Naprawa komputerów</value>
+  </data>
+  <data name="mcc_business_services" xml:space="preserve">
+    <value>Usługi biznesowe</value>
+  </data>
+  <data name="mcc_consulting_pr" xml:space="preserve">
+    <value>Konsulting, PR</value>
+  </data>
+  <data name="mcc_detective_agencies" xml:space="preserve">
+    <value>Agencje detektywistyczne</value>
+  </data>
+  <data name="mcc_equipment_rental" xml:space="preserve">
+    <value>Wynajem sprzętu</value>
+  </data>
+  <data name="mcc_photo_printing" xml:space="preserve">
+    <value>Drukowanie zdjęć</value>
+  </data>
+  <data name="mcc_parking" xml:space="preserve">
+    <value>Parking</value>
+  </data>
+  <data name="mcc_truck_rental" xml:space="preserve">
+    <value>Wynajem ciężarówek</value>
+  </data>
+  <data name="mcc_auto_repair" xml:space="preserve">
+    <value>Naprawa samochodów</value>
+  </data>
+  <data name="mcc_tire_service" xml:space="preserve">
+    <value>Serwis opon</value>
+  </data>
+  <data name="mcc_car_paints" xml:space="preserve">
+    <value>Lakierowanie samochodów</value>
+  </data>
+  <data name="mcc_maintenance_stations" xml:space="preserve">
+    <value>Stacje serwisowe</value>
+  </data>
+  <data name="mcc_car_washes" xml:space="preserve">
+    <value>Myjnie samochodowe</value>
+  </data>
+  <data name="mcc_tow_truck" xml:space="preserve">
+    <value>Holownik</value>
+  </data>
+  <data name="mcc_repair_of_equipment" xml:space="preserve">
+    <value>Naprawa sprzętu</value>
+  </data>
+  <data name="mcc_hvac_equipment_repair" xml:space="preserve">
+    <value>Naprawa urządzeń HVAC</value>
+  </data>
+  <data name="mcc_repair_of_watches_and_jewelry" xml:space="preserve">
+    <value>Naprawa zegarków i biżuterii</value>
+  </data>
+  <data name="mcc_furniture_repair" xml:space="preserve">
+    <value>Naprawa mebli</value>
+  </data>
+  <data name="mcc_welding_works" xml:space="preserve">
+    <value>Prace spawalnicze</value>
+  </data>
+  <data name="mcc_repairs" xml:space="preserve">
+    <value>Naprawy</value>
+  </data>
+  <data name="mcc_government_owned_lottery" xml:space="preserve">
+    <value>Loteria państwowa</value>
+  </data>
+  <data name="mcc_online_casino" xml:space="preserve">
+    <value>Kasyno online</value>
+  </data>
+  <data name="mcc_horse_dog_racing" xml:space="preserve">
+    <value>Wyścigi konne / psie</value>
+  </data>
+  <data name="mcc_video_rental" xml:space="preserve">
+    <value>Wypożyczalnia wideo</value>
+  </data>
+  <data name="mcc_cinemas" xml:space="preserve">
+    <value>Kina</value>
+  </data>
+  <data name="mcc_dance_studios_dance_schools" xml:space="preserve">
+    <value>Studia tańca. Szkoły tańca</value>
+  </data>
+  <data name="mcc_tickets" xml:space="preserve">
+    <value>Bilety</value>
+  </data>
+  <data name="mcc_music_bands_orchestras" xml:space="preserve">
+    <value>Zespoły muzyczne. Orkiestry</value>
+  </data>
+  <data name="mcc_billiard" xml:space="preserve">
+    <value>Bilard</value>
+  </data>
+  <data name="mcc_bowling_clubs" xml:space="preserve">
+    <value>Kręgielnie</value>
+  </data>
+  <data name="mcc_sports_clubs" xml:space="preserve">
+    <value>Kluby sportowe</value>
+  </data>
+  <data name="mcc_golf" xml:space="preserve">
+    <value>Golf</value>
+  </data>
+  <data name="mcc_videogames" xml:space="preserve">
+    <value>Gry wideo</value>
+  </data>
+  <data name="mcc_gambling" xml:space="preserve">
+    <value>Hazard</value>
+  </data>
+  <data name="mcc_entertainment" xml:space="preserve">
+    <value>Rozrywka</value>
+  </data>
+  <data name="mcc_entertainment_and_sport" xml:space="preserve">
+    <value>Rozrywka i sport</value>
+  </data>
+  <data name="mcc_aquariums_dolphinariums" xml:space="preserve">
+    <value>Akwaria. Delfinaria</value>
+  </data>
+  <data name="mcc_medicine" xml:space="preserve">
+    <value>Medycyna</value>
+  </data>
+  <data name="mcc_dentistry" xml:space="preserve">
+    <value>Stomatologia</value>
+  </data>
+  <data name="mcc_chiropractors" xml:space="preserve">
+    <value>Chiropraktycy</value>
+  </data>
+  <data name="mcc_optics" xml:space="preserve">
+    <value>Optyka</value>
+  </data>
+  <data name="mcc_podiatrists" xml:space="preserve">
+    <value>Podolodzy</value>
+  </data>
+  <data name="mcc_caregiver_nurse" xml:space="preserve">
+    <value>Opiekun / Pielęgniarka</value>
+  </data>
+  <data name="mcc_medicine_and_dentistry" xml:space="preserve">
+    <value>Medycyna i stomatologia</value>
+  </data>
+  <data name="mcc_medical_services" xml:space="preserve">
+    <value>Usługi medyczne</value>
+  </data>
+  <data name="mcc_lawyers" xml:space="preserve">
+    <value>Prawnicy</value>
+  </data>
+  <data name="mcc_school" xml:space="preserve">
+    <value>Szkoła</value>
+  </data>
+  <data name="mcc_education_university" xml:space="preserve">
+    <value>Edukacja. Uczelnia</value>
+  </data>
+  <data name="mcc_schools_correspondence" xml:space="preserve">
+    <value>Szkoły, korespondencyjne</value>
+  </data>
+  <data name="mcc_education_business" xml:space="preserve">
+    <value>Edukacja. Biznes</value>
+  </data>
+  <data name="mcc_education" xml:space="preserve">
+    <value>Edukacja</value>
+  </data>
+  <data name="mcc_kindergarten" xml:space="preserve">
+    <value>Przedszkole</value>
+  </data>
+  <data name="mcc_charity" xml:space="preserve">
+    <value>Organizacje charytatywne</value>
+  </data>
+  <data name="mcc_public_organizations" xml:space="preserve">
+    <value>Organizacje publiczne</value>
+  </data>
+  <data name="mcc_organizations_political" xml:space="preserve">
+    <value>Organizacje polityczne</value>
+  </data>
+  <data name="mcc_organizations_religious" xml:space="preserve">
+    <value>Organizacje religijne</value>
+  </data>
+  <data name="mcc_autoclub" xml:space="preserve">
+    <value>Klub motoryzacyjny</value>
+  </data>
+  <data name="mcc_organizations_membership" xml:space="preserve">
+    <value>Organizacje członkowskie</value>
+  </data>
+  <data name="mcc_testing_laboratories" xml:space="preserve">
+    <value>Laboratoria badawcze</value>
+  </data>
+  <data name="mcc_architects" xml:space="preserve">
+    <value>Architekci</value>
+  </data>
+  <data name="mcc_accounting_audit" xml:space="preserve">
+    <value>Księgowość. Audyt</value>
+  </data>
+  <data name="mcc_professional_services" xml:space="preserve">
+    <value>Usługi profesjonalne</value>
+  </data>
+  <data name="mcc_i_purchasing_pilot" xml:space="preserve">
+    <value>I-Purchasing Pilot</value>
+  </data>
+  <data name="mcc_court" xml:space="preserve">
+    <value>Sąd</value>
+  </data>
+  <data name="mcc_fines" xml:space="preserve">
+    <value>Mandaty i kary</value>
+  </data>
+  <data name="mcc_payouts_bonds" xml:space="preserve">
+    <value>Wypłaty. Obligacje</value>
+  </data>
+  <data name="mcc_government_services" xml:space="preserve">
+    <value>Usługi rządowe</value>
+  </data>
+  <data name="mcc_mail" xml:space="preserve">
+    <value>Poczta</value>
+  </data>
+  <data name="mcc_government_procurement" xml:space="preserve">
+    <value>Zamówienia rządowe</value>
+  </data>
+  <data name="mcc_cashback" xml:space="preserve">
+    <value>Cashback</value>
+  </data>
+  <data name="mcc_visa" xml:space="preserve">
+    <value>VISA</value>
+  </data>
+  <data name="mcc_emergency_services" xml:space="preserve">
+    <value>Służby ratunkowe</value>
+  </data>
+  <data name="mcc_document_flow" xml:space="preserve">
+    <value>Obieg dokumentów</value>
+  </data>
+  <data name="mcc_in_company_purchases" xml:space="preserve">
+    <value>Zakupy wewnątrz firmy</value>
+  </data>
+</root>

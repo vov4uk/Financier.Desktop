@@ -1,4 +1,6 @@
-﻿using Financier.Common.Model;
+﻿using System;
+using Financier.Common.Entities;
+using Financier.Common.Model;
 using Financier.Desktop.Data;
 using Financier.Desktop.ViewModel.Dialog;
 
@@ -8,7 +10,7 @@ namespace Financier.Desktop.Pages.Dialogs
     public class RuleControlVM : DialogBaseVM
     {
         private RuleConditionType _selectedConditionType;
-        private string _selectedMCC;
+        private Mcc _selectedMCC;
         public RuleConditionType SelectedConditionType
         {
             get => _selectedConditionType;
@@ -22,7 +24,7 @@ namespace Financier.Desktop.Pages.Dialogs
                 }
             }
         }
-        public string SelectedMCC
+        public Mcc SelectedMCC
         {
             get => _selectedMCC;
             set
@@ -46,7 +48,7 @@ namespace Financier.Desktop.Pages.Dialogs
             SelectedConditionType = entity.Condition;
             if (IsMCCSelected)
             {
-                SelectedMCC = Entity.Description;
+                SelectedMCC = (Mcc)Enum.Parse(typeof(Mcc), Entity.Description);
             }
         }
 
@@ -57,7 +59,7 @@ namespace Financier.Desktop.Pages.Dialogs
             Entity.Condition = SelectedConditionType;
             if (IsMCCSelected)
             {
-                Entity.Description = SelectedMCC;
+                Entity.Description = SelectedMCC.ToString();
             }
             return Entity;
         }

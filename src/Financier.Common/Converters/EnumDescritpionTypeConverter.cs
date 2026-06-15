@@ -23,8 +23,7 @@ namespace Financier.Converters
                     DescriptionAttribute attribute = mi.GetCustomAttribute<DescriptionAttribute>(false);
                     if (attribute != null)
                     {
-                        string result = attribute.Description;
-                        return result;
+                        return attribute.Description;
                     }
                 }
             }

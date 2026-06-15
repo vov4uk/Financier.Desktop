@@ -1,12 +1,16 @@
-﻿using Financier.Common.Model;
-using Financier.DataAccess.Abstractions;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Financier.Common.Attribute;
+using Financier.Common.Localization;
+using Financier.Common.Model;
+using Financier.DataAccess.Abstractions;
+using Newtonsoft.Json;
 
 namespace Financier.Common.Entities
 {
@@ -169,36 +173,59 @@ ORDER  BY 1 DESC ");
 
         public static List<RuleModel> Rules => _rules;
 
-        private static Dictionary<string, int[]> _mccCategories;
+        private static SortedDictionary<string, int[]> _mccCategories;
+        private static SortedDictionary<Mcc, int[]> _mccEnums;
 
-        public static Dictionary<string, int[]> MCCCategories
+        public static SortedDictionary<string, int[]> MCCCategories
         {
             get
             {
+                string lang_symbol = LocalizationService.Instance.CurrentCulture.Name;
                 if (_mccCategories == null)
                 {
                     var asm = System.Reflection.Assembly.GetExecutingAssembly();
-                    using var stream = asm.GetManifestResourceStream("Financier.Common.Data.mcc.json");
-                    using var reader = new StreamReader(stream);
-                    var entries = JsonConvert.DeserializeObject<List<MccEntry>>(reader.ReadToEnd());
-                    _mccCategories = entries
-                        .GroupBy(e => e.ShortDescription)
-                        .ToDictionary(g => g.Key, g => g.Select(e => e.Mcc).ToArray());
+                    using var stream = asm.GetManifestResourceStream($"Financier.Common.Data.mcc_{lang_symbol}.json");
+                    if (stream != null)
+                    {
+                        using var reader = new StreamReader(stream);
+                        var mccCategories = JsonConvert.DeserializeObject<Dictionary<string, int[]>>(reader.ReadToEnd());
+                        _mccCategories = new SortedDictionary<string, int[]>(mccCategories);
+                    }
                 }
+
+                Array result = Enum.GetValues(typeof(Mcc));
+
                 return _mccCategories;
             }
         }
 
-        private sealed class MccEntry
+        public static SortedDictionary<Mcc, int[]> MCCEnums
         {
-            [JsonProperty("shortDescription")]
-            public string ShortDescription { get; set; }
+            get
+            {
+                Type t = typeof(Mcc);
+                Array result = Enum.GetValues(t);
+                _mccEnums = new SortedDictionary<Mcc, int[]>();
+                foreach (var item in result)
+                {
+                    MemberInfo mi = t.GetTypeInfo().GetMember(item.ToString()).FirstOrDefault();
+                    if (mi != null)
+                    {
+                        var attribute = mi.GetCustomAttribute<MccCodesAttribute>(false);
+                        if (attribute != null)
+                        {
+                            _mccEnums[(Mcc)item] = attribute.Codes;
+                        }
+                    }
+                }
 
-            [JsonProperty("mcc")]
-            public int Mcc { get; set; }
+                return _mccEnums;
+            }
         }
 
+
         public static List<string> MCCCategoriesKeys => MCCCategories.Keys.ToList();
+        public static List<Mcc> MCCEnumsKeys => MCCEnums.Keys.ToList();
 
         public static void ResetAllManuals()
         {
@@ -217,10 +244,11 @@ ORDER  BY 1 DESC ");
         {
             switch (manual)
             {
-                case nameof(Payee):    _payee = null!; break;
-                case nameof(Location): _location = null!; break;
-                case nameof(Project):  _project = null!; break;
-                case nameof(Account):  _accounts = null!; break;
+                case nameof(Payee):            _payee = null!; break;
+                case nameof(Location):         _location = null!; break;
+                case nameof(Project):          _project = null!; break;
+                case nameof(Account):          _accounts = null!; break;
+                case nameof(MCCCategories):    _mccCategories = null!; break;
                 default:
                     break;
             }

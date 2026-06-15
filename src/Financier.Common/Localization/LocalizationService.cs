@@ -32,10 +32,6 @@ public sealed class LocalizationService : INotifyPropertyChanged
 
     private LocalizationService()
     {
-        Thread.CurrentThread.CurrentCulture = _currentCulture;
-        Thread.CurrentThread.CurrentUICulture = _currentCulture;
-
-        FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
     }
 
     /// <summary>Gets the process-wide singleton instance.</summary>
@@ -55,13 +51,9 @@ public sealed class LocalizationService : INotifyPropertyChanged
                 return;
 
             _currentCulture = value;
-            Thread.CurrentThread.CurrentCulture = _currentCulture;
-            Thread.CurrentThread.CurrentUICulture = _currentCulture;
-
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentCulture)));
             // Raise Item[] to refresh every active indexer binding at once.
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(XmlLanguage)));
         }
     }
 
@@ -74,17 +66,10 @@ public sealed class LocalizationService : INotifyPropertyChanged
             Language.Polish => CultureInfo.GetCultureInfo("pl"),
             _ => CultureInfo.InstalledUICulture,
         };
-    }
+        Thread.CurrentThread.CurrentCulture = _currentCulture;
+        Thread.CurrentThread.CurrentUICulture = _currentCulture;
 
-    public XmlLanguage XmlLanguage
-    {
-        get
-        {
-            var l = XmlLanguage.GetLanguage("uk-UA");
-            return l;
-        }
-    }
-
+       }
 
     /// <summary>
     /// Returns the localized string for <paramref name="key"/> in the

@@ -1,4 +1,4 @@
-# Script to add Polish translations to mcc_codes.json
+﻿# Script to add Polish translations to mcc_codes.json
 $filePath = 'c:\Code\My\Financier.Desktop\src\Financier.Common\Data\mcc_codes.json'
 $content = [System.IO.File]::ReadAllText($filePath, [System.Text.Encoding]::UTF8)
 $json = $content | ConvertFrom-Json
