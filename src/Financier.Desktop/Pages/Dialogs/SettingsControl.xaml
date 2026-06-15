@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Financier.Desktop.Pages.Dialogs"
              mc:Ignorable="d"
              xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
+             xmlns:ent="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              d:DataContext="{d:DesignInstance Type=local:SettingsVM, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -22,13 +23,15 @@
             <TabItem Name="general" Header="{loc:Translate Key=general}" IsSelected="True">
                 <TabItem.Content>
                     <StackPanel Margin="5">
-                        <CheckBox Margin="5" Content="{loc:Translate Key=check_for_updates_on_start}" IsChecked="{Binding Entity.General.CheckForUpdatesOnStart, Mode=TwoWay}"/>
-                        <StackPanel Orientation="Horizontal" Margin="5">
-                            <Label Content="{loc:Translate Key=language}" VerticalAlignment="Center" Padding="0"/>
-                            <ComboBox Width="150" Margin="5,0,0,0"
+                        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5" Header="{loc:Translate Key=language}">
+                            <ComboBox Width="180"
+                                      Margin="5,0,0,0"
+                                      HorizontalAlignment="Left"
                                       ItemsSource="{loc:EnumBinding {x:Type loc:Language}}"
                                       SelectedItem="{Binding Entity.General.Language, Mode=TwoWay}"/>
-                        </StackPanel>
+                        </GroupBox>
+
+                        <CheckBox Margin="5" Content="{loc:Translate Key=check_for_updates_on_start}" IsChecked="{Binding Entity.General.CheckForUpdatesOnStart, Mode=TwoWay}"/>
                     </StackPanel>
                 </TabItem.Content>
             </TabItem>
@@ -41,11 +44,10 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <GroupBox Grid.Row="0" Grid.Column="0" Margin="5" Header="{loc:Translate Key=providers}">
-                            <StackPanel>
-                                <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="openexchangerates.org" IsChecked="{Binding IsOpenExchangeRatesProviderSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="freecurrencyrates.com" IsChecked="{Binding IsFreeCurrencyRatesProviderSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                <RadioButton GroupName="Providers" Grid.Row="0" Margin="5" Content="monobank.ua" IsChecked="{Binding IsMonobankProviderSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
+                            <ComboBox Width="200" Margin="5,0,0,0"
+                                      HorizontalAlignment="Left"
+                                      ItemsSource="{loc:EnumBinding {x:Type ent:ExchangeRatesProviders}}"
+                                      SelectedItem="{Binding SelectedProvider, Mode=TwoWay}"/>
                         </GroupBox>
                         <GroupBox Grid.Row="1"
                                   Grid.Column="0"

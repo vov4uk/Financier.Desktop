@@ -383,7 +383,7 @@
                 Id = 105,
                 IsActive = true,
                 Condition = RuleConditionType.MCC,
-                Description = "Готелі та курорти",
+                MCCCategory = Mcc.hotels_and_resorts,
                 CategoryId = categoryId,
                 LocationId = locationId,
                 ProjectId = projectId,

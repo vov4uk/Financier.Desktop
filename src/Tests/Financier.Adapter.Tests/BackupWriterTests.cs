@@ -5,6 +5,7 @@ namespace Financier.Adapter.Tests
     using System.IO;
     using Financier.DataAccess.Data;
     using Financier.Tests.Common;
+    using System.Threading.Tasks;
     using Xunit;
 
     public class BackupWriterTests
@@ -27,7 +28,7 @@ namespace Financier.Adapter.Tests
         }
 
         [Fact]
-        public void GenerateBackup_ParseBackup_CompareGeneratedFileWithRaw()
+        public async Task GenerateBackup_ParseBackup_CompareGeneratedFileWithRaw()
         {
             var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
             var expectedTextPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min");
@@ -35,7 +36,7 @@ namespace Financier.Adapter.Tests
             var fileWithoutExt = Path.GetFileNameWithoutExtension(actualPath);
 
             var reader = new EntityReader();
-            var (entities, backupVersion, columnsOrder) = reader.ParseBackupFile(backupPath);
+            var (entities, backupVersion, columnsOrder) = await reader.ParseBackupFileAsync(backupPath);
 
             BackupWriter writer = new BackupWriter();
 

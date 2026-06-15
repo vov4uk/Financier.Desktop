@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
+using Financier.Common.Entities;
 
 namespace Financier.Common.Localization;
 
@@ -27,7 +28,7 @@ public sealed class LocalizationService : INotifyPropertyChanged
     private static readonly ResourceManager _resourceManager =
         new("Financier.Common.Localization.Resources", typeof(LocalizationService).Assembly);
 
-    private CultureInfo _currentCulture = CultureInfo.GetCultureInfo("uk");
+    private CultureInfo _currentCulture;
     private CultureInfo _defaultCulture = CultureInfo.GetCultureInfo("en");
 
     private LocalizationService()
@@ -59,16 +60,21 @@ public sealed class LocalizationService : INotifyPropertyChanged
 
     public void ApplyLanguage(Language language)
     {
-        CurrentCulture = language switch
+        var culture = language switch
         {
             Language.English => CultureInfo.GetCultureInfo("en"),
             Language.Ukrainian => CultureInfo.GetCultureInfo("uk"),
             Language.Polish => CultureInfo.GetCultureInfo("pl"),
             _ => CultureInfo.InstalledUICulture,
         };
-        Thread.CurrentThread.CurrentCulture = _currentCulture;
-        Thread.CurrentThread.CurrentUICulture = _currentCulture;
 
+        if (culture != CurrentCulture)
+        {
+            CurrentCulture = culture;
+            Thread.CurrentThread.CurrentCulture = CurrentCulture;
+            Thread.CurrentThread.CurrentUICulture = CurrentCulture;
+            DbManual.ResetManuals(nameof(DbManual.MCCEnums));
+        }
        }
 
     /// <summary>

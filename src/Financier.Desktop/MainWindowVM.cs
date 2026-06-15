@@ -188,7 +188,7 @@ namespace Financier.Desktop.ViewModel
                 IsLoading = true;
                 ClearPages();
 
-                var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);
+                var (entities, backupVersion, columnsOrder) = await entityReader.ParseBackupFileAsync(backupPath);
                 _backupVersion = backupVersion;
                 _entityColumnsOrder = columnsOrder;
 

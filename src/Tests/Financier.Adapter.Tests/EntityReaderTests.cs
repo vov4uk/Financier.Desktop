@@ -5,17 +5,18 @@
     using System.Linq;
     using Financier.DataAccess.Data;
     using Financier.Tests.Common;
+    using System.Threading.Tasks;
     using Xunit;
 
     public class EntityReaderTests
     {
         [Fact]
-        public void ParseBackupFile_ReadEntitiesFromArchive_ReadCorrectCount()
+        public async Task ParseBackupFile_ReadEntitiesFromArchive_ReadCorrectCount()
         {
             var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
 
             var reader = new EntityReader();
-            var (entities, backupVersion, columnsOrder) = reader.ParseBackupFile(backupPath);
+            var (entities, backupVersion, columnsOrder) = await reader.ParseBackupFileAsync(backupPath);
 
             Assert.Equal(211, backupVersion.DatabaseVersion);
             Assert.Equal("ru.orangesoftware.financisto", backupVersion.Package);

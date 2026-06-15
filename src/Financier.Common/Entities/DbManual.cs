@@ -179,18 +179,22 @@ ORDER  BY 1 DESC ");
         {
             get
             {
-                Type t = typeof(Mcc);
-                Array result = Enum.GetValues(t);
-                _mccEnums = new SortedDictionary<Mcc, int[]>();
-                foreach (var item in result)
+
+                if (_mccEnums == null)
                 {
-                    MemberInfo mi = t.GetTypeInfo().GetMember(item.ToString()).FirstOrDefault();
-                    if (mi != null)
+                    Type t = typeof(Mcc);
+                    Array result = Enum.GetValues(t);
+                    _mccEnums = new SortedDictionary<Mcc, int[]>();
+                    foreach (var item in result)
                     {
-                        var attribute = mi.GetCustomAttribute<MccCodesAttribute>(false);
-                        if (attribute != null)
+                        MemberInfo mi = t.GetTypeInfo().GetMember(item.ToString()).FirstOrDefault();
+                        if (mi != null)
                         {
-                            _mccEnums[(Mcc)item] = attribute.Codes;
+                            var attribute = mi.GetCustomAttribute<MccCodesAttribute>(false);
+                            if (attribute != null)
+                            {
+                                _mccEnums[(Mcc)item] = attribute.Codes;
+                            }
                         }
                     }
                 }
@@ -222,6 +226,7 @@ ORDER  BY 1 DESC ");
                 case nameof(Location):         _location = null!; break;
                 case nameof(Project):          _project = null!; break;
                 case nameof(Account):          _accounts = null!; break;
+                case nameof(MCCEnums):         _mccEnums = null!; break;
                 default:
                     break;
             }

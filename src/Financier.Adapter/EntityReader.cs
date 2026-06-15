@@ -6,13 +6,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Financier.DataAccess.Utils;
 
 namespace Financier.Adapter
 {
     public class EntityReader : IEntityReader
     {
-        public (IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder) ParseBackupFile(string fileName)
+        public async Task<(IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder)> ParseBackupFileAsync(string fileName)
         {
             Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
 
@@ -25,9 +26,9 @@ namespace Financier.Adapter
             string prevField = string.Empty;
             string entityType = string.Empty;
 
-            var lines = reader.GetLines().Select(s => new Line(s));
-            foreach (Line line in lines)
+            await foreach (var raw in reader.GetLinesAsync())
             {
+                Line line = new Line(raw);
                 if (line.Key == Backup.ENTITY)
                 {
                     prevField = string.Empty;
