@@ -15,6 +15,7 @@ namespace Financier.Desktop.Data
         private int? locationId;
         private int? payeeId;
         private int? projectId;
+        private Mcc mccCategory;
         public RuleDTO()
         {
         }
@@ -29,6 +30,7 @@ namespace Financier.Desktop.Data
             CategoryId = rulesModel.CategoryId;
             LocationId = rulesModel.LocationId;
             Created = rulesModel.Created;
+            MCCCategory = rulesModel.MCCCategory;
         }
 
         public CategoryModel Category
@@ -117,6 +119,18 @@ namespace Financier.Desktop.Data
                 if (SetProperty(ref projectId, value))
                 {
                     RaisePropertyChanged(nameof(ProjectId));
+                }
+            }
+        }
+
+        public Mcc MCCCategory
+        {
+            get => mccCategory;
+            set
+            {
+                if (SetProperty(ref mccCategory, value))
+                {
+                    RaisePropertyChanged(nameof(MCCCategory));
                 }
             }
         }

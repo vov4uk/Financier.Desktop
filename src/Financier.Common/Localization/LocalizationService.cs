@@ -281,4 +281,11 @@ public sealed class LocalizationService : INotifyPropertyChanged
     public string structure => Get();
     public string dynamics => Get();
     public string transfer => Get();
+
+    public string rule_title_category => Get();
+    public string rule_title_location => Get();
+    public string rule_title_mcc => Get();
+    public string rule_title_payee => Get();
+    public string rule_title_project => Get();
+    public string rule_title_and => Get();
 }

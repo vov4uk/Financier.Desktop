@@ -7,6 +7,10 @@ namespace Financier.Common.Entities
     [TypeConverter(typeof(EnumDescritpionTypeConverter))]
     public enum Mcc
     {
+        [LocalizedMccDescription("mcc_none")]
+        [MccCodes(0)]
+        none,
+
         [LocalizedMccDescription("mcc_accessories")]
         [MccCodes(5699)]
         accessories,

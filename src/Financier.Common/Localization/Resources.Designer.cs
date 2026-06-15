@@ -1411,6 +1411,51 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to and .
+        /// </summary>
+        public static string rule_title_and {
+            get {
+                return ResourceManager.GetString("rule_title_and", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assign Category: {0} .
+        /// </summary>
+        public static string rule_title_category {
+            get {
+                return ResourceManager.GetString("rule_title_category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assign Location: {0} .
+        /// </summary>
+        public static string rule_title_location {
+            get {
+                return ResourceManager.GetString("rule_title_location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assign Payee: {0} .
+        /// </summary>
+        public static string rule_title_payee {
+            get {
+                return ResourceManager.GetString("rule_title_payee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assign Project: {0} .
+        /// </summary>
+        public static string rule_title_project {
+            get {
+                return ResourceManager.GetString("rule_title_project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rules.
         /// </summary>
         public static string rules {

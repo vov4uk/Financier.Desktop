@@ -55,7 +55,7 @@
                  ProjectId = null,
                  CategoryId = null,
                  LocationId = 200,
-                 MCCCategory = null,
+                 MCCCategory = Mcc.none,
                 },
                 new RuleModel
                 {
@@ -69,7 +69,7 @@
                  ProjectId = null,
                  CategoryId = 100,
                  LocationId = null,
-                 MCCCategory = null,
+                 MCCCategory = Mcc.none,
                 },
             };
 

@@ -1636,6 +1636,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;MCC&gt;.
+        /// </summary>
+        internal static string mcc_none {
+            get {
+                return ResourceManager.GetString("mcc_none", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Office equipment.
         /// </summary>
         internal static string mcc_office_equipment {

@@ -663,13 +663,28 @@
   <data name="language" xml:space="preserve">
     <value>Language</value>
   </data>
-  <data name="rule_condition_type_mcc" xml:space="preserve">
-    <value>MCC</value>
-  </data>
   <data name="rule_condition_type_description_matches" xml:space="preserve">
     <value>Description matches</value>
   </data>
+  <data name="rule_condition_type_mcc" xml:space="preserve">
+    <value>MCC</value>
+  </data>
   <data name="rule_condition_type_description_contains" xml:space="preserve">
     <value>Description contains</value>
+  </data>
+  <data name="rule_title_payee" xml:space="preserve">
+    <value>Assign Payee: {0} </value>
+  </data>
+  <data name="rule_title_project" xml:space="preserve">
+    <value>Assign Project: {0} </value>
+  </data>
+  <data name="rule_title_and" xml:space="preserve">
+    <value>and </value>
+  </data>
+  <data name="rule_title_location" xml:space="preserve">
+    <value>Assign Location: {0} </value>
+  </data>
+  <data name="rule_title_category" xml:space="preserve">
+    <value>Assign Category: {0} </value>
   </data>
 </root>

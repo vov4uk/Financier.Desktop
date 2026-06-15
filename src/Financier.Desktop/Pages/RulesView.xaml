@@ -31,7 +31,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="{loc:Translate Key=created}" Binding="{Binding Created}" />
                 <DataGridTextColumn Header="{loc:Translate Key=condition}" Binding="{Binding Condition}" />
-                <DataGridTextColumn Header="{loc:Translate Key=description}" Binding="{Binding Description}" />
+                <DataGridTextColumn Header="{loc:Translate Key=description}" Binding="{Binding UserFirendlyDescription}" />
                 <DataGridTemplateColumn Header="{loc:Translate Key=title}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

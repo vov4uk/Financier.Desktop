@@ -34,7 +34,7 @@ namespace Financier.Desktop.ViewModel
             Entities = new ObservableCollection<RuleModel>(DbManual.Rules.OrderBy(r => r.Created));
             foreach (var item in Entities)
             {
-                item.UpdateTitle();
+                item.UpdateTitles();
             }
         }
 
@@ -63,7 +63,8 @@ namespace Financier.Desktop.ViewModel
                         Description = ruleModel.Description,
                         Condition = ruleModel.Condition,
                         Created = ruleModel.Created,
-                        IsActive = ruleModel.IsActive
+                        IsActive = ruleModel.IsActive,
+                        MCCCategory = ruleModel.MCCCategory
                     };
                 }
                 else
@@ -93,7 +94,7 @@ namespace Financier.Desktop.ViewModel
                 int newId = 0;
                 if (id == 0)
                 {
-                    newId = DbManual.Rules.Max(r => r.Id).Value + 1;
+                    newId = (DbManual.Rules?.Max(r => r.Id) ?? 0) + 1;
                 }
                 else
                 {
@@ -111,7 +112,8 @@ namespace Financier.Desktop.ViewModel
                     IsActive = updatedItem.IsActive,
                     LocationId = updatedItem.LocationId,
                     PayeeId = updatedItem.PayeeId,
-                    ProjectId = updatedItem.ProjectId
+                    ProjectId = updatedItem.ProjectId,
+                    MCCCategory = updatedItem.MCCCategory
                 });
 
                 await RefreshData();
