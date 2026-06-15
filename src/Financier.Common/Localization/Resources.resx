@@ -660,4 +660,16 @@
   <data name="period_type_custom" xml:space="preserve">
     <value>Custom</value>
   </data>
+  <data name="language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="rule_condition_type_mcc" xml:space="preserve">
+    <value>MCC</value>
+  </data>
+  <data name="rule_condition_type_description_matches" xml:space="preserve">
+    <value>Description matches</value>
+  </data>
+  <data name="rule_condition_type_description_contains" xml:space="preserve">
+    <value>Description contains</value>
+  </data>
 </root>

@@ -236,7 +236,7 @@
         {
             TransferControlVM dialogVm = new TransferControlVM(new TransferDto(transfer));
 
-            var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
+            var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, LocalizationService.Instance.transfer);
 
             var output = result as TransferDto;
             if (output != null)
@@ -282,7 +282,7 @@
 
             TransactionControlVM dialogVm = new TransactionControlVM(transactionDto, dialogWrapper);
 
-            var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
+            var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, LocalizationService.Instance.transaction);
 
             var resultVm = result as TransactionDto;
             if (resultVm != null)

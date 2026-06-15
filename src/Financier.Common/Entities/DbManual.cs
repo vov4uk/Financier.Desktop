@@ -228,17 +228,25 @@ ORDER  BY 1 DESC ");
 
         public static async Task LoadRulesAsync()
         {
-            var directory = Environment.CurrentDirectory;
-            var path = Path.Combine(directory, "rules.json");
-            if (File.Exists(path))
+            try
             {
-                string rulesJson = await File.ReadAllTextAsync(path);
-                var rules = JsonConvert.DeserializeObject<List<RuleModel>>(rulesJson);
-                if (rules?.Any() == true)
+                var directory = Environment.CurrentDirectory;
+                var path = Path.Combine(directory, "rules.json");
+                if (File.Exists(path))
                 {
-                    _rules = rules;
+                    string rulesJson = await File.ReadAllTextAsync(path);
+                    var rules = JsonConvert.DeserializeObject<List<RuleModel>>(rulesJson);
+                    if (rules?.Any() == true)
+                    {
+                        _rules = rules;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                _rules = new List<RuleModel>();
+            }
+
         }
         public static async Task SaveRulesAsync()
         {

@@ -594,4 +594,7 @@
   <data name="usd" xml:space="preserve">
     <value>USD</value>
   </data>
+  <data name="language" xml:space="preserve">
+    <value>Język</value>
+  </data>
 </root>

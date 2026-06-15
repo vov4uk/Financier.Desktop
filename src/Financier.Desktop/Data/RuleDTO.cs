@@ -9,7 +9,7 @@ namespace Financier.Desktop.Data
     {
         private CategoryModel category;
         private int? categoryId;
-        private string condition;
+        private RuleConditionType condition;
         private string description;
         private bool isActive;
         private int? locationId;
@@ -55,7 +55,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public string Condition
+        public RuleConditionType Condition
         {
             get => condition;
             set

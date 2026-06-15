@@ -84,4 +84,7 @@
       <_Parameter1>Financier.Desktop.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\..\..\..\Users\vkhmelovskyi\Downloads\mcc_codes.json" Link="Data\mcc_codes.json" />
+  </ItemGroup>
 </Project>

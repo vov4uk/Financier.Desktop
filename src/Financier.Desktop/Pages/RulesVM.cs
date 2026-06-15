@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Financier.Common.Entities;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Data;
@@ -76,7 +77,7 @@ namespace Financier.Desktop.ViewModel
                 rule = new RuleDTO()
                 {
                     Description = "Description here",
-                    Condition = "Description contains",
+                    Condition = RuleConditionType.DescriptionContains,
                     Created = DateTime.Now,
                     IsActive = true
                 };
@@ -84,7 +85,7 @@ namespace Financier.Desktop.ViewModel
 
             RuleControlVM ruleVm = new RuleControlVM(rule);
 
-            var result = dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, "Rule");
+            var result = dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, LocalizationService.Instance.rule);
 
             var updatedItem = result as RuleDTO;
             if (updatedItem != null)
@@ -92,7 +93,7 @@ namespace Financier.Desktop.ViewModel
                 int newId = 0;
                 if (id == 0)
                 {
-                    newId = DbManual.Rules.Select(r => r.Id).Max().Value + 1;
+                    newId = DbManual.Rules.Max(r => r.Id).Value + 1;
                 }
                 else
                 {

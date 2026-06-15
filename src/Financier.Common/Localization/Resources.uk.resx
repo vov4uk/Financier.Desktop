@@ -654,4 +654,7 @@
   <data name="period_type_custom" xml:space="preserve">
     <value>Інше</value>
   </data>
+  <data name="language" xml:space="preserve">
+    <value>Мова</value>
+  </data>
 </root>

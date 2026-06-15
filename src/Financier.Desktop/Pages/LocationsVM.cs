@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Financier.Common.Entities;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
@@ -38,7 +39,7 @@ namespace Financier.Desktop.ViewModel
             Location selectedValue = await db.GetOrCreateAsync<Location>(id);
             LocationControlVM locationVm = new LocationControlVM(new LocationDto(selectedValue));
 
-            var result = dialogWrapper.ShowDialog<LocationControl>(locationVm, 240, 300, nameof(Location));
+            var result = dialogWrapper.ShowDialog<LocationControl>(locationVm, 240, 300, LocalizationService.Instance.location);
 
             var updatedItem = result as LocationDto;
             if (updatedItem != null)

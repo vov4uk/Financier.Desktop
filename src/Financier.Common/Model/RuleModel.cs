@@ -3,10 +3,23 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Financier.Common.Attribute;
 using Financier.Common.Entities;
+using Financier.Converters;
 
 namespace Financier.Common.Model
 {
+    [TypeConverter(typeof(EnumDescritpionTypeConverter))]
+    public enum RuleConditionType
+    {
+        [LocalizedDescription("rule_condition_type_description_contains")]
+        DescriptionContains,
+        [LocalizedDescription("rule_condition_type_description_matches")]
+        DescriptionMatches,
+        [LocalizedDescription("rule_condition_type_mcc")]
+        MCC
+    }
+
     [ExcludeFromCodeCoverage]
     public class RuleModel : BaseModel, IActive
     {
@@ -16,7 +29,7 @@ namespace Financier.Common.Model
         [DisplayName("Created")]
         public DateTime Created { get; set; }
         [DisplayName("Condition")]
-        public string Condition { get; set; }
+        public RuleConditionType Condition { get; set; }
 
         [DisplayName("Condition")]
         public string Description { get; set; }

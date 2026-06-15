@@ -132,7 +132,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
             var viewModel = new TransferControlVM(workingCopy);
 
-            var dialogResult = dialogWrapper.ShowDialog<TransferControl>(viewModel, 385, 340, "Transfer");
+            var dialogResult = dialogWrapper.ShowDialog<TransferControl>(viewModel, 385, 340, LocalizationService.Instance.transfer);
 
             var modifiedCopy = dialogResult as TransferDto;
             if (modifiedCopy != null)
@@ -165,7 +165,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
             var viewModel = new SubTransactionControlVM(workingCopy);
 
-            var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, "Sub Transaction");
+            var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, LocalizationService.Instance.sub_transaction);
 
             var modifiedCopy = dialogResult as TransactionDto;
             if (modifiedCopy != null)

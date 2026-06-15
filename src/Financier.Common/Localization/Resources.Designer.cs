@@ -817,6 +817,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string language {
+            get {
+                return ResourceManager.GetString("language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last transaction.
         /// </summary>
         public static string last_transaction {
@@ -1362,6 +1371,33 @@ namespace Financier.Common.Localization {
         public static string rule {
             get {
                 return ResourceManager.GetString("rule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description contains.
+        /// </summary>
+        public static string rule_condition_type_description_contains {
+            get {
+                return ResourceManager.GetString("rule_condition_type_description_contains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description matches.
+        /// </summary>
+        public static string rule_condition_type_description_matches {
+            get {
+                return ResourceManager.GetString("rule_condition_type_description_matches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MCC.
+        /// </summary>
+        public static string rule_condition_type_mcc {
+            get {
+                return ResourceManager.GetString("rule_condition_type_mcc", resourceCulture);
             }
         }
         

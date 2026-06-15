@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
@@ -24,7 +25,7 @@ namespace Financier.Desktop.Pages
             T selectedEntity = await db.GetOrCreateAsync<T>(e);
             TagControlVM context = new TagControlVM(new TagDTO(selectedEntity));
 
-            var result = dialogWrapper.ShowDialog<TagControl>(context, 180, 300, typeof(T).Name);
+            var result = dialogWrapper.ShowDialog<TagControl>(context, 180, 300, LocalizationService.Instance[typeof(T).Name.ToLowerInvariant()]);
 
             var updatedItem = result as TagDTO;
             if (updatedItem != null)

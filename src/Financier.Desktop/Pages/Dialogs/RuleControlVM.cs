@@ -1,14 +1,15 @@
-﻿using System.Collections.ObjectModel;
+﻿using Financier.Common.Model;
 using Financier.Desktop.Data;
 using Financier.Desktop.ViewModel.Dialog;
 
 namespace Financier.Desktop.Pages.Dialogs
 {
+
     public class RuleControlVM : DialogBaseVM
     {
-        private string _selectedConditionType;
+        private RuleConditionType _selectedConditionType;
         private string _selectedMCC;
-        public string SelectedConditionType
+        public RuleConditionType SelectedConditionType
         {
             get => _selectedConditionType;
             set
@@ -36,16 +37,8 @@ namespace Financier.Desktop.Pages.Dialogs
 
         public bool IsMCCSelected
         {
-            get => SelectedConditionType == "MCC";
+            get => SelectedConditionType == RuleConditionType.MCC;
         }
-
-        //TODO : localization, use enum instead of string and convert to user friendly name in the view
-        public static ObservableCollection<string> ConditionTypes { get; } = new ObservableCollection<string>
-        {
-           "Description contains",
-           "Description matches",
-           "MCC"
-        };
 
         public RuleControlVM(RuleDTO entity)
         {

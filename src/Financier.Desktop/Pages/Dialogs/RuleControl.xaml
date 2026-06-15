@@ -8,6 +8,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             xmlns:model="clr-namespace:Financier.Common.Model;assembly=Financier.Common"
              mc:Ignorable="d" 
              d:DesignHeight="360"
              d:DesignWidth="400">
@@ -53,7 +54,7 @@
                     <ComboBox Grid.Column="0"
                               Margin="2"
                               Height="24"
-                              ItemsSource="{x:Static local:RuleControlVM.ConditionTypes}"
+                              ItemsSource="{Binding Source={loc:EnumBinding {x:Type model:RuleConditionType}}}"
                               SelectedValue="{Binding SelectedConditionType}" />
                     <TextBox Grid.Column="1"
                              Margin="2"
@@ -83,7 +84,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Content="{loc:Translate Key=what_should_happen}"/>
+                    <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="{loc:Translate Key=what_should_happen}"/>
                     <GroupBox Grid.Row="1"
                           Grid.Column="0"
                           Margin="5"

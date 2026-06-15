@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Financier.Common.Entities;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
@@ -140,28 +141,28 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             foreach (var rule in DbManual.Rules.Where(r => r.IsActive))
             {
                 HashSet<int> mccCodes = new HashSet<int>();
-                if (rule.Condition == "MCC" && DbManual.MCCCategories.ContainsKey(rule.Description))
+                if (rule.Condition == RuleConditionType.MCC && DbManual.MCCCategories.ContainsKey(rule.Description))
                 {
                     var list = DbManual.MCCCategories[rule.Description];
                     mccCodes = new HashSet<int>(list);
                 }
 
                 bool meetsCondition = false;
-                if (rule.Condition == "Description contains")
+                if (rule.Condition == RuleConditionType.DescriptionContains)
                 {
                     if (transaction.Note.Contains(rule.Description, StringComparison.OrdinalIgnoreCase))
                     {
                         meetsCondition = true;
                     }
                 }
-                else if (rule.Condition == "Description matches")
+                else if (rule.Condition == RuleConditionType.DescriptionMatches)
                 {
                     if (transaction.Note.Equals(rule.Description, StringComparison.OrdinalIgnoreCase))
                     {
                         meetsCondition = true;
                     }
                 }
-                else if (rule.Condition == "MCC")
+                else if (rule.Condition == RuleConditionType.MCC)
                 {
                     if (transaction.MCC > 0 && mccCodes.Contains(transaction.MCC))
                     {
@@ -270,14 +271,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             RuleDTO rule = new RuleDTO()
             {
                 Description = description,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Created = DateTime.Now,
                 IsActive = true
             };
 
             RuleControlVM ruleVm = new RuleControlVM(rule);
 
-            var result = _dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, "Rule");
+            var result = _dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, LocalizationService.Instance.rule);
 
             var updatedItem = result as RuleDTO;
             if (updatedItem != null)
