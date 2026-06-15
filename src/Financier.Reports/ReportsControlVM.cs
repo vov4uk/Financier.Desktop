@@ -22,6 +22,11 @@ namespace Financier.Reports
         {
             this.financierDatabase = financierDatabase;
             BuildReportsTree();
+            LocalizationService.Instance.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == "CurrentCulture")
+                    BuildReportsTree();
+            };
         }
 
         private void BuildReportsTree()
