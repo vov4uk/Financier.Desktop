@@ -9,11 +9,11 @@ namespace Financier.Reports
     public class ReportStructureIncomeExpenseModel : BaseModel
     {
         [Column("title")]
-        [DisplayName("Category")]
+        [DisplayName("category")]
         public string Name { get; protected set; }
 
         [Column("total")]
-        [DisplayName("Total")]
+        [DisplayName("total_label")]
         public double? Total { get; protected set; }
 
         public string Label => $"{Name} ({Total})";

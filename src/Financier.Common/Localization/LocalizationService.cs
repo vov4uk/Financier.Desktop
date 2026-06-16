@@ -74,6 +74,7 @@ public sealed class LocalizationService : INotifyPropertyChanged
             Thread.CurrentThread.CurrentCulture = CurrentCulture;
             Thread.CurrentThread.CurrentUICulture = CurrentCulture;
             DbManual.ResetManuals(nameof(DbManual.MCCEnums));
+            DbManual.ResetManuals(nameof(DbManual.Currencies));
 
             var xmlLang = XmlLanguage.GetLanguage(culture.IetfLanguageTag);
             if (Application.Current != null)
@@ -114,6 +115,15 @@ public sealed class LocalizationService : INotifyPropertyChanged
         return this[key];
     }
 
+    public string others => Get();
+    public string saldo => Get();
+    public string expense => Get();
+    public string income => Get();
+    public string category => Get();
+    public string net_worth => Get();
+    public string assets => Get();
+    public string liabilities => Get();
+    public string all_currencies => Get();
     public string pumb => Get();
     public string privat => Get();
     public string pko => Get();

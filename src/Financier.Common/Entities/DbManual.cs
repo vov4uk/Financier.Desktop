@@ -98,7 +98,7 @@ ORDER  BY LEFT,
                 _currencies = new List<CurrencyModel>(currencies);
                 _currencies.Insert(0, new CurrencyModel()
                 {
-                    Name = "All currencies"
+                    Name = Localization.LocalizationService.Instance.all_currencies
                 });
             }
 
@@ -227,6 +227,7 @@ ORDER  BY 1 DESC ");
                 case nameof(Project):          _project = null!; break;
                 case nameof(Account):          _accounts = null!; break;
                 case nameof(MCCEnums):         _mccEnums = null!; break;
+                case nameof(Currencies):       _currencies = null!; break;
                 default:
                     break;
             }

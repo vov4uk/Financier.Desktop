@@ -20,34 +20,34 @@ namespace Financier.Reports
 
         public string NetWorthUSDBalanceStr => $"{NetWorthUSDBalance}$";
 
-        [DisplayName("Assets (home currency)")]
+        [DisplayName("assets_home_currency")]
         public double? AssetsDefaultCurrencyBalance { get; set; }
 
-        [DisplayName("Liabilities (home currency)")]
+        [DisplayName("liabilities_home_currency")]
         public double? LiabilitiesDefaultCurrencyBalance { get; set; }
 
-        [DisplayName("Assets (USD)")]
+        [DisplayName("assets_usd")]
         public double? AssetsUSDBalance { get; set; }
 
-        [DisplayName("Liabilities (USD)")]
+        [DisplayName("liabilities_usd")]
         public double? LiabilitiesUSDBalance { get; set; }
 
-        [DisplayName("Net Worth (USD)")]
+        [DisplayName("net_worth_usd")]
         public double? NetWorthUSDBalance { get; set; }
 
-        [DisplayName("Net Worth (home currency)")]
+        [DisplayName("net_worth_home_currency")]
         public double? NetWorthDefaultCurrencyBalance { get; set; }
 
         public string DefaultCurrencySymbol { get; set; }
 
-        [DisplayName("Date")]
+        [DisplayName("date")]
         public DateOnly Date { get; set; }
     }
 
     public class ReportStructureSaldoRawModel
     {
         [Column("account_title")]
-        [DisplayName("Account")]
+        [DisplayName("account")]
         public string Title { get; protected set; }
 
         [Column("account_id")]
@@ -73,14 +73,14 @@ namespace Financier.Reports
 
         public string DefaultCurrencyBalanceStr => $"{DefaultCurrencyBalance}{DefaultCurrencySymbol}";
 
-        [DisplayName("Sign")]
+        [DisplayName("sign")]
         [Column("symbol")]
         public string BalanceSymbol { get; protected set; }
 
-        [DisplayName("Total (home currency)")]
+        [DisplayName("total_home_currency")]
         [Column("balance_default_crr")]
         public double? DefaultCurrencyBalance { get; protected set; }
-        [DisplayName("Total (USD)")]
+        [DisplayName("total_usd")]
         [Column("balance_usd")]
         public double? USDBalance { get; protected set; }
 
@@ -88,7 +88,7 @@ namespace Financier.Reports
         public string DefaultCurrencySymbol { get; protected set; }
 
         [Column("date")]
-        [DisplayName("Date")]
+        [DisplayName("date")]
         public string Date { get; protected set; }
     }
 }

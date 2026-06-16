@@ -1,4 +1,5 @@
 ﻿using Financier.Common.Attribute;
+using Financier.Common.Localization;
 using Financier.DataAccess.Abstractions;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -116,7 +117,7 @@ ORDER  BY total ASC ";
             {
                 MinorStep = 1,
                 Position = AxisPosition.Left,
-                Title = "Category",
+                Title = LocalizationService.Instance.category,
                 TitleFormatString = "{0}",
             };
 

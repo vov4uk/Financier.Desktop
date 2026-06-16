@@ -1,8 +1,9 @@
-﻿using Financier.Common.Attribute;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
+using Financier.Common.Attribute;
+using Financier.Common.Localization;
 
 namespace Financier.Common.Controls
 {
@@ -42,7 +43,7 @@ namespace Financier.Common.Controls
             {
                 if (!string.IsNullOrEmpty(propertyDisplayName))
                 {
-                    e.Column.Header = propertyDisplayName;
+                    e.Column.Header = LocalizationService.Instance[propertyDisplayName];
                 }
                 else
                 {
@@ -59,18 +60,18 @@ namespace Financier.Common.Controls
         private static string GetPropertyDisplayName(object p)
         {
             PropertyDescriptor propertyDescriptor = (p as PropertyDescriptor)!;
-            string proprtyDisplayName = null!;
+            string propertyDisplayName = null;
             if (propertyDescriptor != null && propertyDescriptor.Attributes[typeof(DisplayNameAttribute)] is DisplayNameAttribute attribute && attribute != DisplayNameAttribute.Default)
             {
-                proprtyDisplayName = attribute.DisplayName;
+                propertyDisplayName = attribute.DisplayName;
             }
-            return proprtyDisplayName;
+            return propertyDisplayName;
         }
 
         private static string GetPropertyCellTemplateName(object p)
         {
             PropertyDescriptor propertyDescriptor = (p as PropertyDescriptor)!;
-            string proprtyDisplayName = null!;
+            string proprtyDisplayName = null;
             if (propertyDescriptor != null && propertyDescriptor.Attributes[typeof(CellTemplateAttribute)] is CellTemplateAttribute attribute)
             {
                 proprtyDisplayName = attribute.Key;

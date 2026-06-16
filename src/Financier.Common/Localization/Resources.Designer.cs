@@ -205,6 +205,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All currencies.
+        /// </summary>
+        public static string all_currencies {
+            get {
+                return ResourceManager.GetString("all_currencies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Amount.
         /// </summary>
         public static string amount {
@@ -246,6 +255,33 @@ namespace Financier.Common.Localization {
         public static string app_title {
             get {
                 return ResourceManager.GetString("app_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assets.
+        /// </summary>
+        public static string assets {
+            get {
+                return ResourceManager.GetString("assets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assets (home currency).
+        /// </summary>
+        public static string assets_home_currency {
+            get {
+                return ResourceManager.GetString("assets_home_currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assets (USD).
+        /// </summary>
+        public static string assets_usd {
+            get {
+                return ResourceManager.GetString("assets_usd", resourceCulture);
             }
         }
         
@@ -871,6 +907,33 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Liabilities.
+        /// </summary>
+        public static string liabilities {
+            get {
+                return ResourceManager.GetString("liabilities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Liabilities (home currency).
+        /// </summary>
+        public static string liabilities_home_currency {
+            get {
+                return ResourceManager.GetString("liabilities_home_currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Liabilities (USD).
+        /// </summary>
+        public static string liabilities_usd {
+            get {
+                return ResourceManager.GetString("liabilities_usd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
         public static string location {
@@ -930,6 +993,42 @@ namespace Financier.Common.Localization {
         public static string monobank_csv {
             get {
                 return ResourceManager.GetString("monobank_csv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Month.
+        /// </summary>
+        public static string month {
+            get {
+                return ResourceManager.GetString("month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Net Worth.
+        /// </summary>
+        public static string net_worth {
+            get {
+                return ResourceManager.GetString("net_worth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Net Worth (home currency).
+        /// </summary>
+        public static string net_worth_home_currency {
+            get {
+                return ResourceManager.GetString("net_worth_home_currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Net Worth (USD).
+        /// </summary>
+        public static string net_worth_usd {
+            get {
+                return ResourceManager.GetString("net_worth_usd", resourceCulture);
             }
         }
         
@@ -1011,6 +1110,15 @@ namespace Financier.Common.Localization {
         public static string original {
             get {
                 return ResourceManager.GetString("original", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Others.
+        /// </summary>
+        public static string others {
+            get {
+                return ResourceManager.GetString("others", resourceCulture);
             }
         }
         
@@ -1456,6 +1564,51 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current Year.
+        /// </summary>
+        public static string reports_saldo_range_current_year {
+            get {
+                return ResourceManager.GetString("reports_saldo_range_current_year", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 12 Months.
+        /// </summary>
+        public static string reports_saldo_range_last_12_months {
+            get {
+                return ResourceManager.GetString("reports_saldo_range_last_12_months", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 2 Years.
+        /// </summary>
+        public static string reports_saldo_range_last_2_years {
+            get {
+                return ResourceManager.GetString("reports_saldo_range_last_2_years", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 24 Months.
+        /// </summary>
+        public static string reports_saldo_range_last_24_months {
+            get {
+                return ResourceManager.GetString("reports_saldo_range_last_24_months", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 6 Months.
+        /// </summary>
+        public static string reports_saldo_range_last_6_months {
+            get {
+                return ResourceManager.GetString("reports_saldo_range_last_6_months", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Structure.
         /// </summary>
         public static string reports_structure {
@@ -1560,6 +1713,15 @@ namespace Financier.Common.Localization {
         public static string rules {
             get {
                 return ResourceManager.GetString("rules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saldo.
+        /// </summary>
+        public static string saldo {
+            get {
+                return ResourceManager.GetString("saldo", resourceCulture);
             }
         }
         
@@ -1744,11 +1906,29 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total (home currency).
+        /// </summary>
+        public static string total_home_currency {
+            get {
+                return ResourceManager.GetString("total_home_currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total.
         /// </summary>
         public static string total_label {
             get {
                 return ResourceManager.GetString("total_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total (USD).
+        /// </summary>
+        public static string total_usd {
+            get {
+                return ResourceManager.GetString("total_usd", resourceCulture);
             }
         }
         
@@ -1875,6 +2055,15 @@ namespace Financier.Common.Localization {
         public static string xlsx {
             get {
                 return ResourceManager.GetString("xlsx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year.
+        /// </summary>
+        public static string year {
+            get {
+                return ResourceManager.GetString("year", resourceCulture);
             }
         }
     }

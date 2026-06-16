@@ -7,7 +7,7 @@ namespace Financier.Reports.Structure
     public class ByCategoryReportModel : BaseModel
     {
         [Column("parent_title")]
-        [DisplayName("Category")]
+        [DisplayName("category")]
         public string Category { get; protected set; }
 
         [Column("is_expense")]
@@ -17,7 +17,7 @@ namespace Financier.Reports.Structure
         public long ParentId { get; protected set; }
 
         [Column("total")]
-        [DisplayName("Total")]
+        [DisplayName("total_label")]
         public double Total { get; protected set; }
     }
 }

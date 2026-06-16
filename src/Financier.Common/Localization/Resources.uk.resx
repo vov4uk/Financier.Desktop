@@ -330,6 +330,9 @@
   <data name="amount" xml:space="preserve">
     <value>Сума</value>
   </data>
+  <data name="all_currencies" xml:space="preserve">
+    <value>Усі валюти</value>
+  </data>
   <data name="amount_in" xml:space="preserve">
     <value>Сума на вході</value>
   </data>
@@ -344,6 +347,12 @@
   </data>
   <data name="total_amount" xml:space="preserve">
     <value>Загальна сума</value>
+  </data>
+  <data name="total_home_currency" xml:space="preserve">
+    <value>Всього (національна валюта)</value>
+  </data>
+  <data name="total_usd" xml:space="preserve">
+    <value>Всього (USD)</value>
   </data>
   <data name="include" xml:space="preserve">
     <value>Включити</value>
@@ -513,6 +522,9 @@
   <data name="order" xml:space="preserve">
     <value>Замовлення</value>
   </data>
+  <data name="others" xml:space="preserve">
+    <value>Решта</value>
+  </data>
   <data name="calculate_totals" xml:space="preserve">
     <value>Обчислити загальні суми</value>
   </data>
@@ -621,6 +633,9 @@
   <data name="view" xml:space="preserve">
     <value>Вигляд</value>
   </data>
+  <data name="year" xml:space="preserve">
+    <value>Рік</value>
+  </data>
   <data name="graphics" xml:space="preserve">
     <value>Графік</value>
   </data>
@@ -659,6 +674,33 @@
   </data>
   <data name="top_category" xml:space="preserve">
     <value>Найвища категорія</value>
+  </data>
+  <data name="assets_home_currency" xml:space="preserve">
+    <value>Активи (національна валюта)</value>
+  </data>
+  <data name="liabilities_home_currency" xml:space="preserve">
+    <value>Зобов'язання (національна валюта)</value>
+  </data>
+  <data name="assets_usd" xml:space="preserve">
+    <value>Активи (дол. США)</value>
+  </data>
+  <data name="assets" xml:space="preserve">
+    <value>Активи</value>
+  </data>
+  <data name="liabilities_usd" xml:space="preserve">
+    <value>Зобов'язання (дол. США)</value>
+  </data>
+  <data name="liabilities" xml:space="preserve">
+    <value>Зобов'язання</value>
+  </data>
+  <data name="net_worth_usd" xml:space="preserve">
+    <value>Чистий капітал (дол. США)</value>
+  </data>
+  <data name="net_worth" xml:space="preserve">
+    <value>Чистий капітал</value>
+  </data>
+  <data name="net_worth_home_currency" xml:space="preserve">
+    <value>Чистий капітал (національна валюта)</value>
   </data>
   <data name="period_type_all_time" xml:space="preserve">
     <value>Весь час</value>
@@ -722,5 +764,26 @@
   </data>
   <data name="last_transaction_format" xml:space="preserve">
     <value>Остання операція {0} {1}</value>
+  </data>
+  <data name="month" xml:space="preserve">
+    <value>Місяць</value>
+  </data>
+  <data name="saldo" xml:space="preserve">
+    <value>Баланс</value>
+  </data>
+  <data name="reports_saldo_range_current_year" xml:space="preserve">
+    <value>Поточний рік</value>
+  </data>
+  <data name="reports_saldo_range_last_6_months" xml:space="preserve">
+    <value>Останні 6 місяців</value>
+  </data>
+  <data name="reports_saldo_range_last_24_months" xml:space="preserve">
+    <value>Останні 24 місяці</value>
+  </data>
+  <data name="reports_saldo_range_last_12_months" xml:space="preserve">
+    <value>Останні 12 місяців</value>
+  </data>
+  <data name="reports_saldo_range_last_2_years" xml:space="preserve">
+    <value>Останні 2 роки</value>
   </data>
 </root>

@@ -330,6 +330,9 @@
   <data name="amount" xml:space="preserve">
     <value>Amount</value>
   </data>
+  <data name="all_currencies" xml:space="preserve">
+    <value>All currencies</value>
+  </data>
   <data name="amount_in" xml:space="preserve">
     <value>Amount In</value>
   </data>
@@ -344,6 +347,12 @@
   </data>
   <data name="total_amount" xml:space="preserve">
     <value>Total Amount</value>
+  </data>
+  <data name="total_home_currency" xml:space="preserve">
+    <value>Total (home currency)</value>
+  </data>
+  <data name="total_usd" xml:space="preserve">
+    <value>Total (USD)</value>
   </data>
   <data name="include" xml:space="preserve">
     <value>Include</value>
@@ -513,6 +522,9 @@
   <data name="order" xml:space="preserve">
     <value>Order</value>
   </data>
+  <data name="others" xml:space="preserve">
+    <value>Others</value>
+  </data>
   <data name="calculate_totals" xml:space="preserve">
     <value>Calculate totals</value>
   </data>
@@ -621,6 +633,9 @@
   <data name="view" xml:space="preserve">
     <value>View</value>
   </data>
+  <data name="year" xml:space="preserve">
+    <value>Year</value>
+  </data>
   <data name="graphics" xml:space="preserve">
     <value>Graphics</value>
   </data>
@@ -659,6 +674,33 @@
   </data>
   <data name="top_category" xml:space="preserve">
     <value>Top category</value>
+  </data>
+  <data name="assets_home_currency" xml:space="preserve">
+    <value>Assets (home currency)</value>
+  </data>
+  <data name="liabilities_home_currency" xml:space="preserve">
+    <value>Liabilities (home currency)</value>
+  </data>
+  <data name="assets_usd" xml:space="preserve">
+    <value>Assets (USD)</value>
+  </data>
+  <data name="assets" xml:space="preserve">
+    <value>Assets</value>
+  </data>
+  <data name="liabilities_usd" xml:space="preserve">
+    <value>Liabilities (USD)</value>
+  </data>
+  <data name="liabilities" xml:space="preserve">
+    <value>Liabilities</value>
+  </data>
+  <data name="net_worth_usd" xml:space="preserve">
+    <value>Net Worth (USD)</value>
+  </data>
+  <data name="net_worth" xml:space="preserve">
+    <value>Net Worth</value>
+  </data>
+  <data name="net_worth_home_currency" xml:space="preserve">
+    <value>Net Worth (home currency)</value>
   </data>
   <data name="period_type_all_time" xml:space="preserve">
     <value>All time</value>
@@ -722,5 +764,26 @@
   </data>
   <data name="last_transaction_format" xml:space="preserve">
     <value>Last transaction {0} {1}</value>
+  </data>
+  <data name="month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="saldo" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="reports_saldo_range_current_year" xml:space="preserve">
+    <value>Current Year</value>
+  </data>
+  <data name="reports_saldo_range_last_6_months" xml:space="preserve">
+    <value>Last 6 Months</value>
+  </data>
+  <data name="reports_saldo_range_last_24_months" xml:space="preserve">
+    <value>Last 24 Months</value>
+  </data>
+  <data name="reports_saldo_range_last_12_months" xml:space="preserve">
+    <value>Last 12 Months</value>
+  </data>
+  <data name="reports_saldo_range_last_2_years" xml:space="preserve">
+    <value>Last 2 Years</value>
   </data>
 </root>

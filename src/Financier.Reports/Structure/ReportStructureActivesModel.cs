@@ -7,7 +7,7 @@ namespace Financier.Reports
     public class ReportStructureActivesModel : BaseModel
     {
         [Column("account_title")]
-        [DisplayName("Account")]
+        [DisplayName("account")]
         public string Title { get; protected set; }
 
         [Column("account_id")]
@@ -22,7 +22,7 @@ namespace Financier.Reports
         [Column("sort_order")]
         public long SortOrder { get; protected set; }
 
-        [DisplayName("Balance")]
+        [DisplayName("balance")]
         [Column("balance")]
         public double? Balance { get; protected set; }
 
@@ -30,14 +30,14 @@ namespace Financier.Reports
 
         public string DefaultCurrencyBalanceStr => $"{DefaultCurrencyBalance}{DefaultCurrencySymbol}";
 
-        [DisplayName("Sign")]
+        [DisplayName("symbol")]
         [Column("symbol")]
         public string BalanceSymbol { get; protected set; }
 
-        [DisplayName("Total (home currency)")]
+        [DisplayName("total_home_currency")]
         [Column("balance_default_crr")]
         public double? DefaultCurrencyBalance { get; protected set; }
-        [DisplayName("Total (USD)")]
+        [DisplayName("total_usd")]
         [Column("balance_usd")]
         public double? UsdBalance { get; protected set; }
 
@@ -45,7 +45,7 @@ namespace Financier.Reports
         public string DefaultCurrencySymbol { get; protected set; }
 
         [Column("date")]
-        [DisplayName("Date")]
+        [DisplayName("date")]
         public string Date { get; protected set; }
     }
 }

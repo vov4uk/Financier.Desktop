@@ -330,6 +330,9 @@
   <data name="amount" xml:space="preserve">
     <value>Kwota</value>
   </data>
+  <data name="all_currencies" xml:space="preserve">
+    <value>Wszystkie waluty</value>
+  </data>
   <data name="amount_in" xml:space="preserve">
     <value>Kwota w</value>
   </data>
@@ -344,6 +347,12 @@
   </data>
   <data name="total_amount" xml:space="preserve">
     <value>Całkowita kwota</value>
+  </data>
+  <data name="total_home_currency" xml:space="preserve">
+    <value>Razem (waluta krajowa)</value>
+  </data>
+  <data name="total_usd" xml:space="preserve">
+    <value>Razem (USD)</value>
   </data>
   <data name="include" xml:space="preserve">
     <value>Uwzględnij</value>
@@ -513,6 +522,9 @@
   <data name="order" xml:space="preserve">
     <value>Zamówienie</value>
   </data>
+  <data name="others" xml:space="preserve">
+    <value>Inni</value>
+  </data>
   <data name="calculate_totals" xml:space="preserve">
     <value>Oblicz sumy</value>
   </data>
@@ -621,6 +633,9 @@
   <data name="view" xml:space="preserve">
     <value>Widik</value>
   </data>
+  <data name="year" xml:space="preserve">
+    <value>Rok</value>
+  </data>
   <data name="graphics" xml:space="preserve">
     <value>Grafika</value>
   </data>
@@ -659,6 +674,33 @@
   </data>
   <data name="top_category" xml:space="preserve">
     <value>Najwyższa kategoria</value>
+  </data>
+  <data name="assets_home_currency" xml:space="preserve">
+    <value>Aktywa (waluta krajowa)</value>
+  </data>
+  <data name="liabilities_home_currency" xml:space="preserve">
+    <value>Pasywa (waluta krajowa)</value>
+  </data>
+  <data name="assets_usd" xml:space="preserve">
+    <value>Aktywa (USD)</value>
+  </data>
+  <data name="assets" xml:space="preserve">
+    <value>Aktywa</value>
+  </data>
+  <data name="liabilities_usd" xml:space="preserve">
+    <value>Pasywa (USD)</value>
+  </data>
+  <data name="liabilities" xml:space="preserve">
+    <value>Pasywa</value>
+  </data>
+  <data name="net_worth_usd" xml:space="preserve">
+    <value>Wartość netto (USD)</value>
+  </data>
+  <data name="net_worth" xml:space="preserve">
+    <value>Wartość netto</value>
+  </data>
+  <data name="net_worth_home_currency" xml:space="preserve">
+    <value>Wartość netto (waluta krajowa)</value>
   </data>
   <data name="period_type_all_time" xml:space="preserve">
     <value>Cały czas</value>
@@ -722,5 +764,26 @@
   </data>
   <data name="last_transaction_format" xml:space="preserve">
     <value>Ostatnia transakcja {0} {1}</value>
+  </data>
+  <data name="month" xml:space="preserve">
+    <value>Miesiąc</value>
+  </data>
+  <data name="saldo" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="reports_saldo_range_current_year" xml:space="preserve">
+    <value>Rok bieżący</value>
+  </data>
+  <data name="reports_saldo_range_last_6_months" xml:space="preserve">
+    <value>Ostatnie 6 miesięcy</value>
+  </data>
+  <data name="reports_saldo_range_last_24_months" xml:space="preserve">
+    <value>Ostatnie 24 miesiące</value>
+  </data>
+  <data name="reports_saldo_range_last_12_months" xml:space="preserve">
+    <value>Ostatnie 12 miesięcy</value>
+  </data>
+  <data name="reports_saldo_range_last_2_years" xml:space="preserve">
+    <value>Ostatnie 2 lata</value>
   </data>
 </root>

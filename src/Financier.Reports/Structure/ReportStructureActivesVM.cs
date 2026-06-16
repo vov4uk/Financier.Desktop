@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Financier.Common.Attribute;
+using Financier.Common.Localization;
 using Financier.DataAccess.Abstractions;
 using OxyPlot.Series;
 
@@ -102,7 +103,7 @@ ORDER BY account_is_active DESC, sort_order ASC";
             }
             if (others.Any())
             {
-                ps.Slices.Add(new PieSlice("Others", others.Sum(x => x.DefaultCurrencyBalance) ?? 0));
+                ps.Slices.Add(new PieSlice(LocalizationService.Instance.others, others.Sum(x => x.DefaultCurrencyBalance) ?? 0));
             }
 
             model.Series.Add(ps);

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Financier.Common.Attribute;
+using Financier.Common.Localization;
+using Financier.Converters;
 using Financier.DataAccess.Abstractions;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -13,20 +16,26 @@ using OxyPlot.Series;
 
 namespace Financier.Reports
 {
+    [TypeConverter(typeof(EnumDescritpionTypeConverter))]
+    public enum ReportStructureSaldoRange
+    {
+        [LocalizedDescription("reports_saldo_range_current_year")]
+        CurrentYear,
+        [LocalizedDescription("reports_saldo_range_last_6_months")]
+        Last6Months,
+        [LocalizedDescription("reports_saldo_range_last_12_months")]
+        Last12Months,
+        [LocalizedDescription("reports_saldo_range_last_2_years")]
+        Last2Years,
+        [LocalizedDescription("reports_saldo_range_last_24_months")]
+        Last24Months
+    }
+
     [Header("reports_saldo")]
     public class ReportStructureSaldoVM : BaseReportVM<ReportStructureSaldoModel>
     {
-        public static ObservableCollection<string> Ranges { get; } = new ObservableCollection<string>
-        {
-"Current Year",
-"Last 6 Months",
-"Last 12 Months" ,
-"Last 2 Years" ,
-"Last 24 Months",
-        };
-
-        private string _range;
-        public string Range
+        private ReportStructureSaldoRange _range;
+        public ReportStructureSaldoRange Range
         {
             get => _range;
             set
@@ -106,7 +115,7 @@ ORDER BY account_is_active DESC, sort_order ASC
 
         public ReportStructureSaldoVM(IFinancierDatabase financierDatabase) : base(financierDatabase)
         {
-            Range = "Last 6 Months";
+            Range = ReportStructureSaldoRange.Last6Months;
             IsUsdCurrencySelected = true;
         }
 
@@ -174,7 +183,7 @@ ORDER BY account_is_active DESC, sort_order ASC
         {
             var result = new List<DateOnly>();
             var lastDayOfCurrentMonth = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(1).AddDays(-1);
-            if (Range == "Current Year")
+            if (Range == ReportStructureSaldoRange.CurrentYear)
             {
                 while (true)
                 {
@@ -184,21 +193,21 @@ ORDER BY account_is_active DESC, sort_order ASC
                     lastDayOfCurrentMonth = lastDayOfCurrentMonth.AddMonths(-1);
                 }
             }
-            else if (Range == "Last 6 Months")
+            else if (Range == ReportStructureSaldoRange.Last6Months)
             {
                 for (var i = 0; i<6; i++)
                 {
                     result.Add(lastDayOfCurrentMonth.AddMonths(-i));
                 }
             }
-            else if (Range == "Last 12 Months")
+            else if (Range == ReportStructureSaldoRange.Last12Months)
             {
                 for (var i = 0; i<12; i++)
                 {
                     result.Add(lastDayOfCurrentMonth.AddMonths(-i));
                 }
             }
-            else if (Range == "Last 2 Years")
+            else if (Range == ReportStructureSaldoRange.Last2Years)
             {
                 while (true)
                 {
@@ -208,7 +217,7 @@ ORDER BY account_is_active DESC, sort_order ASC
                     lastDayOfCurrentMonth = lastDayOfCurrentMonth.AddMonths(-1);
                 }
             }
-            else if (Range == "Last 24 Months")
+            else if (Range == ReportStructureSaldoRange.Last24Months)
             {
                 for (var i = 0; i<24; i++)
                 {
@@ -226,7 +235,7 @@ ORDER BY account_is_active DESC, sort_order ASC
 
             var saldo = new LineSeries
             {
-                Title = "Net worth",
+                Title = LocalizationService.Instance.net_worth,
                 RenderInLegend = true,
                 MarkerType = MarkerType.Circle,
                 LabelFormatString = "{1}" + currencySymbol,
@@ -236,14 +245,14 @@ ORDER BY account_is_active DESC, sort_order ASC
             {
                 XAxisKey = "Value",
                 YAxisKey = "Category",
-                Title = "Liabilities",
+                Title = LocalizationService.Instance.liabilities,
                 RenderInLegend = true,
                 LabelFormatString = "{0}"+ currencySymbol,
             };
 
             var credit = new BarSeries
             {
-                Title = "Assets",
+                Title = LocalizationService.Instance.assets,
                 XAxisKey = "Value",
                 YAxisKey = "Category",
                 RenderInLegend = true,

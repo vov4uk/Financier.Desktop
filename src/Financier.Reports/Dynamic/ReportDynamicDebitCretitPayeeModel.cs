@@ -6,18 +6,18 @@ namespace Financier.Reports
 {
     public class ReportDynamicDebitCretitPayeeModel : BaseModel
     {
-        [DisplayName("Year")]
+        [DisplayName("year")]
         [Column("date_year")]
         public int Year { get; protected set; }
 
-        [DisplayName("Month")]
+        [DisplayName("month")]
         [Column("date_month")]
         public int Month { get; protected set; }
 
         public string PeriodDesr => string.Format("{0} {1}", Month, Year);
 
         [Column("total")]
-        [DisplayName("Total")]
+        [DisplayName("total_label")]
         public double? Total { get; protected set; }
     }
 }
