@@ -249,6 +249,7 @@ dotnet_diagnostic.SA1600.severity = none
 
 # SA1633: File should have header
 dotnet_diagnostic.SA1633.severity = none
+dotnet_diagnostic.CS8632.severity = none
 
 # Default severity for all analyzer diagnostics
 dotnet_analyzer_diagnostic.severity = none

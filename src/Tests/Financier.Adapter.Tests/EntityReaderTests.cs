@@ -3,9 +3,9 @@
     using System;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using Financier.DataAccess.Data;
     using Financier.Tests.Common;
-    using System.Threading.Tasks;
     using Xunit;
 
     public class EntityReaderTests
