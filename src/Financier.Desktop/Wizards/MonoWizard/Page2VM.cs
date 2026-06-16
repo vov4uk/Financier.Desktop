@@ -50,8 +50,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 _monoAccount = value;
                 RaisePropertyChanged(nameof(MonoAccount));
                 double balance = _monoAccount.TotalAmount / 100.0;
-                StartTransaction = allTransactions.FirstOrDefault(x => Math.Abs(x.Balance - balance) < 0.01);
-                LastAccountTransaction = lastTransactions.ContainsKey(_monoAccount.Id ?? 0) ? lastTransactions[_monoAccount.Id.Value] : null;
+                StartTransaction = allTransactions.FirstOrDefault(x => Math.Abs(x.Balance - balance) < 0.01)!;
+                LastAccountTransaction = (_monoAccount?.Id != null && lastTransactions.ContainsKey(_monoAccount.Id.Value)) ? lastTransactions[_monoAccount.Id.Value] : null!;
             }
         }
 

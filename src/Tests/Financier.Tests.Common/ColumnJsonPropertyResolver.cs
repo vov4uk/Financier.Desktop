@@ -1,12 +1,9 @@
-﻿using Financier.DataAccess.Data;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Financier.DataAccess.Data;
+using Newtonsoft.Json.Serialization;
 
 namespace Financier.Tests.Common
 {
@@ -20,18 +17,18 @@ namespace Financier.Tests.Common
             this.PropertyMappings = new Dictionary<string, string>();
             foreach (PropertyInfo property in typeof(T).GetProperties())
             {
-                ColumnAttribute column = Attribute.GetCustomAttribute(property, typeof(ColumnAttribute)) as ColumnAttribute;
+                ColumnAttribute column = (Attribute.GetCustomAttribute(property, typeof(ColumnAttribute)) as ColumnAttribute)!;
                 if (column != null)
                 {
-                    PropertyMappings.Add(property.Name, column.Name);
+                    PropertyMappings.Add(property.Name, column.Name!);
                 }
             }
         }
 
         protected override string ResolvePropertyName(string propertyName)
         {
-            string resolvedName = null;
-            var resolved = this.PropertyMappings.TryGetValue(propertyName, out resolvedName);
+            string resolvedName = null!;
+            var resolved = this.PropertyMappings.TryGetValue(propertyName, out resolvedName!);
             return (resolved) ? resolvedName : base.ResolvePropertyName(propertyName);
         }
     }

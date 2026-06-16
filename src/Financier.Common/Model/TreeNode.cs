@@ -29,7 +29,7 @@ namespace Financier.Common.Model
         public TreeNode(Type type)
         {
             Type = type.ToString();
-            string key = ((HeaderAttribute)System.Attribute.GetCustomAttribute(type, typeof(HeaderAttribute))).Header;
+            string key = ((HeaderAttribute)System.Attribute.GetCustomAttribute(type, typeof(HeaderAttribute))!).Header;
             Name = LocalizationService.Instance[key];
         }
     }

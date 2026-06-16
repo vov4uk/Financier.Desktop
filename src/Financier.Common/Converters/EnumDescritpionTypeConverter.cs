@@ -13,14 +13,14 @@ namespace Financier.Converters
             : base(type)
         { }
 
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        public override object ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
         {
             if (value is Enum e && destinationType == typeof(string))
             {
-                MemberInfo mi = e.GetType().GetTypeInfo().GetMember(e.ToString()).FirstOrDefault();
+                MemberInfo mi = e.GetType().GetTypeInfo().GetMember(e.ToString()).FirstOrDefault()!;
                 if (mi != null)
                 {
-                    DescriptionAttribute attribute = mi.GetCustomAttribute<DescriptionAttribute>(false);
+                    DescriptionAttribute attribute = mi.GetCustomAttribute<DescriptionAttribute>(false)!;
                     if (attribute != null)
                     {
                         return attribute.Description;
@@ -28,7 +28,7 @@ namespace Financier.Converters
                 }
             }
 
-            return base.ConvertTo(context, culture, value, destinationType);
+            return base.ConvertTo(context, culture, value, destinationType)!;
         }
     }
 }

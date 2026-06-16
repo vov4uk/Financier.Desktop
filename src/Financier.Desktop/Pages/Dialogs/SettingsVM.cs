@@ -27,13 +27,13 @@ namespace Financier.Desktop.Pages.Dialogs
             }
         }
 
-        public SettingsVM(SettingsDTO entity)
+        public SettingsVM(SettingsDto entity)
         {
             this.Entity = entity;
             this.SelectedProvider = entity.ExchangeRates.Provider;
         }
 
-        public SettingsDTO Entity { get; }
+        public SettingsDto Entity { get; }
 
         public override object OnRequestSave()
         {

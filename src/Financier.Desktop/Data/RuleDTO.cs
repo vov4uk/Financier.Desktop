@@ -5,7 +5,7 @@ using Prism.Mvvm;
 
 namespace Financier.Desktop.Data
 {
-    public class RuleDTO : BindableBase
+    public class RuleDto : BindableBase
     {
         private CategoryModel category;
         private int? categoryId;
@@ -16,11 +16,11 @@ namespace Financier.Desktop.Data
         private int? payeeId;
         private int? projectId;
         private Mcc mccCategory;
-        public RuleDTO()
+        public RuleDto()
         {
         }
 
-        public RuleDTO(RuleModel rulesModel)
+        public RuleDto(RuleModel rulesModel)
         {
             Description = rulesModel.Description;
             Condition = rulesModel.Condition;
@@ -35,7 +35,7 @@ namespace Financier.Desktop.Data
 
         public CategoryModel Category
         {
-            get => category ??= DbManual.Category?.Find(x => x.Id == CategoryId);
+            get => category ??= DbManual.Category?.Find(x => x.Id == CategoryId)!;
             set
             {
                 if (SetProperty(ref category, value))

@@ -1,25 +1,23 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using Financier.Desktop.Helpers.Model;
-using Financier.Desktop.Wizards;
-using MiniExcelLibs;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Financier.Common.Localization;
+using Financier.Desktop.Helpers.BankHelper.Model;
+using Financier.Desktop.Wizards;
+using MiniExcelLibs;
 
 namespace Financier.Desktop.Helpers.BankHelper
 {
     public class PrivatHelper : IBankHelper
     {
-        public string BankTitle => "Приват";
+        public string BankTitle => LocalizationService.Instance.privat;
 
         public IEnumerable<BankTransaction> ParseReport(string filePath)
         {
-            List<Privat_Row> abankRows = new List<Privat_Row>();
+            List<PrivatRow> abankRows = new List<PrivatRow>();
             var rows = MiniExcel.Query(filePath, useHeaderRow: true, excelType: ExcelType.XLSX, startCell: "A2");
 
             using (var csvStream = new MemoryStream())
@@ -31,12 +29,12 @@ namespace Financier.Desktop.Helpers.BankHelper
                 {
                     HasHeaderRecord = true,
                     IgnoreBlankLines = true,
-                    ShouldSkipRecord = args => args.Row.Parser.Record.All(string.IsNullOrWhiteSpace),
+                    ShouldSkipRecord = args => args.Row.Parser.Record!.All(string.IsNullOrWhiteSpace),
                     Delimiter = ","
                 }))
                 {
                     csvStream.Position = 0;
-                    var r = csv.GetRecords<Privat_Row>().ToList();
+                    var r = csv.GetRecords<PrivatRow>().ToList();
                     abankRows.AddRange(r);
                 }
             }

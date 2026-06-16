@@ -17,7 +17,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         public SubTransactionControlVM(TransactionDto transaction)
         {
             Transaction = transaction;
-            Transaction.PropertyChanged += Transaction_PropertyChanged;
+            Transaction.PropertyChanged += Transaction_PropertyChanged!;
             Transaction.RecalculateRate();
         }
 
@@ -33,7 +33,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             => _clearFromAmountCommand ??= new DelegateCommand(() => { Transaction.FromAmount = 0; });
 
         public DelegateCommand ClearNotesCommand
-            => _clearNotesCommand ??= new DelegateCommand(() => { Transaction.Note = default; });
+            => _clearNotesCommand ??= new DelegateCommand(() => { Transaction.Note = default!; });
 
         public DelegateCommand ClearOriginalFromAmountCommand
             => _clearOriginalFromAmountCommand ??= new DelegateCommand(() => { Transaction.OriginalFromAmount = 0; });

@@ -21,6 +21,6 @@ namespace Financier.Desktop.Services
     public partial class SettingsService
     {
         [JsonSerializable(typeof(SettingsService))]
-        private partial class SerializerContext : JsonSerializerContext;
+        private sealed partial class SerializerContext : JsonSerializerContext;
     }
 }

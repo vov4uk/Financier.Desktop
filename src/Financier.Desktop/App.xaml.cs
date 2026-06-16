@@ -37,10 +37,10 @@ namespace Financier.Desktop
 
         private static void LogUnhandledException(Exception exception)
         {
-            MessageBox.Show(exception?.InnerException?.Message ?? exception.Message);
+            MessageBox.Show(exception?.InnerException?.Message ?? exception?.Message);
             _logger.Error(exception);
-            _logger.Error(exception.InnerException);
-            _logger.Error(exception.StackTrace);
+            _logger.Error(exception?.InnerException!);
+            _logger.Error(exception?.StackTrace!);
         }
     }
 }

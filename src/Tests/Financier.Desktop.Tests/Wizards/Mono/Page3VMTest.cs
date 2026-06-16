@@ -612,7 +612,7 @@
             var account = new AccountFilterModel { Id = 1 };
             var description = "Payment to Store";
 
-            object ruleDto = new RuleDTO
+            object ruleDto = new RuleDto
             {
                 Description = description,
                 Condition = RuleConditionType.DescriptionContains,
@@ -685,7 +685,7 @@
 
             dialogWrapperMock
                 .Setup(d => d.ShowDialog<RuleControl>(It.IsAny<RuleControlVM>(), 380, 400, "Rule"))
-                .Returns((RuleDTO)null);
+                .Returns((RuleDto)null);
 
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<LocationModel>());
@@ -714,7 +714,7 @@
             var account = new AccountFilterModel { Id = 1 };
             var description = "Restaurant Payment";
 
-            var ruleDto = new RuleDTO
+            var ruleDto = new RuleDto
             {
                 Description = description,
                 Condition = RuleConditionType.DescriptionMatches,

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Financier.Common.Attribute;
-using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Newtonsoft.Json;
@@ -17,6 +15,8 @@ namespace Financier.Common.Entities
     [ExcludeFromCodeCoverage]
     public static class DbManual
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private static List<AccountFilterModel> _accounts;
         private static List<LocationModel> _location;
         private static List<CategoryModel> _category;
@@ -187,7 +187,7 @@ ORDER  BY 1 DESC ");
                     _mccEnums = new SortedDictionary<Mcc, int[]>();
                     foreach (var item in result)
                     {
-                        MemberInfo mi = t.GetTypeInfo().GetMember(item.ToString()).FirstOrDefault();
+                        MemberInfo mi = t.GetTypeInfo().GetMember(item.ToString()!).FirstOrDefault()!;
                         if (mi != null)
                         {
                             var attribute = mi.GetCustomAttribute<MccCodesAttribute>(false);
@@ -251,6 +251,7 @@ ORDER  BY 1 DESC ");
             catch (Exception ex)
             {
                 _rules = new List<RuleModel>();
+                Logger.Error(ex, "Error occurred while loading rules.");
             }
 
         }

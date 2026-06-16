@@ -4,13 +4,13 @@ using Prism.Mvvm;
 
 namespace Financier.Desktop.Data
 {
-    public class SettingsDTO : BindableBase
+    public class SettingsDto : BindableBase
     {
-        public SettingsGeneralDTO General { get; set; } = new SettingsGeneralDTO();
+        public SettingsGeneralDto General { get; set; } = new SettingsGeneralDto();
         public SettingsExchangeRates ExchangeRates { get; set; } = new SettingsExchangeRates();
     }
 
-    public class SettingsGeneralDTO : BindableBase
+    public class SettingsGeneralDto : BindableBase
     {
         private bool checkForUpdatesOnStart;
         private Language language;

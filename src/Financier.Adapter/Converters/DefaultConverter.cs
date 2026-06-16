@@ -25,7 +25,7 @@ namespace Financier.Adapter.Converters
                 bool isNum = double.TryParse(s, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var retNum);
                 if (!isNum)
                 {
-                    return default(double?);
+                    return default(double?)!;
                 }
                 return retNum;
             }
@@ -35,7 +35,7 @@ namespace Financier.Adapter.Converters
                 bool isNum = float.TryParse(s1, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var retNum);
                 if (!isNum)
                 {
-                    return default(float?);
+                    return default(float?)!;
                 }
                 return retNum;
             }
@@ -62,7 +62,7 @@ namespace Financier.Adapter.Converters
             {
                 return ((float)value).ToString("0.####", Nfi);
             }
-            return System.Convert.ToString(value);
+            return System.Convert.ToString(value)!;
         }
 
         public Type PropertyType { get; set; }

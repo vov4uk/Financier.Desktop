@@ -40,21 +40,21 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OnRuleDelete(int id)
         {
-            DbManual.Rules.Remove(DbManual.Rules.FirstOrDefault(r => r.Id == id));
+            DbManual.Rules.Remove(DbManual.Rules.FirstOrDefault(r => r.Id == id)!);
             await RefreshData();
         }
 
         private async Task OpenRulesDialogAsync(int id)
         {
 
-            RuleDTO rule = null;
+            RuleDto rule = null!;
 
             if (id != 0)
             {
                 var ruleModel = DbManual.Rules.FirstOrDefault(r => r.Id == id);
                 if (ruleModel != null)
                 {
-                    rule = new RuleDTO
+                    rule = new RuleDto
                     {
                         CategoryId = ruleModel.CategoryId,
                         LocationId = ruleModel.LocationId,
@@ -75,7 +75,7 @@ namespace Financier.Desktop.ViewModel
             }
             else
             {
-                rule = new RuleDTO()
+                rule = new RuleDto()
                 {
                     Description = "Description here",
                     Condition = RuleConditionType.DescriptionContains,
@@ -88,7 +88,7 @@ namespace Financier.Desktop.ViewModel
 
             var result = dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, LocalizationService.Instance.rule);
 
-            var updatedItem = result as RuleDTO;
+            var updatedItem = result as RuleDto;
             if (updatedItem != null)
             {
                 int newId = 0;
@@ -99,10 +99,10 @@ namespace Financier.Desktop.ViewModel
                 else
                 {
                     var existingRule = DbManual.Rules.FirstOrDefault(r => r.Id == id);
-                    DbManual.Rules.Remove(existingRule);
+                    DbManual.Rules?.Remove(existingRule!);
                     newId = id;
                 }
-                DbManual.Rules.Add(new RuleModel
+                DbManual.Rules?.Add(new RuleModel
                 {
                     Description = updatedItem.Description,
                     CategoryId = updatedItem.CategoryId,

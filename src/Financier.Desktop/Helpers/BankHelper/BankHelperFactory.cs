@@ -16,7 +16,7 @@ namespace Financier.Desktop.Helpers.BankHelper
                 case WizardTypes.Pumb: return new PumbHelper();
                 case WizardTypes.Pireus: return new PireusHelper();
                 case WizardTypes.Privat: return new PrivatHelper();
-                case WizardTypes.Pko: return new PKOHelper();
+                case WizardTypes.Pko: return new PkoHelper();
                 default:
                     throw new NotSupportedException("Bank not found");
             }

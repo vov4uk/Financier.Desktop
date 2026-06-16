@@ -29,13 +29,13 @@ namespace Financier.Desktop.Pages.Dialogs
             get => SelectedConditionType == RuleConditionType.MCC;
         }
 
-        public RuleControlVM(RuleDTO entity)
+        public RuleControlVM(RuleDto entity)
         {
             this.Entity = entity;
             SelectedConditionType = entity.Condition;
         }
 
-        public RuleDTO Entity { get; }
+        public RuleDto Entity { get; }
 
         public override object OnRequestSave()
         {
@@ -46,7 +46,7 @@ namespace Financier.Desktop.Pages.Dialogs
             }
             else
             {
-                Entity.Description = null;
+                Entity.Description = null!;
             }
             return Entity;
         }

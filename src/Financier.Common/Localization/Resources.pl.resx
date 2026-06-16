@@ -183,6 +183,9 @@
   <data name="monobank_csv" xml:space="preserve">
     <value>Monobank CSV</value>
   </data>
+  <data name="monobank" xml:space="preserve">
+    <value>Monobank</value>
+  </data>
   <data name="a_bank" xml:space="preserve">
     <value>A Bank</value>
   </data>
@@ -195,14 +198,26 @@
   <data name="pumb_pdf" xml:space="preserve">
     <value>PUMB PDF</value>
   </data>
+  <data name="pumb" xml:space="preserve">
+    <value>PUMB</value>
+  </data>
   <data name="pireus_pdf" xml:space="preserve">
     <value>Pireus PDF</value>
+  </data>
+  <data name="pireus" xml:space="preserve">
+    <value>Pireus</value>
   </data>
   <data name="privat_xlsx" xml:space="preserve">
     <value>Privat XLSX</value>
   </data>
+  <data name="privat" xml:space="preserve">
+    <value>Privat</value>
+  </data>
   <data name="pko_pdf" xml:space="preserve">
     <value>PKO PDF</value>
+  </data>
+  <data name="pko" xml:space="preserve">
+    <value>PKO</value>
   </data>
   <data name="transaction" xml:space="preserve">
     <value>Transakcja</value>

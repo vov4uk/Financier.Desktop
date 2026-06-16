@@ -88,7 +88,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         {
             foreach (var item in FinancierTransactions)
             {
-                item.Note = null;
+                item.Note = null!;
             }
         }
     }

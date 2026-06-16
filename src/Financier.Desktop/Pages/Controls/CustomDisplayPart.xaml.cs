@@ -48,8 +48,8 @@ namespace Financier.Desktop.Pages.Controls
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!)
         {
             var handler = PropertyChanged;
             if (handler != null)

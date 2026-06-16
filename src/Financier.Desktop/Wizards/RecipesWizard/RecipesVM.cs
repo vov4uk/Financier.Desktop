@@ -9,7 +9,9 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
         public RecipesVM(double totalAmount)
         {
             TotalAmount = totalAmount;
+#pragma warning disable S1699 // Constructors should only call non-overridable methods
             CreatePages();
+#pragma warning restore S1699 // Constructors should only call non-overridable methods
         }
 
         public double TotalAmount
@@ -61,7 +63,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                     .Select(TransformMonoTransaction)
                     .ToList();
             }
-            return null;
+            return null!;
         }
 
         private TransactionDto TransformMonoTransaction(FinancierTransactionDto x)
@@ -77,7 +79,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 LocationId = x.LocationId,
                 ProjectId = x.ProjectId,
                 CategoryId = x.CategoryId,
-                Category = default,
+                Category = default!,
             };
 
             return result;

@@ -4,9 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Financier.Common.Localization;
 using Financier.Desktop.Wizards;
 
 namespace Financier.Desktop.Helpers.BankHelper
@@ -14,7 +14,7 @@ namespace Financier.Desktop.Helpers.BankHelper
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     public class MonobankHelper : IBankHelper
     {
-        public string BankTitle => "Monobank";
+        public string BankTitle => LocalizationService.Instance.monobank;
 
         public IEnumerable<BankTransaction> ParseReport(string filePath)
         {

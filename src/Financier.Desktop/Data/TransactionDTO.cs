@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Financier.Common.Model;
 using Financier.Common.Entities;
+using Financier.Common;
 
 namespace Financier.Desktop.Data
 {
@@ -41,7 +42,7 @@ namespace Financier.Desktop.Data
             locationId = x.LocationId;
             projectId = x.ProjectId;
             categoryId = x.CategoryId;
-            category = default;
+            category = default!;
         }
 
         public TransactionDto(Transaction transaction, IEnumerable<Transaction> subTransactions)
@@ -90,7 +91,7 @@ namespace Financier.Desktop.Data
 
         public AccountFilterModel FromAccount
         {
-            get => fromAccount ??= DbManual.Account?.Find(x => x.Id == FromAccountId);
+            get => fromAccount ??= DbManual.Account?.Find(x => x.Id == FromAccountId)!;
             set
             {
                 if (SetProperty(ref fromAccount, value))
@@ -117,12 +118,12 @@ namespace Financier.Desktop.Data
 
         public CurrencyModel FromAccountCurrency
         {
-            get => DbManual.Currencies?.Find(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0));
+            get => DbManual.Currencies?.Find(x => x.Id == (FromAccount != null ? FromAccount.CurrencyId : 0))!;
         }
 
         public CategoryModel Category
         {
-            get => category ??= DbManual.Category?.Find(x => x.Id == CategoryId);
+            get => category ??= DbManual.Category?.Find(x => x.Id == CategoryId)!;
             set
             {
                 if (SetProperty(ref category, value))
@@ -194,7 +195,7 @@ namespace Financier.Desktop.Data
 
         public CurrencyModel OriginalCurrency
         {
-            get => currency ??= DbManual.Currencies?.Find(x => x.Id == OriginalCurrencyId);
+            get => currency ??= DbManual.Currencies?.Find(x => x.Id == OriginalCurrencyId)!;
             set
             {
                 if (SetProperty(ref currency, value))
@@ -272,7 +273,7 @@ namespace Financier.Desktop.Data
         {
             get
             {
-                if (Rate != 0)
+                if (DoubleUtils.DoubleNotEqual(Rate, 0))
                 {
                     var d = 1.0 / Rate;
                     var localCurrency = DbManual.Currencies?.Find(x => x.Id == fromAccount?.Id);

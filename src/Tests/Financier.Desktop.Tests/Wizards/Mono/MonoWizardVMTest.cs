@@ -253,7 +253,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pko.pdf");
-            IEnumerable<BankTransaction> pko = new PKOHelper().ParseReport(path);
+            IEnumerable<BankTransaction> pko = new PkoHelper().ParseReport(path);
 
             Assert.Equal(22, pko.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(pko.First()));

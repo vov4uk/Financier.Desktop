@@ -12,7 +12,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
         public Page1VM(string bank)
         {
-            MonoAccount = DbManual.Account.FirstOrDefault(x => x.IsActive && x.Title.Contains(bank, System.StringComparison.OrdinalIgnoreCase)) ?? DbManual.Account.FirstOrDefault(x => x.Id != null);
+            MonoAccount = DbManual.Account.FirstOrDefault(x => x.IsActive && x.Title.Contains(bank, System.StringComparison.OrdinalIgnoreCase)) ?? DbManual.Account.FirstOrDefault(x => x.Id != null)!;
         }
 
         public AccountFilterModel MonoAccount

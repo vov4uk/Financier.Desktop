@@ -42,8 +42,7 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        public IEnumerable<CurrencyModel> FromCurrencies =>
-            DbManual.Currencies.Where(x => x.Id > 0);
+        public static IEnumerable<CurrencyModel> FromCurrencies => DbManual.Currencies.Where(x => x.Id > 0);
 
         public PlotModel PlotModel
         {

@@ -79,7 +79,7 @@
 
         public AccountFilterModel Account
         {
-            get => _account ??= DbManual.Account.Find(p => !p.Id.HasValue);
+            get => _account ??= DbManual.Account.Find(p => !p.Id.HasValue)!;
             set
             {
                 _account = value;
@@ -89,7 +89,7 @@
 
         public CategoryModel Category
         {
-            get => _category ??= DbManual.Category.Find(p => !p.Id.HasValue);
+            get => _category ??= DbManual.Category.Find(p => !p.Id.HasValue)!;
             set
             {
                 _category = value;
@@ -99,7 +99,7 @@
 
         public PayeeModel Payee
         {
-            get => _payee ??= DbManual.Payee.Find(p => !p.Id.HasValue);
+            get => _payee ??= DbManual.Payee.Find(p => !p.Id.HasValue)!;
             set
             {
                 _payee = value;
@@ -109,7 +109,7 @@
 
         public ProjectModel Project
         {
-            get => _project ??= DbManual.Project.Find(p => !p.Id.HasValue);
+            get => _project ??= DbManual.Project.Find(p => !p.Id.HasValue)!;
             set
             {
                 _project = value;
@@ -119,7 +119,7 @@
 
         public LocationModel Location
         {
-            get => _location ??= DbManual.Location.Find(p => !p.Id.HasValue);
+            get => _location ??= DbManual.Location.Find(p => !p.Id.HasValue)!;
             set
             {
                 _location = value;
@@ -142,11 +142,11 @@
             PeriodType = PeriodType.AllTime;
             _from = null;
             _to = null;
-            Account = default;
-            Category = default;
-            Payee = default;
-            Project = default;
-            Location = default;
+            Account = default!;
+            Category = default!;
+            Payee = default!;
+            Project = default!;
+            Location = default!;
             await RefreshDataCommand.ExecuteAsync();
         }
 
@@ -240,7 +240,7 @@
             var output = result as TransferDto;
             if (output != null)
             {
-                MapperHelper.MapTransfer(result as TransferDto, transfer);
+                MapperHelper.MapTransfer(output, transfer);
                 await db.InsertOrUpdateAsync(new[] { transfer });
 
                 await db.RebuildAccountBalanceAsync(transfer.FromAccountId);
@@ -329,7 +329,7 @@
                 // if not - add diference to last transaction
                 if (resultVm.IsOriginalFromAmountVisible && totalFromAmountHomeCurrency != 0)
                 {
-                    resultTransactions.Last().FromAmount += totalFromAmountHomeCurrency;
+                    resultTransactions[resultTransactions.Count -1].FromAmount += totalFromAmountHomeCurrency;
                 }
             }
 
@@ -377,7 +377,7 @@
             subTransaction.Parent = transaction;
             subTransaction.FromAccountId = transaction.FromAccountId;
             subTransaction.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
-            subTransaction.Category = default;
+            subTransaction.Category = default!;
             return subTransaction;
         }
 
@@ -444,13 +444,13 @@
                         Name = x.FromAccountCurrency.Name,
                         Symbol = x.FromAccountCurrency.Symbol,
                     },
-                    ToAccountCurrency = x.ToAccountCurrency == null ? default : new CurrencyModel
+                    ToAccountCurrency = x.ToAccountCurrency == null ? default! : new CurrencyModel
                     {
                         Id = x.ToAccountCurrency.Id,
                         Name = x.ToAccountCurrency.Name,
                         Symbol = x.ToAccountCurrency.Symbol,
                     },
-                    OriginalCurrency = x.OriginalCurrency == null ? default : new CurrencyModel
+                    OriginalCurrency = x.OriginalCurrency == null ? default! : new CurrencyModel
                     {
                         Id = x.OriginalCurrency.Id,
                         Name = x.OriginalCurrency.Name,

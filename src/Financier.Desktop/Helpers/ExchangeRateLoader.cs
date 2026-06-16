@@ -201,7 +201,7 @@ namespace Financier.Desktop.Helpers
         {
             var asm = Assembly.GetExecutingAssembly();
             using var stream = asm.GetManifestResourceStream("Financier.Desktop.Assets.iso4217.csv");
-            using var reader = new StreamReader(stream);
+            using var reader = new StreamReader(stream!);
             var config = new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = true };
             using var csv = new CsvReader(reader, config);
             return csv.GetRecords<Iso4217Record>()
@@ -220,13 +220,13 @@ namespace Financier.Desktop.Helpers
         public static (long UpdatedOn, float Rate) ParseExchangeRateJson(string json)
         {
             var obj = JObject.Parse(json);
-            var updated = long.Parse(obj["updated"].Value<string>());
+            var updated = long.Parse(obj["updated"]!.Value<string>()!);
 
             // Find the currency key (any key that's not "updated")
             var currencyProperty = obj.Properties()
                 .FirstOrDefault(p => p.Name != "updated");
 
-            return (updated, currencyProperty.Value.Value<float>());
+            return (updated, currencyProperty!.Value.Value<float>());
         }
     }
 

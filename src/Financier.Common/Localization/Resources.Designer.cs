@@ -889,6 +889,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Monobank.
+        /// </summary>
+        public static string monobank {
+            get {
+                return ResourceManager.GetString("monobank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Monobank CSV.
         /// </summary>
         public static string monobank_csv {
@@ -1132,11 +1141,29 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pireus.
+        /// </summary>
+        public static string pireus {
+            get {
+                return ResourceManager.GetString("pireus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pireus PDF.
         /// </summary>
         public static string pireus_pdf {
             get {
                 return ResourceManager.GetString("pireus_pdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PKO.
+        /// </summary>
+        public static string pko {
+            get {
+                return ResourceManager.GetString("pko", resourceCulture);
             }
         }
         
@@ -1204,6 +1231,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Privat.
+        /// </summary>
+        public static string privat {
+            get {
+                return ResourceManager.GetString("privat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Privat XLSX.
         /// </summary>
         public static string privat_xlsx {
@@ -1236,6 +1272,15 @@ namespace Financier.Common.Localization {
         public static string providers {
             get {
                 return ResourceManager.GetString("providers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PUMB.
+        /// </summary>
+        public static string pumb {
+            get {
+                return ResourceManager.GetString("pumb", resourceCulture);
             }
         }
         

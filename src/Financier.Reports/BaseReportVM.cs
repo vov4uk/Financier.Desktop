@@ -48,7 +48,7 @@ namespace Financier.Reports
 
         public ProjectModel Project
         {
-            get => _project ??= DbManual.Project.FirstOrDefault(p => !p.Id.HasValue);
+            get => _project ??= DbManual.Project.FirstOrDefault(p => !p.Id.HasValue)!;
             set
             {
                 _project = value;
@@ -58,7 +58,7 @@ namespace Financier.Reports
 
         public CategoryModel Category
         {
-            get => _category ??= DbManual.Category.FirstOrDefault(p => !p.Id.HasValue);
+            get => _category ??= DbManual.Category.FirstOrDefault(p => !p.Id.HasValue)!;
             set
             {
                 _category = value;
@@ -68,7 +68,7 @@ namespace Financier.Reports
 
         public CategoryModel TopCategory
         {
-            get => _topCategory ??= DbManual.TopCategories.FirstOrDefault(p => !p.Id.HasValue);
+            get => _topCategory ??= DbManual.TopCategories.FirstOrDefault(p => !p.Id.HasValue)!;
             set
             {
                 _topCategory = value;
@@ -78,7 +78,7 @@ namespace Financier.Reports
 
         public AccountFilterModel Account
         {
-            get => _account ??= DbManual.Account.FirstOrDefault(p => !p.Id.HasValue);
+            get => _account ??= DbManual.Account.FirstOrDefault(p => !p.Id.HasValue)!;
             set
             {
                 _account = value;
@@ -88,7 +88,7 @@ namespace Financier.Reports
 
         public PayeeModel Payee
         {
-            get => _payee ?? (_payee = DbManual.Payee.FirstOrDefault(p => !p.Id.HasValue));
+            get => _payee ??= DbManual.Payee.FirstOrDefault(p => !p.Id.HasValue)!;
             set
             {
                 _payee = value;
@@ -98,7 +98,7 @@ namespace Financier.Reports
 
         public CurrencyModel CurentCurrency
         {
-            get => _curentCurrency ?? (_curentCurrency = DbManual.Currencies.FirstOrDefault(p => !p.Id.HasValue));
+            get => _curentCurrency ??= DbManual.Currencies.FirstOrDefault(p => !p.Id.HasValue)!;
             set
             {
                 _curentCurrency = value;
@@ -108,7 +108,7 @@ namespace Financier.Reports
 
         public YearMonths StartYearMonths
         {
-            get => _startYearMonths ?? (_startYearMonths = DbManual.YearMonths.FirstOrDefault(p => !p.Year.HasValue && !p.Month.HasValue));
+            get => _startYearMonths ??= DbManual.YearMonths.FirstOrDefault(p => !p.Year.HasValue && !p.Month.HasValue)!;
             set
             {
                 _startYearMonths = value;
@@ -118,7 +118,7 @@ namespace Financier.Reports
 
         public YearMonths EndYearMonths
         {
-            get => _endYearMonths ?? (_endYearMonths = DbManual.YearMonths.FirstOrDefault(p => !p.Year.HasValue && !p.Month.HasValue));
+            get => _endYearMonths ??= DbManual.YearMonths.FirstOrDefault(p => !p.Year.HasValue && !p.Month.HasValue)!;
             set
             {
                 _endYearMonths = value;

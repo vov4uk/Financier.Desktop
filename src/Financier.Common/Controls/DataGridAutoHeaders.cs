@@ -12,7 +12,7 @@ namespace Financier.Common.Controls
         public DataGridAutoHeaders()
         {
             AutoGenerateColumns = true;
-            AutoGeneratingColumn += DataGridAutoHeadersAutoGeneratingColumn;
+            AutoGeneratingColumn += DataGridAutoHeadersAutoGeneratingColumn!;
         }
 
         private void DataGridAutoHeadersAutoGeneratingColumn(
@@ -58,8 +58,8 @@ namespace Financier.Common.Controls
 
         private static string GetPropertyDisplayName(object p)
         {
-            PropertyDescriptor propertyDescriptor = p as PropertyDescriptor;
-            string proprtyDisplayName = null;
+            PropertyDescriptor propertyDescriptor = (p as PropertyDescriptor)!;
+            string proprtyDisplayName = null!;
             if (propertyDescriptor != null && propertyDescriptor.Attributes[typeof(DisplayNameAttribute)] is DisplayNameAttribute attribute && attribute != DisplayNameAttribute.Default)
             {
                 proprtyDisplayName = attribute.DisplayName;
@@ -69,8 +69,8 @@ namespace Financier.Common.Controls
 
         private static string GetPropertyCellTemplateName(object p)
         {
-            PropertyDescriptor propertyDescriptor = p as PropertyDescriptor;
-            string proprtyDisplayName = null;
+            PropertyDescriptor propertyDescriptor = (p as PropertyDescriptor)!;
+            string proprtyDisplayName = null!;
             if (propertyDescriptor != null && propertyDescriptor.Attributes[typeof(CellTemplateAttribute)] is CellTemplateAttribute attribute)
             {
                 proprtyDisplayName = attribute.Key;

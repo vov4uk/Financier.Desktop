@@ -214,8 +214,8 @@ namespace Financier.Desktop.ViewModel
             }
             catch (Exception ex)
             {
+                Logger.Error(ex, ex.ToString());
                 IsLoading = false;
-                Logger.Error(ex);
                 throw;
             }
         }
@@ -255,11 +255,11 @@ namespace Financier.Desktop.ViewModel
         private void ClearPages()
         {
             _pages?.Clear();
-            Blotter = null;
-            Locations = null;
-            Payees = null;
-            Projects = null;
-            Rules = null;
+            Blotter = null!;
+            Locations = null!;
+            Payees = null!;
+            Projects = null!;
+            Rules = null!;
         }
 
         private void CreatePages()
@@ -321,7 +321,7 @@ namespace Financier.Desktop.ViewModel
             {
                 var viewModel = Activator.CreateInstance(typeof(VMType), db, dialogWrapper) as VMType;
 
-                _pages.TryAdd(type, viewModel);
+                _pages.TryAdd(type, viewModel!);
             }
 
             return (VMType)_pages[type];
@@ -358,7 +358,7 @@ namespace Financier.Desktop.ViewModel
                 foreach (var acc in DbManual.Account.Where(x => x.Id.HasValue))
                 {
                     var last = Blotter.Entities.FirstOrDefault(x => x.Id == acc.LastTransactionId);
-                    lastTransactions.Add(acc.Id.Value, last);
+                    lastTransactions.Add(acc.Id!.Value, last!);
                 }
 
                 var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions, dialogWrapper);
@@ -429,7 +429,7 @@ namespace Financier.Desktop.ViewModel
         {
             string defaultPath = string.IsNullOrEmpty(OpenBackupPath)
                 ? BackupWriter.GenerateFileName()
-                : Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName());
+                : Path.Combine(Path.GetDirectoryName(OpenBackupPath)!, BackupWriter.GenerateFileName());
             var backupPath = dialogWrapper.SaveFileDialog(Backup, defaultPath);
             if (!string.IsNullOrEmpty(backupPath))
             {
@@ -446,7 +446,7 @@ namespace Financier.Desktop.ViewModel
             string defaultPath;
             if (!string.IsNullOrEmpty(OpenBackupPath))
             {
-                defaultPath = Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty), fileName);
+                defaultPath = Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty)!, fileName);
             }
             else
             {
@@ -465,18 +465,18 @@ namespace Financier.Desktop.ViewModel
 
         private async Task Settings_Click()
         {
-            SettingsDTO settings = TryDeserializeSettings(AppSettings);
+            SettingsDto settings = TryDeserializeSettings(AppSettings);
             settings.General.Language = SettingsService.Current.Language;
 
             DialogBaseVM vm = new SettingsVM(settings);
-            var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) as SettingsDTO;
+            var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) as SettingsDto;
 
             if (updated != null)
             {
                 var jObj = JObject.FromObject(updated);
                 if (!string.IsNullOrEmpty(updated.ExchangeRates.OpenExchangeRatesProviderAppId))
                 {
-                    jObj[nameof(SettingsDTO.ExchangeRates)][nameof(SettingsExchangeRates.OpenExchangeRatesProviderAppId)] =
+                    jObj[nameof(SettingsDto.ExchangeRates)]![nameof(SettingsExchangeRates.OpenExchangeRatesProviderAppId)] =
                         SettingsProtection.Encrypt(updated.ExchangeRates.OpenExchangeRatesProviderAppId);
                 }
                 string json = jObj.ToString(Formatting.Indented);
@@ -523,7 +523,7 @@ namespace Financier.Desktop.ViewModel
                         }
                         catch (DbUpdateException ex)
                         {
-                            string msg = ex?.InnerException?.Message;
+                            string msg = ex?.InnerException?.Message!;
                             if (!string.IsNullOrEmpty(msg) && msg.Contains("UNIQUE constraint failed", StringComparison.OrdinalIgnoreCase))
                             {
                                 notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_exist);
@@ -551,19 +551,23 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private SettingsDTO TryDeserializeSettings(string json)
+        private SettingsDto TryDeserializeSettings(string json)
         {
             if (!string.IsNullOrEmpty(json))
             {
                 try
                 {
-                    var dto = JsonConvert.DeserializeObject<SettingsDTO>(json);
+                    var dto = JsonConvert.DeserializeObject<SettingsDto>(json);
+                    if (dto == null)
+                    {
+                        dto = new SettingsDto();
+                    }
 
                     if (dto.ExchangeRates == null)
                         dto.ExchangeRates = new SettingsExchangeRates();
 
                     if (dto.General == null)
-                        dto.General = new SettingsGeneralDTO();
+                        dto.General = new SettingsGeneralDto();
 
                     if (!string.IsNullOrEmpty(dto.ExchangeRates?.OpenExchangeRatesProviderAppId))
                     {
@@ -576,22 +580,22 @@ namespace Financier.Desktop.ViewModel
                 catch (Exception ex)
                 {
                     Logger.Warn(ex, "Failed to deserialize AppSettings; resetting to defaults.");
-                    AppSettings = null;
-                    SettingsService.Current.AppSettings = null;
+                    AppSettings = null!;
+                    SettingsService.Current.AppSettings = null!;
                     SettingsService.Current.Save();
                     notifier?.ShowWarning(LocalizationService.Instance.settings_corrupted);
 
                 }
             }
 
-            return new SettingsDTO()
+            return new SettingsDto()
             {
                 ExchangeRates = new SettingsExchangeRates
                 {
                     Provider = ExchangeRatesProviders.None,
                     UpdateOnStart = false,
                 },
-                General = new SettingsGeneralDTO
+                General = new SettingsGeneralDto
                 {
                     CheckForUpdatesOnStart = true
                 }

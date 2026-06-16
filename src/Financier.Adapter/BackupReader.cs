@@ -28,7 +28,7 @@ namespace Financier.Adapter
         private async Task ReadHeaderAsync(CancellationToken cancellationToken = default)
         {
             string rawLine;
-            while ((rawLine = await _reader.ReadLineAsync(cancellationToken)) != null && !string.Equals(rawLine, Backup.START))
+            while ((rawLine = (await _reader.ReadLineAsync(cancellationToken))!) != null && !string.Equals(rawLine, Backup.START))
             {
                 Line line = new Line(rawLine);
                 switch (line.Key)
@@ -59,7 +59,7 @@ namespace Financier.Adapter
             await ReadHeaderAsync(cancellationToken);
 
             string line;
-            while ((line = await _reader.ReadLineAsync(cancellationToken)) != null && line != Backup.END)
+            while ((line = (await _reader.ReadLineAsync(cancellationToken))!) != null && line != Backup.END)
             {
                 if (!string.IsNullOrEmpty(line))
                     yield return line;

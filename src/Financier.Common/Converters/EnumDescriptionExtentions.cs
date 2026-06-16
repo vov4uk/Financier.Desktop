@@ -10,7 +10,7 @@ namespace Financier.Converters
     {
         public static string GetEnumDescription(this Enum enumObj)
         {
-            FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString());
+            FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString())!;
 
             object[] attribArray = fieldInfo.GetCustomAttributes(false);
 
@@ -20,13 +20,13 @@ namespace Financier.Converters
             }
             else
             {
-                DescriptionAttribute attrib = attribArray[0] as DescriptionAttribute;
+                DescriptionAttribute attrib = (DescriptionAttribute)attribArray[0]!;
                 return attrib.Description;
             }
         }
         public static string GetEnumLocalizedDescription(this Enum enumObj)
         {
-            FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString());
+            FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString())!;
 
             object[] attribArray = fieldInfo.GetCustomAttributes(false);
 
@@ -36,7 +36,7 @@ namespace Financier.Converters
             }
             else
             {
-                LocalizedMccDescriptionAttribute attrib = attribArray.FirstOrDefault() as LocalizedMccDescriptionAttribute;
+                LocalizedMccDescriptionAttribute attrib = (LocalizedMccDescriptionAttribute)attribArray.FirstOrDefault()!;
                 return attrib?.Description ?? enumObj.ToString();
             }
         }

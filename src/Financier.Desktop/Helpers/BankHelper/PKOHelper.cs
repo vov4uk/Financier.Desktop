@@ -1,23 +1,24 @@
-﻿using CsvHelper;
-using Financier.Desktop.Wizards;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Financier.Common;
+using Financier.Common.Localization;
+using Financier.Desktop.Wizards;
 using Tabula;
 using Tabula.Extractors;
 using UglyToad.PdfPig;
 
 namespace Financier.Desktop.Helpers.BankHelper
 {
-    public class PKOHelper : IBankHelper
+    public class PkoHelper : IBankHelper
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public string BankTitle => "PKO";
+        public string BankTitle => LocalizationService.Instance.pko;
 
         public IEnumerable<BankTransaction> ParseReport(string filePath)
         {
@@ -25,7 +26,7 @@ namespace Financier.Desktop.Helpers.BankHelper
             if (File.Exists(filePath))
             {
                 List<string> pages = new List<string>();
-                List<PKO_Transaction> transactions = new List<PKO_Transaction>();
+                List<PkoTransaction> transactions = new List<PkoTransaction>();
 
                 using (PdfDocument document = PdfDocument.Open(filePath, new ParsingOptions() { ClipPaths = true }))
                 {
@@ -148,7 +149,7 @@ namespace Financier.Desktop.Helpers.BankHelper
                             transactionDescriprion = Regex.Replace(transactionDescriprion, @"([0-9]{26})", " ").Trim();
                             transactionDescriprion = transactionDescriprion.Replace("Lokalizacja:", string.Empty).Trim();
 
-                            var transaction = new PKO_Transaction
+                            var transaction = new PkoTransaction
                             {
                                 DataOperacji = transactionDate,
                                 IdentyfikatorOperacji = idStr,
@@ -178,15 +179,15 @@ namespace Financier.Desktop.Helpers.BankHelper
                         OperationAmount = transaction.KwotaOperacji,
                         Balance = transaction.Saldo,
                         OperationCurrency = transaction.WalutaOryg,
-                        CardCurrencyAmount = (transaction.KwotaOperacji < 0 && transaction.KwotaOperacji != transaction.KwotaOryg) ?  -1* transaction.KwotaOryg : transaction.KwotaOryg,
-                        MCC = null
+                        CardCurrencyAmount = (transaction.KwotaOperacji < 0 && DoubleUtils.DoubleNotEqual(transaction.KwotaOperacji, transaction.KwotaOryg)) ? -1 * transaction.KwotaOryg : transaction.KwotaOryg,
+                        MCC = null!
                     });
                 }
             }
             return result;
         }
 
-        private class PKO_Transaction
+        private sealed class PkoTransaction
         {
             public DateTime DataOperacji { get; set; }
             public string IdentyfikatorOperacji { get; set; }

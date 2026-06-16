@@ -106,6 +106,12 @@ public sealed class LocalizationService : INotifyPropertyChanged
         return this[key];
     }
 
+    public string pumb => Get();
+    public string privat => Get();
+    public string pko => Get();
+    public string pireus => Get();
+    public string monobank => Get();
+    public string a_bank => Get();
     public string import => Get();
     public string settings => Get();
     public string delete => Get();
