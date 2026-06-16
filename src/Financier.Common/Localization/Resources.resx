@@ -330,6 +330,12 @@
   <data name="amount" xml:space="preserve">
     <value>Amount</value>
   </data>
+  <data name="amount_in" xml:space="preserve">
+    <value>Amount In</value>
+  </data>
+  <data name="amount_out" xml:space="preserve">
+    <value>Amount Out</value>
+  </data>
   <data name="balance" xml:space="preserve">
     <value>Balance</value>
   </data>
@@ -710,5 +716,11 @@
   </data>
   <data name="rule_title_category" xml:space="preserve">
     <value>Assign Category: {0} </value>
+  </data>
+  <data name="selected_account_balance_format" xml:space="preserve">
+    <value>Selected account {0} with balance {1} {2}</value>
+  </data>
+  <data name="last_transaction_format" xml:space="preserve">
+    <value>Last transaction {0} {1}</value>
   </data>
 </root>

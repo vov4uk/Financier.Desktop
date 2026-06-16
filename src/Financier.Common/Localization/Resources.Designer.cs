@@ -214,6 +214,24 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount In.
+        /// </summary>
+        public static string amount_in {
+            get {
+                return ResourceManager.GetString("amount_in", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount Out.
+        /// </summary>
+        public static string amount_out {
+            get {
+                return ResourceManager.GetString("amount_out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to App id.
         /// </summary>
         public static string app_id {
@@ -831,6 +849,15 @@ namespace Financier.Common.Localization {
         public static string last_transaction {
             get {
                 return ResourceManager.GetString("last_transaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last transaction {0} {1}.
+        /// </summary>
+        public static string last_transaction_format {
+            get {
+                return ResourceManager.GetString("last_transaction_format", resourceCulture);
             }
         }
         
@@ -1587,6 +1614,15 @@ namespace Financier.Common.Localization {
         public static string select_account {
             get {
                 return ResourceManager.GetString("select_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected account {0} with balance {1} {2}.
+        /// </summary>
+        public static string selected_account_balance_format {
+            get {
+                return ResourceManager.GetString("selected_account_balance_format", resourceCulture);
             }
         }
         

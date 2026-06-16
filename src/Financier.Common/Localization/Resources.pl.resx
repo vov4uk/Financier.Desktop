@@ -330,6 +330,12 @@
   <data name="amount" xml:space="preserve">
     <value>Kwota</value>
   </data>
+  <data name="amount_in" xml:space="preserve">
+    <value>Kwota w</value>
+  </data>
+  <data name="amount_out" xml:space="preserve">
+    <value>Kwota wyjściowa</value>
+  </data>
   <data name="balance" xml:space="preserve">
     <value>Saldo</value>
   </data>
@@ -710,5 +716,11 @@
   </data>
   <data name="rule_title_category" xml:space="preserve">
     <value>Przypisz kategorię: {0}</value>
+  </data>
+  <data name="selected_account_balance_format" xml:space="preserve">
+    <value>Wybrane konto {0} z saldem {1} {2}</value>
+  </data>
+  <data name="last_transaction_format" xml:space="preserve">
+    <value>Ostatnia transakcja {0} {1}</value>
   </data>
 </root>

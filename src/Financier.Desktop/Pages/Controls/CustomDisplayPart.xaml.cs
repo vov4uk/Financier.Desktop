@@ -26,7 +26,7 @@ namespace Financier.Desktop.Pages.Controls
     {
         private CustomDisplayPart _displayPart;
 
-        public override NotificationDisplayPart DisplayPart => _displayPart ?? (_displayPart = new CustomDisplayPart(this));
+        public override NotificationDisplayPart DisplayPart => _displayPart ??= new CustomDisplayPart(this);
 
         public CustomNotification(string message, MessageOptions messageOptions)
             : base(message, messageOptions)
@@ -47,8 +47,9 @@ namespace Financier.Desktop.Pages.Controls
                 OnPropertyChanged(nameof(Message));
             }
         }
-
+#nullable enable
         public event PropertyChangedEventHandler? PropertyChanged;
+#nullable disable
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!)
         {
             var handler = PropertyChanged;

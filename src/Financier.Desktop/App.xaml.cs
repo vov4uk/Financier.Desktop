@@ -1,7 +1,9 @@
 ﻿using NLog;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace Financier.Desktop
 {
@@ -13,6 +15,10 @@ namespace Financier.Desktop
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
             SetupExceptionHandling();
         }

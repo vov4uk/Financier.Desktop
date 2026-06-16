@@ -18,7 +18,7 @@ namespace Financier.Common
             _predicate = predicate;
             _context = SynchronizationContext.Current!;
         }
-
+#nullable enable
         event EventHandler? ICommand.CanExecuteChanged
         {
             add { _canExecuteChanged += value; }
@@ -31,6 +31,7 @@ namespace Financier.Common
             return _predicate == null || _predicate();
         }
 
+
         // ----- Implement ICommand
         bool ICommand.CanExecute(object? parameter)
         {
@@ -41,6 +42,7 @@ namespace Financier.Common
         {
             await ExecuteAsync();
         }
+#nullable disable
 
         public async Task ExecuteAsync()
         {
@@ -81,6 +83,7 @@ namespace Financier.Common
             _context = SynchronizationContext.Current!;
         }
 
+#nullable enable
         event EventHandler? ICommand.CanExecuteChanged
         {
             add { _canExecuteChanged += value; }
@@ -103,7 +106,7 @@ namespace Financier.Common
         {
             await ExecuteAsync((T)parameter!);
         }
-
+#nullable disable
         public async Task ExecuteAsync(T parameter)
         {
             if (CanExecute(parameter))

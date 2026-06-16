@@ -12,7 +12,7 @@ namespace Financier.Converters
         public EnumDescritpionTypeConverter(Type type)
             : base(type)
         { }
-
+#nullable enable
         public override object ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
         {
             if (value is Enum e && destinationType == typeof(string))
@@ -31,4 +31,5 @@ namespace Financier.Converters
             return base.ConvertTo(context, culture, value, destinationType)!;
         }
     }
+#nullable disable
 }

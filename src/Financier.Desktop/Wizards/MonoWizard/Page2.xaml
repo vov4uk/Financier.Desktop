@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             xmlns:convert="clr-namespace:Financier.Common.Converters;assembly=Financier.Common"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
              xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
@@ -12,6 +13,7 @@
     <UserControl.Resources>
         <converters:AmountConverter x:Key="AmountConverter"/>
         <converters:UnixTimeConverter x:Key="DatetimeConverter" />
+        <convert:LocalizedFormatConverter x:Key="localizedFormatConverter"/>
         <Style TargetType="DataGridCell">
             <Setter Property="TextBlock.TextAlignment" Value="Right" />
         </Style>
@@ -25,7 +27,8 @@
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Left" FontWeight="Bold">
             <TextBlock.Text>
-                <MultiBinding StringFormat="{} Selected account {0} with balance {1} {2}">
+                <MultiBinding Converter="{StaticResource localizedFormatConverter}">
+                    <Binding Source="{x:Static loc:LocalizationService.Instance}" Path="[selected_account_balance_format]" />
                     <Binding Path="MonoAccount.Title"/>
                     <Binding Path="MonoAccount.TotalAmount" StringFormat="F2" Converter="{StaticResource AmountConverter}" />
                     <Binding Path="MonoAccount.CurrencyName"/>
@@ -34,7 +37,8 @@
         </TextBlock>
         <emoji:EmojiedTextBlock Grid.Row="1" HorizontalAlignment="Left" FontWeight="Bold">
             <emoji:EmojiedTextBlock.Text>
-                <MultiBinding StringFormat="{} Last transaction {0} {1}">
+                <MultiBinding Converter="{StaticResource localizedFormatConverter}">
+                    <Binding Source="{x:Static loc:LocalizationService.Instance}" Path="[last_transaction_format]" />
                     <Binding Path="LastAccountTransaction.TransactionTitle"/>
                     <Binding Path="LastAccountTransaction.AmountTitle" />
                 </MultiBinding>

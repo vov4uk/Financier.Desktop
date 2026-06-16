@@ -65,7 +65,7 @@ public sealed class LocalizationService : INotifyPropertyChanged
             Language.English => CultureInfo.GetCultureInfo("en"),
             Language.Ukrainian => CultureInfo.GetCultureInfo("uk"),
             Language.Polish => CultureInfo.GetCultureInfo("pl"),
-            _ => CultureInfo.InstalledUICulture,
+            _ => _defaultCulture,
         };
 
         if (culture != CurrentCulture)
@@ -74,8 +74,15 @@ public sealed class LocalizationService : INotifyPropertyChanged
             Thread.CurrentThread.CurrentCulture = CurrentCulture;
             Thread.CurrentThread.CurrentUICulture = CurrentCulture;
             DbManual.ResetManuals(nameof(DbManual.MCCEnums));
+
+            var xmlLang = XmlLanguage.GetLanguage(culture.IetfLanguageTag);
+            if (Application.Current != null)
+            {
+                foreach (Window window in Application.Current.Windows)
+                    window.Language = xmlLang;
+            }
         }
-       }
+    }
 
     /// <summary>
     /// Returns the localized string for <paramref name="key"/> in the
@@ -95,10 +102,11 @@ public sealed class LocalizationService : INotifyPropertyChanged
         }
     }
 
-    /// <inheritdoc />
+#nullable enable
     public event PropertyChangedEventHandler? PropertyChanged;
+#nullable disable
 
-    private string Get([CallerMemberName] string? key = null)
+    private string Get([CallerMemberName] string key = null)
     {
         if (string.IsNullOrWhiteSpace(key))
             return string.Empty;

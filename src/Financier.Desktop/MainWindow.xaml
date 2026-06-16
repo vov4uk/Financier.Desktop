@@ -110,8 +110,8 @@
 
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu ContextMenu="{x:Null}"
-                                       Background="#858585"
-                                       BorderBrush="#858585">
+                                       Background="{StaticResource DefaultGray}"
+                                       BorderBrush="{StaticResource DefaultGray}">
                     <RibbonApplicationMenuItem Header="{loc:Translate Key=open_backup}"
                                                Command="{Binding Path=OpenBackupCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconFileArrowUp}" />
@@ -136,7 +136,7 @@
                                           KeyTip="X"
                                           DockPanel.Dock="Right"
                                           Margin="2"
-                                          BorderBrush="#858585" />
+                                          BorderBrush="{StaticResource DefaultGray}" />
                         </DockPanel>
                     </RibbonApplicationMenu.FooterPaneContent>
                     <RibbonApplicationMenu.AuxiliaryPaneContent>

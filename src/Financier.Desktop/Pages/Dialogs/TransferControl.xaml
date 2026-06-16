@@ -117,8 +117,14 @@
 
                 <TextBlock  Grid.Column="0" Grid.Row="5"
                             Grid.ColumnSpan="3"
-                            x:Name="FromAmountBlock"
-                            Text="{Binding Path=Transfer.FromAccountCurrency.Name, StringFormat={}Amount Out ({0}), TargetNullValue=Amount}" />
+                            x:Name="FromAmountBlock">
+                      <TextBlock.Text>
+                          <MultiBinding Converter="{StaticResource localizedFormatConverter}">
+                              <Binding Source="{x:Static loc:LocalizationService.Instance}" Path="[amount_out]" />
+                              <Binding Path="Transfer.FromAccountCurrency.Name" />
+                          </MultiBinding>
+                      </TextBlock.Text>
+                </TextBlock>
                 <xctk:IconButton    Grid.Column="0" Grid.Row="6"
                                     IsEnabled="False"
                                     Height="24"
@@ -135,8 +141,14 @@
                                     ShowButtonSpinner="True" />
 
                 <TextBlock  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3"
-                            Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                            Text="{Binding Path=Transfer.ToAccountCurrency.Name, StringFormat={}Amount In ({0}), TargetNullValue=Amount}" />
+                            Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource localizedFormatConverter}">
+                            <Binding Source="{x:Static loc:LocalizationService.Instance}" Path="[amount_in]" />
+                            <Binding Path="Transfer.ToAccountCurrency.Name" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
                 <xctk:IconButton    Grid.Column="0" Grid.Row="8"
                                     Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                                     Height="24"

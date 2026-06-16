@@ -41,7 +41,7 @@ namespace Financier.DataAccess.Utils
                 this.old = oldValue;
                 this.newVal = newValue;
             }
-
+#nullable enable
             public override Expression? Visit(Expression? node)
             {
                 if (node == this.old)
@@ -51,6 +51,7 @@ namespace Financier.DataAccess.Utils
 
                 return base.Visit(node);
             }
+#nullable disable
         }
     }
 }

@@ -8,6 +8,7 @@
     <SolidColorBrush x:Key="DefaultGray" Color="#858585" />
     <SolidColorBrush x:Key="DefaultBlack" Color="#000000" />
     <convert:CategoryTitleConverter x:Key="categoryTitleConvert"/>
+    <convert:LocalizedFormatConverter x:Key="localizedFormatConverter"/>
     <DataTemplate DataType="{x:Type data:IActive}" x:Key="IActive">
         <emoji:EmojiedTextBlock x:Name="Txt" Text="{Binding Title}" Foreground="DarkGreen" />
         <DataTemplate.Triggers>

@@ -13,9 +13,14 @@ namespace Financier.Converters
         private static HashSet<string> KnownTypes = new HashSet<string> { "asset", "bank", "cash", "electronic", "liability" };
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var type = ((string)values[0])?.ToLowerInvariant();
-            var card_issuer = ((string)values[1])?.ToLowerInvariant();
 
+            string type = null;
+            string card_issuer = null;
+
+            if (values.Length > 0)
+                type = (values[0] as string)?.ToLowerInvariant();
+            if (values.Length > 1)
+                card_issuer = (values[1] as string)?.ToLowerInvariant();
 
 #pragma warning disable CS8604 // Possible null reference argument.
             return new BitmapImage(new Uri(GetImageUri(type, card_issuer)));
