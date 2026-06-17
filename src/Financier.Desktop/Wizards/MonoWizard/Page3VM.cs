@@ -126,10 +126,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     IsAmountNegative = amount < 0
                 };
 
-                if (!string.IsNullOrEmpty(newTr.Note))
-                {
-                    ApplyRules(newTr);
-                }
+                ApplyRules(newTr);
+
                 transToAdd.Add(newTr);
             }
 
@@ -148,14 +146,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 }
 
                 bool meetsCondition = false;
-                if (rule.Condition == RuleConditionType.DescriptionContains)
+                if (rule.Condition == RuleConditionType.DescriptionContains && !string.IsNullOrEmpty(rule.Description))
                 {
                     if (transaction.Note.Contains(rule.Description, StringComparison.OrdinalIgnoreCase))
                     {
                         meetsCondition = true;
                     }
                 }
-                else if (rule.Condition == RuleConditionType.DescriptionMatches)
+                else if (rule.Condition == RuleConditionType.DescriptionMatches && !string.IsNullOrEmpty(rule.Description))
                 {
                     if (transaction.Note.Equals(rule.Description, StringComparison.OrdinalIgnoreCase))
                     {
@@ -284,13 +282,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     IsActive = updatedItem.IsActive,
                     LocationId = updatedItem.LocationId,
                     PayeeId = updatedItem.PayeeId,
-                    ProjectId = updatedItem.ProjectId
+                    ProjectId = updatedItem.ProjectId,
+                    MCCCategory = updatedItem.MCCCategory
                 });
 
                 await DbManual.SaveRulesAsync();
                 await DbManual.LoadRulesAsync();
 
-                foreach (var transaction in FinancierTransactions.Where(x => !string.IsNullOrEmpty(x.Note)))
+                foreach (var transaction in FinancierTransactions)
                 {
                     ApplyRules(transaction);
                 }

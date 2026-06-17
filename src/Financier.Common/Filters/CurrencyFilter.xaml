@@ -8,7 +8,7 @@
               BorderThickness="0">
         <ComboBox DisplayMemberPath="Name"
                   IsEditable="True"
-                  SelectedItem="{Binding Path=CurentCurrency}"
+                  SelectedItem="{Binding Path=CurentCurrency, UpdateSourceTrigger=PropertyChanged}"
                   Margin="2 0"
                   ItemsSource="{Binding Source={x:Static fcrd:DbManual.Currencies}, Mode=OneWay}" />
     </GroupBox>

@@ -18,7 +18,7 @@
                   IsEditable="True"
                   ItemTemplate="{StaticResource ResourceKey=CategoryTemplate}"
                   TextSearch.TextPath="Title"
-                  SelectedItem="{Binding Path=Category}"
+                  SelectedItem="{Binding Path=Category, UpdateSourceTrigger=PropertyChanged}"
                   ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}"/>
 
     </GroupBox>

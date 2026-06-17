@@ -142,11 +142,11 @@
             PeriodType = PeriodType.AllTime;
             _from = null;
             _to = null;
-            Account = default!;
-            Category = default!;
-            Payee = default!;
-            Project = default!;
-            Location = default!;
+            Account = default;
+            Category = default;
+            Payee = default;
+            Project = default;
+            Location = default;
             await RefreshDataCommand.ExecuteAsync();
         }
 
