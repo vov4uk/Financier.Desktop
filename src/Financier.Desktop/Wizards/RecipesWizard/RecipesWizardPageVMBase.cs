@@ -22,7 +22,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 
         public string FormattedTotal =>
             string.Format(
-                LocalizationService.Instance.reciept_wizard_total_format,
+                LocalizationService.Instance.recipe_wizard_total_format,
                 TotalAmount, CalculatedAmount, Diff);
 
         public double TotalAmount

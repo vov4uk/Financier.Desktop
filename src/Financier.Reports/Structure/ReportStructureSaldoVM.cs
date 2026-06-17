@@ -16,7 +16,7 @@ using OxyPlot.Series;
 
 namespace Financier.Reports
 {
-    [TypeConverter(typeof(EnumDescritpionTypeConverter))]
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum ReportStructureSaldoRange
     {
         [LocalizedDescription("reports_saldo_range_current_year")]

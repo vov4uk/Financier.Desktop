@@ -952,6 +952,33 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to English.
+        /// </summary>
+        public static string language_english {
+            get {
+                return ResourceManager.GetString("language_english", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Polish.
+        /// </summary>
+        public static string language_polish {
+            get {
+                return ResourceManager.GetString("language_polish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ukrainian.
+        /// </summary>
+        public static string language_ukrainian {
+            get {
+                return ResourceManager.GetString("language_ukrainian", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last transaction.
         /// </summary>
         public static string last_transaction {

@@ -10,7 +10,7 @@ using Financier.Converters;
 
 namespace Financier.Common.Model
 {
-    [TypeConverter(typeof(EnumDescritpionTypeConverter))]
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum RuleConditionType
     {
         [LocalizedDescription("rule_condition_type_description_contains")]

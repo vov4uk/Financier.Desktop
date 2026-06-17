@@ -810,4 +810,13 @@
   <data name="reports_saldo_range_last_2_years" xml:space="preserve">
     <value>Ostatnie 2 lata</value>
   </data>
+  <data name="language_english" xml:space="preserve">
+    <value>Angielski</value>
+  </data>
+  <data name="language_polish" xml:space="preserve">
+    <value>Polski</value>
+  </data>
+  <data name="language_ukrainian" xml:space="preserve">
+    <value>Ukraiński</value>
+  </data>
 </root>

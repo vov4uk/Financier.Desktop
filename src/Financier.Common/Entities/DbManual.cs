@@ -207,15 +207,15 @@ ORDER  BY 1 DESC ");
 
         public static void ResetAllManuals()
         {
-            _accounts = null!;
-            _category = null!;
-            _topCategory = null!;
-            _currencies = null!;
-            _payee = null!;
-            _project = null!;
-            _yearMonths = null!;
-            _years = null!;
-            _location = null!;
+            _accounts = null;
+            _category = null;
+            _topCategory = null;
+            _currencies = null;
+            _payee = null;
+            _project = null;
+            _yearMonths = null;
+            _years = null;
+            _location = null;
         }
 
         public static void ResetManuals(string manual)

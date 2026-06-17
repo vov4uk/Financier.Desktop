@@ -25,11 +25,11 @@
                     <StackPanel>
                         <GroupBox Grid.Row="0"
                                   Grid.Column="0"
-                                   Margin="5,0,0,0"
+                                  Margin="5,0,0,0"
                                   Header="{loc:Translate Key=language}">
                             <ComboBox Width="180"
                                       HorizontalAlignment="Left"
-                                      ItemsSource="{loc:EnumBinding {x:Type loc:Language}}"
+                                      ItemsSource="{Binding Source={loc:EnumBinding {x:Type loc:Language}}}"
                                       SelectedItem="{Binding Entity.General.Language, Mode=TwoWay}"/>
                         </GroupBox>
 
@@ -61,8 +61,7 @@
                                   Margin="5,0,0,0"
                                   Header="{loc:Translate Key=app_id}"
                                   Visibility="{Binding IsOpenExchangeRatesProviderSelected, Converter={StaticResource BoolToVis}, UpdateSourceTrigger=PropertyChanged}">
-                            <TextBox Text="{Binding Entity.ExchangeRates.OpenExchangeRatesProviderAppId, Mode=TwoWay}"
-                                     />
+                            <TextBox Text="{Binding Entity.ExchangeRates.OpenExchangeRatesProviderAppId, Mode=TwoWay}" />
                         </GroupBox>
                         <CheckBox Grid.Row="2"
                                   Grid.Column="0"

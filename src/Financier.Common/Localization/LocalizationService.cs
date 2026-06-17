@@ -73,8 +73,6 @@ public sealed class LocalizationService : INotifyPropertyChanged
             CurrentCulture = culture;
             Thread.CurrentThread.CurrentCulture = CurrentCulture;
             Thread.CurrentThread.CurrentUICulture = CurrentCulture;
-            DbManual.ResetManuals(nameof(DbManual.MCCEnums));
-            DbManual.ResetManuals(nameof(DbManual.Currencies));
 
             var xmlLang = XmlLanguage.GetLanguage(culture.IetfLanguageTag);
             if (Application.Current != null)
@@ -137,7 +135,7 @@ public sealed class LocalizationService : INotifyPropertyChanged
     public string rule => Get();
     public string location => Get();
     // RecipesWizard Page1
-    public string reciept_wizard_total_format => Get();
+    public string recipe_wizard_total_format => Get();
     // MainWindow Messages
     public string backup_done => Get();
     public string import_result => Get();

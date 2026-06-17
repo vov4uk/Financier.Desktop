@@ -6,10 +6,10 @@ using System.Reflection;
 
 namespace Financier.Converters
 {
-    public class EnumDescritpionTypeConverter
+    public class EnumDescriptionTypeConverter
          : EnumConverter
     {
-        public EnumDescritpionTypeConverter(Type type)
+        public EnumDescriptionTypeConverter(Type type)
             : base(type)
         { }
 #nullable enable

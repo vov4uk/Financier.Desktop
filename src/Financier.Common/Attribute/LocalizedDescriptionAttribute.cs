@@ -43,7 +43,7 @@ namespace Financier.Common.Attribute
 
         private string GetDescription()
         {
-            return _resourceManager.GetString(_resourceKey, LocalizationService.Instance.CurrentCulture)!; ;
+            return _resourceManager.GetString(_resourceKey, LocalizationService.Instance.CurrentCulture);
         }
     }
 }

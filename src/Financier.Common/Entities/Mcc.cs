@@ -4,7 +4,7 @@ using Financier.Converters;
 
 namespace Financier.Common.Entities
 {
-    [TypeConverter(typeof(EnumDescritpionTypeConverter))]
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Mcc
     {
         [LocalizedMccDescription("mcc_none")]

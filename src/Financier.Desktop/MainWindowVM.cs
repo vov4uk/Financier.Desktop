@@ -255,11 +255,11 @@ namespace Financier.Desktop.ViewModel
         private void ClearPages()
         {
             _pages?.Clear();
-            Blotter = null!;
-            Locations = null!;
-            Payees = null!;
-            Projects = null!;
-            Rules = null!;
+            Blotter = null;
+            Locations = null;
+            Payees = null;
+            Projects = null;
+            Rules = null;
         }
 
         private void CreatePages()
@@ -484,6 +484,11 @@ namespace Financier.Desktop.ViewModel
                 SettingsService.Current.Language = updated.General.Language;
                 SettingsService.Current.Save();
                 LocalizationService.Instance.ApplyLanguage(updated.General.Language);
+
+                DbManual.ResetManuals(nameof(DbManual.MCCEnums));
+                DbManual.ResetManuals(nameof(DbManual.Currencies));
+                await DbManual.SetupAsync(db);
+
                 AppSettings = json;
             }
         }

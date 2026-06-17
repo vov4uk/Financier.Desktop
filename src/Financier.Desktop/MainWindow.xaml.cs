@@ -50,7 +50,7 @@ namespace Financier.Desktop
             SettingsService.Current.Load();
             LocalizationService.Instance.ApplyLanguage(SettingsService.Current.Language);
             var bakupFolder = SettingsService.Current.DefaultBackupDir ?? @$"C:\Users\{Environment.UserName}\Dropbox\apps\Financisto Holo";
-            ViewModel.DefaultBackupDirectory = SettingsService.Current.DefaultBackupDir!;
+            ViewModel.DefaultBackupDirectory = SettingsService.Current.DefaultBackupDir;
             ViewModel.AppSettings = SettingsService.Current.AppSettings;
             if (Directory.Exists(bakupFolder))
             {
@@ -74,7 +74,7 @@ namespace Financier.Desktop
                 if (!string.IsNullOrEmpty(path))
                 {
                     Logger.Info($"Drag & drop backup : {path}");
-                    Task.Run(() => ViewModel.OpenBackup(path));
+                    Task.Run(async () => await ViewModel.OpenBackup(path));
                 }
             }
         }
