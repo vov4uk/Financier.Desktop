@@ -687,6 +687,30 @@
   <data name="assets" xml:space="preserve">
     <value>Assets</value>
   </data>
+  <data name="account_type_asset" xml:space="preserve">
+    <value>Asset</value>
+  </data>
+  <data name="account_type_bank" xml:space="preserve">
+    <value>Bank</value>
+  </data>
+  <data name="account_type_credit_card" xml:space="preserve">
+    <value>Credit Card</value>
+  </data>
+  <data name="account_type_debit_card" xml:space="preserve">
+    <value>Debit Card</value>
+  </data>
+  <data name="account_type_cash" xml:space="preserve">
+    <value>Cash</value>
+  </data>
+  <data name="account_type_electronic" xml:space="preserve">
+    <value>Electronic</value>
+  </data>
+  <data name="account_type_liability" xml:space="preserve">
+    <value>Liability</value>
+  </data>
+  <data name="account_type_other" xml:space="preserve">
+    <value>Other</value>
+  </data>
   <data name="liabilities_usd" xml:space="preserve">
     <value>Liabilities (USD)</value>
   </data>

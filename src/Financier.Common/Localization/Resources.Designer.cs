@@ -88,6 +88,78 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Asset.
+        /// </summary>
+        public static string account_type_asset {
+            get {
+                return ResourceManager.GetString("account_type_asset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bank.
+        /// </summary>
+        public static string account_type_bank {
+            get {
+                return ResourceManager.GetString("account_type_bank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cash.
+        /// </summary>
+        public static string account_type_cash {
+            get {
+                return ResourceManager.GetString("account_type_cash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Credit Card.
+        /// </summary>
+        public static string account_type_credit_card {
+            get {
+                return ResourceManager.GetString("account_type_credit_card", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debit Card.
+        /// </summary>
+        public static string account_type_debit_card {
+            get {
+                return ResourceManager.GetString("account_type_debit_card", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Electronic.
+        /// </summary>
+        public static string account_type_electronic {
+            get {
+                return ResourceManager.GetString("account_type_electronic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Liability.
+        /// </summary>
+        public static string account_type_liability {
+            get {
+                return ResourceManager.GetString("account_type_liability", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        public static string account_type_other {
+            get {
+                return ResourceManager.GetString("account_type_other", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accounts.
         /// </summary>
         public static string accounts {

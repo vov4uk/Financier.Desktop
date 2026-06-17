@@ -687,6 +687,30 @@
   <data name="assets" xml:space="preserve">
     <value>Aktywa</value>
   </data>
+  <data name="account_type_asset" xml:space="preserve">
+    <value>Aktyw</value>
+  </data>
+  <data name="account_type_bank" xml:space="preserve">
+    <value>Bank</value>
+  </data>
+  <data name="account_type_credit_card" xml:space="preserve">
+    <value>Karta kredytowa</value>
+  </data>
+  <data name="account_type_debit_card" xml:space="preserve">
+    <value>Karta debetowa</value>
+  </data>
+  <data name="account_type_cash" xml:space="preserve">
+    <value>Gotówka</value>
+  </data>
+  <data name="account_type_electronic" xml:space="preserve">
+    <value>Elektroniczna</value>
+  </data>
+  <data name="account_type_liability" xml:space="preserve">
+    <value>Odpowiedzialność</value>
+  </data>
+  <data name="account_type_other" xml:space="preserve">
+    <value>Inne</value>
+  </data>
   <data name="liabilities_usd" xml:space="preserve">
     <value>Pasywa (USD)</value>
   </data>

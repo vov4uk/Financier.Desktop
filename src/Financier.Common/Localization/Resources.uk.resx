@@ -687,6 +687,30 @@
   <data name="assets" xml:space="preserve">
     <value>Активи</value>
   </data>
+  <data name="account_type_asset" xml:space="preserve">
+    <value>Актив</value>
+  </data>
+  <data name="account_type_bank" xml:space="preserve">
+    <value>Банк</value>
+  </data>
+  <data name="account_type_credit_card" xml:space="preserve">
+    <value>Кредитна картка</value>
+  </data>
+  <data name="account_type_debit_card" xml:space="preserve">
+    <value>Дебетова картка</value>
+  </data>
+  <data name="account_type_cash" xml:space="preserve">
+    <value>Готівка</value>
+  </data>
+  <data name="account_type_electronic" xml:space="preserve">
+    <value>Електронний</value>
+  </data>
+  <data name="account_type_liability" xml:space="preserve">
+    <value>Зобов'язання</value>
+  </data>
+  <data name="account_type_other" xml:space="preserve">
+    <value>Інше</value>
+  </data>
   <data name="liabilities_usd" xml:space="preserve">
     <value>Зобов'язання (дол. США)</value>
   </data>
