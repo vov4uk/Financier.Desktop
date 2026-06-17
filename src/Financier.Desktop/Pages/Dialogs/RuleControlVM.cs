@@ -19,10 +19,10 @@ namespace Financier.Desktop.Pages.Dialogs
                     _selectedConditionType = value;
                     RaisePropertyChanged(nameof(SelectedConditionType));
                     RaisePropertyChanged(nameof(IsMCCSelected));
+                    SaveCommand.RaiseCanExecuteChanged();
                 }
             }
         }
-
 
         public bool IsMCCSelected
         {
@@ -33,6 +33,7 @@ namespace Financier.Desktop.Pages.Dialogs
         {
             this.Entity = entity;
             SelectedConditionType = entity.Condition;
+            this.Entity.PropertyChanged += Transaction_PropertyChanged;
         }
 
         public RuleDto Entity { get; }
@@ -46,9 +47,21 @@ namespace Financier.Desktop.Pages.Dialogs
             }
             else
             {
-                Entity.Description = null!;
+                Entity.Description = null;
             }
             return Entity;
+        }
+
+        protected override bool CanSaveCommandExecute()
+        {
+            bool conditionMeets = (IsMCCSelected && Entity.MCCCategory != Mcc.none) || (!IsMCCSelected && !string.IsNullOrEmpty(Entity.Description));
+            bool accountMeets = Entity.PayeeId != null || Entity.LocationId != null || Entity.CategoryId != null || Entity.ProjectId != null;
+            return conditionMeets && accountMeets;
+        }
+
+        private void Transaction_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            SaveCommand.RaiseCanExecuteChanged();
         }
     }
 }
