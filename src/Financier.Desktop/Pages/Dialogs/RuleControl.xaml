@@ -68,8 +68,9 @@
                                             Grid.Column="1"
                                             Margin="2"
                                             Visibility="{Binding Path=IsMCCSelected, Converter={StaticResource BoolToVis}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                            ItemsSource="{Binding Source={loc:EnumBinding {x:Type fcrd:Mcc}}}"
-                                            SelectedValue="{Binding Entity.MCCCategory}"
+                                            ItemsSource="{Binding Path=MccTitles}"
+                                            SelectedItem="{Binding Path=SelectedMccTitle, UpdateSourceTrigger=PropertyChanged}"
+                                            IsEditable="True"
                                             IsTextSearchEnabled="True"
                                             />
                 </Grid>

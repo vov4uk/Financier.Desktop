@@ -14,7 +14,7 @@ namespace Financier.Converters
             return attrib?.Description ?? enumObj.ToString();
         }
 
-        public static string GetEnumLocalizedDescription(this Enum enumObj)
+        public static string GetEnumLocalizedMccDescription(this Enum enumObj)
         {
             FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString());
             LocalizedMccDescriptionAttribute attrib = fieldInfo.GetCustomAttribute<LocalizedMccDescriptionAttribute>();

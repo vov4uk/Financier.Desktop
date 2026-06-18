@@ -231,7 +231,7 @@
             vm.SetMonoTransactions(transactions);
 
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(vm.FinancierTransactions));
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -252,7 +252,7 @@
             vm.DeleteCommand.Execute(vm.FinancierTransactions.FirstOrDefault());
 
             Assert.Single(vm.FinancierTransactions);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -319,7 +319,7 @@
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -366,7 +366,7 @@
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
             Assert.Equal(payeeId, vm.FinancierTransactions[0].PayeeId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -416,7 +416,7 @@
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
             Assert.Equal(locationId, vm.FinancierTransactions[0].LocationId);
             Assert.Equal(projectId, vm.FinancierTransactions[0].ProjectId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -459,7 +459,7 @@
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(0, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -503,7 +503,7 @@
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(0, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -547,7 +547,7 @@
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -602,7 +602,7 @@
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId2, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Fact]
@@ -673,7 +673,7 @@
             Assert.NotNull(transaction);
             Assert.Equal(1000, transaction.CategoryId);
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Fact]
@@ -705,7 +705,7 @@
 
             // Assert
             Assert.Empty(DbManual.Rules);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Fact]

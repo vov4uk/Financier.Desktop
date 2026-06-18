@@ -1,4 +1,5 @@
-﻿using Financier.Desktop.ViewModel.Dialog;
+﻿using Financier.Common.Localization;
+using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Wizards;
 using System.Diagnostics;
 using System.Windows;
@@ -24,7 +25,8 @@ namespace Financier.Desktop.Helpers
                 Owner = Application.Current.MainWindow,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Title = title ?? "Financier",
-                ShowInTaskbar = Debugger.IsAttached
+                ShowInTaskbar = Debugger.IsAttached,
+                Language = System.Windows.Markup.XmlLanguage.GetLanguage(LocalizationService.Instance.CurrentCulture.IetfLanguageTag)
             };
             context.RequestCancel += (_, _) =>
             {
@@ -45,7 +47,10 @@ namespace Financier.Desktop.Helpers
         {
             bool save = false;
             object result = null!;
-            WizardWindow dialog = new WizardWindow();
+            WizardWindow dialog = new WizardWindow()
+            {
+                Language = System.Windows.Markup.XmlLanguage.GetLanguage(LocalizationService.Instance.CurrentCulture.IetfLanguageTag)
+            };
 
             context.RequestClose += (sender, args) =>
             {

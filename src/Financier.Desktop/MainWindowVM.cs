@@ -204,7 +204,7 @@ namespace Financier.Desktop.ViewModel
 
                 IsLoading = false;
 
-                DbManual.ResetAllManuals();
+                DbManual.ResetAllDatabaseManuals();
                 await DbManual.SetupAsync(db);
                 await DbManual.LoadRulesAsync();
 
@@ -222,8 +222,7 @@ namespace Financier.Desktop.ViewModel
 
         public async Task SaveBackup(string backupPath)
         {
-            List<Entity> itemsToBackup = new();
-            itemsToBackup.AddRange(keyLessEntities);
+            List<Entity> itemsToBackup = [.. keyLessEntities];
             using (IUnitOfWork uow = db.CreateUnitOfWork())
             {
                 itemsToBackup.AddRange(await uow.GetAllAsync<Budget>());
@@ -390,7 +389,7 @@ namespace Financier.Desktop.ViewModel
                         ? string.Format(LocalizationService.Instance.import_result_with_duplicates, monoToImport.Count, duplicatesCount)
                         : string.Format(LocalizationService.Instance.import_result, monoToImport.Count);
 
-                    this.dialogWrapper.ShowMessageBox(message, $"{importHelper.BankTitle} {LocalizationService.Instance.import}");
+                    this.notifier.ShowMessage(string.Format(message, $"{importHelper.BankTitle} {LocalizationService.Instance.import}"));
 
                     Logger.Info($"Imported {monoToImport.Count} transactions. Found duplicates : {duplicatesCount}");
                 }
@@ -429,7 +428,7 @@ namespace Financier.Desktop.ViewModel
         {
             string defaultPath = string.IsNullOrEmpty(OpenBackupPath)
                 ? BackupWriter.GenerateFileName()
-                : Path.Combine(Path.GetDirectoryName(OpenBackupPath)!, BackupWriter.GenerateFileName());
+                : Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName());
             var backupPath = dialogWrapper.SaveFileDialog(Backup, defaultPath);
             if (!string.IsNullOrEmpty(backupPath))
             {
@@ -486,6 +485,7 @@ namespace Financier.Desktop.ViewModel
                 LocalizationService.Instance.ApplyLanguage(updated.General.Language);
 
                 DbManual.ResetManuals(nameof(DbManual.MCCEnums));
+                DbManual.ResetManuals(nameof(DbManual.MCCTitles));
                 DbManual.ResetManuals(nameof(DbManual.Currencies));
                 await DbManual.SetupAsync(db);
 

@@ -1,5 +1,8 @@
-﻿using Financier.Common.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Financier.Common.Entities;
 using Financier.Common.Model;
+using Financier.Converters;
 using Financier.Desktop.Data;
 using Financier.Desktop.ViewModel.Dialog;
 
@@ -8,7 +11,10 @@ namespace Financier.Desktop.Pages.Dialogs
 
     public class RuleControlVM : DialogBaseVM
     {
+        public List<string> MccTitles { get; private set; }
+
         private RuleConditionType _selectedConditionType;
+        private string _selectedMccTitle;
         public RuleConditionType SelectedConditionType
         {
             get => _selectedConditionType;
@@ -24,6 +30,22 @@ namespace Financier.Desktop.Pages.Dialogs
             }
         }
 
+        public string SelectedMccTitle
+        {
+            get => _selectedMccTitle;
+            
+            set
+            {
+                if (_selectedMccTitle != value)
+                {
+                    _selectedMccTitle = value;
+                    RaisePropertyChanged(nameof(SelectedMccTitle));
+                    SaveCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+
         public bool IsMCCSelected
         {
             get => SelectedConditionType == RuleConditionType.MCC;
@@ -34,6 +56,9 @@ namespace Financier.Desktop.Pages.Dialogs
             this.Entity = entity;
             SelectedConditionType = entity.Condition;
             this.Entity.PropertyChanged += Transaction_PropertyChanged;
+
+            MccTitles = DbManual.MCCTitles.Keys.OrderBy(x => x).ToList();
+            SelectedMccTitle = entity.MCCCategory.GetEnumLocalizedMccDescription();
         }
 
         public RuleDto Entity { get; }
@@ -48,13 +73,14 @@ namespace Financier.Desktop.Pages.Dialogs
             else
             {
                 Entity.Description = null;
+                Entity.MCCCategory = DbManual.MCCTitles[SelectedMccTitle];
             }
             return Entity;
         }
 
         protected override bool CanSaveCommandExecute()
         {
-            bool conditionMeets = (IsMCCSelected && Entity.MCCCategory != Mcc.none) || (!IsMCCSelected && !string.IsNullOrEmpty(Entity.Description));
+            bool conditionMeets = (IsMCCSelected && !string.IsNullOrEmpty(SelectedMccTitle) && DbManual.MCCTitles.ContainsKey(SelectedMccTitle)) || (!IsMCCSelected && !string.IsNullOrEmpty(Entity.Description));
             bool accountMeets = Entity.PayeeId != null || Entity.LocationId != null || Entity.CategoryId != null || Entity.ProjectId != null;
             return conditionMeets && accountMeets;
         }

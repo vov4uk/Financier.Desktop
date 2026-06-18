@@ -22,7 +22,7 @@
             Assert.Equal(monoAcc, vm.MonoAccount);
             Assert.Equal("Please select account", vm.Title);
             Assert.True(vm.IsValid());
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -35,7 +35,7 @@
             var vm = new Page1VM("Monobank");
 
             Assert.Equal(accounts[0], vm.MonoAccount);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -51,7 +51,7 @@
             var vm = new Page1VM("Monobank");
 
             Assert.NotNull(vm.MonoAccount);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
     }
 }

@@ -653,7 +653,7 @@
             this.dbMock.Setup(x => x.ExecuteQuery<Years>(It.IsAny<string>())).ReturnsAsync(new List<Years>() { new Years() });
             this.dbMock.Setup(x => x.ExecuteQuery<LocationModel>(It.IsAny<string>())).ReturnsAsync(new List<LocationModel>() { new LocationModel() });
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
             await DbManual.SetupAsync(this.dbMock.Object);
         }
 

@@ -83,7 +83,7 @@ namespace Financier.Common.Model
         {
             if (Condition == RuleConditionType.MCC)
             {
-              return MCCCategory.GetEnumLocalizedDescription();
+              return MCCCategory.GetEnumLocalizedMccDescription();
             }
             return Description;
         }

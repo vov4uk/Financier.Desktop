@@ -291,7 +291,7 @@
                 uow.SaveChanges();
             }
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
             await DbManual.SetupAsync(db);
 
             var vm = new BlotterVM(db, dialogMock.Object);
@@ -563,7 +563,7 @@
                 uow.SaveChanges();
             }
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
             await DbManual.SetupAsync(db);
         }
     }

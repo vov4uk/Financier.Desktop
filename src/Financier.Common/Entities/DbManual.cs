@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Financier.Common.Attribute;
 using Financier.Common.Model;
+using Financier.Converters;
 using Financier.DataAccess.Abstractions;
 using Newtonsoft.Json;
 
@@ -27,6 +28,8 @@ namespace Financier.Common.Entities
         private static List<YearMonths> _yearMonths;
         private static List<Years> _years;
         private static List<RuleModel> _rules = new List<RuleModel>();
+        private static Dictionary<Mcc, int[]> _mccEnums;
+        private static Dictionary<string, Mcc> _mccTitles;
 
         public static async Task SetupAsync(IFinancierDatabase financierDatabase)
         {
@@ -50,7 +53,7 @@ INNER JOIN currency c ON a.currency_id = c._id
 WHERE  a.title IS NOT NULL
 ORDER  BY 3 DESC, 4 ASC"
 );
-                _accounts = new List<AccountFilterModel>(accounts);
+                _accounts = [.. accounts];
                 _accounts.Insert(0, new AccountFilterModel());
             }
 
@@ -65,7 +68,7 @@ FROM   locations
 WHERE  title IS NOT NULL
 ORDER  BY 3 DESC, 2 ASC"
 );
-                _location = new List<LocationModel>(locations);
+                _location = [.. locations];
                 _location.Insert(0, new LocationModel());
             }
 
@@ -84,10 +87,10 @@ SELECT _id,
 FROM   category ctx
 ORDER  BY LEFT,
           sort_order");
-                _category = new List<CategoryModel>(categories);
+                _category = [.. categories];
                 _category.Insert(0, new CategoryModel());
 
-                _topCategory = new List<CategoryModel>(categories.Where(x => x.Level == 0 && x.Id > 0));
+                _topCategory = [.. categories.Where(x => x.Level == 0 && x.Id > 0)];
                 _topCategory.Insert(0, new CategoryModel());
             }
 
@@ -111,7 +114,7 @@ SELECT _id,
 FROM   payee
 WHERE  title IS NOT NULL
 ORDER  BY is_active DESC, title ASC");
-                _payee = new List<PayeeModel>(payees);
+                _payee = [.. payees];
                 _payee.Insert(0, new PayeeModel());
             }
 
@@ -124,7 +127,7 @@ SELECT _id,
 FROM   project
 WHERE  title IS NOT NULL
 ORDER  BY is_active DESC, title ASC");
-                _project = new List<ProjectModel>(projects);
+                _project = [.. projects];
                 _project.Insert(0, new ProjectModel());
             }
 
@@ -136,7 +139,7 @@ SELECT DISTINCT date_year  AS year,
 FROM   v_report_transactions
 ORDER  BY 1 DESC,
           2 DESC");
-                _yearMonths = new List<YearMonths>(yearMonths);
+                _yearMonths = [.. yearMonths];
                 _yearMonths.Insert(0, new YearMonths());
             }
 
@@ -146,7 +149,7 @@ ORDER  BY 1 DESC,
 SELECT DISTINCT date_year AS year
 FROM   v_report_transactions
 ORDER  BY 1 DESC ");
-                _years = new List<Years>(years);
+                _years = [.. years];
                 _years.Insert(0, new Years());
             }
         }
@@ -173,39 +176,34 @@ ORDER  BY 1 DESC ");
 
         public static List<RuleModel> Rules => _rules;
 
-        private static SortedDictionary<Mcc, int[]> _mccEnums;
-
-        public static SortedDictionary<Mcc, int[]> MCCEnums
+        public static Dictionary<Mcc, int[]> MCCEnums
         {
             get
             {
 
                 if (_mccEnums == null)
                 {
-                    Type t = typeof(Mcc);
-                    Array result = Enum.GetValues(t);
-                    _mccEnums = new SortedDictionary<Mcc, int[]>();
-                    foreach (var item in result)
-                    {
-                        MemberInfo mi = t.GetTypeInfo().GetMember(item.ToString()!).FirstOrDefault()!;
-                        if (mi != null)
-                        {
-                            var attribute = mi.GetCustomAttribute<MccCodesAttribute>(false);
-                            if (attribute != null)
-                            {
-                                _mccEnums[(Mcc)item] = attribute.Codes;
-                            }
-                        }
-                    }
+                    InitializaMccCodes();
                 }
 
                 return _mccEnums;
             }
         }
 
-        public static List<Mcc> MCCEnumsKeys => MCCEnums.Keys.ToList();
+        public static Dictionary<string, Mcc> MCCTitles
+        {
+            get
+            {
+                if (_mccTitles == null)
+                {
+                    InitializaMccCodes();
+                }
 
-        public static void ResetAllManuals()
+                return _mccTitles;
+            }
+        }
+
+        public static void ResetAllDatabaseManuals()
         {
             _accounts = null;
             _category = null;
@@ -222,12 +220,13 @@ ORDER  BY 1 DESC ");
         {
             switch (manual)
             {
-                case nameof(Payee):            _payee = null!; break;
-                case nameof(Location):         _location = null!; break;
-                case nameof(Project):          _project = null!; break;
-                case nameof(Account):          _accounts = null!; break;
-                case nameof(MCCEnums):         _mccEnums = null!; break;
-                case nameof(Currencies):       _currencies = null!; break;
+                case nameof(Payee):            _payee = null; break;
+                case nameof(Location):         _location = null; break;
+                case nameof(Project):          _project = null; break;
+                case nameof(Account):          _accounts = null; break;
+                case nameof(MCCEnums):         _mccEnums = null; break;
+                case nameof(MCCTitles):        _mccTitles = null; break;
+                case nameof(Currencies):       _currencies = null; break;
                 default:
                     break;
             }
@@ -301,6 +300,31 @@ ORDER  BY 1 DESC ");
         internal static void SetupTests(List<RuleModel> rl)
         {
             _rules = rl;
+        }
+
+        private static void InitializaMccCodes()
+        {
+            Type t = typeof(Mcc);
+            Array result = Enum.GetValues(t);
+            _mccEnums = new Dictionary<Mcc, int[]>();
+            _mccTitles = new Dictionary<string, Mcc>();
+            foreach (var item in result)
+            {
+                MemberInfo mi = t.GetTypeInfo().GetMember(item.ToString()).FirstOrDefault();
+                if (mi != null)
+                {
+                    var mccAttribute = mi.GetCustomAttribute<MccCodesAttribute>();
+                    if (mccAttribute != null)
+                    {
+                        _mccEnums[(Mcc)item] = mccAttribute.Codes;
+                    }
+                    var locAttribute = mi.GetCustomAttribute<LocalizedMccDescriptionAttribute>();
+                    if (locAttribute != null)
+                    {
+                        _mccTitles.TryAdd(locAttribute.Description, (Mcc)item);
+                    }
+                }
+            }
         }
     }
 }
