@@ -46,7 +46,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         {
             get
             {
-                return _addRuleCommand ??= new AsyncDelegateCommand<FinancierTransactionDto>(tr => OpenRulesDialogAsync(tr?.Note!));
+                return _addRuleCommand ??= new AsyncDelegateCommand<FinancierTransactionDto>(tr => OpenRulesDialogAsync(tr?.Note, tr?.MCC ?? 0));
             }
         }
 
@@ -142,18 +142,18 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 if (rule.Condition == RuleConditionType.MCC && DbManual.MCCEnums.ContainsKey(rule.MCCCategory))
                 {
                     var list = DbManual.MCCEnums[rule.MCCCategory];
-                    mccCodes = new HashSet<int>(list);
+                    mccCodes = [.. list];
                 }
 
                 bool meetsCondition = false;
-                if (rule.Condition == RuleConditionType.DescriptionContains && !string.IsNullOrEmpty(rule.Description))
+                if (rule.Condition == RuleConditionType.DescriptionContains && !string.IsNullOrEmpty(transaction.Note))
                 {
                     if (transaction.Note.Contains(rule.Description, StringComparison.OrdinalIgnoreCase))
                     {
                         meetsCondition = true;
                     }
                 }
-                else if (rule.Condition == RuleConditionType.DescriptionMatches && !string.IsNullOrEmpty(rule.Description))
+                else if (rule.Condition == RuleConditionType.DescriptionMatches && !string.IsNullOrEmpty(transaction.Note))
                 {
                     if (transaction.Note.Equals(rule.Description, StringComparison.OrdinalIgnoreCase))
                     {
@@ -255,14 +255,21 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        private async Task OpenRulesDialogAsync(string description)
+        private async Task OpenRulesDialogAsync(string description, int mccCode)
         {
+            Mcc mcc = Mcc.none;
+            if (DbManual.MCCCodes.ContainsKey(mccCode))
+            {
+                mcc = DbManual.MCCCodes[mccCode];
+            }
+
             RuleDto rule = new RuleDto()
             {
                 Description = description,
                 Condition = RuleConditionType.DescriptionContains,
                 Created = DateTime.Now,
-                IsActive = true
+                IsActive = true,
+                MCCCategory = mcc
             };
 
             RuleControlVM ruleVm = new RuleControlVM(rule);

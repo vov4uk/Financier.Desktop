@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Financier.Common.Attribute;
 using Financier.Common.Model;
-using Financier.Converters;
 using Financier.DataAccess.Abstractions;
 using Newtonsoft.Json;
 
@@ -30,6 +29,7 @@ namespace Financier.Common.Entities
         private static List<RuleModel> _rules = new List<RuleModel>();
         private static Dictionary<Mcc, int[]> _mccEnums;
         private static Dictionary<string, Mcc> _mccTitles;
+        private static Dictionary<int, Mcc> _mccCodes;
 
         public static async Task SetupAsync(IFinancierDatabase financierDatabase)
         {
@@ -203,6 +203,19 @@ ORDER  BY 1 DESC ");
             }
         }
 
+        public static Dictionary<int, Mcc> MCCCodes
+        {
+            get
+            {
+                if (_mccCodes == null)
+                {
+                    InitializaMccCodes();
+                }
+
+                return _mccCodes;
+            }
+        }
+
         public static void ResetAllDatabaseManuals()
         {
             _accounts = null;
@@ -308,7 +321,8 @@ ORDER  BY 1 DESC ");
             Array result = Enum.GetValues(t);
             _mccEnums = new Dictionary<Mcc, int[]>();
             _mccTitles = new Dictionary<string, Mcc>();
-            foreach (var item in result)
+            _mccCodes = new Dictionary<int, Mcc>();
+            foreach (Mcc item in result)
             {
                 MemberInfo mi = t.GetTypeInfo().GetMember(item.ToString()).FirstOrDefault();
                 if (mi != null)
@@ -316,12 +330,17 @@ ORDER  BY 1 DESC ");
                     var mccAttribute = mi.GetCustomAttribute<MccCodesAttribute>();
                     if (mccAttribute != null)
                     {
-                        _mccEnums[(Mcc)item] = mccAttribute.Codes;
+                        _mccEnums.Add(item, mccAttribute.Codes);
+                        foreach (var code in mccAttribute.Codes)
+                        {
+                            _mccCodes.Add(code, item);
+                        }
                     }
+
                     var locAttribute = mi.GetCustomAttribute<LocalizedMccDescriptionAttribute>();
                     if (locAttribute != null)
                     {
-                        _mccTitles.TryAdd(locAttribute.Description, (Mcc)item);
+                        _mccTitles.Add(locAttribute.Description, item);
                     }
                 }
             }

@@ -66,12 +66,12 @@ namespace Financier.Desktop.Helpers
 
         public string OpenFileDialog(string fileExtention)
         {
-            using OpenFileDialog openFileDialog = new OpenFileDialog
+            var openFileDialog = new Ookii.Dialogs.Wpf.VistaOpenFileDialog()
             {
                 Multiselect = false,
                 Filter = $"{fileExtention} files (*.{fileExtention})|*.{fileExtention}"
             };
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == true)
             {
                 return openFileDialog.FileName;
             }
@@ -80,12 +80,12 @@ namespace Financier.Desktop.Helpers
 
         public string SaveFileDialog(string fileExtention, string defaultPath = "")
         {
-            using SaveFileDialog dialog = new SaveFileDialog
+            var dialog = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
             {
                 Filter = $"{fileExtention} files (*.{fileExtention})|*.{fileExtention}",
                 FileName = defaultPath
             };
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() == true)
             {
                 return dialog.FileName;
             }

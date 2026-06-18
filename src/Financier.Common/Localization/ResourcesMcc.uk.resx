@@ -142,13 +142,13 @@
     <value>Електрики</value>
   </data>
   <data name="mcc_masonry_stonework_and_plaster" xml:space="preserve">
-    <value>Будівники. Облицювання</value>
+    <value>Кам'яна кладка, кам'яні роботи та штукатурка</value>
   </data>
   <data name="mcc_carpentry_contractors" xml:space="preserve">
     <value>Столярні роботи</value>
   </data>
   <data name="mcc_roofing_siding_sheet_metal" xml:space="preserve">
-    <value>Будівники. Облицювання</value>
+    <value>Покрівля, фасади, роботи з листового металу</value>
   </data>
   <data name="mcc_concrete_work_contractors" xml:space="preserve">
     <value>Будівництво. Бетон</value>
@@ -313,7 +313,7 @@
     <value>Одяг</value>
   </data>
   <data name="mcc_footwear" xml:space="preserve">
-    <value>Взуття</value>
+    <value>Взуттєві магазини</value>
   </data>
   <data name="mcc_chemicals" xml:space="preserve">
     <value>Хімія</value>
@@ -334,7 +334,7 @@
     <value>Товари для дому</value>
   </data>
   <data name="mcc_renovation" xml:space="preserve">
-    <value>Ремонт</value>
+    <value>Ремонт, реставрація</value>
   </data>
   <data name="mcc_hardware_stores" xml:space="preserve">
     <value>Господарських товари</value>
@@ -367,10 +367,10 @@
     <value>Універмаги</value>
   </data>
   <data name="mcc_variety_stores" xml:space="preserve">
-    <value>Універсальні магазини</value>
+    <value>Різноманітні магазини</value>
   </data>
   <data name="mcc_merchandise_stores" xml:space="preserve">
-    <value>Універсальні магазини</value>
+    <value>Магазини товарів</value>
   </data>
   <data name="mcc_grocery" xml:space="preserve">
     <value>Продукти</value>
@@ -388,7 +388,7 @@
     <value>Пекарні</value>
   </data>
   <data name="mcc_food_stores" xml:space="preserve">
-    <value>Продукти</value>
+    <value>Продуктові магазини</value>
   </data>
   <data name="mcc_car_dealerships" xml:space="preserve">
     <value>Автосалони</value>
@@ -400,7 +400,7 @@
     <value>Автомагазини</value>
   </data>
   <data name="mcc_service_stations" xml:space="preserve">
-    <value>СТО</value>
+    <value>СТО, сервіс</value>
   </data>
   <data name="mcc_gas_station" xml:space="preserve">
     <value>АЗС</value>
@@ -418,13 +418,13 @@
     <value>Жіночий одяг</value>
   </data>
   <data name="mcc_clothing_stores" xml:space="preserve">
-    <value>Жіночий одяг</value>
+    <value>Магазини одягу</value>
   </data>
   <data name="mcc_baby_clothes" xml:space="preserve">
     <value>Дитячий одяг</value>
   </data>
   <data name="mcc_clothes" xml:space="preserve">
-    <value>Одяг</value>
+    <value>Магазин одягу</value>
   </data>
   <data name="mcc_sportswear" xml:space="preserve">
     <value>Спортивний одяг</value>

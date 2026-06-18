@@ -13,6 +13,7 @@ namespace Financier.Desktop.Pages.Dialogs
     {
         public List<string> MccTitles { get; private set; }
 
+        private readonly string _noneMccTitle;
         private RuleConditionType _selectedConditionType;
         private string _selectedMccTitle;
         public RuleConditionType SelectedConditionType
@@ -59,6 +60,7 @@ namespace Financier.Desktop.Pages.Dialogs
 
             MccTitles = DbManual.MCCTitles.Keys.OrderBy(x => x).ToList();
             SelectedMccTitle = entity.MCCCategory.GetEnumLocalizedMccDescription();
+            _noneMccTitle = Mcc.none.GetEnumLocalizedMccDescription();
         }
 
         public RuleDto Entity { get; }
@@ -80,7 +82,7 @@ namespace Financier.Desktop.Pages.Dialogs
 
         protected override bool CanSaveCommandExecute()
         {
-            bool conditionMeets = (IsMCCSelected && !string.IsNullOrEmpty(SelectedMccTitle) && DbManual.MCCTitles.ContainsKey(SelectedMccTitle)) || (!IsMCCSelected && !string.IsNullOrEmpty(Entity.Description));
+            bool conditionMeets = (IsMCCSelected && !string.IsNullOrEmpty(SelectedMccTitle) && SelectedMccTitle != _noneMccTitle && DbManual.MCCTitles.ContainsKey(SelectedMccTitle)) || (!IsMCCSelected && !string.IsNullOrEmpty(Entity.Description));
             bool accountMeets = Entity.PayeeId != null || Entity.LocationId != null || Entity.CategoryId != null || Entity.ProjectId != null;
             return conditionMeets && accountMeets;
         }

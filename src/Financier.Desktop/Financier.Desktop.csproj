@@ -73,6 +73,7 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="NLog" />
     <PackageReference Include="Onova" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" />
     <PackageReference Include="Prism.Core" />
     <PackageReference Include="SonarAnalyzer.CSharp" Condition="'$(Configuration)'=='Debug'">
       <PrivateAssets>all</PrivateAssets>
