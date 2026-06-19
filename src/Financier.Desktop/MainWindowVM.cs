@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Financier.Common.Localization;
 using Financier.Adapter;
 using Financier.Common;
 using Financier.Common.Entities;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.Converters;
 using Financier.DataAccess.Abstractions;
@@ -23,8 +24,6 @@ using Financier.Desktop.Wizards;
 using Financier.Desktop.Wizards.MonoWizard.ViewModel;
 using Financier.Reports;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Prism.Mvvm;
 using IAsyncCommand = Financier.Common.IAsyncCommand;
 
@@ -170,7 +169,9 @@ namespace Financier.Desktop.ViewModel
         public IAsyncCommand SaveBackupAsDbCommand => _saveBackupAsDbCommand ??= new AsyncCommand(SaveBackupAsDb);
 
         public IAsyncCommand SettingsCommand => _settingsCommand ??= new AsyncCommand(Settings_Click);
+
         public IAsyncCommand RefreshExchangeRatesCommand => _refreshExchangeRatesCommand ??= new AsyncCommand(RefreshExchangeRates_Click);
+
         public IAsyncCommand<bool> CheckForUpdateCommand => _checkForUpdateCommand ??= new AsyncCommand<bool>(CheckForUpdatesAsync);
 
         public async Task OpenBackup(string backupPath)
@@ -180,7 +181,7 @@ namespace Financier.Desktop.ViewModel
                 OpenBackupPath = backupPath;
                 IsLoading = true;
                 ClearPages();
-
+                Stopwatch stopwatch = Stopwatch.StartNew();
                 var (entities, backupVersion, columnsOrder) = await entityReader.ParseBackupFileAsync(backupPath);
                 _backupVersion = backupVersion;
                 _entityColumnsOrder = columnsOrder;
@@ -201,11 +202,14 @@ namespace Financier.Desktop.ViewModel
                 await DbManual.SetupAsync(db);
                 await DbManual.LoadRulesAsync();
 
+                stopwatch.Stop();
+                Logger.Info($"Backup loaded in {stopwatch.ElapsedMilliseconds} ms. Backup version : {_backupVersion}. Entities count : {entities?.Count()}");
+
                 await NavigateToType(typeof(BlotterModel));
 
                 notifier?.ShowMessage(string.Format(LocalizationService.Instance.entities_loaded, entities?.Count()));
 
-                if (SettingsService.Current.Settings.ExchangeRates.UpdateOnStart)
+                if (SettingsService.Current.Settings?.ExchangeRates.UpdateOnStart == true)
                 {
                     await RefreshExchangeRatesCommand.ExecuteAsync();
                 }
@@ -462,7 +466,7 @@ namespace Financier.Desktop.ViewModel
 
         private async Task Settings_Click()
         {
-            SettingsDto settings = SettingsService.Current.Settings.Clone() as SettingsDto;
+            SettingsDto settings = SettingsService.Current.Settings.Clone() as SettingsDto ?? new SettingsDto();
 
             DialogBaseVM vm = new SettingsVM(settings);
             var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) as SettingsDto;

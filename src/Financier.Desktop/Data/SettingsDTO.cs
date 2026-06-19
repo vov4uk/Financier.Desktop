@@ -14,8 +14,8 @@ namespace Financier.Desktop.Data
         {
             var clone = new SettingsDto
             {
-                General = (SettingsGeneralDto)General.Clone(),
-                ExchangeRates = (SettingsExchangeRates)ExchangeRates.Clone()
+                General = (SettingsGeneralDto)General.Clone() ?? new SettingsGeneralDto(),
+                ExchangeRates = (SettingsExchangeRates)ExchangeRates.Clone() ?? new SettingsExchangeRates()
             };
             return clone;
         }

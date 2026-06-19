@@ -25,13 +25,14 @@ namespace Financier.Desktop
         private const string BackupFormat = "*.backup";
         private const string Backup = ".backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly ToastNotifierWrapper notificator = new ToastNotifierWrapper();
 
         MainWindowVM ViewModel { get; }
 
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new ToastNotifierWrapper(), new BankHelperFactory(), new UpdateService());
+            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), notificator, new BankHelperFactory(), new UpdateService());
 
             DataContext = ViewModel;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -44,10 +45,13 @@ namespace Financier.Desktop
             try
             {
                 SettingsService.Current.Load();
+                ArgumentNullException.ThrowIfNull(SettingsService.Current.Settings);
+                ArgumentNullException.ThrowIfNull(SettingsService.Current.Settings.ExchangeRates);
+                ArgumentNullException.ThrowIfNull(SettingsService.Current.Settings.General);
             }
             catch
             {
-                MessageBox.Show(LocalizationService.Instance.settings_corrupted);
+                notificator.ShowWarning(LocalizationService.Instance.settings_corrupted);
                 SettingsService.Current.Settings = new SettingsDto()
                 {
                     ExchangeRates = new SettingsExchangeRates
@@ -63,7 +67,7 @@ namespace Financier.Desktop
                 SettingsService.Current.Save();
             }
 
-            LocalizationService.Instance.ApplyLanguage(SettingsService.Current.Settings.General.Language);
+            LocalizationService.Instance.ApplyLanguage(SettingsService.Current.Settings?.General.Language ?? Common.Localization.Language.English);
             var bakupFolder = SettingsService.Current.DefaultBackupDir ?? @$"C:\Users\{Environment.UserName}\Dropbox\apps\Financisto Holo";
             ViewModel.DefaultBackupDirectory = SettingsService.Current.DefaultBackupDir;
 
@@ -72,11 +76,11 @@ namespace Financier.Desktop
                 var backupFile = Directory.EnumerateFiles(bakupFolder, BackupFormat).OrderByDescending(x => x).FirstOrDefault();
                 if (!string.IsNullOrEmpty(backupFile) && File.Exists(backupFile))
                 {
-                    Logger.Info($"Loaded backup : {backupFile}");
-                    await ViewModel.OpenBackup(backupFile);
+                    Logger.Info($"Automatilay loaded backup : {backupFile}");
+                    await Task.Run(() => ViewModel.OpenBackup(backupFile));
                 }
 
-                if (SettingsService.Current.Settings.General.CheckForUpdatesOnStart)
+                if (SettingsService.Current.Settings?.General.CheckForUpdatesOnStart == true)
                 {
                     await ViewModel.CheckForUpdateCommand.ExecuteAsync(true);
                 }

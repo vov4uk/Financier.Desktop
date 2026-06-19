@@ -13,6 +13,9 @@ namespace Financier.Adapter
 {
     public class EntityReader : IEntityReader
     {
+        private static readonly Lazy<IReadOnlyDictionary<string, EntityInfo>> _entityTypes =
+            new(BuildEntityTypes, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+
         public async Task<(IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder)> ParseBackupFileAsync(string fileName)
         {
             Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
@@ -20,7 +23,7 @@ namespace Financier.Adapter
             using var reader = new BackupReader(fileName);
             List<Entity> entities = new List<Entity>();
 
-            var entityTypes = GetEntityTypes();
+            var entityTypes = _entityTypes.Value;
             Entity entity = null!;
             EntityInfo entityInfo = null!;
             string prevField = string.Empty;
@@ -69,7 +72,7 @@ namespace Financier.Adapter
             return (entities, reader.BackupVersion, EntityColumnsOrder);
         }
 
-        private IReadOnlyDictionary<string, EntityInfo> GetEntityTypes()
+        private static IReadOnlyDictionary<string, EntityInfo> BuildEntityTypes()
         {
             Type entityType = typeof(Entity);
             Dictionary<string, EntityInfo> entities = new Dictionary<string, EntityInfo>();
