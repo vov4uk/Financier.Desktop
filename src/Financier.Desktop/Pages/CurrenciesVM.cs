@@ -12,7 +12,8 @@ namespace Financier.Desktop.ViewModel
     [ExcludeFromCodeCoverage]
     public class CurrenciesVM : EntityBaseVM<CurrencyModel>
     {
-        public CurrenciesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper) : base(db, dialogWrapper)
+        public CurrenciesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 

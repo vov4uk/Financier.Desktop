@@ -1,4 +1,5 @@
-﻿using Financier.Desktop.ViewModel.Dialog;
+﻿using Financier.Common.Localization;
+using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Wizards;
 using System.Diagnostics;
 using System.Windows;
@@ -11,10 +12,10 @@ namespace Financier.Desktop.Helpers
     public class DialogHelper : IDialogWrapper
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        public object ShowDialog<T>(DialogBaseVM context, double height, double width, string title = null)
+        public object ShowDialog<T>(DialogBaseVM context, double height, double width, string title = null!)
             where T : System.Windows.Controls.UserControl, new()
         {
-            object result = null;
+            object result = null!;
             var dialog = new Window
             {
                 Content = new T() { DataContext = context },
@@ -24,7 +25,8 @@ namespace Financier.Desktop.Helpers
                 Owner = Application.Current.MainWindow,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Title = title ?? "Financier",
-                ShowInTaskbar = Debugger.IsAttached
+                ShowInTaskbar = Debugger.IsAttached,
+                Language = System.Windows.Markup.XmlLanguage.GetLanguage(LocalizationService.Instance.CurrentCulture.IetfLanguageTag)
             };
             context.RequestCancel += (_, _) =>
             {
@@ -33,40 +35,43 @@ namespace Financier.Desktop.Helpers
             };
             context.RequestSave += (sender, _) =>
             {
-                result = sender;
+                result = sender!;
                 dialog.Close();
                 Logger.Info($"{typeof(T).Name} dialog save clicked");
             };
             dialog.ShowDialog();
-            return result;
+            return result!;
         }
 
         public object ShowWizard(WizardBaseVM context)
         {
             bool save = false;
-            object result = null;
-            WizardWindow dialog = new WizardWindow();
+            object result = null!;
+            WizardWindow dialog = new WizardWindow()
+            {
+                Language = System.Windows.Markup.XmlLanguage.GetLanguage(LocalizationService.Instance.CurrentCulture.IetfLanguageTag)
+            };
 
             context.RequestClose += (sender, args) =>
             {
                 dialog.Close();
                 save = args;
-                result = sender;
+                result = sender!;
             };
             dialog.DataContext = context;
             dialog.ShowDialog();
 
-            return save ? result : null;
+            return save ? result! : null!;
         }
 
         public string OpenFileDialog(string fileExtention)
         {
-            using OpenFileDialog openFileDialog = new OpenFileDialog
+            var openFileDialog = new Ookii.Dialogs.Wpf.VistaOpenFileDialog()
             {
                 Multiselect = false,
                 Filter = $"{fileExtention} files (*.{fileExtention})|*.{fileExtention}"
             };
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == true)
             {
                 return openFileDialog.FileName;
             }
@@ -75,12 +80,12 @@ namespace Financier.Desktop.Helpers
 
         public string SaveFileDialog(string fileExtention, string defaultPath = "")
         {
-            using SaveFileDialog dialog = new SaveFileDialog
+            var dialog = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
             {
                 Filter = $"{fileExtention} files (*.{fileExtention})|*.{fileExtention}",
                 FileName = defaultPath
             };
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() == true)
             {
                 return dialog.FileName;
             }

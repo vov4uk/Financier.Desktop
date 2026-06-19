@@ -2,9 +2,9 @@
 using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
 
-namespace Financier.Desktop.Helpers.Model
+namespace Financier.Desktop.Helpers.BankHelper.Model
 {
-    public class Pumb_Row
+    public class PumbRow
     {
         [Index(0)]
         public DateTime Date { get; set; }

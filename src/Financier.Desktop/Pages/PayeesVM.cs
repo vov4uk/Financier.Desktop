@@ -14,7 +14,8 @@ namespace Financier.Desktop.ViewModel
     [ExcludeFromCodeCoverage]
     public class PayeesVM : TagBaseVM<PayeeModel>
     {
-        public PayeesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper) : base(db, dialogWrapper)
+        public PayeesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 

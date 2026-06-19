@@ -5,7 +5,7 @@
 
     public class TestComparer : IEqualityComparer<Transaction>
     {
-        public bool Equals(Transaction x, Transaction y)
+        public bool Equals(Transaction? x, Transaction? y)
         {
             return x.Accuracy == y.Accuracy
                    && x.AttachedPicture == y.AttachedPicture

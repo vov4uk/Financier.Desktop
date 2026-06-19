@@ -112,7 +112,7 @@ namespace Financier.DataAccess
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Logger.Error(ex, "Error occurred while updating entity");
                 return await Task.FromResult(false);
             }
         }
@@ -129,8 +129,9 @@ namespace Financier.DataAccess
                 ctx.Set<T>().RemoveRange(results);
                 return await Task.FromResult(true);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Error(ex, "Error occurred while deleting entity");
                 return await Task.FromResult(false);
             }
         }

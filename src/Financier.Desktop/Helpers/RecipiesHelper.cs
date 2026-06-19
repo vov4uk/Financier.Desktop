@@ -1,9 +1,8 @@
-﻿using Financier.Desktop.Wizards.RecipesWizard.View;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Financier.Desktop.Wizards.RecipesWizard.View;
 
 namespace Financier.Desktop.Helpers
 {
@@ -44,7 +43,7 @@ namespace Financier.Desktop.Helpers
                     {
                         sb.AppendLine(item.Trim());
                     }
-                    sb.Append(lines.Last().TrimStart());
+                    sb.Append(lines[lines.Count() -1].TrimStart());
                 }
 
                 sb.AppendLine(match.Value.Replace(" ", "-"));

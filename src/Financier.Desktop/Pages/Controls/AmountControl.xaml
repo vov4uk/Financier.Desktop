@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewmodel:TransactionControlVM}, IsDesignTimeCreatable=False}"
@@ -48,10 +49,18 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="24" />
         </Grid.ColumnDefinitions>
-        <TextBlock          Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
+        <TextBlock          Grid.Column="0"
+                            Grid.Row="0"
+                            Grid.ColumnSpan="3"
                             x:Name="OriginalFromAmountBlock"
-                            Text="{Binding Path=Transaction.OriginalCurrency.Name, StringFormat={}Amount ({0}), TargetNullValue=Amount}"
-                            Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}}" />
+                            Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}}">
+            <TextBlock.Text>
+                <MultiBinding Converter="{StaticResource localizedFormatConverter}">
+                    <Binding Source="{x:Static loc:LocalizationService.Instance}" Path="[amount]" />
+                    <Binding Path="Transaction.OriginalCurrency.Name" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
         <xctk:IconButton    Grid.Column="0" Grid.Row="1"
                             IsEnabled="False"
                             Height="24"
@@ -101,8 +110,17 @@
             </xctk:IconButton.Icon>
         </xctk:IconButton>
 
-        <TextBlock          Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" x:Name="FromAmountBlock"
-                            Text="{Binding Path=Transaction.FromAccountCurrency.Name, StringFormat={}Amount ({0}), TargetNullValue=Amount}" />
+        <TextBlock Grid.Column="0"
+                   Grid.Row="2"
+                   Grid.ColumnSpan="3"
+                   x:Name="FromAmountBlock">
+            <TextBlock.Text>
+                <MultiBinding Converter="{StaticResource localizedFormatConverter}">
+                    <Binding Source="{x:Static loc:LocalizationService.Instance}" Path="[amount]" />
+                    <Binding Path="Transaction.FromAccountCurrency.Name" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
         <xctk:IconButton    Grid.Column="0" Grid.Row="3"
                             x:Name="FromAmountSign"
                             Height="24"
@@ -169,7 +187,7 @@
 
         <TextBlock          Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3"
                             Visibility="{Binding Path=Transaction.IsOriginalFromAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                            Text="Rate"/>
+                            Text="{loc:Translate Key=rate}"/>
         <xctk:DecimalUpDown Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3"
                             Value="{Binding Transaction.Rate}"
                             Increment="0.00001"

@@ -1,4 +1,6 @@
-﻿namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
+﻿using Financier.Common.Localization;
+
+namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
     public abstract class RecipesWizardPageVMBase : WizardPageBaseVM
     {
@@ -12,10 +14,16 @@
                 calculatedAmount = value;
                 this.RaisePropertyChanged(nameof(this.CalculatedAmount));
                 this.RaisePropertyChanged(nameof(this.Diff));
+                this.RaisePropertyChanged(nameof(this.FormattedTotal));
             }
         }
 
         public double Diff => TotalAmount - CalculatedAmount;
+
+        public string FormattedTotal =>
+            string.Format(
+                LocalizationService.Instance.recipe_wizard_total_format,
+                TotalAmount, CalculatedAmount, Diff);
 
         public double TotalAmount
         {
@@ -25,6 +33,7 @@
                 totalAmount = value;
                 this.RaisePropertyChanged(nameof(this.TotalAmount));
                 this.RaisePropertyChanged(nameof(this.Diff));
+                this.RaisePropertyChanged(nameof(this.FormattedTotal));
             }
         }
     }

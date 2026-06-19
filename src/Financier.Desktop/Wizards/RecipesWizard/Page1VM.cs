@@ -1,4 +1,5 @@
-﻿using Financier.Common.Entities;
+﻿using Financier.Common;
+using Financier.Common.Entities;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Wizards.RecipesWizard.View;
 using Prism.Commands;
@@ -13,7 +14,8 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
 {
     public class Page1VM : RecipesWizardPageVMBase
     {
-        private readonly string pattern = RecipesFormatter.Pattern + @"(\t|\n|\r|$)"; //TODO fix '100600 Балтика' case then it calculates (100600 Б), no more symbols after a|b
+        //TODO fix '100600 Балтика' case then it calculates (100600 Б), no more symbols after a|b
+        private readonly string pattern = RecipesFormatter.Pattern + @"(\t|\n|\r|$)";
         private readonly char[] charactersToRemove = { ':', '/', '?', '#', '[', ']', '@', '*', '.', ',', '\"', '&', '\'' };
         private DelegateCommand<RichTextBox> _highlightCommand;
         private string text;
@@ -55,7 +57,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                         var amount = GetDouble(findNumber.Value.Substring(0, findNumber.Value.Length - 2).Replace(",", ".").Trim());
                         tmp += amount;
 
-                        if (amount != 0.0)
+                        if (DoubleUtils.DoubleNotEqual(amount, 0.0))
                         {
                             var note = line.Replace(findNumber.Value, string.Empty);
                             var lineResult = ParseLine(note);
@@ -106,18 +108,16 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
             return false;
         }
 
-        private static bool TryParseCategory(string[] desc, out int categoryId)
+        private static void TryParseCategory(string[] desc, out int categoryId)
         {
             var category = DbManual.Category
                     .Where(x => x.Id > 0)
                     .FirstOrDefault(l => ContainsString(l.Title, desc));
-            if (category != null)
+            if (category?.Id != null)
             {
                 categoryId = category.Id.Value;
-                return true;
             }
             categoryId = 0;
-            return false;
         }
 
         private (string note, int categoryId) ParseLine(string note)

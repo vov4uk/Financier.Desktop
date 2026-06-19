@@ -253,7 +253,7 @@
             };
 
             var path = Path.Combine(Environment.CurrentDirectory, "Assets", "pko.pdf");
-            IEnumerable<BankTransaction> pko = new PKOHelper().ParseReport(path);
+            IEnumerable<BankTransaction> pko = new PkoHelper().ParseReport(path);
 
             Assert.Equal(22, pko.Count());
             Assert.Equal(JsonConvert.SerializeObject(first), JsonConvert.SerializeObject(pko.First()));
@@ -460,7 +460,7 @@
             Assert.Equal(5, output.Count(x => x.LocationId == 205));
             Assert.Equal(2, output.Count(x => x.OriginalCurrencyId == 1));
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Fact]
@@ -504,7 +504,7 @@
             Assert.Equal(4, toMono.FromAccountId);
             Assert.Equal(1, toMono.ToAccountId);
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
     }
 }

@@ -6,7 +6,8 @@
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:fcrd=      "clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
              xmlns:ent=       "clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
-             xmlns:filters=   "clr-namespace:Financier.Common.Filters;assembly=Financier.Common">
+             xmlns:filters=   "clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
+             xmlns:loc=       "clr-namespace:Financier.Common.Localization;assembly=Financier.Common">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,7 +20,6 @@
                 <x:Type TypeName="ent:PeriodType"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <converters:EnumDescriptionConverter x:Key="enumDescriptionConverter"/>
         <BooleanToVisibilityConverter x:Key="boolToVis"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -31,21 +31,21 @@
 
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal">
-            <GroupBox Header="View"
+            <GroupBox Header="{loc:Translate Key=view}"
                       BorderThickness="0">
                 <DockPanel Width="84">
-                    <RadioButton ToolTip="Pie chart"
+                    <RadioButton ToolTip="{loc:Translate Key=pie_chart}"
                                  x:Name="PieBtn"
                                  Style="{StaticResource IconRadioButton}">
                         <Image Source="{StaticResource IconChartPie}"/>
                     </RadioButton>
-                    <RadioButton ToolTip="Bar chart"
+                    <RadioButton ToolTip="{loc:Translate Key=bar_chart}"
                                  x:Name="BarBtn"
                                  IsChecked="True"
                                  Style="{StaticResource IconRadioButton}">
                         <Image Source="{StaticResource IconChartBarVertical}"/>
                     </RadioButton>
-                    <RadioButton ToolTip="Grid"
+                    <RadioButton ToolTip="{loc:Translate Key=grid}"
                                  Style="{StaticResource IconRadioButton}"
                                  x:Name="GridBtn" >
                         <Image Source="{StaticResource IconTableGray}"/>

@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 
 namespace Financier.Common.Utils
@@ -53,7 +54,7 @@ namespace Financier.Common.Utils
             }
             if (sb.Length == 0)
             {
-                sb.Append(Char.ToUpperInvariant(type[0]) + type.Substring(1).ToLowerInvariant());
+                return LocalizationService.Instance[$"account_type_{type}".ToLowerInvariant()];
             }
             return sb.ToString();
         }

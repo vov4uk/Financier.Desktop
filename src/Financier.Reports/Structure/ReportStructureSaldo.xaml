@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Controls;assembly=Financier.Common"
              xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              xmlns:local="clr-namespace:Financier.Reports"
              xmlns:oxy="http://oxyplot.org/wpf">
     <UserControl.Resources>
@@ -19,42 +20,42 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
-            <GroupBox Header="View"
+            <GroupBox Header="{loc:Translate Key=view}"
                       BorderThickness="0">
                 <DockPanel Width="56">
                     <RadioButton x:Name="GraphicsBtn"
-                                 ToolTip="Grapics"
+                                 ToolTip="{loc:Translate Key=graphics}"
                                  IsChecked="True"
                                  Style="{StaticResource IconRadioButton}" >
                         <Image Source="{StaticResource IconChartBar}"/>
                     </RadioButton>
-                    <RadioButton ToolTip="Grid"
+                    <RadioButton ToolTip="{loc:Translate Key=grid}"
                                  x:Name="GridBtn"
                                  Style="{StaticResource IconRadioButton}">
                         <Image Source="{StaticResource IconTableGray}"/>
                     </RadioButton>
                 </DockPanel>
             </GroupBox>
-            <GroupBox Header="Currency"
+            <GroupBox Header="{loc:Translate Key=currency}"
                       BorderThickness="0">
                 <DockPanel VerticalAlignment="Center">
                     <RadioButton x:Name="DefaultBtn"
-                                 ToolTip="Default Currency">
-                        <TextBlock Text="Default" />
+                                 ToolTip="{loc:Translate Key=default_currency}">
+                        <TextBlock Text="{loc:Translate Key=default}" />
                     </RadioButton>
-                    <RadioButton ToolTip="USD"
+                    <RadioButton ToolTip="{loc:Translate Key=usd}"
                                  IsChecked="{Binding Path=IsUsdCurrencySelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  x:Name="UsdBtn">
-                        <TextBlock Text="USD" />
+                        <TextBlock Text="{loc:Translate Key=usd}" />
                     </RadioButton>
                 </DockPanel>
             </GroupBox>
-            <GroupBox Header="Period"
+            <GroupBox Header="{loc:Translate Key=period}"
                       Margin="4"
                       BorderThickness="0">
                 <ComboBox IsEditable="False"
                           Width="110"
-                          ItemsSource="{Binding Source={x:Static local:ReportStructureSaldoVM.Ranges}, Mode=OneWay}"
+                          ItemsSource="{Binding Source={loc:EnumBinding {x:Type local:ReportStructureSaldoRange}}}"
                           SelectedItem="{Binding Path=Range}"
                           Margin="2 0"/>
 

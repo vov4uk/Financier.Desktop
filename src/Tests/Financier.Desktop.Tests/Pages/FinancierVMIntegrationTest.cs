@@ -27,7 +27,7 @@
 
             Assert.True(vm.CurrentPage is BlotterVM);
             Assert.Equal(backupPath, vm.OpenBackupPath);
-        } 
+        }
 
         [Fact]
         public async Task SaveBackup_OpenBackup_ShouldSaveSameBackup()

@@ -109,7 +109,7 @@ Milk Molokia 2.5% 25.0 A
 
         private class Comparer : IEqualityComparer<TransactionDto>
         {
-            public bool Equals(TransactionDto x, TransactionDto y)
+            public bool Equals(TransactionDto? x, TransactionDto? y)
             {
                 var res = x.Category == y.Category
                    && x.CategoryId == y.CategoryId

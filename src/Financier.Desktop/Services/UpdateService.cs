@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Financier.Desktop.Data;
 using Onova;
 using Onova.Exceptions;
 using Onova.Services;
@@ -10,6 +9,7 @@ namespace Financier.Desktop.Services
 {
     public class UpdateService() : IDisposable
     {
+#nullable enable
         private readonly IUpdateManager? _updateManager = new UpdateManager(
                     new GithubPackageResolver(
                         "vov4uk",
@@ -31,6 +31,7 @@ namespace Financier.Desktop.Services
             var check = await _updateManager.CheckForUpdatesAsync();
             return check.CanUpdate ? check.LastVersion : null;
         }
+#nullable disable
 
         public async Task PrepareUpdateAsync(Version version)
         {

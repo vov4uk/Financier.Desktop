@@ -7,7 +7,7 @@ using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
 using ToastNotifications.Position;
 
-namespace Financier.Desktop.Helpers.BankHelper
+namespace Financier.Desktop.Helpers
 {
     public interface IToastNotifierWrapper
     {

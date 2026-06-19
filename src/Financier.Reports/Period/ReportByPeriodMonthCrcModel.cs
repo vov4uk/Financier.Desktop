@@ -6,26 +6,26 @@ namespace Financier.Reports
 {
     public class ReportByPeriodMonthCrcModel : BaseModel
     {
-        [DisplayName("Year")]
+        [DisplayName("year")]
         [Column("date_year")]
         public long Year { get; protected set; }
 
         [Column("date_month")]
-        [DisplayName("Month")]
+        [DisplayName("month")]
         public long Month { get; protected set; }
 
         public string PeriodDesr => string.Format("{0} {1}", Month, Year);
 
         [Column("credit_sum")]
-        [DisplayName("Income")]
+        [DisplayName("income")]
         public double? CreditSum { get; protected set; }
 
-        [DisplayName("Expanse")]
+        [DisplayName("expense")]
         [Column("debit_sum")]
         public double? DebitSum { get; protected set; }
 
         [Column("saldo")]
-        [DisplayName("Saldo")]
+        [DisplayName("saldo")]
         public double? Saldo { get; protected set; }
     }
 }

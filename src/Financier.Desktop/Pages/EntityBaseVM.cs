@@ -1,9 +1,9 @@
-﻿using Financier.Common;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using Financier.Common;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Helpers;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace Financier.Desktop.ViewModel
 {

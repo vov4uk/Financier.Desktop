@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Financier.Common;
     using Financier.Common.Entities;
+    using Financier.Common.Localization;
     using Financier.Common.Model;
     using Financier.Converters;
     using Financier.DataAccess.Abstractions;
@@ -78,7 +79,7 @@
 
         public AccountFilterModel Account
         {
-            get => _account ??= DbManual.Account.Find(p => !p.Id.HasValue);
+            get => _account ??= DbManual.Account.Find(p => !p.Id.HasValue)!;
             set
             {
                 _account = value;
@@ -88,7 +89,7 @@
 
         public CategoryModel Category
         {
-            get => _category ??= DbManual.Category.Find(p => !p.Id.HasValue);
+            get => _category ??= DbManual.Category.Find(p => !p.Id.HasValue)!;
             set
             {
                 _category = value;
@@ -98,7 +99,7 @@
 
         public PayeeModel Payee
         {
-            get => _payee ??= DbManual.Payee.Find(p => !p.Id.HasValue);
+            get => _payee ??= DbManual.Payee.Find(p => !p.Id.HasValue)!;
             set
             {
                 _payee = value;
@@ -108,7 +109,7 @@
 
         public ProjectModel Project
         {
-            get => _project ??= DbManual.Project.Find(p => !p.Id.HasValue);
+            get => _project ??= DbManual.Project.Find(p => !p.Id.HasValue)!;
             set
             {
                 _project = value;
@@ -118,7 +119,7 @@
 
         public LocationModel Location
         {
-            get => _location ??= DbManual.Location.Find(p => !p.Id.HasValue);
+            get => _location ??= DbManual.Location.Find(p => !p.Id.HasValue)!;
             set
             {
                 _location = value;
@@ -151,7 +152,7 @@
 
         protected override async Task OnDelete(BlotterModel item)
         {
-            if (this.dialogWrapper.ShowMessageBox("Are you sure you want to delete transaction?", "Delete", true))
+            if (this.dialogWrapper.ShowMessageBox(LocalizationService.Instance.confirm_delete_transaction, LocalizationService.Instance.delete, true))
             {
                 await DeleteTransaction(item.Id);
                 await db.RebuildAccountBalanceAsync(item.FromAccountId);
@@ -234,12 +235,12 @@
         {
             TransferControlVM dialogVm = new TransferControlVM(new TransferDto(transfer));
 
-            var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, "Transfer");
+            var result = dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, LocalizationService.Instance.transfer);
 
             var output = result as TransferDto;
             if (output != null)
             {
-                MapperHelper.MapTransfer(result as TransferDto, transfer);
+                MapperHelper.MapTransfer(output, transfer);
                 await db.InsertOrUpdateAsync(new[] { transfer });
 
                 await db.RebuildAccountBalanceAsync(transfer.FromAccountId);
@@ -280,7 +281,7 @@
 
             TransactionControlVM dialogVm = new TransactionControlVM(transactionDto, dialogWrapper);
 
-            var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, nameof(Transaction));
+            var result = dialogWrapper.ShowDialog<TransactionControl>(dialogVm, 640, 340, LocalizationService.Instance.transaction);
 
             var resultVm = result as TransactionDto;
             if (resultVm != null)
@@ -328,7 +329,7 @@
                 // if not - add diference to last transaction
                 if (resultVm.IsOriginalFromAmountVisible && totalFromAmountHomeCurrency != 0)
                 {
-                    resultTransactions.Last().FromAmount += totalFromAmountHomeCurrency;
+                    resultTransactions[resultTransactions.Count -1].FromAmount += totalFromAmountHomeCurrency;
                 }
             }
 
@@ -376,7 +377,7 @@
             subTransaction.Parent = transaction;
             subTransaction.FromAccountId = transaction.FromAccountId;
             subTransaction.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
-            subTransaction.Category = default;
+            subTransaction.Category = default!;
             return subTransaction;
         }
 
@@ -443,13 +444,13 @@
                         Name = x.FromAccountCurrency.Name,
                         Symbol = x.FromAccountCurrency.Symbol,
                     },
-                    ToAccountCurrency = x.ToAccountCurrency == null ? default : new CurrencyModel
+                    ToAccountCurrency = x.ToAccountCurrency == null ? default! : new CurrencyModel
                     {
                         Id = x.ToAccountCurrency.Id,
                         Name = x.ToAccountCurrency.Name,
                         Symbol = x.ToAccountCurrency.Symbol,
                     },
-                    OriginalCurrency = x.OriginalCurrency == null ? default : new CurrencyModel
+                    OriginalCurrency = x.OriginalCurrency == null ? default! : new CurrencyModel
                     {
                         Id = x.OriginalCurrency.Id,
                         Name = x.OriginalCurrency.Name,

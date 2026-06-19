@@ -12,7 +12,8 @@ namespace Financier.Desktop.Wizards
     {
         private const string DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm:ss";
         private const string DATE_TIME_FORMAT1 = "yyyy-MM-dd HH:mm:ss";
-        public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+#nullable enable
+        public override object ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
         {
             if (DateTime.TryParseExact(text, DATE_TIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dt))
             {
@@ -22,9 +23,10 @@ namespace Financier.Desktop.Wizards
             return date;
         }
 
-        public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        public override string ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
         {
-            return ((DateTime)value).ToString(DATE_TIME_FORMAT);
+            return ((DateTime?)value)?.ToString(DATE_TIME_FORMAT) ?? string.Empty;
         }
+#nullable disable
     }
 }

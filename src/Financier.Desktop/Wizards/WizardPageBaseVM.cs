@@ -5,6 +5,7 @@ namespace Financier.Desktop.Wizards
     public abstract class WizardPageBaseVM : BindableBase
     {
         bool _isCurrentPage;
+
         public bool IsCurrentPage
         {
             get => _isCurrentPage;

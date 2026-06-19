@@ -5,11 +5,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
-             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:entities="clr-namespace:Financier.Desktop.Views"
              xmlns:viewmodel="clr-namespace:Financier.Desktop.Data"
              xmlns:dialog="clr-namespace:Financier.Desktop.ViewModel.Dialog"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type dialog:TransactionControlVM}, IsDesignTimeCreatable=False}"
@@ -25,7 +26,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
-              Header="Transaction details"
+              Header="{loc:Translate Key=transaction_details}"
               FontSize="12"
               Background="{StaticResource WindowBackgroundBrush}">
         <GroupBox.Resources>
@@ -105,7 +106,7 @@
                     </Grid>
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-                               Text="Account"/>
+                               Text="{loc:Translate Key=account}"/>
                     <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                                SelectedItem="{Binding Transaction.FromAccount}"
@@ -116,7 +117,7 @@
                                ItemTemplate="{StaticResource ResourceKey=IActive}"/>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                               Text="Payee"/>
+                               Text="{loc:Translate Key=payee}"/>
                     <xctk:WatermarkComboBox  Grid.Row="4" Grid.Column="0"
                                              IsEditable="True"
                                              ItemsSource="{Binding Source={x:Static fcrd:DbManual.Payee}, Mode=OneWay}"
@@ -133,7 +134,7 @@
                     </xctk:IconButton>
 
                     <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
-                               Text="Category"/>
+                               Text="{loc:Translate Key=category}"/>
 
                     <Grid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
                         <Grid.ColumnDefinitions>
@@ -171,14 +172,14 @@
                     </Grid>
 
                     <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
-                               Text="Currency"/>
+                               Text="{loc:Translate Key=currency}"/>
                     <xctk:WatermarkComboBox  Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
                                              ItemsSource="{Binding Source={x:Static fcrd:DbManual.Currencies}, Mode=OneWay}"
                                              SelectedItem="{Binding Transaction.OriginalCurrency}"
                                              SelectedValue="{Binding Transaction.OriginalCurrencyId}"
                                              SelectedValuePath="Id"
                                              DisplayMemberPath="Title"
-                                             Watermark="Same as account" />
+                                             Watermark="{loc:Translate Key=same_as_account}" />
 
                     <entities:AmountControl Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2"
                                             DataContext="{Binding}" />
@@ -200,7 +201,7 @@
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Column="0" Grid.Row="0"
                                        Grid.ColumnSpan="2"
-                                       Text="Un-split amount"/>
+                                       Text="{loc:Translate Key=unsplit_amount}"/>
                             <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
                                        Text="{Binding Transaction.UnsplitAmount, Converter={StaticResource AmountConverter}, ConverterParameter=false, StringFormat=F2, Mode=OneWay}" />
                             <xctk:IconButton Grid.Column="1"
@@ -208,7 +209,7 @@
                                              Grid.RowSpan="2"
                                              Margin="0,3,0,0"
                                              VerticalAlignment="Top"
-                                             ToolTip="Open recipes wizard. Transform recipes text to Financisto transactions"
+                                             ToolTip="{loc:Translate Key=open_recipes_wizard}"
                                              Command="{Binding OpenRecipesDialogCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource ResourceKey=IconReceiptBlack}" Height="16" Width="16" />
@@ -219,7 +220,7 @@
                                              Grid.RowSpan="2"
                                              Margin="0,3,0,0"
                                              VerticalAlignment="Top"
-                                             ToolTip="Add Split-transfers"
+                                             ToolTip="{loc:Translate Key=add_split_transfers}"
                                              Command="{Binding AddSubTransferCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource ResourceKey=IconArrowRightArrowLeft}" Height="16" Width="16" />
@@ -230,7 +231,7 @@
                                               Grid.RowSpan="2"
                                               Margin="0,3,0,0"
                                               VerticalAlignment="Top"
-                                              ToolTip="Add Split-transactions"
+                                              ToolTip="{loc:Translate Key=add_split_transactions}"
                                               Command="{Binding AddSubTransactionCommand}">
                                 <xctk:IconButton.Icon>
                                     <Image Source="{StaticResource IconPlus}" Height="16" Width="16" />
@@ -307,7 +308,7 @@
 
                     <TextBlock Grid.Row="13" Grid.Column="0"
                                Grid.ColumnSpan="2"
-                               Text="Location"/>
+                               Text="{loc:Translate Key=location}"/>
                     <xctk:WatermarkComboBox   Grid.Row="14" Grid.Column="0"
                                               IsEditable="True"
                                               ItemsSource="{Binding Source={x:Static fcrd:DbManual.Location}, Mode=OneWay}"
@@ -324,7 +325,7 @@
 
                     <TextBlock Grid.Row="15" Grid.Column="0"
                                Grid.ColumnSpan="2"
-                               Text="Note"/>
+                               Text="{loc:Translate Key=note}"/>
                     <TextBox   Grid.Row="16" Grid.Column="0"
                                Text="{Binding Transaction.Note}" />
                     <xctk:IconButton Grid.Row="16" Grid.Column="1"
@@ -337,7 +338,7 @@
                     <TextBlock Grid.Row="17" Grid.Column="0"
                                Grid.ColumnSpan="2"
                                Visibility="{Binding ElementName=ProjectIdBox, Path=Visibility}"
-                               Text="Project"/>
+                               Text="{loc:Translate Key=project}"/>
 
                     <xctk:WatermarkComboBox  Grid.Row="18" Grid.Column="0"
                                              x:Name="ProjectIdBox"
@@ -374,10 +375,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Margin="2"
                         Command="{Binding SaveCommand}"
-                        Content="SAVE" />
+                        Content="{loc:Translate Key=save}" />
                 <Button Grid.Column="1" Margin="2"
                         Command="{Binding CancelCommand}"
-                        Content="CANCEL" />
+                        Content="{loc:Translate Key=cancel}" />
             </Grid>
         </Grid>
     </GroupBox>

@@ -187,7 +187,7 @@
             await SetupDb();
 
             var resultVm = JsonConvert.DeserializeObject<TransferDto>(resultVmJson);
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.Is<TransferControlVM>(x => x.Transfer.Id == 0), 385, 340, "Transfer"))
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.Is<TransferControlVM>(x => x.Transfer.Id == 0), 385, 340, "[transfer]"))
                 .Returns(resultVm);
 
             var vm = new BlotterVM(db, dialogMock.Object);
@@ -234,7 +234,7 @@
             await SetupDb(transaction);
 
             var resultVm = JsonConvert.DeserializeObject<TransferDto>(resultVmJson);
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.Is<TransferControlVM>(x => x.Transfer.Id == 0), 385, 340, "Transfer"))
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.Is<TransferControlVM>(x => x.Transfer.Id == 0), 385, 340, "[transfer]"))
                 .Returns(resultVm);
 
             var vm = new BlotterVM(db, dialogMock.Object);
@@ -291,7 +291,7 @@
                 uow.SaveChanges();
             }
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
             await DbManual.SetupAsync(db);
 
             var vm = new BlotterVM(db, dialogMock.Object);
@@ -563,7 +563,7 @@
                 uow.SaveChanges();
             }
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
             await DbManual.SetupAsync(db);
         }
     }

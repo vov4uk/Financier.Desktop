@@ -17,7 +17,7 @@ namespace Financier.Adapter
             var sb = new StringBuilder();
 
             Type type = entity.GetType();
-            TableAttribute classArttr = type.GetCustomAttributes().OfType<TableAttribute>().FirstOrDefault();
+            TableAttribute classArttr = type.GetCustomAttributes().OfType<TableAttribute>().FirstOrDefault()!;
             if (classArttr == null)
             {
                 return string.Empty;
@@ -29,22 +29,22 @@ namespace Financier.Adapter
             List<string> columnsOrder = entityColumnsOrder[classArttr.Name];
             foreach (var propertyInfo in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                IgnoreAttribute ignoreAttr = propertyInfo.GetCustomAttribute(typeof(IgnoreAttribute)) as IgnoreAttribute;
+                IgnoreAttribute ignoreAttr = (propertyInfo.GetCustomAttribute(typeof(IgnoreAttribute)) as IgnoreAttribute)!;
                 if (ignoreAttr == null)
                 {
-                    ColumnAttribute pattr = propertyInfo.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute;
+                    ColumnAttribute pattr = (propertyInfo.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute)!;
                     if (pattr != null)
                     {
                         EntityPropertyInfo pInfo = new EntityPropertyInfo(propertyInfo)
                         {
-                            Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))
+                            Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))!
                         };
                         pInfo.Converter.PropertyType = propertyInfo.PropertyType;
 
-                        object val = propertyInfo.GetValue(entity);
+                        object val = propertyInfo.GetValue(entity!)!;
                         if (val != null)
                         {
-                            dict.Add(new KeyValuePair<int, string>(columnsOrder.IndexOf(pattr.Name), $"{pattr.Name}:{pInfo.Converter.ConvertBack(val)}"));
+                            dict.Add(new KeyValuePair<int, string>(columnsOrder.IndexOf(pattr.Name!), $"{pattr.Name}:{pInfo.Converter.ConvertBack(val)}"));
                         }
                     }
                 }

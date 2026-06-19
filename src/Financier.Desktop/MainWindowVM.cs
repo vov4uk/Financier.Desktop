@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
+using Financier.Common.Localization;
 using Financier.Adapter;
 using Financier.Common;
 using Financier.Common.Entities;
@@ -18,7 +17,6 @@ using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Helpers.BankHelper;
 using Financier.Desktop.Pages.Dialogs;
-using Financier.Desktop.Properties;
 using Financier.Desktop.Services;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Wizards;
@@ -27,7 +25,6 @@ using Financier.Reports;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Prism.Commands;
 using Prism.Mvvm;
 using IAsyncCommand = Financier.Common.IAsyncCommand;
 
@@ -48,7 +45,7 @@ namespace Financier.Desktop.ViewModel
         private Dictionary<string, List<string>> _entityColumnsOrder;
         private IAsyncCommand<Type> _menuNavigateCommand;
         private IAsyncCommand<WizardTypes> _importCommand;
-        private ICommand _openBackupCommand;
+        private IAsyncCommand _openBackupCommand;
         private IAsyncCommand _saveBackupCommand;
         private IAsyncCommand _saveBackupAsDbCommand;
         private IAsyncCommand _settingsCommand;
@@ -99,9 +96,8 @@ namespace Financier.Desktop.ViewModel
             get => currentPage;
             private set
             {
-                SetProperty(ref currentPage, value);
+                SetProperty(ref currentPage, value, nameof(CurrentPage));
                 Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
-                RaisePropertyChanged(nameof(CurrentPage));
                 RaisePropertyChanged(nameof(IsTransactionPageSelected));
                 RaisePropertyChanged(nameof(IsLocationPageSelected));
                 RaisePropertyChanged(nameof(IsProjectPageSelected));
@@ -174,7 +170,7 @@ namespace Financier.Desktop.ViewModel
 
         public IAsyncCommand<WizardTypes> ImportCommand => _importCommand ??= new AsyncCommand<WizardTypes>(OpenImportWizardAsync);
 
-        public ICommand OpenBackupCommand => _openBackupCommand ??= new DelegateCommand(OpenBackup_Click);
+        public IAsyncCommand OpenBackupCommand => _openBackupCommand ??= new AsyncCommand(OpenBackup_Click);
 
         public IAsyncCommand SaveBackupCommand => _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
 
@@ -192,7 +188,7 @@ namespace Financier.Desktop.ViewModel
                 IsLoading = true;
                 ClearPages();
 
-                var (entities, backupVersion, columnsOrder) = this.entityReader.ParseBackupFile(backupPath);
+                var (entities, backupVersion, columnsOrder) = await entityReader.ParseBackupFileAsync(backupPath);
                 _backupVersion = backupVersion;
                 _entityColumnsOrder = columnsOrder;
 
@@ -208,26 +204,25 @@ namespace Financier.Desktop.ViewModel
 
                 IsLoading = false;
 
-                DbManual.ResetAllManuals();
+                DbManual.ResetAllDatabaseManuals();
                 await DbManual.SetupAsync(db);
                 await DbManual.LoadRulesAsync();
 
                 await NavigateToType(typeof(BlotterModel));
 
-                notifier?.ShowMessage($"Successfully loaded {entities?.Count()} entities");
+                notifier?.ShowMessage(string.Format(LocalizationService.Instance.entities_loaded, entities?.Count()));
             }
             catch (Exception ex)
             {
+                Logger.Error(ex, ex.ToString());
                 IsLoading = false;
-                Logger.Error(ex);
                 throw;
             }
         }
 
         public async Task SaveBackup(string backupPath)
         {
-            List<Entity> itemsToBackup = new();
-            itemsToBackup.AddRange(keyLessEntities);
+            List<Entity> itemsToBackup = [.. keyLessEntities];
             using (IUnitOfWork uow = db.CreateUnitOfWork())
             {
                 itemsToBackup.AddRange(await uow.GetAllAsync<Budget>());
@@ -325,7 +320,7 @@ namespace Financier.Desktop.ViewModel
             {
                 var viewModel = Activator.CreateInstance(typeof(VMType), db, dialogWrapper) as VMType;
 
-                _pages.TryAdd(type, viewModel);
+                _pages.TryAdd(type, viewModel!);
             }
 
             return (VMType)_pages[type];
@@ -337,19 +332,20 @@ namespace Financier.Desktop.ViewModel
             await RefreshCurrentPage();
         }
 
-        private void OpenBackup_Click()
+        private async Task OpenBackup_Click()
         {
+            if (IsLoading) return;
             var backupPath = dialogWrapper.OpenFileDialog(Backup);
             if (!string.IsNullOrEmpty(backupPath))
             {
                 Logger.Info($"Opened backup : {backupPath}");
-                Task.Run(() => OpenBackup(backupPath));
+                await OpenBackup(backupPath);
             }
         }
 
         private async Task OpenImportWizardAsync(WizardTypes bankType)
         {
-            var fileExtension = EnumDescriptionConverter.GetEnumDescription(bankType);
+            var fileExtension = bankType.GetEnumDescription();
             var fileName = dialogWrapper.OpenFileDialog(fileExtension);
             Logger.Info($"{fileExtension} fileName -> {fileName}");
             if (!string.IsNullOrEmpty(fileName))
@@ -361,7 +357,7 @@ namespace Financier.Desktop.ViewModel
                 foreach (var acc in DbManual.Account.Where(x => x.Id.HasValue))
                 {
                     var last = Blotter.Entities.FirstOrDefault(x => x.Id == acc.LastTransactionId);
-                    lastTransactions.Add(acc.Id.Value, last);
+                    lastTransactions.Add(acc.Id!.Value, last!);
                 }
 
                 var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions, dialogWrapper);
@@ -389,10 +385,11 @@ namespace Financier.Desktop.ViewModel
                     await RefreshAffectedAccounts(monoToImport);
                     await RefreshCurrentPage();
 
-                    this.dialogWrapper.ShowMessageBox(
-                        $"Imported {monoToImport.Count} transactions."
-                        + ((duplicatesCount > 0) ? $" Skipped {duplicatesCount} duplicates." : string.Empty),
-                        $"{importHelper.BankTitle} Import");
+                    var message = duplicatesCount > 0
+                        ? string.Format(LocalizationService.Instance.import_result_with_duplicates, monoToImport.Count, duplicatesCount)
+                        : string.Format(LocalizationService.Instance.import_result, monoToImport.Count);
+
+                    this.notifier.ShowMessage(string.Format(message, $"{importHelper.BankTitle} {LocalizationService.Instance.import}"));
 
                     Logger.Info($"Imported {monoToImport.Count} transactions. Found duplicates : {duplicatesCount}");
                 }
@@ -429,12 +426,15 @@ namespace Financier.Desktop.ViewModel
 
         private async Task SaveBackup_Click()
         {
-            var backupPath = dialogWrapper.SaveFileDialog(Backup, Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName()));
+            string defaultPath = string.IsNullOrEmpty(OpenBackupPath)
+                ? BackupWriter.GenerateFileName()
+                : Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName());
+            var backupPath = dialogWrapper.SaveFileDialog(Backup, defaultPath);
             if (!string.IsNullOrEmpty(backupPath))
             {
                 await SaveBackup(backupPath);
 
-                dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
+                dialogWrapper.ShowMessageBox(string.Format(LocalizationService.Instance.saved_message, backupPath), LocalizationService.Instance.backup_done);
                 Logger.Info($"Backup done. Saved {backupPath}");
             }
         }
@@ -445,7 +445,7 @@ namespace Financier.Desktop.ViewModel
             string defaultPath;
             if (!string.IsNullOrEmpty(OpenBackupPath))
             {
-                defaultPath = Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty), fileName);
+                defaultPath = Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty)!, fileName);
             }
             else
             {
@@ -457,29 +457,38 @@ namespace Financier.Desktop.ViewModel
             {
                 await db.SaveAsFile(backupPath);
 
-                dialogWrapper.ShowMessageBox($"Saved {backupPath}", "Backup done.");
+                dialogWrapper.ShowMessageBox(string.Format(LocalizationService.Instance.saved_message, backupPath), LocalizationService.Instance.backup_done);
                 Logger.Info($"Backup done. Saved {backupPath}");
             }
         }
 
         private async Task Settings_Click()
         {
-            SettingsDTO settings = TryDeserializeSettings(AppSettings);
+            SettingsDto settings = TryDeserializeSettings(AppSettings);
+            settings.General.Language = SettingsService.Current.Language;
 
             DialogBaseVM vm = new SettingsVM(settings);
-            var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, "Settings") as SettingsDTO;
+            var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) as SettingsDto;
 
             if (updated != null)
             {
                 var jObj = JObject.FromObject(updated);
                 if (!string.IsNullOrEmpty(updated.ExchangeRates.OpenExchangeRatesProviderAppId))
                 {
-                    jObj[nameof(SettingsDTO.ExchangeRates)][nameof(SettingsExchangeRates.OpenExchangeRatesProviderAppId)] =
+                    jObj[nameof(SettingsDto.ExchangeRates)]![nameof(SettingsExchangeRates.OpenExchangeRatesProviderAppId)] =
                         SettingsProtection.Encrypt(updated.ExchangeRates.OpenExchangeRatesProviderAppId);
                 }
                 string json = jObj.ToString(Formatting.Indented);
-                Settings.Default.AppSettings = json;
-                Settings.Default.Save();
+                SettingsService.Current.AppSettings = json;
+                SettingsService.Current.Language = updated.General.Language;
+                SettingsService.Current.Save();
+                LocalizationService.Instance.ApplyLanguage(updated.General.Language);
+
+                DbManual.ResetManuals(nameof(DbManual.MCCEnums));
+                DbManual.ResetManuals(nameof(DbManual.MCCTitles));
+                DbManual.ResetManuals(nameof(DbManual.Currencies));
+                await DbManual.SetupAsync(db);
+
                 AppSettings = json;
             }
         }
@@ -495,17 +504,17 @@ namespace Financier.Desktop.ViewModel
                     var exchangeRateLoader = new ExchangeRateLoader();
                     List<CurrencyExchangeRate> exchangeRates = new List<CurrencyExchangeRate>();
 
-                    if (settings.ExchangeRates.Provider == "freecurrencyrates.com")
+                    switch (settings.ExchangeRates.Provider)
                     {
-                        exchangeRates = await exchangeRateLoader.LoadFreeCurrencyRates();
-                    }
-                    else if (settings.ExchangeRates.Provider == "openexchangerates.org")
-                    {
-                        exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(settings.ExchangeRates.OpenExchangeRatesProviderAppId);
-                    }
-                    else if (settings.ExchangeRates.Provider == "monobank.ua")
-                    {
-                        exchangeRates = await exchangeRateLoader.LoadMonobankRates();
+                        case ExchangeRatesProviders.FreeCurrencyRates:
+                            exchangeRates = await exchangeRateLoader.LoadFreeCurrencyRates();
+                            break;
+                        case ExchangeRatesProviders.OpenExchangeRates:
+                            exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(settings.ExchangeRates.OpenExchangeRatesProviderAppId);
+                            break;
+                        case ExchangeRatesProviders.Monobank:
+                            exchangeRates = await exchangeRateLoader.LoadMonobankRates();
+                            break;
                     }
 
                     if (exchangeRates.Any())
@@ -519,47 +528,51 @@ namespace Financier.Desktop.ViewModel
                         }
                         catch (DbUpdateException ex)
                         {
-                            string msg = ex?.InnerException?.Message;
+                            string msg = ex?.InnerException?.Message!;
                             if (!string.IsNullOrEmpty(msg) && msg.Contains("UNIQUE constraint failed", StringComparison.OrdinalIgnoreCase))
                             {
-                                notifier?.ShowWarning("Exchange rates for the specified currencies and date already exist.");
+                                notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_exist);
                             }
                             else
                             {
-                                notifier?.ShowWarning("Exchange rates not updated.");
+                                notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_not_updated);
                             }
                             return;
                         }
                         catch (Exception ex)
                         {
                             Logger.Error(ex, "Error saving exchange rates to database.");
-                            notifier?.ShowWarning("Exchange rates not updated.");
+                            notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_not_updated);
                             return;
                         }
 
-                        notifier?.ShowMessage($"Exchange rates updated successfully from {settings.ExchangeRates.Provider}.");
+                        notifier?.ShowMessage(string.Format(LocalizationService.Instance.exchange_rates_updated, settings.ExchangeRates.Provider));
                     }
                 }
             }
             else
             {
-                notifier?.ShowWarning("Exchange rates provider not configured.");
+                notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_provider_not_configured);
             }
         }
 
-        private SettingsDTO TryDeserializeSettings(string json)
+        private SettingsDto TryDeserializeSettings(string json)
         {
             if (!string.IsNullOrEmpty(json))
             {
                 try
                 {
-                    var dto = JsonConvert.DeserializeObject<SettingsDTO>(json);
+                    var dto = JsonConvert.DeserializeObject<SettingsDto>(json);
+                    if (dto == null)
+                    {
+                        dto = new SettingsDto();
+                    }
 
                     if (dto.ExchangeRates == null)
                         dto.ExchangeRates = new SettingsExchangeRates();
 
                     if (dto.General == null)
-                        dto.General = new SettingsGeneralDTO();
+                        dto.General = new SettingsGeneralDto();
 
                     if (!string.IsNullOrEmpty(dto.ExchangeRates?.OpenExchangeRatesProviderAppId))
                     {
@@ -572,22 +585,22 @@ namespace Financier.Desktop.ViewModel
                 catch (Exception ex)
                 {
                     Logger.Warn(ex, "Failed to deserialize AppSettings; resetting to defaults.");
-                    AppSettings = null;
-                    Settings.Default.AppSettings = null;
-                    Settings.Default.Save();
-                    notifier?.ShowWarning("Settings file was corrupted and has been reset. Please re-configure exchange rate settings.");
+                    AppSettings = null!;
+                    SettingsService.Current.AppSettings = null!;
+                    SettingsService.Current.Save();
+                    notifier?.ShowWarning(LocalizationService.Instance.settings_corrupted);
 
                 }
             }
 
-            return new SettingsDTO()
+            return new SettingsDto()
             {
                 ExchangeRates = new SettingsExchangeRates
                 {
-                    Provider = string.Empty,
+                    Provider = ExchangeRatesProviders.None,
                     UpdateOnStart = false,
                 },
-                General = new SettingsGeneralDTO
+                General = new SettingsGeneralDto
                 {
                     CheckForUpdatesOnStart = true
                 }
@@ -611,27 +624,27 @@ namespace Financier.Desktop.ViewModel
                 {
                     if (showMessageIfLatest)
                     {
-                        notifier.ShowMessage("You are using the latest version.");
+                        notifier.ShowMessage(LocalizationService.Instance.latest_version);
                     }
                     return;
                 }
 
 
                 var result = dialogWrapper.ShowMessageBox(
-                   "Would you like to restart app and apply the update?",
-                   $"Version {updateVersion} is available",
+                   LocalizationService.Instance.update_available_question,
+                   string.Format(LocalizationService.Instance.update_available, updateVersion),
                     true);
 
                 if (result)
                 {
 
-                    notifier.ShowMessage(string.Format("Downloading update to {0} v{1}...",
+                    notifier.ShowMessage(string.Format(LocalizationService.Instance.downloading_update,
                         "Financier.Desktop",
                         updateVersion));
 
                     await updateService.PrepareUpdateAsync(updateVersion);
 
-                    notifier.ShowMessage("Update is downloaded. App will now restart to apply the update.");
+                    notifier.ShowMessage(LocalizationService.Instance.update_downloaded);
                     await Task.Delay(3000);
                     updateService.FinalizeUpdate(true);
                     await Task.Delay(3000);
@@ -640,8 +653,8 @@ namespace Financier.Desktop.ViewModel
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Failed to perform application update");
-                notifier.ShowWarning("Failed to perform application update");
+                Logger.Error(ex, ex.ToString());
+                notifier.ShowWarning(LocalizationService.Instance.update_failed);
             }
         }
     }

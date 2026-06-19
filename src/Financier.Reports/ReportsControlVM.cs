@@ -1,4 +1,5 @@
 ﻿using Financier.Common.Attribute;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Prism.Commands;
@@ -21,11 +22,16 @@ namespace Financier.Reports
         {
             this.financierDatabase = financierDatabase;
             BuildReportsTree();
+            LocalizationService.Instance.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == "CurrentCulture")
+                    BuildReportsTree();
+            };
         }
 
         private void BuildReportsTree()
         {
-            TreeNode income_outcome = new TreeNode("Income / expense for the period")
+            TreeNode income_outcome = new TreeNode("reports_income_expense_for_period")
             {
                 Child = new List<TreeNode>
                 {
@@ -33,7 +39,7 @@ namespace Financier.Reports
                 }
             };
 
-            TreeNode structure = new TreeNode("Structure")
+            TreeNode structure = new TreeNode("reports_structure")
             {
                 Child = new List<TreeNode>
                 {
@@ -44,7 +50,7 @@ namespace Financier.Reports
                 }
             };
 
-            TreeNode dynam = new TreeNode("Dynamics")
+            TreeNode dynam = new TreeNode("reports_dynamics")
             {
                 Child = new List<TreeNode>
                 {
@@ -59,6 +65,8 @@ namespace Financier.Reports
                 structure,
                 dynam
             };
+
+            RaisePropertyChanged(nameof(ReportsInfo));
         }
 
         private DelegateCommand<BindableBase> _closeReportCommand;
@@ -115,22 +123,24 @@ namespace Financier.Reports
 
         public void OpenReport(string reportType)
         {
-            BindableBase existingReport = ReportsVM.FirstOrDefault(p => p.GetType().ToString() == reportType);
+            BindableBase existingReport = ReportsVM.FirstOrDefault(p => p.GetType().ToString() == reportType)!;
             if (existingReport != null)
             {
                 SelectedReport = existingReport;
             }
             else
             {
-                Type type = Type.GetType(reportType, false, true);
+                Type type = Type.GetType(reportType, false, true)!;
                 if (type != null)
                 {
-                    ConstructorInfo constructor = type.GetConstructors().First();
+                    ConstructorInfo constructor = type.GetConstructors().FirstOrDefault()!;
                     if (constructor != null)
                     {
                         BindableBase newReport = (BindableBase)constructor.Invoke(new[] { financierDatabase });
-                        HeaderAttribute customAttribute = (HeaderAttribute)Attribute.GetCustomAttribute(type, typeof(HeaderAttribute));
-                        newReport.GetType().GetProperty("Header").SetValue(newReport, customAttribute.Header, null);
+                        HeaderAttribute customAttribute = (HeaderAttribute)Attribute.GetCustomAttribute(type, typeof(HeaderAttribute))!;
+                        string header = LocalizationService.Instance[customAttribute.Header];
+
+                        newReport.GetType().GetProperty("Header")!.SetValue(newReport, header, null);
                         ReportsVM.Add(newReport);
                         SelectedReport = newReport;
                     }

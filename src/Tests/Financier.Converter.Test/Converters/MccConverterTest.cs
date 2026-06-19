@@ -2,6 +2,7 @@ namespace Financier.Converters.Tests
 {
     using System;
     using System.Globalization;
+    using Financier.Common.Entities;
     using Financier.Converters;
     using Xunit;
 
@@ -9,10 +10,10 @@ namespace Financier.Converters.Tests
     {
         private readonly MccConverter converter = new MccConverter();
 
-        [InlineData(742, "Ветеринарні послуги")]
-        [InlineData(743, "Виноробники")]
+        [InlineData(742, Mcc.veterinary_services)]
+        [InlineData(743, Mcc.wine_producers)]
         [Theory]
-        public void Convert_KnownMccCode_ReturnsCategoryName(int code, string expectedCategory)
+        public void Convert_KnownMccCode_ReturnsCategoryName(int code, Mcc expectedCategory)
         {
             var actual = converter.Convert(code, null, null, CultureInfo.InvariantCulture);
 

@@ -20,7 +20,7 @@
 
     public class Page3VMTest
     {
-        private readonly Mock<IDialogWrapper> _dialogWrapperMock = new Mock<IDialogWrapper>();
+        private readonly Mock<IDialogWrapper> dialogWrapperMock = new Mock<IDialogWrapper>();
 
         [Theory]
         [AutoMoqData]
@@ -29,7 +29,7 @@
         {
             var monoAccount = accounts.FirstOrDefault();
             DbManual.SetupTests(accounts);
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
 
             vm.MonoAccount = monoAccount;
 
@@ -47,7 +47,7 @@
                 {
                  Id = 8,
                  Created = new DateTime(2026, 5, 16, 22, 32, 55, 354),
-                 Condition = "Description contains",
+                 Condition = RuleConditionType.DescriptionContains,
                  Description = "Google",
                  Title = null,
                  IsActive = true,
@@ -55,13 +55,13 @@
                  ProjectId = null,
                  CategoryId = null,
                  LocationId = 200,
-                 MCCCategory = null,
+                 MCCCategory = Mcc.none,
                 },
                 new RuleModel
                 {
                  Id = 0,
                  Created = new DateTime(2026, 5, 16, 22, 32, 55, 354),
-                 Condition = "Description contains",
+                 Condition = RuleConditionType.DescriptionContains,
                  Description = "Hot Water",
                  Title = null,
                  IsActive = true,
@@ -69,7 +69,7 @@
                  ProjectId = null,
                  CategoryId = 100,
                  LocationId = null,
-                 MCCCategory = null,
+                 MCCCategory = Mcc.none,
                 },
             };
 
@@ -225,13 +225,13 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { monoAccount });
             DbManual.SetupTests(rules);
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
 
             vm.MonoAccount = monoAccount;
             vm.SetMonoTransactions(transactions);
 
             Assert.Equal(JsonConvert.SerializeObject(expected), JsonConvert.SerializeObject(vm.FinancierTransactions));
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -244,7 +244,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<LocationModel>());
             DbManual.SetupTests(new List<CategoryModel>());
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
 
             vm.MonoAccount = account;
             vm.SetMonoTransactions(transactions);
@@ -252,7 +252,7 @@
             vm.DeleteCommand.Execute(vm.FinancierTransactions.FirstOrDefault());
 
             Assert.Single(vm.FinancierTransactions);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -265,7 +265,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<LocationModel>());
             DbManual.SetupTests(new List<CategoryModel>());
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
 
             vm.MonoAccount = account;
             vm.SetMonoTransactions(transactions);
@@ -289,7 +289,7 @@
             {
                 Id = 101,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "Amazon",
                 CategoryId = categoryId,
                 Created = DateTime.Now,
@@ -312,14 +312,14 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -334,7 +334,7 @@
             {
                 Id = 100,
                 IsActive = true,
-                Condition = "Description matches",
+                Condition = RuleConditionType.DescriptionMatches,
                 Description = "Exact Match",
                 CategoryId = categoryId,
                 PayeeId = payeeId,
@@ -358,7 +358,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
@@ -366,7 +366,7 @@
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
             Assert.Equal(payeeId, vm.FinancierTransactions[0].PayeeId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -382,8 +382,8 @@
             {
                 Id = 105,
                 IsActive = true,
-                Condition = "MCC",
-                Description = "Готелі та курорти",
+                Condition = RuleConditionType.MCC,
+                MCCCategory = Mcc.hotels_and_resorts,
                 CategoryId = categoryId,
                 LocationId = locationId,
                 ProjectId = projectId,
@@ -407,7 +407,7 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
@@ -416,7 +416,7 @@
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
             Assert.Equal(locationId, vm.FinancierTransactions[0].LocationId);
             Assert.Equal(projectId, vm.FinancierTransactions[0].ProjectId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -429,7 +429,7 @@
             {
                 Id = 102,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "NonExistentText",
                 CategoryId = 100,
                 Created = DateTime.Now,
@@ -452,14 +452,14 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(0, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -472,7 +472,7 @@
             {
                 Id = 106,
                 IsActive = false,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "Apple",
                 CategoryId = 100,
                 Created = DateTime.Now,
@@ -496,14 +496,14 @@
             DbManual.SetupTests(new List<RuleModel> { rule });
 
             // Act
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(0, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -517,7 +517,7 @@
             {
                 Id = 103,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "google",
                 CategoryId = categoryId,
                 Created = DateTime.Now,
@@ -540,14 +540,14 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Theory]
@@ -562,7 +562,7 @@
             {
                 Id = 201,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "Meta",
                 CategoryId = categoryId1,
                 Created = DateTime.Now,
@@ -572,7 +572,7 @@
             {
                 Id = 202,
                 IsActive = true,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Description = "Paymnt",
                 CategoryId = categoryId2,
                 Created = DateTime.Now.AddSeconds(1),
@@ -595,14 +595,14 @@
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<RuleModel> { rule1, rule2 });
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(new List<BankTransaction> { transaction });
 
             // Assert
             Assert.Single(vm.FinancierTransactions);
             Assert.Equal(categoryId2, vm.FinancierTransactions[0].CategoryId);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Fact]
@@ -612,16 +612,16 @@
             var account = new AccountFilterModel { Id = 1 };
             var description = "Payment to Store";
 
-            object ruleDto = new RuleDTO
+            object ruleDto = new RuleDto
             {
                 Description = description,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Created = DateTime.Now,
                 IsActive = true,
                 CategoryId = 1000,
             };
 
-            _dialogWrapperMock
+            dialogWrapperMock
                 .Setup(d => d.ShowDialog<RuleControl>(It.IsAny<RuleControlVM>(), 380, 400, "Rule"))
                 .Returns(ruleDto);
 
@@ -646,7 +646,7 @@
             DbManual.SetupTests(new List<LocationModel>());
             DbManual.SetupTests(new List<CategoryModel>());
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(transactions);
 
@@ -664,7 +664,7 @@
             var addedRule = DbManual.Rules.LastOrDefault();
             Assert.NotNull(addedRule);
             Assert.Equal(description, addedRule.Description);
-            Assert.Equal("Description contains", addedRule.Condition);
+            Assert.Equal(RuleConditionType.DescriptionContains, addedRule.Condition);
             Assert.True(addedRule.IsActive);
             Assert.Equal(1000, addedRule.CategoryId);
 
@@ -673,7 +673,7 @@
             Assert.NotNull(transaction);
             Assert.Equal(1000, transaction.CategoryId);
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Fact]
@@ -683,16 +683,16 @@
             var account = new AccountFilterModel { Id = 1 };
             var description = "Payment to Store";
 
-            _dialogWrapperMock
+            dialogWrapperMock
                 .Setup(d => d.ShowDialog<RuleControl>(It.IsAny<RuleControlVM>(), 380, 400, "Rule"))
-                .Returns((RuleDTO)null);
+                .Returns((RuleDto)null);
 
             DbManual.SetupTests(new List<AccountFilterModel>() { account });
             DbManual.SetupTests(new List<LocationModel>());
             DbManual.SetupTests(new List<CategoryModel>());
             DbManual.SetupTests(new List<RuleModel>());
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
 
             await vm.AddRuleCommand.Execute(new FinancierTransactionDto
@@ -705,7 +705,7 @@
 
             // Assert
             Assert.Empty(DbManual.Rules);
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
         }
 
         [Fact]
@@ -714,10 +714,10 @@
             var account = new AccountFilterModel { Id = 1 };
             var description = "Restaurant Payment";
 
-            var ruleDto = new RuleDTO
+            var ruleDto = new RuleDto
             {
                 Description = description,
-                Condition = "Description matches",
+                Condition = RuleConditionType.DescriptionMatches,
                 Created = DateTime.Now,
                 IsActive = true,
                 CategoryId = 100,
@@ -743,7 +743,7 @@
                 },
             };
 
-            _dialogWrapperMock
+            dialogWrapperMock
                 .Setup(d => d.ShowDialog<RuleControl>(It.IsAny<RuleControlVM>(), 380, 400, "Rule"))
                 .Returns(ruleDto);
 
@@ -752,7 +752,7 @@
             DbManual.SetupTests(new List<CategoryModel>());
             DbManual.SetupTests(new List<RuleModel>());
 
-            var vm = new Page3VM(_dialogWrapperMock.Object);
+            var vm = new Page3VM(dialogWrapperMock.Object);
             vm.MonoAccount = account;
             vm.SetMonoTransactions(transactions);
 
@@ -769,7 +769,7 @@
             Assert.Single(DbManual.Rules);
             var addedRule = DbManual.Rules.First();
             Assert.Equal(description, addedRule.Description);
-            Assert.Equal("Description matches", addedRule.Condition);
+            Assert.Equal(RuleConditionType.DescriptionMatches, addedRule.Condition);
             Assert.True(addedRule.IsActive);
             Assert.Equal(100, addedRule.CategoryId);
             Assert.Equal(50, addedRule.LocationId);

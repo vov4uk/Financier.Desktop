@@ -6,6 +6,7 @@
              xmlns:UI="clr-namespace:Financier.Common.Model;assembly=Financier.Common"
              xmlns:controls="clr-namespace:Financier.Desktop.Pages.Controls"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="450">
@@ -35,7 +36,7 @@
                   VerticalAlignment="Center"
                   IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Active" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
+                <DataGridTemplateColumn Header="{loc:Translate Key=active}" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
                 <DataGridTemplateColumn Header=""
                                         dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
@@ -52,9 +53,9 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
-                <DataGridTextColumn Header="Description" Binding="{Binding Path=AccountDescription}"/>
-                <DataGridTextColumn Header="Total Amount" Binding="{Binding Path=AmountTitle}">
+                <DataGridTextColumn Header="{loc:Translate Key=title}" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn Header="{loc:Translate Key=description}" Binding="{Binding Path=AccountDescription}"/>
+                <DataGridTextColumn Header="{loc:Translate Key=total_amount}" Binding="{Binding Path=AmountTitle}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="HorizontalAlignment" Value="Right" />
@@ -74,7 +75,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Header="Include"
+                <DataGridTemplateColumn Header="{loc:Translate Key=include}"
                                         dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -84,7 +85,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Last transaction"
+                <DataGridTextColumn Header="{loc:Translate Key=last_transaction}"
                                     Binding="{Binding Path=LastTransactionDate, Converter= {StaticResource DatetimeConverter}}"/>
             </DataGrid.Columns>
         </DataGrid>

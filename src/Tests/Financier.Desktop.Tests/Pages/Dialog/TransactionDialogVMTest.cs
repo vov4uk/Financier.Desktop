@@ -39,7 +39,7 @@
             subTransaction.OriginalCurrencyId = 0;
             subTransaction.OriginalCurrency = default;
 
-            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionControlVM>(), 340, 340, "Sub Transaction"))
+            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionControlVM>(), 340, 340, "[sub_transaction]"))
                 .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionControlVM)a).Transaction; })
                 .Returns(subTransaction);
 
@@ -125,7 +125,7 @@
             subTransaction.OriginalCurrency = default;
             subTransaction.IsSubTransaction = true;
 
-            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionControlVM>(), 340, 340, "Sub Transaction"))
+            this.dialogMock.Setup(x => x.ShowDialog<SubTransactionControl>(It.IsAny<SubTransactionControlVM>(), 340, 340, "[sub_transaction]"))
                 .Callback<DialogBaseVM, double, double, string>((a, _, _, _) => { workingCopy = ((SubTransactionControlVM)a).Transaction; })
                 .Returns(subTransaction);
 

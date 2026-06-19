@@ -1,4 +1,6 @@
-﻿using Financier.Common.Model;
+﻿using System.Threading.Tasks;
+using Financier.Common.Localization;
+using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Data;
@@ -6,14 +8,14 @@ using Financier.Desktop.Helpers;
 using Financier.Desktop.ViewModel;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Views.Controls;
-using System.Threading.Tasks;
 
 namespace Financier.Desktop.Pages
 {
     public abstract class TagBaseVM<TEntity> : EntityBaseVM<TEntity>
         where TEntity : BaseModel, new()
     {
-        protected TagBaseVM(IFinancierDatabase db, IDialogWrapper dialogWrapper) : base(db, dialogWrapper)
+        protected TagBaseVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 
@@ -21,11 +23,11 @@ namespace Financier.Desktop.Pages
             where T : Tag, new()
         {
             T selectedEntity = await db.GetOrCreateAsync<T>(e);
-            TagControlVM context = new TagControlVM(new TagDTO(selectedEntity));
+            TagControlVM context = new TagControlVM(new TagDto(selectedEntity));
 
-            var result = dialogWrapper.ShowDialog<TagControl>(context, 180, 300, typeof(T).Name);
+            var result = dialogWrapper.ShowDialog<TagControl>(context, 180, 300, LocalizationService.Instance[typeof(T).Name.ToLowerInvariant()]);
 
-            var updatedItem = result as TagDTO;
+            var updatedItem = result as TagDto;
             if (updatedItem != null)
             {
                 selectedEntity.IsActive = updatedItem.IsActive;

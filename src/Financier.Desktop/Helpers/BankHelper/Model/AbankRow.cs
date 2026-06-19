@@ -1,11 +1,10 @@
-﻿using CsvHelper.Configuration.Attributes;
-using MiniExcelLibs.Attributes;
+﻿using System;
+using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
-using System;
 
-namespace Financier.Desktop.Helpers.Model
+namespace Financier.Desktop.Helpers.BankHelper.Model
 {
-    public class Abank_Row
+    public class AbankRow
     {
         [Index(0)]
         public string Date { get; set; }

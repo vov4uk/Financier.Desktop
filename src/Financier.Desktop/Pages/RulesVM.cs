@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Financier.Common.Entities;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
 using Financier.Desktop.Data;
@@ -15,7 +16,8 @@ namespace Financier.Desktop.ViewModel
     [ExcludeFromCodeCoverage]
     public class RulesVM : EntityBaseVM<RuleModel>
     {
-        public RulesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper) : base(db, dialogWrapper)
+        public RulesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
+            : base(db, dialogWrapper)
         {
         }
 
@@ -32,27 +34,27 @@ namespace Financier.Desktop.ViewModel
             Entities = new ObservableCollection<RuleModel>(DbManual.Rules.OrderBy(r => r.Created));
             foreach (var item in Entities)
             {
-                item.UpdateTitle();
+                item.UpdateTitles();
             }
         }
 
         private async Task OnRuleDelete(int id)
         {
-            DbManual.Rules.Remove(DbManual.Rules.FirstOrDefault(r => r.Id == id));
+            DbManual.Rules.Remove(DbManual.Rules.FirstOrDefault(r => r.Id == id)!);
             await RefreshData();
         }
 
         private async Task OpenRulesDialogAsync(int id)
         {
 
-            RuleDTO rule = null;
+            RuleDto rule = null!;
 
             if (id != 0)
             {
                 var ruleModel = DbManual.Rules.FirstOrDefault(r => r.Id == id);
                 if (ruleModel != null)
                 {
-                    rule = new RuleDTO
+                    rule = new RuleDto
                     {
                         CategoryId = ruleModel.CategoryId,
                         LocationId = ruleModel.LocationId,
@@ -61,7 +63,8 @@ namespace Financier.Desktop.ViewModel
                         Description = ruleModel.Description,
                         Condition = ruleModel.Condition,
                         Created = ruleModel.Created,
-                        IsActive = ruleModel.IsActive
+                        IsActive = ruleModel.IsActive,
+                        MCCCategory = ruleModel.MCCCategory
                     };
                 }
                 else
@@ -72,10 +75,10 @@ namespace Financier.Desktop.ViewModel
             }
             else
             {
-                rule = new RuleDTO()
+                rule = new RuleDto()
                 {
                     Description = "Description here",
-                    Condition = "Description contains",
+                    Condition = RuleConditionType.DescriptionContains,
                     Created = DateTime.Now,
                     IsActive = true
                 };
@@ -83,23 +86,23 @@ namespace Financier.Desktop.ViewModel
 
             RuleControlVM ruleVm = new RuleControlVM(rule);
 
-            var result = dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, "Rule");
+            var result = dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, LocalizationService.Instance.rule);
 
-            var updatedItem = result as RuleDTO;
+            var updatedItem = result as RuleDto;
             if (updatedItem != null)
             {
                 int newId = 0;
                 if (id == 0)
                 {
-                    newId = DbManual.Rules.Select(r => r.Id).Max().Value + 1;
+                    newId = (DbManual.Rules?.Max(r => r.Id) ?? 0) + 1;
                 }
                 else
                 {
                     var existingRule = DbManual.Rules.FirstOrDefault(r => r.Id == id);
-                    DbManual.Rules.Remove(existingRule);
+                    DbManual.Rules?.Remove(existingRule!);
                     newId = id;
                 }
-                DbManual.Rules.Add(new RuleModel
+                DbManual.Rules?.Add(new RuleModel
                 {
                     Description = updatedItem.Description,
                     CategoryId = updatedItem.CategoryId,
@@ -109,7 +112,8 @@ namespace Financier.Desktop.ViewModel
                     IsActive = updatedItem.IsActive,
                     LocationId = updatedItem.LocationId,
                     PayeeId = updatedItem.PayeeId,
-                    ProjectId = updatedItem.ProjectId
+                    ProjectId = updatedItem.ProjectId,
+                    MCCCategory = updatedItem.MCCCategory
                 });
 
                 await RefreshData();

@@ -5,21 +5,22 @@ using Prism.Mvvm;
 
 namespace Financier.Desktop.Data
 {
-    public class RuleDTO : BindableBase
+    public class RuleDto : BindableBase
     {
         private CategoryModel category;
         private int? categoryId;
-        private string condition;
+        private RuleConditionType condition;
         private string description;
         private bool isActive;
         private int? locationId;
         private int? payeeId;
         private int? projectId;
-        public RuleDTO()
+        private Mcc mccCategory;
+        public RuleDto()
         {
         }
 
-        public RuleDTO(RuleModel rulesModel)
+        public RuleDto(RuleModel rulesModel)
         {
             Description = rulesModel.Description;
             Condition = rulesModel.Condition;
@@ -29,11 +30,12 @@ namespace Financier.Desktop.Data
             CategoryId = rulesModel.CategoryId;
             LocationId = rulesModel.LocationId;
             Created = rulesModel.Created;
+            MCCCategory = rulesModel.MCCCategory;
         }
 
         public CategoryModel Category
         {
-            get => category ??= DbManual.Category?.Find(x => x.Id == CategoryId);
+            get => category ??= DbManual.Category?.Find(x => x.Id == CategoryId)!;
             set
             {
                 if (SetProperty(ref category, value))
@@ -55,7 +57,7 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public string Condition
+        public RuleConditionType Condition
         {
             get => condition;
             set
@@ -117,6 +119,18 @@ namespace Financier.Desktop.Data
                 if (SetProperty(ref projectId, value))
                 {
                     RaisePropertyChanged(nameof(ProjectId));
+                }
+            }
+        }
+
+        public Mcc MCCCategory
+        {
+            get => mccCategory;
+            set
+            {
+                if (SetProperty(ref mccCategory, value))
+                {
+                    RaisePropertyChanged(nameof(MCCCategory));
                 }
             }
         }

@@ -34,7 +34,7 @@ namespace Financier.DataAccess
                     .EnableSensitiveDataLogging(true)
                     .Options)
         {
-            _connection = RelationalOptionsExtension.Extract(ContextOptions).Connection;
+            _connection = RelationalOptionsExtension.Extract(ContextOptions).Connection!;
         }
 
         protected FinancierDatabase(DbContextOptions<FinancierDataContext> contextOptions)
@@ -63,15 +63,15 @@ namespace Financier.DataAccess
         {
             using var context = new FinancierDataContext(ContextOptions);
 
-            ResourceSet create = SQL_create_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            ResourceSet create = SQL_create_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)!;
             foreach (DictionaryEntry entry in create)
             {
-                await context.Database.ExecuteSqlRawAsync(Convert.ToString(entry.Value));
+                await context.Database.ExecuteSqlRawAsync(Convert.ToString(entry.Value)!);
             }
 
-            var alter = SQL_alter_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)
+            var alter = SQL_alter_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)!
                 .Cast<DictionaryEntry>()
-                .Select(entry => new KeyValuePair<string, string>(Convert.ToString(entry.Key), Convert.ToString(entry.Value)))
+                .Select(entry => new KeyValuePair<string, string>(Convert.ToString(entry.Key)!, Convert.ToString(entry.Value)!))
                 .OrderBy(x => x.Key)
                 .ToList();
             foreach (var entry in alter)
@@ -79,9 +79,9 @@ namespace Financier.DataAccess
                 await context.Database.ExecuteSqlRawAsync(entry.Value);
             }
 
-            var view = SQL_views_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)
+            var view = SQL_views_files.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)!
                 .Cast<DictionaryEntry>()
-                .Select(entry => new KeyValuePair<string, string>(Convert.ToString(entry.Key), Convert.ToString(entry.Value)))
+                .Select(entry => new KeyValuePair<string, string>(Convert.ToString(entry.Key)!, Convert.ToString(entry.Value)!))
                 .OrderBy(x => x.Key)
                 .ToList();
             foreach (var entry in view)
@@ -103,7 +103,7 @@ namespace Financier.DataAccess
                 foreach (var item in Backup.RESTORE_SCRIPTS)
                 {
                     var sql = SQL_alter_files.ResourceManager.GetString(item);
-                    await context.Database.ExecuteSqlRawAsync(sql);
+                    await context.Database.ExecuteSqlRawAsync(sql!);
                 }
 
                 await context.SaveChangesAsync();
@@ -255,10 +255,10 @@ namespace Financier.DataAccess
                         var newObject = new T();
                         foreach (PropertyInfo property in newObject.GetType().GetProperties())
                         {
-                            ColumnAttribute customAttribute = Attribute.GetCustomAttribute(property, typeof(ColumnAttribute)) as ColumnAttribute;
+                            ColumnAttribute customAttribute = (Attribute.GetCustomAttribute(property, typeof(ColumnAttribute)) as ColumnAttribute)!;
                             if (customAttribute != null)
                             {
-                                int ordinal = reader.GetOrdinal(customAttribute.Name);
+                                int ordinal = reader.GetOrdinal(customAttribute.Name!);
                                 object obj = ordinal != -1 ?
                                     reader.GetValue(ordinal) :
                                     throw new InvalidCastException(string.Format("Class [{0}] have attribute of field [{1}] which not exist in reader", this.GetType(), customAttribute.Name));
@@ -282,10 +282,13 @@ namespace Financier.DataAccess
             await using (var db = new FinancierDataContext(ContextOptions))
             using (var command = db.Database.GetDbConnection().CreateCommand())
             {
-                string query = $"VACUUM main INTO '{dest}'";
-                Logger.Info(query);
-                command.CommandText = query;
+                command.CommandText = "VACUUM main INTO @path";
                 command.CommandType = CommandType.Text;
+                var param = command.CreateParameter();
+                param.ParameterName = "@path";
+                param.Value = dest;
+                command.Parameters.Add(param);
+                Logger.Info("VACUUM main INTO @path (path={0})", dest);
 
                 await db.Database.OpenConnectionAsync();
 
@@ -313,7 +316,7 @@ namespace Financier.DataAccess
             var underlyingType = Nullable.GetUnderlyingType(t);
             if (Nullable.GetUnderlyingType(t) != null)
             {
-                return Convert.ChangeType(x, underlyingType);
+                return Convert.ChangeType(x, underlyingType!);
             }
             return Convert.ChangeType(x, t);
         }

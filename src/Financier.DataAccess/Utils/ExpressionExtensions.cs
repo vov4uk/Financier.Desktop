@@ -21,10 +21,10 @@ namespace Financier.DataAccess.Utils
             ParameterExpression parameter = Expression.Parameter(typeof(T));
 
             ReplaceVisitor leftVisitor = new ReplaceVisitor(exprLeft.Parameters[0], parameter);
-            Expression left = leftVisitor.Visit(exprLeft.Body);
+            Expression left = leftVisitor.Visit(exprLeft.Body)!;
 
             var rightVisitor = new ReplaceVisitor(exprRight.Parameters[0], parameter);
-            Expression right = rightVisitor.Visit(exprRight.Body);
+            Expression right = rightVisitor.Visit(exprRight.Body)!;
 
             return Expression.Lambda<Func<T, bool>>(
                 conditionalExpression(left, right),
@@ -41,8 +41,8 @@ namespace Financier.DataAccess.Utils
                 this.old = oldValue;
                 this.newVal = newValue;
             }
-
-            public override Expression Visit(Expression node)
+#nullable enable
+            public override Expression? Visit(Expression? node)
             {
                 if (node == this.old)
                 {
@@ -51,6 +51,7 @@ namespace Financier.DataAccess.Utils
 
                 return base.Visit(node);
             }
+#nullable disable
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
@@ -6,7 +6,30 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\mcc.json"/>
+    <!-- Default (English) resources — code-gen produces Resources.Designer.cs with public access -->
+    <EmbeddedResource Update="Localization\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <!-- Polish satellite resources — culture detected from filename suffix (.pl) -->
+    <EmbeddedResource Update="Localization\Resources.pl.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </EmbeddedResource>
+    <!-- Ukrainian satellite resources — culture detected from filename suffix (.uk) -->
+    <EmbeddedResource Update="Localization\Resources.uk.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\ResourcesMcc.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourcesMcc.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\ResourcesMcc.pl.resx">
+      <DependentUpon>ResourcesMcc.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\ResourcesMcc.uk.resx">
+      <DependentUpon>ResourcesMcc.resx</DependentUpon>
+    </EmbeddedResource>
+    <!-- Link the designer file to its parent .resx so VS nests it correctly -->
   </ItemGroup>
 
   <ItemGroup>
@@ -21,11 +44,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Filters\DateFilter.xaml.cs">
-      <SubType>Code</SubType>
+    <Compile Update="Localization\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Filters\TopCategoryFilter.xaml.cs">
-      <SubType>Code</SubType>
+    <Compile Update="Localization\ResourcesMcc.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResourcesMcc.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 

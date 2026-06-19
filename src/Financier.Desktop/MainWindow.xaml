@@ -4,6 +4,7 @@
                xmlns:data="clr-namespace:Financier.Common.Model;assembly=Financier.Common"
                xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
                xmlns:reports="clr-namespace:Financier.Reports;assembly=Financier.Reports"
+               xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
                Icon="pack://application:,,,/Images/ic_launcher.png"
                xmlns:ViewModel="clr-namespace:Financier.Desktop.ViewModel"
                xmlns:View="clr-namespace:Financier.Desktop.Views"
@@ -109,39 +110,39 @@
 
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu ContextMenu="{x:Null}"
-                                       Background="#858585"
-                                       BorderBrush="#858585">
-                    <RibbonApplicationMenuItem Header="Open backup"
+                                       Background="{StaticResource DefaultGray}"
+                                       BorderBrush="{StaticResource DefaultGray}">
+                    <RibbonApplicationMenuItem Header="{loc:Translate Key=open_backup}"
                                                Command="{Binding Path=OpenBackupCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconFileArrowUp}" />
-                    <RibbonApplicationMenuItem Header="Save backup"
+                    <RibbonApplicationMenuItem Header="{loc:Translate Key=save_backup}"
                                                Command="{Binding Path=SaveBackupCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconFileArrowDown}" />
-                    <RibbonApplicationMenuItem Header="Save as .db"
+                    <RibbonApplicationMenuItem Header="{loc:Translate Key=save_as_db}"
                                                Command="{Binding Path=SaveBackupAsDbCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconDatabase}" />
-                    <RibbonApplicationMenuItem Header="Set default directory"
+                    <RibbonApplicationMenuItem Header="{loc:Translate Key=set_default_directory}"
                                                Click="RibbonApplicationMenuItem_Click"
                                                ImageSource="{StaticResource ResourceKey=IconDropboxBrands}" />
-                    <RibbonApplicationMenuItem Header="Settings"
+                    <RibbonApplicationMenuItem Header="{loc:Translate Key=settings}"
                                                Command="{Binding Path=SettingsCommand}"
                                                ImageSource="{StaticResource ResourceKey=IconGear}" />
                     <RibbonApplicationMenu.FooterPaneContent>
                         <DockPanel LastChildFill="False">
                             <RibbonButton Click="Exit_Click"
                                           SmallImageSource="{StaticResource IconArrowRightToBracket}"
-                                          Label="Exit"
+                                          Label="{loc:Translate Key=exit}"
                                           ToolTipTitle="Exit"
                                           KeyTip="X"
                                           DockPanel.Dock="Right"
                                           Margin="2"
-                                          BorderBrush="#858585" />
+                                          BorderBrush="{StaticResource DefaultGray}" />
                         </DockPanel>
                     </RibbonApplicationMenu.FooterPaneContent>
                     <RibbonApplicationMenu.AuxiliaryPaneContent>
                         <RibbonGallery CanUserFilter="False"
                                        ScrollViewer.VerticalScrollBarVisibility="Auto">
-                            <RibbonGalleryCategory Header="Default backup directory :"
+                            <RibbonGalleryCategory Header="{loc:Translate Key=default_backup_directory}"
                                                    Background="Transparent">
                                 <RibbonGalleryCategory.Items>
                                     <RibbonGalleryItem IsEnabled="False">
@@ -163,54 +164,54 @@
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
 
-            <RibbonTab Header="Main"
+            <RibbonTab Header="{loc:Translate Key=main}"
                        Selector.IsSelected="True">
-                <RibbonGroup Header="Entities" ContextMenu="{x:Null}">
+                <RibbonGroup Header="{loc:Translate Key=entities}" ContextMenu="{x:Null}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconWallet}"
-                                  Label="Accounts"
+                                  Label="{loc:Translate Key=accounts}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource AccountType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconFolderTree}"
-                                  Label="Categories" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{loc:Translate Key=categories}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource CategoryType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconListCheck}"
-                                  Label="Projects" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{loc:Translate Key=projects}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource ProjectType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconAddressBook}"
-                                  Label="Payees" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{loc:Translate Key=payees}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource PayeeType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconMap}"
-                                  Label="Locations" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{loc:Translate Key=locations}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource LocationType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconDollarSign}"
-                                  Label="Currencies" Command="{Binding Path=MenuNavigateCommand}"
+                                  Label="{loc:Translate Key=currencies}" Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource CurrencyType}" />
                     <RibbonButton SmallImageSource="{StaticResource ResourceKey=IconArrowTrendUp}"
-                                  Label="Exchange rates"
+                                  Label="{loc:Translate Key=exchange_rates}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource CurrencyExchangeRateType}" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Blotter"
-                             Header="Blotter">
+                             Header="{loc:Translate Key=blotter}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconReceipt}"
-                                  Label="Blotter"
+                                  Label="{loc:Translate Key=blotter}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource TransactionsViewType}" />
                     <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/actionbar_filter_cancel.png" Label="Clear filter" />-->
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Reports"
-                             Header="Reports">
+                             Header="{loc:Translate Key=reports}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconChartBar}"
-                                  Label="Reports"
+                                  Label="{loc:Translate Key=reports}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource ReportsControl}" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="Rules"
-                             Header="Rules">
+                             Header="{loc:Translate Key=rules}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconBoltLightning}"
-                                  Label="Rules"
+                                  Label="{loc:Translate Key=rules}"
                                   Command="{Binding Path=MenuNavigateCommand}"
                                   CommandParameter="{StaticResource RulesType}" />
                 </RibbonGroup>
@@ -220,39 +221,39 @@
                     <RibbonButton SmallImageSource="pack://application:,,,/Images/backup_file.png"
                                   Label="Export to csv" />
                 </RibbonGroup>-->
-                <RibbonGroup Header="Import"
+                <RibbonGroup Header="{loc:Translate Key=import}"
                              IsEnabled="True">
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/monobank.png"
-                                  Label="Monobank CSV"
+                                  Label="{loc:Translate Key=monobank_csv}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Monobank}" />
-                    <RibbonMenuButton  Label="A-Bank"
+                    <RibbonMenuButton  Label="{loc:Translate Key=a_bank}"
                                        LargeImageSource="pack://application:,,,/Images/bank/abank.png" >
 
-                        <RibbonMenuItem  Header="PDF"
+                        <RibbonMenuItem  Header="{loc:Translate Key=pdf}"
                                          Foreground="Red"
                                          Command="{Binding Path=ImportCommand}"
                                          CommandParameter="{x:Static Wizard:WizardTypes.ABank}" />
-                        <RibbonMenuItem  Header="XLSX"
+                        <RibbonMenuItem  Header="{loc:Translate Key=xlsx}"
                                          Foreground="Green"
                                          Command="{Binding Path=ImportCommand}"
                                          CommandParameter="{x:Static Wizard:WizardTypes.ABankExcel}" />
                     </RibbonMenuButton>
 
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/pumb.png"
-                                  Label="PUMB PDF"
+                                  Label="{loc:Translate Key=pumb_pdf}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pumb}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/pireus.png"
-                                  Label="Pireus PDF"
+                                  Label="{loc:Translate Key=pireus_pdf}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pireus}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/privat.png"
-                                  Label="Privat XLSX"
+                                  Label="{loc:Translate Key=privat_xlsx}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Privat}" />
                     <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/pko.png"
-                                  Label="PKO PDF"
+                                  Label="{loc:Translate Key=pko_pdf}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pko}" />
                 </RibbonGroup>
@@ -260,102 +261,102 @@
                 <RibbonGroup x:Name="Transaction"
                              DataContext="{Binding}"
                              Visibility="{Binding Path=IsTransactionPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                             Header="Transaction">
+                             Header="{loc:Translate Key=transaction}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add Expense"
+                                  Label="{loc:Translate Key=add_expense}"
                                   Command="{Binding Path=Blotter.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconArrowRightArrowLeft}"
-                                  Label="Add Transfer"
+                                  Label="{loc:Translate Key=add_transfer}"
                                   Command="{Binding Path=Blotter.AddTransferCommand}" />
-                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTable}"
-                                  Label="Add Template"
-                                  Command="{Binding Path=Blotter.AddTemplateCommand}" />
+                    <!--<RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTable}"
+                                  Label="{loc:Translate Key=add_template}"
+                                  Command="{Binding Path=Blotter.AddTemplateCommand}" />-->
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{loc:Translate Key=edit}"
                                   Command="{Binding Path=Blotter.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconCopy}"
-                                  Label="Duplicate"
+                                  Label="{loc:Translate Key=duplicate}"
                                   Command="{Binding Path=Blotter.DuplicateCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{loc:Translate Key=delete}"
                                   Command="{Binding Path=Blotter.DeleteCommand}" />
-                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconCircleInfo}"
-                                  Label="Info"
-                                  Command="{Binding Path=Blotter.InfoCommand}" />
+                    <!--<RibbonButton LargeImageSource="{StaticResource ResourceKey=IconCircleInfo}"
+                                  Label="{loc:Translate Key=info}"
+                                  Command="{Binding Path=Blotter.InfoCommand}" />-->
                 </RibbonGroup>
 
-                <RibbonGroup Header="Locations"
+                <RibbonGroup Header="{loc:Translate Key=locations}"
                              Visibility="{Binding Path=IsLocationPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add"
+                                  Label="{loc:Translate Key=add}"
                                   Command="{Binding Path=Locations.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{loc:Translate Key=edit}"
                                   Command="{Binding Path=Locations.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{loc:Translate Key=delete}"
                                   IsEnabled="False"
                                   Command="{Binding Path=Locations.DeleteCommand}" />
                 </RibbonGroup>
 
-                <RibbonGroup Header="Project"
+                <RibbonGroup Header="{loc:Translate Key=project}"
                              Selector.IsSelected="{Binding Path=IsProjectPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsProjectPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add"
+                                  Label="{loc:Translate Key=add}"
                                   Command="{Binding Path=Projects.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{loc:Translate Key=edit}"
                                   Command="{Binding Path=Projects.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{loc:Translate Key=delete}"
                                   IsEnabled="False"
                                   Command="{Binding Path=Projects.DeleteCommand}" />
                 </RibbonGroup>
 
-                <RibbonGroup Header="Payee"
+                <RibbonGroup Header="{loc:Translate Key=payee}"
                              Selector.IsSelected="{Binding Path=IsPayeePageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsPayeePageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add"
+                                  Label="{loc:Translate Key=add}"
                                   Command="{Binding Path=Payees.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{loc:Translate Key=edit}"
                                   Command="{Binding Path=Payees.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{loc:Translate Key=delete}"
                                   IsEnabled="False"
                                   Command="{Binding Path=Payees.DeleteCommand}" />
                 </RibbonGroup>
-                <RibbonGroup Header="Rule"
+                <RibbonGroup Header="{loc:Translate Key=rule}"
                              Selector.IsSelected="{Binding Path=IsRulesPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsRulesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
-                                  Label="Add"
+                                  Label="{loc:Translate Key=add}"
                                   Command="{Binding Path=Rules.AddCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
-                                  Label="Edit"
+                                  Label="{loc:Translate Key=edit}"
                                   Command="{Binding Path=Rules.EditCommand}" />
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
-                                  Label="Delete"
+                                  Label="{loc:Translate Key=delete}"
                                   Command="{Binding Path=Rules.DeleteCommand}" />
                 </RibbonGroup>
-                <RibbonGroup Header="Exchange Rates"
+                <RibbonGroup Header="{loc:Translate Key=exchange_rates}"
                              Selector.IsSelected="{Binding Path=IsExchangeRatesPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsExchangeRatesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconDownload}"
-                                  Label="Download"
+                                  Label="{loc:Translate Key=download}"
                                   Command="{Binding Path=RefreshExchangeRatesCommand}" />
                 </RibbonGroup>
-                <RibbonGroup Header="General"
+                <RibbonGroup Header="{loc:Translate Key=general}"
                          DataContext="{Binding}">
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconRefresh}"
-                              Label="Check for Updates"
+                              Label="{loc:Translate Key=check_for_updates}"
                               Command="{Binding Path=CheckForUpdateCommand}"
                               CommandParameter="{StaticResource True}" />
                 </RibbonGroup>
@@ -377,7 +378,7 @@
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            FontWeight="Bold"
-                           Text="Drop .backup file here" />
+                           Text="{loc:Translate Key=drag_and_drop}" />
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1"
@@ -403,3 +404,4 @@
         </Grid>
     </Grid>
 </RibbonWindow >
+

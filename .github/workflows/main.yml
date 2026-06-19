@@ -61,6 +61,7 @@ jobs:
           --verbosity normal
 
   pack:
+    if: ${{ github.ref_type == 'tag' }}
     needs: format
     strategy:
       matrix:
@@ -102,7 +103,6 @@ jobs:
           if-no-files-found: error
 
   release:
-    if: ${{ github.ref_type == 'tag' }}
 
     needs:
       - format
@@ -121,7 +121,7 @@ jobs:
         run: >
           gh release create ${{ github.ref_name }}
           --repo ${{ github.event.repository.full_name }}
-          --title ${{ github.ref_name }}
+          --title Financier.Desktop v${{ github.ref_name }}
           --generate-notes
           --verify-tag
 

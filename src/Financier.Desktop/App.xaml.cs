@@ -1,7 +1,9 @@
 ﻿using NLog;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
 
 namespace Financier.Desktop
 {
@@ -13,6 +15,10 @@ namespace Financier.Desktop
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
             SetupExceptionHandling();
         }
@@ -37,10 +43,10 @@ namespace Financier.Desktop
 
         private static void LogUnhandledException(Exception exception)
         {
-            MessageBox.Show(exception?.InnerException?.Message ?? exception.Message);
+            MessageBox.Show(exception?.InnerException?.Message ?? exception?.Message);
             _logger.Error(exception);
-            _logger.Error(exception.InnerException);
-            _logger.Error(exception.StackTrace);
+            _logger.Error(exception?.InnerException);
+            _logger.Error(exception?.StackTrace);
         }
     }
 }

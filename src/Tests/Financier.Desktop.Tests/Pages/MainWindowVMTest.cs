@@ -112,7 +112,7 @@
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.dbMock.Setup(x => x.RebuildAccountBalanceAsync(It.IsAny<int>())).Returns(Task.CompletedTask);
             this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
+            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, "Transaction"))
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
@@ -138,7 +138,7 @@
 
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "Transfer"))
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "[transfer]"))
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
@@ -335,7 +335,7 @@
         {
             await this.SetupDbManual();
             var vm = this.GetFinancierVM();
-            this.entityReaderMock.Setup(x => x.ParseBackupFile(backupPath)).Returns((entities, backupVersion, entityColumnsOrder));
+            this.entityReaderMock.Setup(x => x.ParseBackupFileAsync(backupPath)).ReturnsAsync((entities, backupVersion, entityColumnsOrder));
 
             this.dialogMock.Setup(x => x.ShowMessageBox(It.IsAny<string>(), "Success", false)).Returns(true);
             this.dbMock.Setup(x => x.ImportEntitiesAsync(entities)).Returns(Task.CompletedTask).Verifiable();
@@ -471,7 +471,7 @@
             this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
 
             this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "Transfer"))
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "[transfer]"))
                 .Returns(null);
 
             var vm = this.GetFinancierVM();
@@ -505,7 +505,7 @@
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
 
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "Transfer"))
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "[transfer]"))
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
@@ -519,7 +519,7 @@
 
         [Theory]
         [AutoMoqData]
-        public async Task Projects_AddRaised_NewItemAdded(TagDTO result)
+        public async Task Projects_AddRaised_NewItemAdded(TagDto result)
         {
             var location = new Project() { Id = 0 };
             Project[] actual = null;
@@ -653,7 +653,7 @@
             this.dbMock.Setup(x => x.ExecuteQuery<Years>(It.IsAny<string>())).ReturnsAsync(new List<Years>() { new Years() });
             this.dbMock.Setup(x => x.ExecuteQuery<LocationModel>(It.IsAny<string>())).ReturnsAsync(new List<LocationModel>() { new LocationModel() });
 
-            DbManual.ResetAllManuals();
+            DbManual.ResetAllDatabaseManuals();
             await DbManual.SetupAsync(this.dbMock.Object);
         }
 

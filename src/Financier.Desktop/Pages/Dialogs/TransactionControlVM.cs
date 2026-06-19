@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Financier.Common.Entities;
+using Financier.Common.Localization;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Views;
@@ -50,7 +51,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private static void CopySubTransaction(TransactionDto original, TransactionDto modifiedCopy)
         {
             original.CategoryId = modifiedCopy.CategoryId;
-            original.Category = DbManual.Category?.Find(x => x.Id == modifiedCopy.CategoryId);
+            original.Category = DbManual.Category?.Find(x => x.Id == modifiedCopy.CategoryId)!;
             original.FromAmount = modifiedCopy.RealFromAmount;
             original.IsAmountNegative = modifiedCopy.IsAmountNegative;
             original.Note = modifiedCopy.Note;
@@ -82,7 +83,7 @@ namespace Financier.Desktop.ViewModel.Dialog
             {
                 foreach (var item in outputTransactions)
                 {
-                    item.Category = DbManual.Category?.Find(x => x.Id == item.CategoryId);
+                    item.Category = DbManual.Category?.Find(x => x.Id == item.CategoryId)!;
                     Transaction.SubTransactions.Add(item);
                 }
                 Transaction.RecalculateUnSplitAmount();
@@ -93,13 +94,17 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private void EditSubTransaction(BaseTransactionDto original)
         {
-            if (original is TransactionDto)
+            var transaction = original as TransactionDto;
+            if (transaction != null)
             {
-                ShowSubTransactionDialog(original as TransactionDto, false);
+                ShowSubTransactionDialog(transaction, false);
+                return;
             }
-            else if (original is TransferDto)
+
+            var transfer = original as TransferDto;
+            if (transfer != null)
             {
-                ShowSubTransferDialog(original as TransferDto, false);
+                ShowSubTransferDialog(transfer, false);
             }
         }
 
@@ -107,7 +112,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             if (Transaction.IsOriginalFromAmountVisible)
             {
-                this.dialogWrapper.ShowMessageBox("Split-transfers with a currency differ from account's currency are not yet supported", "Not supported");
+                this.dialogWrapper.ShowMessageBox(LocalizationService.Instance.split_transfers_currency_not_supported, LocalizationService.Instance.not_supported);
                 return;
             }
 
@@ -127,7 +132,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
             var viewModel = new TransferControlVM(workingCopy);
 
-            var dialogResult = dialogWrapper.ShowDialog<TransferControl>(viewModel, 385, 340, "Transfer");
+            var dialogResult = dialogWrapper.ShowDialog<TransferControl>(viewModel, 385, 340, LocalizationService.Instance.transfer);
 
             var modifiedCopy = dialogResult as TransferDto;
             if (modifiedCopy != null)
@@ -160,7 +165,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
             var viewModel = new SubTransactionControlVM(workingCopy);
 
-            var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, "Sub Transaction");
+            var dialogResult = dialogWrapper.ShowDialog<SubTransactionControl>(viewModel, 340, 340, LocalizationService.Instance.sub_transaction);
 
             var modifiedCopy = dialogResult as TransactionDto;
             if (modifiedCopy != null)

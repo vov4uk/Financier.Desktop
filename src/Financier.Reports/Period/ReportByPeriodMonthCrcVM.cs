@@ -1,4 +1,5 @@
 ﻿using Financier.Common.Attribute;
+using Financier.Common.Localization;
 using Financier.DataAccess.Abstractions;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Financier.Reports
 {
-    [Header("By months")]
+    [Header("reports_by_months")]
     public class ReportByPeriodMonthCrcVM : BaseReportVM<ReportByPeriodMonthCrcModel>
     {
         private const string BaseSqlText = @" /* ReportByPeriodMonthCrcVM */
@@ -61,7 +62,7 @@ order by
         {
             var saldo = new LineSeries
             {
-                Title = "Saldo",
+                Title = LocalizationService.Instance.saldo,
                 RenderInLegend = true,
                 LabelFormatString = "{1}",
                 MarkerType = MarkerType.Circle,
@@ -71,13 +72,13 @@ order by
             {
                 XAxisKey = "Value",
                 YAxisKey = "Category",
-                Title = "Outcome",
+                Title = LocalizationService.Instance.expense,
                 RenderInLegend = true,
             };
 
             var credit = new BarSeries
             {
-                Title = "Income",
+                Title = LocalizationService.Instance.income,
                 XAxisKey = "Value",
                 YAxisKey = "Category",
                 RenderInLegend = true,

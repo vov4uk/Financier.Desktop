@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Financier.Common.Attribute;
+using Financier.Common.Localization;
 using Financier.Converters;
 using Financier.DataAccess.Abstractions;
+using Financier.DataAccess.Data;
 using Financier.Reports.Structure;
 using OxyPlot.Axes;
 using OxyPlot.Legends;
@@ -11,7 +13,7 @@ using OxyPlot.Series;
 
 namespace Financier.Reports
 {
-    [Header("By category")]
+    [Header("reports_by_category")]
     public class ByCategoryReportVM : BaseReportVM<ByCategoryReportModel>
     {
         private const string BaseSqlText = @" /* ByCategoryReportModel */
@@ -102,7 +104,7 @@ ORDER  BY total ASC ";
             {
                 MinorStep = 1,
                 Position = AxisPosition.Left,
-                Title = "Category",
+                Title = LocalizationService.Instance.category,
                 TitleFormatString = "{0}",
             };
 
@@ -114,13 +116,13 @@ ORDER  BY total ASC ";
 
             var incomeSeries = new BarSeries
             {
-                Title = "Income",
+                Title = LocalizationService.Instance.income,
                 LabelFormatString = "{0}",
                 LabelPlacement = LabelPlacement.Base
             };
             var ExpenseSeries = new BarSeries
             {
-                Title = "Expense",
+                Title = LocalizationService.Instance.expense,
                 LabelFormatString = "-{0}",
                 LabelPlacement = LabelPlacement.Base
             };

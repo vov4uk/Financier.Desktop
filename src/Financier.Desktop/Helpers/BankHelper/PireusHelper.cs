@@ -1,27 +1,29 @@
-﻿using CsvHelper;
-using Financier.Desktop.Helpers.Model;
-using Financier.Desktop.Wizards;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CsvHelper;
+using Financier.Common.Localization;
+using Financier.Desktop.Helpers.BankHelper.Model;
+using Financier.Desktop.Wizards;
+using static Financier.Common.DoubleUtils;
 
 namespace Financier.Desktop.Helpers.BankHelper
 {
     public class PireusHelper : BankPdfHelperBase
     {
-        public override string BankTitle => "Pireus";
+        public override string BankTitle => LocalizationService.Instance.pireus;
 
         protected override IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages)
         {
             var transactions = new List<BankTransaction>();
 
 
-            List<Pireus_Row> converted = new List<Pireus_Row>();
+            List<PireusRow> converted = new List<PireusRow>();
 
             using (var csv = new CsvReader(new StringReader(string.Join(Environment.NewLine, pages)), DefaultCsvReaderConfig))
             {
-                var records = csv.GetRecords<Pireus_Row>().ToList();
+                var records = csv.GetRecords<PireusRow>().ToList();
                 converted.AddRange(records);
             }
 
@@ -31,12 +33,12 @@ namespace Financier.Desktop.Helpers.BankHelper
                 var operationAmount = GetDouble(item.OperationAmount);
                 var cardCurrencyAmount = GetDouble(item.CardCurrencyAmount);
 
-                if (cardCurrencyAmount == 0)
+                if (DoubleEqual(cardCurrencyAmount, 0))
                 {
                     cardCurrencyAmount = operationAmount;
                 }
 
-                if (operationAmount == 0)
+                if (DoubleEqual(operationAmount, 0))
                 {
                     continue;
                 }
@@ -46,7 +48,7 @@ namespace Financier.Desktop.Helpers.BankHelper
                     Balance = GetDouble(item.Balance),
 
                     Commission = GetDouble(item.Commision),
-                    OperationCurrency = operationAmount != cardCurrencyAmount ? operationCurrency : null,
+                    OperationCurrency = DoubleNotEqual(operationAmount, cardCurrencyAmount) ? operationCurrency! : null!,
                     OperationAmount = operationAmount,
                     CardCurrencyAmount = cardCurrencyAmount,
                     Description = item.Details.Replace("(", Space).Replace(")", Space),

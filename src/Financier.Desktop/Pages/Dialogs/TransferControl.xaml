@@ -5,7 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
-             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog" xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewmodel:TransferControlVM}, IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
@@ -19,7 +21,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
-              Header="Transfer details"
+              Header="{loc:Translate Key=transfer_details}"
               FontSize="12"
               Background="{StaticResource WindowBackgroundBrush}">
         <GroupBox.Resources>
@@ -91,7 +93,7 @@
                 </Grid>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                           Text="From Account"/>
+                           Text="{loc:Translate Key=from_account}"/>
                 <ComboBox  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
                            ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                            SelectedItem="{Binding Transfer.FromAccount}"
@@ -103,7 +105,7 @@
                            ItemTemplate="{StaticResource ResourceKey=IActive}"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" 
-                           Text="To Account"/>
+                           Text="{loc:Translate Key=to_account}"/>
                 <ComboBox  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
                            ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                            SelectedItem="{Binding Transfer.ToAccount}"
@@ -115,8 +117,14 @@
 
                 <TextBlock  Grid.Column="0" Grid.Row="5"
                             Grid.ColumnSpan="3"
-                            x:Name="FromAmountBlock"
-                            Text="{Binding Path=Transfer.FromAccountCurrency.Name, StringFormat={}Amount Out ({0}), TargetNullValue=Amount}" />
+                            x:Name="FromAmountBlock">
+                      <TextBlock.Text>
+                          <MultiBinding Converter="{StaticResource localizedFormatConverter}">
+                              <Binding Source="{x:Static loc:LocalizationService.Instance}" Path="[amount_out]" />
+                              <Binding Path="Transfer.FromAccountCurrency.Name" />
+                          </MultiBinding>
+                      </TextBlock.Text>
+                </TextBlock>
                 <xctk:IconButton    Grid.Column="0" Grid.Row="6"
                                     IsEnabled="False"
                                     Height="24"
@@ -133,8 +141,14 @@
                                     ShowButtonSpinner="True" />
 
                 <TextBlock  Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3"
-                            Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                            Text="{Binding Path=Transfer.ToAccountCurrency.Name, StringFormat={}Amount In ({0}), TargetNullValue=Amount}" />
+                            Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource localizedFormatConverter}">
+                            <Binding Source="{x:Static loc:LocalizationService.Instance}" Path="[amount_in]" />
+                            <Binding Path="Transfer.ToAccountCurrency.Name" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
                 <xctk:IconButton    Grid.Column="0" Grid.Row="8"
                                     Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                                     Height="24"
@@ -153,7 +167,7 @@
 
                 <TextBlock Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="3"
                            Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
-                           Text="Rate"/>
+                           Text="{loc:Translate Key=rate}"/>
                 <xctk:DecimalUpDown Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3"
                                     Visibility="{Binding Path=Transfer.IsToAmountVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                                     Value="{Binding Transfer.Rate}"
@@ -170,7 +184,7 @@
                 </Border>
 
                 <TextBlock Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3"
-                           Text="Note"/>
+                           Text="{loc:Translate Key=note}"/>
                 <TextBox   Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2"
                            Text="{Binding Transfer.Note}" />
                 <xctk:IconButton Grid.Row="13" Grid.Column="2"
@@ -187,10 +201,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Margin="2"
                         Command="{Binding SaveCommand}"
-                        Content="SAVE" />
+                        Content="{loc:Translate Key=save}" />
                 <Button Grid.Column="1" Margin="2"
                         Command="{Binding CancelCommand}"
-                        Content="CANCEL" />
+                        Content="{loc:Translate Key=cancel}" />
             </Grid>
         </Grid>
     </GroupBox>

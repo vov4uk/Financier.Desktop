@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Financier.Desktop.Pages.Dialogs"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             xmlns:model="clr-namespace:Financier.Common.Model;assembly=Financier.Common"
              mc:Ignorable="d" 
              d:DesignHeight="360"
              d:DesignWidth="400">
@@ -20,7 +22,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <GroupBox Margin="5"
-              Header="Rule details"
+              Header="{loc:Translate Key=rule_details}"
               FontSize="12">
         <GroupBox.Resources>
             <Style TargetType="{x:Type Image}">
@@ -43,7 +45,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <GroupBox Grid.Row="0" Margin="5" Header="Conditions">
+            <GroupBox Grid.Row="0" Margin="5" Header="{loc:Translate Key=conditions}">
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -52,7 +54,7 @@
                     <ComboBox Grid.Column="0"
                               Margin="2"
                               Height="24"
-                              ItemsSource="{x:Static local:RuleControlVM.ConditionTypes}"
+                              ItemsSource="{Binding Source={loc:EnumBinding {x:Type model:RuleConditionType}}}"
                               SelectedValue="{Binding SelectedConditionType}" />
                     <TextBox Grid.Column="1"
                              Margin="2"
@@ -65,13 +67,15 @@
                     <xctk:WatermarkComboBox x:Name="MCCBox"
                                             Grid.Column="1"
                                             Margin="2"
-                                            IsEditable="True"
                                             Visibility="{Binding Path=IsMCCSelected, Converter={StaticResource BoolToVis}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                            ItemsSource="{Binding Source={x:Static fcrd:DbManual.MCCCategoriesKeys}, Mode=OneWay}"
-                                            SelectedValue="{Binding SelectedMCC}" />
+                                            ItemsSource="{Binding Path=MccTitles}"
+                                            SelectedItem="{Binding Path=SelectedMccTitle, UpdateSourceTrigger=PropertyChanged}"
+                                            IsEditable="True"
+                                            IsTextSearchEnabled="True"
+                                            />
                 </Grid>
             </GroupBox>
-            <GroupBox Grid.Row="1" Margin="5" Header="Actions">
+            <GroupBox Grid.Row="1" Margin="5" Header="{loc:Translate Key=actions}">
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -82,11 +86,11 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Content="What should happen, if conditions are met?"/>
+                    <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="{loc:Translate Key=what_should_happen}"/>
                     <GroupBox Grid.Row="1"
                           Grid.Column="0"
                           Margin="5"
-                          Header="Categories">
+                          Header="{loc:Translate Key=categories}">
                         <xctk:WatermarkComboBox x:Name="CategoryIdBox"
                                                 IsEditable="True"
                                                 ItemsSource="{Binding Source={x:Static fcrd:DbManual.Category}, Mode=OneWay}"
@@ -99,7 +103,7 @@
                     <GroupBox Grid.Row="1"
                           Grid.Column="1"
                           Margin="5"
-                          Header="Locations">
+                          Header="{loc:Translate Key=locations}">
                         <xctk:WatermarkComboBox x:Name="LocationIdBox"
                                                 IsEditable="True"
                                                 ItemsSource="{Binding Source={x:Static fcrd:DbManual.Location}, Mode=OneWay}"
@@ -111,7 +115,7 @@
                     <GroupBox Grid.Row="2"
                           Grid.Column="0"
                           Margin="5"
-                          Header="Projects">
+                          Header="{loc:Translate Key=projects}">
                         <xctk:WatermarkComboBox x:Name="ProjectIdBox"
                                                 IsEditable="True"
                                                 ItemsSource="{Binding Source={x:Static fcrd:DbManual.Project}, Mode=OneWay}"
@@ -123,7 +127,7 @@
                     <GroupBox Grid.Row="2"
                           Grid.Column="1"
                           Margin="5"
-                          Header="Payees">
+                          Header="{loc:Translate Key=payees}">
                         <xctk:WatermarkComboBox IsEditable="True"
                                                 ItemsSource="{Binding Source={x:Static fcrd:DbManual.Payee}, Mode=OneWay}"
                                                 SelectedValuePath="Id"
@@ -137,7 +141,7 @@
             <CheckBox   Grid.Column="0"
                     Grid.Row="2"
                     Grid.ColumnSpan="2"
-                    IsChecked="{Binding Entity.IsActive}">Is Active</CheckBox>
+                    IsChecked="{Binding Entity.IsActive}" Content="{loc:Translate Key=is_active}" />
             <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -145,10 +149,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Margin="2"
                         Command="{Binding SaveCommand}"
-                        Content="SAVE" />
+                        Content="{loc:Translate Key=save}" />
                 <Button Grid.Column="1" Margin="2"
                         Command="{Binding CancelCommand}"
-                        Content="CANCEL" />
+                        Content="{loc:Translate Key=cancel}" />
             </Grid>
         </Grid>
     </GroupBox>

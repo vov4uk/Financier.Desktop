@@ -2,12 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fcrd="clr-namespace:Financier.Common.Entities"
+             xmlns:loc="clr-namespace:Financier.Common.Localization"
              Width="140">
-    <GroupBox Header="Currency"
+    <GroupBox Header="{loc:Translate Key=currency}"
               BorderThickness="0">
         <ComboBox DisplayMemberPath="Name"
                   IsEditable="True"
-                  SelectedItem="{Binding Path=CurentCurrency}"
+                  SelectedItem="{Binding Path=CurentCurrency, UpdateSourceTrigger=PropertyChanged}"
                   Margin="2 0"
                   ItemsSource="{Binding Source={x:Static fcrd:DbManual.Currencies}, Mode=OneWay}" />
     </GroupBox>

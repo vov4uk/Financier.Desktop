@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -25,7 +26,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Center" FontWeight="Bold"
-                   Text="Select account"/>
+                   Text="{loc:Translate Key=select_account}"/>
         <DataGrid Margin="5" Grid.Row="1" 
                   ItemsSource="{Binding Source={x:Static fcrd:DbManual.Account}, Mode=OneWay}"
                   AutoGenerateColumns="False"
@@ -34,7 +35,7 @@
                   CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
                   SelectedItem="{Binding MonoAccount}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Active" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
+                <DataGridTemplateColumn Header="{loc:Translate Key=active}" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
                 <DataGridTemplateColumn Header=""
                                         dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
@@ -51,8 +52,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}"/>
-                <DataGridTemplateColumn Header="Total Amount">
+                <DataGridTextColumn Header="{loc:Translate Key=title}" Binding="{Binding Path=Title}"/>
+                <DataGridTemplateColumn Header="{loc:Translate Key=total_amount}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock HorizontalAlignment="Right"
@@ -64,7 +65,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Currency" Binding="{Binding Path=CurrencyName}"/>
+                <DataGridTextColumn Header="{loc:Translate Key=currency}" Binding="{Binding Path=CurrencyName}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

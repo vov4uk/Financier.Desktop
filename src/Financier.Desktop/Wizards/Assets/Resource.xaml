@@ -27,7 +27,6 @@
     </DataTemplate>
 
     <Style TargetType="{x:Type Button}" x:Key="moveNextButtonStyle">
-        <Setter Property="Content" Value="Next" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=IsOnLastPage}" Value="True">
                 <Setter Property="Content" Value="Finish" />

@@ -5,21 +5,23 @@ using System.IO;
 using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
-using Financier.Desktop.Helpers.Model;
+using Financier.Common.Localization;
+using Financier.Desktop.Helpers.BankHelper.Model;
 using Financier.Desktop.Wizards;
+using static Financier.Common.DoubleUtils;
 
 namespace Financier.Desktop.Helpers.BankHelper
 {
     public class PumbHelper : BankPdfHelperBase
     {
-        public override string BankTitle => "ПУМБ";
+        public override string BankTitle => LocalizationService.Instance.pumb;
 
         protected override IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages)
         {
             string pageText = string.Join(Environment.NewLine, pages);
 
 
-            List<Pumb_Row> converted = new List<Pumb_Row>();
+            List<PumbRow> converted = new List<PumbRow>();
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = true,
@@ -34,7 +36,7 @@ namespace Financier.Desktop.Helpers.BankHelper
 
             using (var csv = new CsvReader(new StringReader(pageText), config))
             {
-                var records = csv.GetRecords<Pumb_Row>();
+                var records = csv.GetRecords<PumbRow>();
 
                 var batch = records.Take(1000).ToList();
                 converted.AddRange(batch);
@@ -63,7 +65,7 @@ namespace Financier.Desktop.Helpers.BankHelper
                     OperationCurrency = operationCurrency,
                     OperationAmount = GetDouble($"{sign}{operationAmount}"),
                     CardCurrencyAmount = GetDouble($"{sign}{cardCurrenyAmount}"),
-                    ExchangeRate = operationAmount == cardCurrenyAmount ? null : Math.Round(cardCurrenyAmount / operationAmount, 4),
+                    ExchangeRate = DoubleEqual(operationAmount, cardCurrenyAmount) ? null : Math.Round(cardCurrenyAmount / operationAmount, 4),
                     Description = $"{item.Details} {item.TransactionType}",
                     Date = item.Date
                 };

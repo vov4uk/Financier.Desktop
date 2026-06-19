@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Financier.Common.Entities;
+using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
@@ -45,7 +46,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         {
             get
             {
-                return _addRuleCommand ??= new AsyncDelegateCommand<FinancierTransactionDto>(tr => OpenRulesDialogAsync(tr.Note));
+                return _addRuleCommand ??= new AsyncDelegateCommand<FinancierTransactionDto>(tr => OpenRulesDialogAsync(tr?.Note, tr?.MCC ?? 0));
             }
         }
 
@@ -92,7 +93,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             }
         }
 
-        public override string Title => "Please select categories";
+        public override string Title => LocalizationService.Instance.please_select_categories;
         public override bool IsValid()
         {
             return true;
@@ -125,10 +126,8 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     IsAmountNegative = amount < 0
                 };
 
-                if (!string.IsNullOrEmpty(newTr.Note))
-                {
-                    ApplyRules(newTr);
-                }
+                ApplyRules(newTr);
+
                 transToAdd.Add(newTr);
             }
 
@@ -140,33 +139,30 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             foreach (var rule in DbManual.Rules.Where(r => r.IsActive))
             {
                 HashSet<int> mccCodes = new HashSet<int>();
-                if (rule.Condition == "MCC" && DbManual.MCCCategories.ContainsKey(rule.Description))
+                if (rule.Condition == RuleConditionType.MCC && DbManual.MCCEnums.ContainsKey(rule.MCCCategory))
                 {
-                    var list = DbManual.MCCCategories[rule.Description];
-                    mccCodes = new HashSet<int>(list);
+                    var list = DbManual.MCCEnums[rule.MCCCategory];
+                    mccCodes = [.. list];
                 }
 
                 bool meetsCondition = false;
-                if (rule.Condition == "Description contains")
+                if (rule.Condition == RuleConditionType.DescriptionContains && !string.IsNullOrEmpty(transaction.Note))
                 {
                     if (transaction.Note.Contains(rule.Description, StringComparison.OrdinalIgnoreCase))
                     {
                         meetsCondition = true;
                     }
                 }
-                else if (rule.Condition == "Description matches")
+                else if (rule.Condition == RuleConditionType.DescriptionMatches && !string.IsNullOrEmpty(transaction.Note))
                 {
                     if (transaction.Note.Equals(rule.Description, StringComparison.OrdinalIgnoreCase))
                     {
                         meetsCondition = true;
                     }
                 }
-                else if (rule.Condition == "MCC")
+                else if (rule.Condition == RuleConditionType.MCC && transaction.MCC > 0 && mccCodes.Contains(transaction.MCC))
                 {
-                    if (transaction.MCC > 0 && mccCodes.Contains(transaction.MCC))
-                    {
-                        meetsCondition = true;
-                    }
+                    meetsCondition = true;
                 }
 
                 if (meetsCondition)
@@ -201,7 +197,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
 
         private static (int categoryId, int locationId, int accountId) ParseDescription(string description)
         {
-            int accountId = 0, locationId = 0, categoryId = 0;
+            int accountId, locationId, categoryId;
             TryParseLocation(description, out locationId);
             TryParseCategory(description, out categoryId);
             TryParseAccount(description, out accountId);
@@ -217,36 +213,33 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             return false;
         }
 
-        private static bool TryParseLocation(string desc, out int locationId)
+        private static void TryParseLocation(string desc, out int locationId)
         {
-              var location = DbManual.Location
+            locationId = 0;
+            var location = DbManual.Location
                 .Where(x => x.Id > 0 && x.IsActive)
                 .FirstOrDefault(l => ContainsString(l.Title, desc) || ContainsString(l.Address, desc));
             if (location != null)
             {
                 locationId = location.Id.Value;
-                return true;
             }
-            locationId = 0;
-            return false;
         }
 
-        private static bool TryParseCategory(string desc, out int categoryId)
+        private static void TryParseCategory(string desc, out int categoryId)
         {
+            categoryId = 0;
             var category = DbManual.Category
                     .Where(x => x.Id > 0)
                     .FirstOrDefault(l => ContainsString(l.Title, desc));
             if (category != null)
             {
                 categoryId = category.Id.Value;
-                return true;
             }
-            categoryId = 0;
-            return false;
         }
 
-        private static bool TryParseAccount(string desc, out int accountId)
+        private static void TryParseAccount(string desc, out int accountId)
         {
+            accountId = 0;
             var res = CardNumberRegex.Match(desc);
 
             if (res.Success && res.Groups.Count > 2)
@@ -255,31 +248,35 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 var acc = DbManual.Account
                     .Find(y => !string.IsNullOrWhiteSpace(y.Number) && string.Equals(y.Number, cardNumber, StringComparison.InvariantCultureIgnoreCase));
 
-                if (acc != null)
+                if (acc?.Id != null)
                 {
                     accountId = acc.Id.Value;
-                    return true;
                 }
             }
-            accountId = 0;
-            return false;
         }
 
-        private async Task OpenRulesDialogAsync(string description)
+        private async Task OpenRulesDialogAsync(string description, int mccCode)
         {
-            RuleDTO rule = new RuleDTO()
+            Mcc mcc = Mcc.none;
+            if (DbManual.MCCCodes.ContainsKey(mccCode))
+            {
+                mcc = DbManual.MCCCodes[mccCode];
+            }
+
+            RuleDto rule = new RuleDto()
             {
                 Description = description,
-                Condition = "Description contains",
+                Condition = RuleConditionType.DescriptionContains,
                 Created = DateTime.Now,
-                IsActive = true
+                IsActive = true,
+                MCCCategory = mcc
             };
 
             RuleControlVM ruleVm = new RuleControlVM(rule);
 
-            var result = _dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, "Rule");
+            var result = _dialogWrapper.ShowDialog<RuleControl>(ruleVm, 380, 400, LocalizationService.Instance.rule);
 
-            var updatedItem = result as RuleDTO;
+            var updatedItem = result as RuleDto;
             if (updatedItem != null)
             {
                 DbManual.Rules.Add(new RuleModel
@@ -288,17 +285,18 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     CategoryId = updatedItem.CategoryId,
                     Condition = updatedItem.Condition,
                     Created = updatedItem.Created,
-                    Id = DbManual.Rules.Count > 0 ? DbManual.Rules.Select(r => r.Id).Max().Value + 1 : 1,
+                    Id = DbManual.Rules.Count > 0 ? DbManual.Rules.Max(r => r.Id) + 1 : 1,
                     IsActive = updatedItem.IsActive,
                     LocationId = updatedItem.LocationId,
                     PayeeId = updatedItem.PayeeId,
-                    ProjectId = updatedItem.ProjectId
+                    ProjectId = updatedItem.ProjectId,
+                    MCCCategory = updatedItem.MCCCategory
                 });
 
                 await DbManual.SaveRulesAsync();
                 await DbManual.LoadRulesAsync();
 
-                foreach (var transaction in FinancierTransactions.Where(x => !string.IsNullOrEmpty(x.Note)))
+                foreach (var transaction in FinancierTransactions)
                 {
                     ApplyRules(transaction);
                 }

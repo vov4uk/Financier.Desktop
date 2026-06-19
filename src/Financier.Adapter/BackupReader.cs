@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Financier.Adapter
 {
@@ -22,10 +25,10 @@ namespace Financier.Adapter
             _zipStream = new GZipStream(_file, CompressionMode.Decompress);
         }
 
-        private void ReadHeader()
+        private async Task ReadHeaderAsync(CancellationToken cancellationToken = default)
         {
             string rawLine;
-            while ((rawLine = _reader.ReadLine()) != null && !string.Equals(rawLine, Backup.START))
+            while ((rawLine = (await _reader.ReadLineAsync(cancellationToken))!) != null && !string.Equals(rawLine, Backup.START))
             {
                 Line line = new Line(rawLine);
                 switch (line.Key)
@@ -49,14 +52,14 @@ namespace Financier.Adapter
             }
         }
 
-        public IEnumerable<string> GetLines()
+        public async IAsyncEnumerable<string> GetLinesAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             _reader = new StreamReader(_zipStream);
             _file.Seek(0, SeekOrigin.Begin);
-            ReadHeader();
+            await ReadHeaderAsync(cancellationToken);
 
             string line;
-            while ((line = _reader.ReadLine()) != null && line != Backup.END)
+            while ((line = (await _reader.ReadLineAsync(cancellationToken))!) != null && line != Backup.END)
             {
                 if (!string.IsNullOrEmpty(line))
                     yield return line;
