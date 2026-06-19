@@ -59,7 +59,6 @@ namespace Financier.Desktop.ViewModel
         private LocationsVM locationsVm;
         private string openBackupPath;
         private string defaultBackupDirectory;
-        private string exchangeRatesSettings;
         private bool isLoading;
         private PayeesVM payeesVm;
         private ProjectsVM projectsVm;
@@ -128,12 +127,6 @@ namespace Financier.Desktop.ViewModel
         {
             get => defaultBackupDirectory;
             internal set => SetProperty(ref defaultBackupDirectory, value);
-        }
-
-        public string AppSettings
-        {
-            get => exchangeRatesSettings;
-            internal set => SetProperty(ref exchangeRatesSettings, value);
         }
 
         public LocationsVM Locations
@@ -211,6 +204,11 @@ namespace Financier.Desktop.ViewModel
                 await NavigateToType(typeof(BlotterModel));
 
                 notifier?.ShowMessage(string.Format(LocalizationService.Instance.entities_loaded, entities?.Count()));
+
+                if (SettingsService.Current.Settings.ExchangeRates.UpdateOnStart)
+                {
+                    await RefreshExchangeRatesCommand.ExecuteAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -464,90 +462,82 @@ namespace Financier.Desktop.ViewModel
 
         private async Task Settings_Click()
         {
-            SettingsDto settings = TryDeserializeSettings(AppSettings);
-            settings.General.Language = SettingsService.Current.Language;
+            SettingsDto settings = SettingsService.Current.Settings.Clone() as SettingsDto;
 
             DialogBaseVM vm = new SettingsVM(settings);
             var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) as SettingsDto;
 
             if (updated != null)
             {
-                var jObj = JObject.FromObject(updated);
-                if (!string.IsNullOrEmpty(updated.ExchangeRates.OpenExchangeRatesProviderAppId))
-                {
-                    jObj[nameof(SettingsDto.ExchangeRates)]![nameof(SettingsExchangeRates.OpenExchangeRatesProviderAppId)] =
-                        SettingsProtection.Encrypt(updated.ExchangeRates.OpenExchangeRatesProviderAppId);
-                }
-                string json = jObj.ToString(Formatting.Indented);
-                SettingsService.Current.AppSettings = json;
-                SettingsService.Current.Language = updated.General.Language;
+                Language before = SettingsService.Current.Settings.General.Language;
+
+                SettingsService.Current.Settings = updated;
                 SettingsService.Current.Save();
-                LocalizationService.Instance.ApplyLanguage(updated.General.Language);
 
-                DbManual.ResetManuals(nameof(DbManual.MCCEnums));
-                DbManual.ResetManuals(nameof(DbManual.MCCTitles));
-                DbManual.ResetManuals(nameof(DbManual.Currencies));
-                await DbManual.SetupAsync(db);
+                if (before != updated.General.Language)
+                {
+                    LocalizationService.Instance.ApplyLanguage(updated.General.Language);
 
-                AppSettings = json;
+                    DbManual.ResetManuals(nameof(DbManual.MCCEnums));
+                    DbManual.ResetManuals(nameof(DbManual.MCCTitles));
+                    DbManual.ResetManuals(nameof(DbManual.Currencies));
+                    await DbManual.SetupAsync(db);
+                }
             }
         }
 
         private async Task RefreshExchangeRates_Click()
         {
-            if (!string.IsNullOrEmpty(AppSettings))
+            var erSettings = SettingsService.Current.Settings.ExchangeRates;
+
+            if (erSettings.Provider != ExchangeRatesProviders.None)
             {
-                var settings = TryDeserializeSettings(AppSettings);
+                var exchangeRateLoader = new ExchangeRateLoader();
+                List<CurrencyExchangeRate> exchangeRates = new List<CurrencyExchangeRate>();
 
-                if (settings.ExchangeRates.UpdateOnStart)
+                switch (erSettings.Provider)
                 {
-                    var exchangeRateLoader = new ExchangeRateLoader();
-                    List<CurrencyExchangeRate> exchangeRates = new List<CurrencyExchangeRate>();
+                    case ExchangeRatesProviders.FreeCurrencyRates:
+                        exchangeRates = await exchangeRateLoader.LoadFreeCurrencyRates();
+                        break;
+                    case ExchangeRatesProviders.OpenExchangeRates:
+                        exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(erSettings.OpenExchangeRatesProviderAppId);
+                        break;
+                    case ExchangeRatesProviders.Monobank:
+                        exchangeRates = await exchangeRateLoader.LoadMonobankRates();
+                        break;
+                }
 
-                    switch (settings.ExchangeRates.Provider)
+                if (exchangeRates.Any())
+                {
+                    using var uow = db.CreateUnitOfWork();
+                    var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();
+                    await currencyExchangeRepo.AddRangeAsync(exchangeRates);
+                    try
                     {
-                        case ExchangeRatesProviders.FreeCurrencyRates:
-                            exchangeRates = await exchangeRateLoader.LoadFreeCurrencyRates();
-                            break;
-                        case ExchangeRatesProviders.OpenExchangeRates:
-                            exchangeRates = await exchangeRateLoader.LoadOpenExchangeRates(settings.ExchangeRates.OpenExchangeRatesProviderAppId);
-                            break;
-                        case ExchangeRatesProviders.Monobank:
-                            exchangeRates = await exchangeRateLoader.LoadMonobankRates();
-                            break;
+                        await uow.SaveChangesAsync();
                     }
-
-                    if (exchangeRates.Any())
+                    catch (DbUpdateException ex)
                     {
-                        using var uow = db.CreateUnitOfWork();
-                        var currencyExchangeRepo = uow.GetRepository<CurrencyExchangeRate>();
-                        await currencyExchangeRepo.AddRangeAsync(exchangeRates);
-                        try
+                        string msg = ex?.InnerException?.Message!;
+                        if (!string.IsNullOrEmpty(msg) && msg.Contains("UNIQUE constraint failed", StringComparison.OrdinalIgnoreCase))
                         {
-                            await uow.SaveChangesAsync();
+                            notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_exist);
                         }
-                        catch (DbUpdateException ex)
+                        else
                         {
-                            string msg = ex?.InnerException?.Message!;
-                            if (!string.IsNullOrEmpty(msg) && msg.Contains("UNIQUE constraint failed", StringComparison.OrdinalIgnoreCase))
-                            {
-                                notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_exist);
-                            }
-                            else
-                            {
-                                notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_not_updated);
-                            }
-                            return;
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex, "Error saving exchange rates to database.");
                             notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_not_updated);
-                            return;
                         }
-
-                        notifier?.ShowMessage(string.Format(LocalizationService.Instance.exchange_rates_updated, settings.ExchangeRates.Provider));
+                        return;
                     }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex, "Error saving exchange rates to database.");
+                        notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_not_updated);
+                        return;
+                    }
+
+                    notifier?.ShowMessage(string.Format(LocalizationService.Instance.exchange_rates_updated, erSettings.Provider));
                 }
             }
             else
@@ -556,67 +546,11 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private SettingsDto TryDeserializeSettings(string json)
-        {
-            if (!string.IsNullOrEmpty(json))
-            {
-                try
-                {
-                    var dto = JsonConvert.DeserializeObject<SettingsDto>(json);
-                    if (dto == null)
-                    {
-                        dto = new SettingsDto();
-                    }
-
-                    if (dto.ExchangeRates == null)
-                        dto.ExchangeRates = new SettingsExchangeRates();
-
-                    if (dto.General == null)
-                        dto.General = new SettingsGeneralDto();
-
-                    if (!string.IsNullOrEmpty(dto.ExchangeRates?.OpenExchangeRatesProviderAppId))
-                    {
-                        dto.ExchangeRates.OpenExchangeRatesProviderAppId =
-                            SettingsProtection.TryDecrypt(dto.ExchangeRates.OpenExchangeRatesProviderAppId);
-                    }
-
-                    return dto;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Warn(ex, "Failed to deserialize AppSettings; resetting to defaults.");
-                    AppSettings = null!;
-                    SettingsService.Current.AppSettings = null!;
-                    SettingsService.Current.Save();
-                    notifier?.ShowWarning(LocalizationService.Instance.settings_corrupted);
-
-                }
-            }
-
-            return new SettingsDto()
-            {
-                ExchangeRates = new SettingsExchangeRates
-                {
-                    Provider = ExchangeRatesProviders.None,
-                    UpdateOnStart = false,
-                },
-                General = new SettingsGeneralDto
-                {
-                    CheckForUpdatesOnStart = true
-                }
-            };
-        }
-
         private async Task CheckForUpdatesAsync(bool showMessageIfLatest = true)
         {
             try
             {
                 if(updateService == null)
-                    return;
-
-                var settings = TryDeserializeSettings(AppSettings);
-
-                if (!settings.General.CheckForUpdatesOnStart || !showMessageIfLatest)
                     return;
 
                 var updateVersion = await updateService.CheckForUpdatesAsync();
@@ -629,11 +563,10 @@ namespace Financier.Desktop.ViewModel
                     return;
                 }
 
-
                 var result = dialogWrapper.ShowMessageBox(
                    LocalizationService.Instance.update_available_question,
                    string.Format(LocalizationService.Instance.update_available, updateVersion),
-                    true);
+                   true);
 
                 if (result)
                 {

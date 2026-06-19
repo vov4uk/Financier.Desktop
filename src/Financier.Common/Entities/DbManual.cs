@@ -33,6 +33,12 @@ namespace Financier.Common.Entities
 
         public static async Task SetupAsync(IFinancierDatabase financierDatabase)
         {
+
+            if (financierDatabase == null)
+            {
+                return;
+            }
+
             if (_accounts == null)
             {
                 var accounts = await financierDatabase.ExecuteQuery<AccountFilterModel>(@"

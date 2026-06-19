@@ -1,16 +1,27 @@
-﻿using Financier.Common.Entities;
+﻿using System;
+using Financier.Common.Entities;
 using Financier.Common.Localization;
 using Prism.Mvvm;
 
 namespace Financier.Desktop.Data
 {
-    public class SettingsDto : BindableBase
+    public class SettingsDto : BindableBase, ICloneable
     {
         public SettingsGeneralDto General { get; set; } = new SettingsGeneralDto();
         public SettingsExchangeRates ExchangeRates { get; set; } = new SettingsExchangeRates();
+
+        public object Clone()
+        {
+            var clone = new SettingsDto
+            {
+                General = (SettingsGeneralDto)General.Clone(),
+                ExchangeRates = (SettingsExchangeRates)ExchangeRates.Clone()
+            };
+            return clone;
+        }
     }
 
-    public class SettingsGeneralDto : BindableBase
+    public class SettingsGeneralDto : BindableBase, ICloneable
     {
         private bool checkForUpdatesOnStart;
         private Language language;
@@ -40,9 +51,18 @@ namespace Financier.Desktop.Data
                 }
             }
         }
+
+        public object Clone()
+        {
+            return new SettingsGeneralDto
+            {
+                CheckForUpdatesOnStart = CheckForUpdatesOnStart,
+                Language = Language
+            };
+        }
     }
 
-    public class SettingsExchangeRates: BindableBase
+    public class SettingsExchangeRates: BindableBase, ICloneable
     {
         private ExchangeRatesProviders exchangeRatesProvider;
         private string openExchangeRatesProviderAppId;
@@ -86,6 +106,16 @@ namespace Financier.Desktop.Data
                     RaisePropertyChanged(nameof(UpdateOnStart));
                 }
             }
+        }
+
+        public object Clone()
+        {
+            return new SettingsExchangeRates
+            {
+                Provider = Provider,
+                OpenExchangeRatesProviderAppId = OpenExchangeRatesProviderAppId,
+                UpdateOnStart = UpdateOnStart
+            };
         }
     }
 }

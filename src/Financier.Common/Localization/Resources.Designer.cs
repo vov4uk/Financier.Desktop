@@ -2104,7 +2104,7 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update exchange rates on start?.
+        ///   Looks up a localized string similar to Update exchange rates after .backup loaded?.
         /// </summary>
         public static string update_exchange_rates_on_start {
             get {

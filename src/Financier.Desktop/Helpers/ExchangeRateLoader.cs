@@ -60,12 +60,14 @@ namespace Financier.Desktop.Helpers
             return result;
         }
 
-        public async Task<List<CurrencyExchangeRate>> LoadOpenExchangeRates(string apiKey)
+        public async Task<List<CurrencyExchangeRate>> LoadOpenExchangeRates(string encryptedApiKey)
         {
             var result = new List<CurrencyExchangeRate>();
             var currencies = GetRatesPairs();
             try
             {
+                string apiKey = SettingsProtection.TryDecrypt(encryptedApiKey);
+
                 string url = $"https://openexchangerates.org/api/latest.json?app_id={apiKey}";
 
                 using var client = new System.Net.Http.HttpClient();

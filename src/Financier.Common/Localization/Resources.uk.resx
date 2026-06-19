@@ -394,7 +394,7 @@
     <value>ID програми</value>
   </data>
   <data name="update_exchange_rates_on_start" xml:space="preserve">
-    <value>Оновити обмінні курси при запуску?</value>
+    <value>Оновити обмінні курси після завантаження резервної копії?</value>
   </data>
   <data name="details" xml:space="preserve">
     <value>Деталі</value>

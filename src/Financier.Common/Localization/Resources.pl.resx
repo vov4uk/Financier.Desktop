@@ -394,7 +394,7 @@
     <value>ID aplikacji</value>
   </data>
   <data name="update_exchange_rates_on_start" xml:space="preserve">
-    <value>Aktualizować kursy wymiany przy uruchomieniu?</value>
+    <value>Zaktualizować kursy walut po załadowaniu pliku .backup?</value>
   </data>
   <data name="details" xml:space="preserve">
     <value>Szczegóły</value>

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 using Cogwheel;
-using Financier.Common.Localization;
+using Financier.Desktop.Data;
 
 namespace Financier.Desktop.Services
 {
@@ -9,13 +9,10 @@ namespace Financier.Desktop.Services
     {
         public static SettingsService Current { get; } = new();
 
-        public Language Language { get; set; }
-
-        public bool IsAutoUpdateEnabled { get; set; } = true;
+        public SettingsDto Settings { get; set; }
 
         public string DefaultBackupDir { get; set; }
 
-        public string AppSettings { get; set; }
     }
 
     public partial class SettingsService
