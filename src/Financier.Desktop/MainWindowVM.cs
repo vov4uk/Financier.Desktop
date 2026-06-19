@@ -243,7 +243,7 @@ namespace Financier.Desktop.ViewModel
                 itemsToBackup.AddRange((await uow.GetAllAsync<Category>()).Where(x => x.Id > 0));
             }
 
-            backupWriter.GenerateBackup(itemsToBackup, backupPath, _backupVersion, _entityColumnsOrder);
+            await backupWriter.GenerateBackupAsync(itemsToBackup, backupPath, _backupVersion, _entityColumnsOrder);
         }
 
         private void AddKeylessEntities<T>(IEnumerable<T> entities)

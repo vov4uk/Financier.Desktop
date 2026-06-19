@@ -27,22 +27,27 @@ namespace Financier.Adapter
                 return string.Empty;
 
             List<string> columnsOrder = entityColumnsOrder[info.TableName];
-            var dict = new List<KeyValuePair<int, string>>(info.Columns.Length);
+            Dictionary<string, int> columnIndex = new Dictionary<string, int>(columnsOrder.Count);
+            for (int i = 0; i < columnsOrder.Count; i++)
+                columnIndex[columnsOrder[i]] = i;
+
+            string[] lines = new string[columnsOrder.Count];
 
             foreach (ColumnInfo col in info.Columns)
             {
                 object val = col.Prop.GetValue(entity);
-                if (val != null)
+                if (val != null && columnIndex.TryGetValue(col.Col, out int colIdx))
                 {
-                    dict.Add(new KeyValuePair<int, string>(columnsOrder.IndexOf(col.Col), $"{col.Col}:{col.Conv.ConvertBack(val)}"));
+                    lines[colIdx] = $"{col.Col}:{col.Conv.ConvertBack(val)}";
                 }
             }
 
             var sb = new StringBuilder();
             sb.AppendLine($"{Backup.ENTITY}:{info.TableName}");
-            foreach (var pair in dict.OrderBy(x => x.Key))
+            foreach (string line in lines)
             {
-                sb.AppendLine(pair.Value);
+                if (line != null)
+                    sb.AppendLine(line);
             }
             sb.AppendLine(Backup.ENTITY_END);
             return sb.ToString();

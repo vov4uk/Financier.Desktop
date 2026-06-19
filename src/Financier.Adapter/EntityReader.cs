@@ -19,6 +19,7 @@ namespace Financier.Adapter
         public async Task<(IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder)> ParseBackupFileAsync(string fileName)
         {
             Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
+            Dictionary<string, HashSet<string>> columnsSeen = new Dictionary<string, HashSet<string>>();
 
             using var reader = new BackupReader(fileName);
             List<Entity> entities = new List<Entity>();
@@ -44,6 +45,7 @@ namespace Financier.Adapter
                     if (!EntityColumnsOrder.ContainsKey(entityType))
                     {
                         EntityColumnsOrder.Add(entityType, new List<string>());
+                        columnsSeen.Add(entityType, new HashSet<string>());
                     }
                 }
                 else if (line.Key == Backup.ENTITY_END && entity != null)
@@ -60,7 +62,7 @@ namespace Financier.Adapter
                     }
 
                     var order = EntityColumnsOrder[entityType];
-                    if (!order.Contains(line.Key))
+                    if (columnsSeen[entityType].Add(line.Key))
                     {
                         var newOrder = order.IndexOf(prevField);
                         order.Insert(newOrder + 1, line.Key);
@@ -81,22 +83,22 @@ namespace Financier.Adapter
                 .Where(entityType.IsAssignableFrom);
             foreach (Type t in types)
             {
-                TableAttribute attr = t.GetCustomAttributes(typeof(TableAttribute), true).Cast<TableAttribute>().FirstOrDefault()!;
+                TableAttribute attr = t.GetCustomAttributes(typeof(TableAttribute), true).Cast<TableAttribute>().FirstOrDefault();
                 if (attr != null)
                 {
                     EntityInfo info = new EntityInfo() { EntityType = t };
                     entities[attr.Name] = info;
                     foreach (PropertyInfo p in t.GetProperties())
                     {
-                        IgnoreAttribute ignoreAttr = (p.GetCustomAttribute(typeof(IgnoreAttribute)) as IgnoreAttribute)!;
+                        IgnoreAttribute ignoreAttr = p.GetCustomAttribute(typeof(IgnoreAttribute)) as IgnoreAttribute;
                         if (ignoreAttr == null)
                         {
-                            ColumnAttribute pattr = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute)!;
+                            ColumnAttribute pattr = p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute;
                             if (pattr != null)
                             {
                                 EntityPropertyInfo pInfo = new EntityPropertyInfo(p)
                                 {
-                                    Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))!
+                                    Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))
                                 };
                                 pInfo.Converter.PropertyType = p.PropertyType;
                                 info.Properties[pattr.Name!] = pInfo;

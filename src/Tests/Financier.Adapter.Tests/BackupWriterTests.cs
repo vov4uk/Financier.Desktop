@@ -12,7 +12,7 @@ namespace Financier.Adapter.Tests
     {
         [Theory]
         [AutoMoqData]
-        public void GenerateBackup_ArchiveTransactions_FileExist(string fileName, BackupVersion version, List<Transaction> transactions)
+        public async Task GenerateBackup_ArchiveTransactions_FileExist(string fileName, BackupVersion version, List<Transaction> transactions)
         {
             Dictionary<string, List<string>> entityColumnsOrder = new Dictionary<string, List<string>>();
             entityColumnsOrder.Add("transactions", PredefinedData.TransactionsColumnsOrder);
@@ -21,7 +21,7 @@ namespace Financier.Adapter.Tests
 
             BackupWriter writer = new BackupWriter();
 
-            writer.GenerateBackup(new List<Entity>(transactions), path, version, entityColumnsOrder);
+            await writer.GenerateBackupAsync(new List<Entity>(transactions), path, version, entityColumnsOrder);
 
             Assert.True(File.Exists(path));
             File.Delete(path);
@@ -40,7 +40,7 @@ namespace Financier.Adapter.Tests
 
             BackupWriter writer = new BackupWriter();
 
-            writer.GenerateBackup(entities, actualPath, backupVersion, columnsOrder, false);
+            await writer.GenerateBackupAsync(entities, actualPath, backupVersion, columnsOrder, false);
 
             var actualText = File.ReadAllText(fileWithoutExt);
             var expectedText = File.ReadAllText(expectedTextPath);

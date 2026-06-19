@@ -20,7 +20,7 @@ namespace Financier.Adapter
         public BackupVersion BackupVersion => backupVersion;
         public BackupReader(string fileName)
         {
-            if (string.IsNullOrEmpty(fileName)) throw new ArgumentException("File name cannot be null or empty.", "fileName");
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentException("File name cannot be null or empty.");
             _file = File.OpenRead(fileName);
             _zipStream = new GZipStream(_file, CompressionMode.Decompress);
         }
@@ -28,7 +28,7 @@ namespace Financier.Adapter
         private async Task ReadHeaderAsync(CancellationToken cancellationToken = default)
         {
             string rawLine;
-            while ((rawLine = (await _reader.ReadLineAsync(cancellationToken))!) != null && !string.Equals(rawLine, Backup.START))
+            while ((rawLine = await _reader.ReadLineAsync(cancellationToken)) != null && !string.Equals(rawLine, Backup.START))
             {
                 Line line = new Line(rawLine);
                 switch (line.Key)
@@ -55,7 +55,7 @@ namespace Financier.Adapter
         public async IAsyncEnumerable<string> GetLinesAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             _reader = new StreamReader(_zipStream);
-            _file.Seek(0, SeekOrigin.Begin);
+
             await ReadHeaderAsync(cancellationToken);
 
             string line;

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Financier.DataAccess.Data;
 
 namespace Financier.Adapter
 {
     public interface IBackupWriter
     {
-        void GenerateBackup(
+        Task GenerateBackupAsync(
             IEnumerable<Entity> entities,
             string fileName,
             BackupVersion backupVersion,
