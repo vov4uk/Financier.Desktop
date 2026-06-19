@@ -1,4 +1,4 @@
-﻿using Financier.DataAccess.Data;
+using Financier.DataAccess.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,25 +32,19 @@ namespace Financier.Adapter
             IEnumerable<Entity> entities,
             string fileName,
             BackupVersion backupVersion,
-            Dictionary<string, List<string>> entityColumnsOrder,
-            bool deleteRawFile = true)
+            Dictionary<string, List<string>> entityColumnsOrder)
         {
-            using var writer = new StreamWriter(Path.GetFileNameWithoutExtension(fileName));
+            using var fileStream = File.Create(fileName);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Compress);
+            using var writer = new StreamWriter(gzipStream);
 
             WriteHeader(writer, backupVersion);
             WriteBody(writer, entities, entityColumnsOrder);
             WriteFooter(writer);
-            writer.Flush();
-            writer.Close();
-            var fileWithoutExt = Path.GetFileNameWithoutExtension(fileName);
-            await Compress(fileWithoutExt, fileName);
-            if (deleteRawFile && File.Exists(fileWithoutExt))
-            {
-                File.Delete(fileWithoutExt);
-            }
+            await writer.FlushAsync();
         }
 
-        private void WriteHeader(TextWriter bw, BackupVersion backupVersion)
+        private static void WriteHeader(TextWriter bw, BackupVersion backupVersion)
         {
             bw.WriteLine($"{Backup.PACKAGE}:{backupVersion.Package}");
             bw.WriteLine($"{Backup.VERSION_CODE}:{backupVersion.VersionCode}");
@@ -59,41 +53,39 @@ namespace Financier.Adapter
             bw.WriteLine(Backup.START);
         }
 
-        private void WriteBody(TextWriter bw, IEnumerable<Entity> entities, Dictionary<string, List<string>> columnsOrder)
+        private static void WriteBody(TextWriter bw, IEnumerable<Entity> entities, Dictionary<string, List<string>> columnsOrder)
         {
+            var columnData = BuildColumnData(columnsOrder);
             var byType = entities.ToLookup(e => e.GetType());
             foreach (Type type in ExportOrder)
             {
-                ExportTable(bw, byType[type], columnsOrder);
+                foreach (Entity item in byType[type])
+                    item.WriteBackupLines(bw, columnData);
             }
         }
 
-        private void WriteFooter(TextWriter bw)
+        private static void WriteFooter(TextWriter bw)
         {
             bw.Write(Backup.END);
         }
 
-        private void ExportTable(TextWriter bw, IEnumerable<Entity> ent, Dictionary<string, List<string>> entityColumnsOrder)
+        private static Dictionary<string, (Dictionary<string, int> Index, int Count)> BuildColumnData(
+            Dictionary<string, List<string>> columnsOrder)
         {
-            foreach (Entity item in ent)
+            var result = new Dictionary<string, (Dictionary<string, int>, int)>(columnsOrder.Count);
+            foreach (var (table, cols) in columnsOrder)
             {
-                bw.Write(item.ToBackupLines(entityColumnsOrder));
+                var index = new Dictionary<string, int>(cols.Count);
+                for (int i = 0; i < cols.Count; i++)
+                    index[cols[i]] = i;
+                result[table] = (index, cols.Count);
             }
+            return result;
         }
 
         public static string GenerateFileName()
         {
             return DateTime.Now.ToString("yyyyMMdd'_'HHmmss'_'fff") + ".backup";
-        }
-
-        private async Task Compress(string sourceFile, string compressedFile)
-        {
-            using FileStream sourceStream = new FileStream(sourceFile, FileMode.OpenOrCreate);
-            using FileStream targetStream = File.Create(compressedFile);
-            using GZipStream compressionStream = new GZipStream(targetStream, CompressionMode.Compress);
-            await sourceStream.CopyToAsync(compressionStream);
-            compressionStream.Flush();
-            compressionStream.Close();
         }
     }
 }

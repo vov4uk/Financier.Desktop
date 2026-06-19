@@ -4,53 +4,51 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using Financier.DataAccess.Utils;
 
 namespace Financier.Adapter
 {
     public static class EntityExtensions
     {
-        private record struct ColumnInfo(string Col, PropertyInfo Prop, IPropertyConverter Conv);
+        private record struct ColumnInfo(string Col, Func<Entity, object> GetValue, IPropertyConverter Conv);
         private record struct TypeInfo(string TableName, ColumnInfo[] Columns);
 
         private static readonly ConcurrentDictionary<Type, TypeInfo> _typeCache = new();
 
-        public static string ToBackupLines(this Entity entity, Dictionary<string, List<string>> entityColumnsOrder)
+        public static void WriteBackupLines(
+            this Entity entity,
+            TextWriter writer,
+            Dictionary<string, (Dictionary<string, int> Index, int Count)> allColumnData)
         {
             Type type = entity.GetType();
             TypeInfo info = _typeCache.GetOrAdd(type, BuildTypeInfo);
 
-            if (info.TableName == string.Empty)
-                return string.Empty;
+            if (info.TableName == string.Empty) return;
+            if (!allColumnData.TryGetValue(info.TableName, out var colData)) return;
 
-            List<string> columnsOrder = entityColumnsOrder[info.TableName];
-            Dictionary<string, int> columnIndex = new Dictionary<string, int>(columnsOrder.Count);
-            for (int i = 0; i < columnsOrder.Count; i++)
-                columnIndex[columnsOrder[i]] = i;
-
-            string[] lines = new string[columnsOrder.Count];
+            var (columnIndex, columnCount) = colData;
+            string[] lines = new string[columnCount];
 
             foreach (ColumnInfo col in info.Columns)
             {
-                object val = col.Prop.GetValue(entity);
+                object val = col.GetValue(entity);
                 if (val != null && columnIndex.TryGetValue(col.Col, out int colIdx))
                 {
                     lines[colIdx] = $"{col.Col}:{col.Conv.ConvertBack(val)}";
                 }
             }
 
-            var sb = new StringBuilder();
-            sb.AppendLine($"{Backup.ENTITY}:{info.TableName}");
+            writer.WriteLine($"{Backup.ENTITY}:{info.TableName}");
             foreach (string line in lines)
             {
                 if (line != null)
-                    sb.AppendLine(line);
+                    writer.WriteLine(line);
             }
-            sb.AppendLine(Backup.ENTITY_END);
-            return sb.ToString();
+            writer.WriteLine(Backup.ENTITY_END);
         }
 
         private static TypeInfo BuildTypeInfo(Type type)
@@ -66,11 +64,20 @@ namespace Financier.Adapter
                 .Where(x => x.Attr != null)
                 .Select(x => new ColumnInfo(
                     x.Attr!.Name!,
-                    x.Prop,
+                    BuildGetter(x.Prop),
                     new DefaultConverter { PropertyType = x.Prop.PropertyType }))
                 .ToArray();
 
             return new TypeInfo(tableName, columns);
+        }
+
+        private static Func<Entity, object> BuildGetter(PropertyInfo prop)
+        {
+            var entityParam = Expression.Parameter(typeof(Entity), "e");
+            var castEntity = Expression.Convert(entityParam, prop.DeclaringType!);
+            var access = Expression.Property(castEntity, prop);
+            var boxed = Expression.Convert(access, typeof(object));
+            return Expression.Lambda<Func<Entity, object>>(boxed, entityParam).Compile();
         }
     }
 }
