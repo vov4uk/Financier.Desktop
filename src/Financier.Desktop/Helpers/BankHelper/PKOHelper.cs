@@ -180,11 +180,11 @@ namespace Financier.Desktop.Helpers.BankHelper
                         Balance = transaction.Saldo,
                         OperationCurrency = transaction.WalutaOryg,
                         CardCurrencyAmount = (transaction.KwotaOperacji < 0 && DoubleUtils.DoubleNotEqual(transaction.KwotaOperacji, transaction.KwotaOryg)) ? -1 * transaction.KwotaOryg : transaction.KwotaOryg,
-                        MCC = null!
+                        MCC = null
                     });
                 }
             }
-            return result;
+            return result.OrderByDescending(t => t.Date).ToList();
         }
 
         private sealed class PkoTransaction
