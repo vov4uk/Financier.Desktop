@@ -1,10 +1,11 @@
-﻿using Financier.DataAccess.Data;
+using Financier.DataAccess.Data;
 using Financier.Adapter.Converters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Financier.DataAccess.Utils;
@@ -13,14 +14,18 @@ namespace Financier.Adapter
 {
     public class EntityReader : IEntityReader
     {
+        private static readonly Lazy<IReadOnlyDictionary<string, EntityInfo>> _entityTypes =
+            new(BuildEntityTypes, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+
         public async Task<(IEnumerable<Entity> Entities, BackupVersion BackupVersion, Dictionary<string, List<string>> EntityColumnsOrder)> ParseBackupFileAsync(string fileName)
         {
             Dictionary<string, List<string>> EntityColumnsOrder = new Dictionary<string, List<string>>();
+            Dictionary<string, HashSet<string>> columnsSeen = new Dictionary<string, HashSet<string>>();
 
             using var reader = new BackupReader(fileName);
             List<Entity> entities = new List<Entity>();
 
-            var entityTypes = GetEntityTypes();
+            var entityTypes = _entityTypes.Value;
             Entity entity = null!;
             EntityInfo entityInfo = null!;
             string prevField = string.Empty;
@@ -32,15 +37,16 @@ namespace Financier.Adapter
                 if (line.Key == Backup.ENTITY)
                 {
                     prevField = string.Empty;
-                    entityType = line.Value;
+                    entityType = line.Value!;
                     if (!string.IsNullOrEmpty(line.Value) && entityTypes.TryGetValue(line.Value, out entityInfo!))
                     {
-                        entity = (Entity)Activator.CreateInstance(entityInfo.EntityType)!;
+                        entity = entityInfo.Factory();
                     }
 
                     if (!EntityColumnsOrder.ContainsKey(entityType))
                     {
                         EntityColumnsOrder.Add(entityType, new List<string>());
+                        columnsSeen.Add(entityType, new HashSet<string>());
                     }
                 }
                 else if (line.Key == Backup.ENTITY_END && entity != null)
@@ -51,52 +57,54 @@ namespace Financier.Adapter
                 }
                 else if (entity != null && line.Value != null)
                 {
-                    if (entityInfo.Properties.TryGetValue(line.Key, out var property))
+                    if (entityInfo.Properties.TryGetValue(line.Key!, out var property))
                     {
                         property.SetValue(entity, line.Value);
                     }
 
                     var order = EntityColumnsOrder[entityType];
-                    if (!order.Contains(line.Key))
+                    if (columnsSeen[entityType].Add(line.Key!))
                     {
-                        var newOrder = order.IndexOf(prevField);
-                        order.Insert(newOrder + 1, line.Key);
+                        order.Insert(order.IndexOf(prevField) + 1, line.Key!);
                     }
-                    prevField = line.Key;
+                    prevField = line.Key!;
                 }
             }
 
             return (entities, reader.BackupVersion, EntityColumnsOrder);
         }
 
-        private IReadOnlyDictionary<string, EntityInfo> GetEntityTypes()
+        private static IReadOnlyDictionary<string, EntityInfo> BuildEntityTypes()
         {
-            Type entityType = typeof(Entity);
+            Type entityBaseType = typeof(Entity);
             Dictionary<string, EntityInfo> entities = new Dictionary<string, EntityInfo>();
-            IEnumerable<Type> types = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .Where(entityType.IsAssignableFrom);
+            IEnumerable<Type> types = entityBaseType.Assembly
+                .GetTypes()
+                .Where(entityBaseType.IsAssignableFrom);
             foreach (Type t in types)
             {
-                TableAttribute attr = t.GetCustomAttributes(typeof(TableAttribute), true).Cast<TableAttribute>().FirstOrDefault()!;
+                TableAttribute attr = t.GetCustomAttribute<TableAttribute>();
                 if (attr != null)
                 {
-                    EntityInfo info = new EntityInfo() { EntityType = t };
+                    EntityInfo info = new EntityInfo
+                    {
+                        EntityType = t,
+                        Factory = BuildFactory(t)
+                    };
                     entities[attr.Name] = info;
                     foreach (PropertyInfo p in t.GetProperties())
                     {
-                        IgnoreAttribute ignoreAttr = (p.GetCustomAttribute(typeof(IgnoreAttribute)) as IgnoreAttribute)!;
-                        if (ignoreAttr == null)
+                        var ignore = p.GetCustomAttribute<IgnoreAttribute>();
+                        if (ignore == null)
                         {
-                            ColumnAttribute pattr = (p.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute)!;
-                            if (pattr != null)
+                            var columnAttr = p.GetCustomAttribute<ColumnAttribute>();
+                            if (columnAttr != null)
                             {
                                 EntityPropertyInfo pInfo = new EntityPropertyInfo(p)
                                 {
-                                    Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))!
+                                    Converter = new DefaultConverter { PropertyType = p.PropertyType }
                                 };
-                                pInfo.Converter.PropertyType = p.PropertyType;
-                                info.Properties[pattr.Name!] = pInfo;
+                                info.Properties[columnAttr.Name] = pInfo;
                             }
                         }
                     }
@@ -104,6 +112,14 @@ namespace Financier.Adapter
             }
 
             return new ReadOnlyDictionary<string, EntityInfo>(entities);
+        }
+
+        private static Func<Entity> BuildFactory(Type type)
+        {
+            var ctor = type.GetConstructor(Type.EmptyTypes)!;
+            var newExpr = Expression.New(ctor);
+            var cast = Expression.Convert(newExpr, typeof(Entity));
+            return Expression.Lambda<Func<Entity>>(cast).Compile();
         }
     }
 }

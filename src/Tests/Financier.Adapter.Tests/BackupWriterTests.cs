@@ -3,6 +3,7 @@ namespace Financier.Adapter.Tests
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.IO.Compression;
     using System.Threading.Tasks;
     using Financier.DataAccess.Data;
     using Financier.Tests.Common;
@@ -12,16 +13,18 @@ namespace Financier.Adapter.Tests
     {
         [Theory]
         [AutoMoqData]
-        public void GenerateBackup_ArchiveTransactions_FileExist(string fileName, BackupVersion version, List<Transaction> transactions)
+        public async Task GenerateBackup_ArchiveTransactions_FileExist(string fileName, BackupVersion version, List<Transaction> transactions)
         {
-            Dictionary<string, List<string>> entityColumnsOrder = new Dictionary<string, List<string>>();
-            entityColumnsOrder.Add("transactions", PredefinedData.TransactionsColumnsOrder);
+            Dictionary<string, List<string>> entityColumnsOrder = new Dictionary<string, List<string>>
+            {
+                { "transactions", PredefinedData.TransactionsColumnsOrder },
+            };
 
             string path = fileName + ".backup";
 
             BackupWriter writer = new BackupWriter();
 
-            writer.GenerateBackup(new List<Entity>(transactions), path, version, entityColumnsOrder);
+            await writer.GenerateBackupAsync(new List<Entity>(transactions), path, version, entityColumnsOrder);
 
             Assert.True(File.Exists(path));
             File.Delete(path);
@@ -33,23 +36,27 @@ namespace Financier.Adapter.Tests
             var backupPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min.backup");
             var expectedTextPath = Path.Combine(Environment.CurrentDirectory, "Assets", "min");
             var actualPath = Path.Combine(Environment.CurrentDirectory, "Assets", "actual.backup");
-            var fileWithoutExt = Path.GetFileNameWithoutExtension(actualPath);
 
             var reader = new EntityReader();
             var (entities, backupVersion, columnsOrder) = await reader.ParseBackupFileAsync(backupPath);
 
             BackupWriter writer = new BackupWriter();
+            await writer.GenerateBackupAsync(entities, actualPath, backupVersion, columnsOrder);
 
-            writer.GenerateBackup(entities, actualPath, backupVersion, columnsOrder, false);
+            string actualText;
+            using (var fileStream = new FileStream(actualPath, FileMode.Open))
+            using (var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress))
+            using (var streamReader = new StreamReader(gzipStream))
+            {
+                actualText = await streamReader.ReadToEndAsync();
+            }
 
-            var actualText = File.ReadAllText(fileWithoutExt);
             var expectedText = File.ReadAllText(expectedTextPath);
 
             Assert.True(File.Exists(actualPath));
             Assert.Equal(expectedText, actualText);
 
             File.Delete(actualPath);
-            File.Delete(fileWithoutExt);
         }
     }
 }

@@ -1,61 +1,83 @@
-﻿using Financier.DataAccess.Data;
+using Financier.DataAccess.Data;
 using Financier.Adapter.Converters;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using Financier.DataAccess.Utils;
 
 namespace Financier.Adapter
 {
     public static class EntityExtensions
     {
-        public static string ToBackupLines(this Entity entity, Dictionary<string, List<string>> entityColumnsOrder)
+        private record struct ColumnInfo(string Col, Func<Entity, object> GetValue, IPropertyConverter Conv);
+        private record struct TypeInfo(string TableName, ColumnInfo[] Columns);
+
+        private static readonly ConcurrentDictionary<Type, TypeInfo> _typeCache = new();
+
+        public static void WriteBackupLines(
+            this Entity entity,
+            TextWriter writer,
+            Dictionary<string, (Dictionary<string, int> Index, int Count)> allColumnData)
         {
-            var sb = new StringBuilder();
-
             Type type = entity.GetType();
-            TableAttribute classArttr = type.GetCustomAttributes().OfType<TableAttribute>().FirstOrDefault()!;
-            if (classArttr == null)
-            {
-                return string.Empty;
-            }
+            TypeInfo info = _typeCache.GetOrAdd(type, BuildTypeInfo);
 
-            sb.AppendLine($"{Backup.ENTITY}:{classArttr.Name}");
+            if (info.TableName == string.Empty) return;
+            if (!allColumnData.TryGetValue(info.TableName, out var colData)) return;
 
-            var dict = new List<KeyValuePair<int, string>>();
-            List<string> columnsOrder = entityColumnsOrder[classArttr.Name];
-            foreach (var propertyInfo in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            var (columnIndex, columnCount) = colData;
+            string[] lines = new string[columnCount];
+
+            foreach (ColumnInfo col in info.Columns)
             {
-                IgnoreAttribute ignoreAttr = (propertyInfo.GetCustomAttribute(typeof(IgnoreAttribute)) as IgnoreAttribute)!;
-                if (ignoreAttr == null)
+                object val = col.GetValue(entity);
+                if (val != null && columnIndex.TryGetValue(col.Col, out int colIdx))
                 {
-                    ColumnAttribute pattr = (propertyInfo.GetCustomAttribute(typeof(ColumnAttribute)) as ColumnAttribute)!;
-                    if (pattr != null)
-                    {
-                        EntityPropertyInfo pInfo = new EntityPropertyInfo(propertyInfo)
-                        {
-                            Converter = (IPropertyConverter)Activator.CreateInstance(typeof(DefaultConverter))!
-                        };
-                        pInfo.Converter.PropertyType = propertyInfo.PropertyType;
-
-                        object val = propertyInfo.GetValue(entity!)!;
-                        if (val != null)
-                        {
-                            dict.Add(new KeyValuePair<int, string>(columnsOrder.IndexOf(pattr.Name!), $"{pattr.Name}:{pInfo.Converter.ConvertBack(val)}"));
-                        }
-                    }
+                    lines[colIdx] = $"{col.Col}:{col.Conv.ConvertBack(val)}";
                 }
             }
 
-            foreach (var pair in dict.OrderBy(x => x.Key))
+            writer.WriteLine($"{Backup.ENTITY}:{info.TableName}");
+            foreach (string line in lines)
             {
-                sb.AppendLine(pair.Value);
+                if (line != null)
+                    writer.WriteLine(line);
             }
-            sb.AppendLine(Backup.ENTITY_END);
-            return sb.ToString();
+            writer.WriteLine(Backup.ENTITY_END);
+        }
+
+        private static TypeInfo BuildTypeInfo(Type type)
+        {
+            string tableName = type.GetCustomAttributes().OfType<TableAttribute>().FirstOrDefault()?.Name;
+            if (tableName == null)
+                return new TypeInfo(string.Empty, Array.Empty<ColumnInfo>());
+
+            ColumnInfo[] columns = type
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.GetCustomAttribute<IgnoreAttribute>() == null)
+                .Select(p => (Attr: p.GetCustomAttribute<ColumnAttribute>(), Prop: p))
+                .Where(x => x.Attr != null)
+                .Select(x => new ColumnInfo(
+                    x.Attr!.Name!,
+                    BuildGetter(x.Prop),
+                    new DefaultConverter { PropertyType = x.Prop.PropertyType }))
+                .ToArray();
+
+            return new TypeInfo(tableName, columns);
+        }
+
+        private static Func<Entity, object> BuildGetter(PropertyInfo prop)
+        {
+            var entityParam = Expression.Parameter(typeof(Entity), "e");
+            var castEntity = Expression.Convert(entityParam, prop.DeclaringType!);
+            var access = Expression.Property(castEntity, prop);
+            var boxed = Expression.Convert(access, typeof(object));
+            return Expression.Lambda<Func<Entity, object>>(boxed, entityParam).Compile();
         }
     }
 }

@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 using Financier.Adapter;
+using Financier.Common.Entities;
 using Financier.Common.Localization;
 using Financier.DataAccess;
+using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Helpers.BankHelper;
 using Financier.Desktop.Services;
 using Financier.Desktop.ViewModel;
-using Microsoft.Win32;
+using Ookii.Dialogs.Wpf;
 using DataFormats = System.Windows.DataFormats;
 
 namespace Financier.Desktop
@@ -23,21 +25,14 @@ namespace Financier.Desktop
         private const string BackupFormat = "*.backup";
         private const string Backup = ".backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-        static MainWindow()
-        {
-            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
-            customCulture.NumberFormat.NumberDecimalSeparator = ".";
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
-        }
+        private readonly ToastNotifierWrapper notificator = new ToastNotifierWrapper();
 
         MainWindowVM ViewModel { get; }
 
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), new ToastNotifierWrapper(), new BankHelperFactory(), new Services.UpdateService());
+            ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), notificator, new BankHelperFactory(), new UpdateService());
 
             DataContext = ViewModel;
             var version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -47,20 +42,47 @@ namespace Financier.Desktop
 
         private async void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            SettingsService.Current.Load();
-            LocalizationService.Instance.ApplyLanguage(SettingsService.Current.Language);
+            try
+            {
+                SettingsService.Current.Load();
+                ArgumentNullException.ThrowIfNull(SettingsService.Current.Settings);
+                ArgumentNullException.ThrowIfNull(SettingsService.Current.Settings.ExchangeRates);
+                ArgumentNullException.ThrowIfNull(SettingsService.Current.Settings.General);
+            }
+            catch
+            {
+                notificator.ShowWarning(LocalizationService.Instance.settings_corrupted);
+                SettingsService.Current.Settings = new SettingsDto()
+                {
+                    ExchangeRates = new SettingsExchangeRates
+                    {
+                        Provider = ExchangeRatesProviders.None,
+                        UpdateOnStart = false,
+                    },
+                    General = new SettingsGeneralDto
+                    {
+                        CheckForUpdatesOnStart = true
+                    }
+                };
+                SettingsService.Current.Save();
+            }
+
+            LocalizationService.Instance.ApplyLanguage(SettingsService.Current.Settings?.General.Language ?? Common.Localization.Language.English);
             var bakupFolder = SettingsService.Current.DefaultBackupDir ?? @$"C:\Users\{Environment.UserName}\Dropbox\apps\Financisto Holo";
             ViewModel.DefaultBackupDirectory = SettingsService.Current.DefaultBackupDir;
-            ViewModel.AppSettings = SettingsService.Current.AppSettings;
+
             if (Directory.Exists(bakupFolder))
             {
                 var backupFile = Directory.EnumerateFiles(bakupFolder, BackupFormat).OrderByDescending(x => x).FirstOrDefault();
                 if (!string.IsNullOrEmpty(backupFile) && File.Exists(backupFile))
                 {
-                    Logger.Info($"Loaded backup : {backupFile}");
+                    Logger.Info($"Automatically loaded backup : {backupFile}");
                     await Task.Run(() => ViewModel.OpenBackup(backupFile));
-                    await ViewModel.RefreshExchangeRatesCommand.ExecuteAsync();
-                    await ViewModel.CheckForUpdateCommand.ExecuteAsync(false);
+                }
+
+                if (SettingsService.Current.Settings?.General.CheckForUpdatesOnStart == true)
+                {
+                    await ViewModel.CheckForUpdateCommand.ExecuteAsync();
                 }
             }
         }
@@ -69,7 +91,7 @@ namespace Financier.Desktop
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                string[] files = (e.Data.GetData(DataFormats.FileDrop, true) as string[])!;
+                string[] files = (e.Data.GetData(DataFormats.FileDrop, true) as string[]);
                 var path = files.FirstOrDefault(x => Path.GetExtension(x) == Backup);
                 if (!string.IsNullOrEmpty(path))
                 {
@@ -86,14 +108,15 @@ namespace Financier.Desktop
 
         private void RibbonApplicationMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFolderDialog openFileDialog = new OpenFolderDialog
+            VistaFolderBrowserDialog openFileDialog = new VistaFolderBrowserDialog
             {
-                Multiselect = false
+                Multiselect = false,
+                ShowNewFolderButton = false
             };
 
             if (openFileDialog.ShowDialog() == true)
             {
-                var currentFolder = openFileDialog.FolderName;
+                var currentFolder = openFileDialog.SelectedPath;
                 SettingsService.Current.DefaultBackupDir = currentFolder;
                 SettingsService.Current.Save();
                 ViewModel.DefaultBackupDirectory = currentFolder;

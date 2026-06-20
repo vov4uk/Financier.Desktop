@@ -394,7 +394,7 @@
     <value>App id</value>
   </data>
   <data name="update_exchange_rates_on_start" xml:space="preserve">
-    <value>Update exchange rates on start?</value>
+    <value>Update exchange rates after .backup loaded?</value>
   </data>
   <data name="details" xml:space="preserve">
     <value>Details</value>

@@ -587,7 +587,9 @@
             string backupPath)
         {
             var vm = this.GetFinancierVM();
-            this.backupWriterMock.Setup(x => x.GenerateBackup(It.IsAny<List<Entity>>(), backupPath, It.IsAny<BackupVersion>(), It.IsAny<Dictionary<string, List<string>>>(), true)).Verifiable();
+            this.backupWriterMock.Setup(x => x.GenerateBackupAsync(It.IsAny<List<Entity>>(), backupPath, It.IsAny<BackupVersion>(), It.IsAny<Dictionary<string, List<string>>>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.budgetMock = new ();
             this.trAMock = new ();

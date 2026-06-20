@@ -1,13 +1,14 @@
-﻿namespace Financier.Adapter.Tests
+namespace Financier.Adapter.Tests
 {
     using System.Collections.Generic;
+    using System.IO;
     using Financier.Tests.Common;
     using Xunit;
 
     public class EntityExtensionsTests
     {
         [Fact]
-        public void ToBackupLines_TransfromTransactionToString_StringEquels()
+        public void WriteBackupLines_TransformTransactionToString_StringEquals()
         {
             var expectedString = @"$ENTITY:transactions
 _id:3
@@ -35,12 +36,37 @@ original_from_amount:0
 $$
 ";
 
-            Dictionary<string, List<string>> entityColumnsOrder = new Dictionary<string, List<string>>();
-            entityColumnsOrder.Add("transactions", PredefinedData.TransactionsColumnsOrder);
+            var columnsOrder = new Dictionary<string, List<string>>
+            {
+                ["transactions"] = PredefinedData.TransactionsColumnsOrder,
+            };
 
-            var actualString = PredefinedData.Transaction.ToBackupLines(entityColumnsOrder);
+            var columnData = BuildColumnData(columnsOrder);
 
-            Assert.Equal(expectedString, actualString);
+            using var sw = new StringWriter();
+            PredefinedData.Transaction.WriteBackupLines(sw, columnData);
+
+            Assert.Equal(
+                expectedString.ReplaceLineEndings("\n"),
+                sw.ToString().ReplaceLineEndings("\n"));
+        }
+
+        private static Dictionary<string, (Dictionary<string, int> Index, int Count)> BuildColumnData(
+            Dictionary<string, List<string>> columnsOrder)
+        {
+            var result = new Dictionary<string, (Dictionary<string, int>, int)>(columnsOrder.Count);
+            foreach (var (table, cols) in columnsOrder)
+            {
+                var index = new Dictionary<string, int>(cols.Count);
+                for (int i = 0; i < cols.Count; i++)
+                {
+                    index[cols[i]] = i;
+                }
+
+                result[table] = (index, cols.Count);
+            }
+
+            return result;
         }
     }
 }

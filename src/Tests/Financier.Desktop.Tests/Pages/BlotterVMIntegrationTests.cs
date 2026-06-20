@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Financier.Common.Entities;
+    using Financier.Common.Model;
     using Financier.Converters;
     using Financier.DataAccess;
     using Financier.DataAccess.Data;
@@ -19,6 +20,110 @@
 
     public class BlotterVMIntegrationTests
     {
+        [Fact]
+        public void DuplicateCommand_WithoutSelectedValue_CannotExecute()
+        {
+            var db = new FinancierDatabase();
+            var dialogMock = new Mock<IDialogWrapper>();
+            var vm = new BlotterVM(db, dialogMock.Object);
+
+            Assert.False(vm.DuplicateCommand.CanExecute());
+        }
+
+        [Fact]
+        public void DuplicateCommand_WithSelectedValue_CanExecute()
+        {
+            var db = new FinancierDatabase();
+            var dialogMock = new Mock<IDialogWrapper>();
+            var vm = new BlotterVM(db, dialogMock.Object);
+
+            vm.SelectedValue = new Common.Model.BlotterModel { Id = 1, CategoryId = 37, FromAccountId = 2, ToAccountId = 0 };
+
+            Assert.True(vm.DuplicateCommand.CanExecute());
+        }
+
+        [Fact]
+        public void PropertySetters_Account_RaisesPropertyChanged()
+        {
+            var db = new FinancierDatabase();
+            var dialogMock = new Mock<IDialogWrapper>();
+            var vm = new BlotterVM(db, dialogMock.Object);
+            var changedProperties = new List<string>();
+
+            var inpc = vm as System.ComponentModel.INotifyPropertyChanged;
+            inpc.PropertyChanged += (s, e) => changedProperties.Add(e.PropertyName);
+
+            var mockAccount = new AccountFilterModel { Id = 1, Title = "Test" };
+            vm.Account = mockAccount;
+
+            Assert.Contains("Account", changedProperties);
+        }
+
+        [Fact]
+        public void PropertySetters_Category_RaisesPropertyChanged()
+        {
+            var db = new FinancierDatabase();
+            var dialogMock = new Mock<IDialogWrapper>();
+            var vm = new BlotterVM(db, dialogMock.Object);
+            var changedProperties = new List<string>();
+
+            var inpc = vm as System.ComponentModel.INotifyPropertyChanged;
+            inpc.PropertyChanged += (s, e) => changedProperties.Add(e.PropertyName);
+
+            var mockCategory = new CategoryModel { Id = 1, Title = "Test" };
+            vm.Category = mockCategory;
+
+            Assert.Contains("Category", changedProperties);
+        }
+
+        [Fact]
+        public void PropertySetters_From_RaisesPropertyChanged()
+        {
+            var db = new FinancierDatabase();
+            var dialogMock = new Mock<IDialogWrapper>();
+            var vm = new BlotterVM(db, dialogMock.Object);
+            var changedProperties = new List<string>();
+
+            var inpc = vm as System.ComponentModel.INotifyPropertyChanged;
+            inpc.PropertyChanged += (s, e) => changedProperties.Add(e.PropertyName);
+
+            vm.From = System.DateTime.Now;
+
+            Assert.Contains("From", changedProperties);
+        }
+
+        [Fact]
+        public void PropertySetters_To_RaisesPropertyChanged()
+        {
+            var db = new FinancierDatabase();
+            var dialogMock = new Mock<IDialogWrapper>();
+            var vm = new BlotterVM(db, dialogMock.Object);
+            var changedProperties = new List<string>();
+
+            var inpc = vm as System.ComponentModel.INotifyPropertyChanged;
+            inpc.PropertyChanged += (s, e) => changedProperties.Add(e.PropertyName);
+
+            vm.To = System.DateTime.Now;
+
+            Assert.Contains("To", changedProperties);
+        }
+
+        [Fact]
+        public void PropertySetters_PeriodType_RaisesPropertyChanged()
+        {
+            var db = new FinancierDatabase();
+            var dialogMock = new Mock<IDialogWrapper>();
+            var vm = new BlotterVM(db, dialogMock.Object);
+            var changedProperties = new List<string>();
+
+            var inpc = vm as System.ComponentModel.INotifyPropertyChanged;
+            inpc.PropertyChanged += (s, e) => changedProperties.Add(e.PropertyName);
+
+            vm.PeriodType = PeriodType.Today;
+
+            Assert.Contains("PeriodType", changedProperties);
+        }
+
         private const string CreateSplitTransactionDifferentCurrenciesRunningBalancesJson =
  "[{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-54703}]";
 
@@ -107,6 +212,37 @@
         private const string EditSplitTransactionRunningBalancesJson =
 "[{\"TransactionId\":27160,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-24230}," +
 "{\"TransactionId\":27173,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":834}]";
+
+        private const string EditSimpleTransactionJson =
+"[{\"_id\":1,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-10000,\"to_amount\":0,\"datetime\":1644060576000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,\"payee_id\":0,\"parent_id\":0,\"updated_on\":0,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,\"blob_key\":null}]";
+
+        private const string EditSimpleTransactionDtoJson =
+"{\"Date\":\"2022-02-15T00:00:00+02:00\",\"Time\":\"2022-02-15T23:05:49.208+02:00\"," +
+"\"FromAccount\":{\"Id\":2,\"IsActive\":true,\"SortOrder\":1,\"Title\":\"\\u041c\\u0456\\u0439 \\u0413\\u0430\\u043c\\u0430\\u043d\\u0435\\u0446\\u044c\",\"Type\":\"CASH\",\"CurrencyName\":\"UAH\",\"CurrencyId\":1,\"TotalAmount\":0}," +
+"\"FromAccountId\":2,\"PayeeId\":0,\"CategoryId\":37,\"OriginalCurrencyId\":null,\"IsSplitCategory\":false,\"LocationId\":0,\"Note\":null,\"ProjectId\":0,\"IsOriginalFromAmountVisible\":false,\"IsAmountNegative\":true,\"OriginalFromAmount\":null," +
+"\"FromAccountCurrency\":{\"Id\":1,\"Name\":\"UAH\",\"Title\":\"Ukrainian hryvnia\",\"Symbol\":\"\\u20b4\",\"IsDefault\":true}," +
+"\"FromAmount\":20000,\"Rate\":0.0,\"RealFromAmount\":-20000,\"SplitAmount\":0,\"DateTime\":\"2022-02-15T23:05:49\",\"Id\":1,\"IsSubTransaction\":false}";
+
+        private const string EditSimpleTransactionRunningBalancesJson =
+"[{\"TransactionId\":1,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-20000}]";
+
+        private const string CreateSplitHomeCurrencyOnlySubTransactionsRunningBalancesJson =
+"[{\"TransactionId\":1,\"AccountId\":1,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-5000}]";
+
+        private const string EditSplitToSimpleTransactionJson =
+"[{\"_id\":27160,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":-1,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-10000,\"to_amount\":0,\"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,\"payee_id\":0,\"parent_id\":0,\"updated_on\":0,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,\"blob_key\":null}," +
+"{\"_id\":27165,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":37,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-6000,\"to_amount\":0,\"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":0,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,\"blob_key\":null}," +
+"{\"_id\":27166,\"from_account_id\":2,\"to_account_id\":0,\"category_id\":43,\"project_id\":0,\"location_id\":0,\"note\":null,\"from_amount\":-4000,\"to_amount\":0,\"datetime\":1644745608000,\"provider\":null,\"accuracy\":0.0,\"latitude\":0.0,\"longitude\":0.0,\"payee\":null,\"is_template\":0,\"template_name\":null,\"recurrence\":null,\"notification_options\":null,\"status\":\"UR\",\"attached_picture\":null,\"is_ccard_payment\":0,\"last_recurrence\":0,\"payee_id\":0,\"parent_id\":27160,\"updated_on\":0,\"remote_key\":null,\"original_currency_id\":0,\"original_from_amount\":0,\"blob_key\":null}]";
+
+        private const string EditSplitToSimpleTransactionDtoJson =
+"{\"Date\":\"2022-02-13T00:00:00+02:00\",\"Time\":\"2022-02-13T11:46:48+02:00\"," +
+"\"FromAccount\":{\"Id\":2,\"IsActive\":true,\"SortOrder\":2,\"Title\":\"\\u041c\\u0456\\u0439 Monobank\",\"Type\":\"DEBIT_CARD\",\"CurrencyName\":\"UAH\",\"CurrencyId\":1,\"TotalAmount\":0}," +
+"\"FromAccountId\":2,\"CategoryId\":37,\"OriginalCurrencyId\":null,\"IsSplitCategory\":false,\"LocationId\":0,\"Note\":null,\"ProjectId\":0,\"IsOriginalFromAmountVisible\":false,\"IsAmountNegative\":true,\"OriginalFromAmount\":null," +
+"\"FromAccountCurrency\":{\"Id\":1,\"Name\":\"UAH\",\"Title\":\"Ukrainian hryvnia\",\"Symbol\":\"\\u20b4\",\"IsDefault\":true}," +
+"\"FromAmount\":10000,\"Rate\":0.0,\"RealFromAmount\":-10000,\"SplitAmount\":0,\"DateTime\":\"2022-02-13T11:46:48\",\"Id\":27160,\"IsSubTransaction\":false}";
+
+        private const string EditSplitToSimpleRunningBalancesJson =
+"[{\"TransactionId\":27160,\"AccountId\":2,\"Account\":null,\"Transaction\":null,\"Datetime\":0,\"Balance\":-10000}]";
 
         private readonly Mock<IDialogWrapper> dialogMock;
         private FinancierDatabase db;
@@ -249,6 +385,71 @@
             Assert.Equal(balanceJson, str1);
             Assert.Equal(fromAmount, result.Transactions[1].FromAmount);
             Assert.Equal(toAmount, result.Transactions[1].ToAmount);
+        }
+
+        [Fact]
+        public async Task EditSimpleTransaction_HomeCurrency_BalancesUpdated()
+        {
+            var transactions = JsonDeserializer.Deserialize<Transaction>(EditSimpleTransactionJson);
+            await SetupDb(transactions);
+
+            var resultVm = JsonConvert.DeserializeObject<TransactionDto>(EditSimpleTransactionDtoJson);
+            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
+                .Returns(resultVm);
+
+            var vm = new BlotterVM(db, dialogMock.Object);
+            vm.SelectedValue = new Common.Model.BlotterModel { Id = 1, CategoryId = 37, FromAccountId = 2, ToAccountId = 0 };
+            await vm.EditCommand.ExecuteAsync();
+
+            var result = await GetResults();
+
+            Assert.Equal(EditSimpleTransactionRunningBalancesJson, JsonConvert.SerializeObject(result.Balances));
+            Assert.Single(result.Transactions);
+            Assert.Equal(-20000, result.Transactions[0].FromAmount);
+        }
+
+        [Fact]
+        public async Task CreateSplitTransaction_HomeCurrency_OnlySubTransactions_BalancesUpdated()
+        {
+            await SetupDb();
+
+            var resultVm = CreateSplitTransactionHomeCurrencyOnlySubTransactionsDto();
+            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
+                .Returns(resultVm);
+
+            var vm = new BlotterVM(db, dialogMock.Object);
+            await vm.AddCommand.ExecuteAsync();
+
+            var result = await GetResults();
+
+            Assert.Equal(CreateSplitHomeCurrencyOnlySubTransactionsRunningBalancesJson, JsonConvert.SerializeObject(result.Balances));
+            Assert.Equal(-5000, result.Accounts.FirstOrDefault(x => x.Id == 1).TotalAmount);
+            Assert.Equal(3, result.Transactions.Count);
+            Assert.Equal(-3000, result.Transactions.First(x => x.ParentId > 0 && x.CategoryId == 37).FromAmount);
+            Assert.Equal(-2000, result.Transactions.First(x => x.ParentId > 0 && x.CategoryId == 43).FromAmount);
+        }
+
+        [Fact]
+        public async Task EditSplitTransaction_RemoveAllSubTransactions_SubTransactionsDeleted()
+        {
+            var transactions = JsonDeserializer.Deserialize<Transaction>(EditSplitToSimpleTransactionJson);
+            await SetupDb(transactions);
+
+            var resultVm = JsonConvert.DeserializeObject<TransactionDto>(EditSplitToSimpleTransactionDtoJson);
+            this.dialogMock.Setup(x => x.ShowDialog<TransactionControl>(It.IsAny<TransactionControlVM>(), 640, 340, nameof(Transaction)))
+                .Returns(resultVm);
+
+            var vm = new BlotterVM(db, dialogMock.Object);
+            vm.SelectedValue = new Common.Model.BlotterModel { Id = 27160, CategoryId = -1, FromAccountId = 2, ToAccountId = 0 };
+            await vm.EditCommand.ExecuteAsync();
+
+            var result = await GetResults();
+
+            Assert.Equal(EditSplitToSimpleRunningBalancesJson, JsonConvert.SerializeObject(result.Balances));
+            Assert.Single(result.Transactions);
+            Assert.Equal(27160, result.Transactions[0].Id);
+            Assert.Equal(-10000, result.Transactions[0].FromAmount);
+            Assert.Equal(37, result.Transactions[0].CategoryId);
         }
 
         [Fact]
@@ -424,6 +625,28 @@
 "{\"_id\":1,\"name\":\"UAH\",\"title\":\"Ukrainian hryvnia\",\"symbol\":\"₴\",\"is_default\":1,\"decimals\":2,\"decimal_separator\":\"'.'\",\"group_separator\":\"' '\",\"symbol_format\":\"RS\",\"updated_on\":0,\"remote_key\":null,\"sort_order\":0,\"is_active\":1}," +
 "{\"_id\":2,\"name\":\"USD\",\"title\":\"United States dollar\",\"symbol\":\"$\",\"is_default\":0,\"decimals\":2,\"decimal_separator\":\"'.'\",\"group_separator\":\"' '\",\"symbol_format\":\"RS\",\"updated_on\":0,\"remote_key\":null,\"sort_order\":0,\"is_active\":1}," +
 "]");
+        }
+
+        private TransactionDto CreateSplitTransactionHomeCurrencyOnlySubTransactionsDto()
+        {
+            var transaction = JsonConvert.DeserializeObject<TransactionDto>(
+"{\"Date\":\"2022-02-15T00:00:00+02:00\",\"Time\":\"2022-02-15T17:47:19.515+02:00\"," +
+"\"FromAccount\":{\"Id\":1,\"IsActive\":true,\"SortOrder\":1,\"Title\":\"\\u041c\\u0456\\u0439 \\u0413\\u0430\\u043c\\u0430\\u043d\\u0435\\u0446\\u044c\",\"Type\":\"CASH\",\"CurrencyName\":\"UAH\",\"CurrencyId\":1,\"TotalAmount\":0}," +
+"\"FromAccountId\":1,\"CategoryId\":-1,\"OriginalCurrencyId\":null,\"IsSplitCategory\":true,\"LocationId\":0,\"Note\":null,\"ProjectId\":0,\"IsOriginalFromAmountVisible\":false,\"IsAmountNegative\":true,\"OriginalFromAmount\":null," +
+"\"FromAccountCurrency\":{\"Id\":1,\"Name\":\"UAH\",\"Title\":\"Ukrainian hryvnia\",\"Symbol\":\"\\u20b4\",\"IsDefault\":true}," +
+"\"FromAmount\":5000,\"Rate\":0.0,\"RealFromAmount\":-5000,\"SplitAmount\":-5000,\"DateTime\":\"2022-02-15T17:47:19\",\"Id\":0,\"IsSubTransaction\":false}");
+
+            var subTransactions = JsonConvert.DeserializeObject<List<TransactionDto>>(
+"[{\"Date\":\"0001-01-01T00:00:00\",\"Time\":\"0001-01-01T00:00:00\",\"FromAccountId\":0,\"PayeeId\":null,\"CategoryId\":37,\"OriginalCurrencyId\":null,\"IsSplitCategory\":false,\"SubTransactions\":[],\"LocationId\":null,\"Note\":null,\"ProjectId\":null,\"IsOriginalFromAmountVisible\":false,\"IsAmountNegative\":true,\"OriginalFromAmount\":null,\"FromAccountCurrency\":null,\"FromAmount\":-3000,\"RealFromAmount\":-3000,\"Id\":0,\"IsSubTransaction\":true}," +
+"{\"Date\":\"0001-01-01T00:00:00\",\"Time\":\"0001-01-01T00:00:00\",\"FromAccountId\":0,\"PayeeId\":null,\"CategoryId\":43,\"OriginalCurrencyId\":null,\"IsSplitCategory\":false,\"SubTransactions\":[],\"LocationId\":null,\"Note\":null,\"ProjectId\":null,\"IsOriginalFromAmountVisible\":false,\"IsAmountNegative\":true,\"OriginalFromAmount\":null,\"FromAccountCurrency\":null,\"FromAmount\":-2000,\"RealFromAmount\":-2000,\"Id\":0,\"IsSubTransaction\":true}]");
+
+            transaction.SubTransactions.Clear();
+            foreach (var item in subTransactions)
+            {
+                transaction.SubTransactions.Add(item);
+            }
+
+            return transaction;
         }
 
         private TransactionDto EditSplitTransactionDto()

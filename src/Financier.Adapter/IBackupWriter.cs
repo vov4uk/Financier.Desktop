@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Financier.DataAccess.Data;
 
 namespace Financier.Adapter
 {
     public interface IBackupWriter
     {
-        void GenerateBackup(
+        Task GenerateBackupAsync(
             IEnumerable<Entity> entities,
             string fileName,
             BackupVersion backupVersion,
-            Dictionary<string, List<string>> entityColumnsOrder,
-            bool deleteRawFile = true);
+            Dictionary<string, List<string>> entityColumnsOrder);
     }
 }
