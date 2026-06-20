@@ -12,7 +12,6 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:AmountConverter x:Key="AmountConverter"/>
-        <converters:UnixTimeConverter x:Key="DatetimeConverter" />
         <convert:LocalizedFormatConverter x:Key="localizedFormatConverter"/>
         <Style TargetType="DataGridCell">
             <Setter Property="TextBlock.TextAlignment" Value="Right" />
