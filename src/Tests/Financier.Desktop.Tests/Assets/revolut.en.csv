@@ -1,0 +1,7 @@
+Type,Product,Started Date,Completed Date,Description,Amount,Fee,Currency,State,Balance
+Card Payment,Current,2026-04-30 1:26:17,2026-05-02 14:05:09,MPK,-3.2,0,PLN,COMPLETED,43.6
+Card Payment,Current,2026-05-01 1:16:19,2026-05-03 14:25:56,MPK,-3.2,0,PLN,COMPLETED,40.4
+Card Payment,Current,2026-05-02 0:02:28,2026-05-04 15:56:30,MPK,-3.2,0,PLN,COMPLETED,37.2
+Exchange,Current,2026-05-08 11:13:59,2026-05-08 11:13:59,Transfer to Revolut Digital Assets Europe Ltd,-3.64,0,PLN,COMPLETED,33.56
+Exchange,Current,2026-05-08 11:16:26,2026-05-08 11:16:26,Transfer from Revolut Digital Assets Europe Ltd,3.54,0,PLN,COMPLETED,37.1
+Card Payment,Current,2026-05-05 1:21:21,2026-05-08 15:35:22,MPK,-3.2,0,PLN,COMPLETED,33.9

@@ -87,11 +87,5 @@ namespace Financier.Desktop.Helpers.BankHelper
         }
 
         protected abstract IEnumerable<BankTransaction> ParseTransactionsTable(IEnumerable<string> pages);
-
-        internal static double GetDouble(string text)
-        {
-            double.TryParse(Convert.ToString(text).Replace(',','.').Replace(Space, string.Empty), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out double retNum);
-            return retNum;
-        }
     }
 }

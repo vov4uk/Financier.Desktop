@@ -10,22 +10,23 @@ namespace Financier.Desktop.Wizards
     [ExcludeFromCodeCoverage]
     public class DateTimeConvert : DefaultTypeConverter
     {
-        private const string DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm:ss";
-        private const string DATE_TIME_FORMAT1 = "yyyy-MM-dd HH:mm:ss";
+        private static readonly string[] DATE_TIME_FORMATS =
+        {
+            "dd.MM.yyyy HH:mm:ss",
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-dd H:mm:ss",
+        };
+
 #nullable enable
         public override object ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
         {
-            if (DateTime.TryParseExact(text, DATE_TIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dt))
-            {
-                return dt;
-            }
-            DateTime.TryParseExact(text, DATE_TIME_FORMAT1, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var date);
-            return date;
+            DateTime.TryParseExact(text, DATE_TIME_FORMATS, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dt);
+            return dt;
         }
 
         public override string ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
         {
-            return ((DateTime?)value)?.ToString(DATE_TIME_FORMAT) ?? string.Empty;
+            return ((DateTime?)value)?.ToString(DATE_TIME_FORMATS[0]) ?? string.Empty;
         }
 #nullable disable
     }
