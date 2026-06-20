@@ -5,15 +5,16 @@ using System.Threading.Tasks;
 using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.DataAccess.Data;
+using Financier.Desktop.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Financier.Desktop.Helpers
+namespace Financier.Desktop.Services
 {
-    public class ExchangeRateLoader
+    public class ExchangeRatesService
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        public ExchangeRateLoader()
+        public ExchangeRatesService()
         {
         }
 
@@ -116,7 +117,7 @@ namespace Financier.Desktop.Helpers
         private static List<KeyValuePair<CurrencyModel, CurrencyModel>> GetRatesPairs()
         {
             var result = new List<KeyValuePair<CurrencyModel, CurrencyModel>>();
-            var currencies = DbManual.Currencies;
+            var currencies = DbManual.Currencies.Where(c => c.Id > 0).ToList();
 
             for (var i = 0; i < currencies.Count; i++)
             {
@@ -387,35 +388,35 @@ namespace Financier.Desktop.Helpers
 
             return (updated, currencyProperty!.Value.Value<float>());
         }
-    }
 
-    public class OpenExchangeCurrencyRates
-    {
-        public string disclaimer { get; set; }
-        public string license { get; set; }
-        public long timestamp { get; set; }
-        public string @base { get; set; }
-        public Dictionary<string, float> rates { get; set; }
-    }
+        private sealed class OpenExchangeCurrencyRates
+        {
+            public string disclaimer { get; set; }
+            public string license { get; set; }
+            public long timestamp { get; set; }
+            public string @base { get; set; }
+            public Dictionary<string, float> rates { get; set; }
+        }
 
-    public class MonobankRate
-    {
-        [JsonProperty("currencyCodeA")]
-        public int CurrencyCodeA { get; set; }
+        private sealed class MonobankRate
+        {
+            [JsonProperty("currencyCodeA")]
+            public int CurrencyCodeA { get; set; }
 
-        [JsonProperty("currencyCodeB")]
-        public int CurrencyCodeB { get; set; }
+            [JsonProperty("currencyCodeB")]
+            public int CurrencyCodeB { get; set; }
 
-        [JsonProperty("date")]
-        public long Date { get; set; }
+            [JsonProperty("date")]
+            public long Date { get; set; }
 
-        [JsonProperty("rateBuy")]
-        public double RateBuy { get; set; }
+            [JsonProperty("rateBuy")]
+            public double RateBuy { get; set; }
 
-        [JsonProperty("rateSell")]
-        public double RateSell { get; set; }
+            [JsonProperty("rateSell")]
+            public double RateSell { get; set; }
 
-        [JsonProperty("rateCross")]
-        public double RateCross { get; set; }
+            [JsonProperty("rateCross")]
+            public double RateCross { get; set; }
+        }
     }
 }

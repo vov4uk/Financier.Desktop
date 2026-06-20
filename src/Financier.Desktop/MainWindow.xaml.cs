@@ -76,13 +76,13 @@ namespace Financier.Desktop
                 var backupFile = Directory.EnumerateFiles(bakupFolder, BackupFormat).OrderByDescending(x => x).FirstOrDefault();
                 if (!string.IsNullOrEmpty(backupFile) && File.Exists(backupFile))
                 {
-                    Logger.Info($"Automatilay loaded backup : {backupFile}");
+                    Logger.Info($"Automatically loaded backup : {backupFile}");
                     await Task.Run(() => ViewModel.OpenBackup(backupFile));
                 }
 
                 if (SettingsService.Current.Settings?.General.CheckForUpdatesOnStart == true)
                 {
-                    await ViewModel.CheckForUpdateCommand.ExecuteAsync(true);
+                    await ViewModel.CheckForUpdateCommand.ExecuteAsync();
                 }
             }
         }

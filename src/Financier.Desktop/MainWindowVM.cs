@@ -49,7 +49,7 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _saveBackupAsDbCommand;
         private IAsyncCommand _settingsCommand;
         private IAsyncCommand _refreshExchangeRatesCommand;
-        private IAsyncCommand<bool> _checkForUpdateCommand;
+        private IAsyncCommand _checkForUpdateCommand;
         private readonly IBackupWriter backupWriter;
         private BlotterVM blotterVm;
         private BindableBase currentPage;
@@ -172,7 +172,7 @@ namespace Financier.Desktop.ViewModel
 
         public IAsyncCommand RefreshExchangeRatesCommand => _refreshExchangeRatesCommand ??= new AsyncCommand(RefreshExchangeRates_Click);
 
-        public IAsyncCommand<bool> CheckForUpdateCommand => _checkForUpdateCommand ??= new AsyncCommand<bool>(CheckForUpdatesAsync);
+        public IAsyncCommand CheckForUpdateCommand => _checkForUpdateCommand ??= new AsyncCommand(CheckForUpdatesAsync);
 
         public async Task OpenBackup(string backupPath)
         {
@@ -496,7 +496,7 @@ namespace Financier.Desktop.ViewModel
 
             if (erSettings.Provider != ExchangeRatesProviders.None)
             {
-                var exchangeRateLoader = new ExchangeRateLoader();
+                var exchangeRateLoader = new ExchangeRatesService();
                 List<CurrencyExchangeRate> exchangeRates = new List<CurrencyExchangeRate>();
 
                 switch (erSettings.Provider)
@@ -550,7 +550,7 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private async Task CheckForUpdatesAsync(bool showMessageIfLatest = true)
+        private async Task CheckForUpdatesAsync()
         {
             try
             {
@@ -560,10 +560,7 @@ namespace Financier.Desktop.ViewModel
                 var updateVersion = await updateService.CheckForUpdatesAsync();
                 if (updateVersion is null)
                 {
-                    if (showMessageIfLatest)
-                    {
-                        notifier.ShowMessage(LocalizationService.Instance.latest_version);
-                    }
+                    notifier.ShowMessage(LocalizationService.Instance.latest_version);
                     return;
                 }
 

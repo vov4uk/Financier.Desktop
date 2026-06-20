@@ -83,7 +83,7 @@ namespace Financier.Adapter
                 .Where(entityBaseType.IsAssignableFrom);
             foreach (Type t in types)
             {
-                TableAttribute attr = t.GetCustomAttributes(typeof(TableAttribute), true).Cast<TableAttribute>().FirstOrDefault();
+                TableAttribute attr = t.GetCustomAttribute<TableAttribute>();
                 if (attr != null)
                 {
                     EntityInfo info = new EntityInfo
@@ -94,15 +94,17 @@ namespace Financier.Adapter
                     entities[attr.Name] = info;
                     foreach (PropertyInfo p in t.GetProperties())
                     {
-                        if (p.GetCustomAttribute(typeof(IgnoreAttribute)) is not IgnoreAttribute)
+                        var ignore = p.GetCustomAttribute<IgnoreAttribute>();
+                        if (ignore == null)
                         {
-                            if (p.GetCustomAttribute(typeof(ColumnAttribute)) is ColumnAttribute pattr)
+                            var columnAttr = p.GetCustomAttribute<ColumnAttribute>();
+                            if (columnAttr != null)
                             {
                                 EntityPropertyInfo pInfo = new EntityPropertyInfo(p)
                                 {
                                     Converter = new DefaultConverter { PropertyType = p.PropertyType }
                                 };
-                                info.Properties[pattr.Name!] = pInfo;
+                                info.Properties[columnAttr.Name] = pInfo;
                             }
                         }
                     }
