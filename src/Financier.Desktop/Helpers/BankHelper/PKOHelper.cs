@@ -11,6 +11,7 @@ using Financier.Desktop.Wizards;
 using Tabula;
 using Tabula.Extractors;
 using UglyToad.PdfPig;
+using static Financier.Common.DoubleUtils;
 
 namespace Financier.Desktop.Helpers.BankHelper
 {
@@ -154,11 +155,11 @@ namespace Financier.Desktop.Helpers.BankHelper
                                 DataOperacji = transactionDate,
                                 IdentyfikatorOperacji = idStr,
                                 DataWaluty = currencyDate,
-                                KwotaOperacji = BankPdfHelperBase.GetDouble(operationAmount.Value),
-                                Saldo = BankPdfHelperBase.GetDouble(saldo.Value),
+                                KwotaOperacji = GetDouble(operationAmount.Value),
+                                Saldo = GetDouble(saldo.Value),
                                 OpisOperacji = transactionDescriprion,
                                 TypOperacji = transactionType,
-                                KwotaOryg = kwotaOryg.Success ? BankPdfHelperBase.GetDouble(kwotaOryg.Groups[2].Value) : BankPdfHelperBase.GetDouble(operationAmount.Value),
+                                KwotaOryg = kwotaOryg.Success ? GetDouble(kwotaOryg.Groups[2].Value) : GetDouble(operationAmount.Value),
                                 WalutaOryg = kwotaOryg.Success ? kwotaOryg.Groups[3].Value : string.Empty
                             };
                             transactions.Add(transaction);

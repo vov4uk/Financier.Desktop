@@ -255,6 +255,10 @@
                                   Label="{loc:Translate Key=pko_pdf}"
                                   Command="{Binding Path=ImportCommand}"
                                   CommandParameter="{x:Static Wizard:WizardTypes.Pko}" />
+                    <RibbonButton LargeImageSource="pack://application:,,,/Images/bank/revolut.png"
+                                  Label="{loc:Translate Key=revolut_csv}"
+                                  Command="{Binding Path=ImportCommand}"
+                                  CommandParameter="{x:Static Wizard:WizardTypes.Revolut}" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Transaction"

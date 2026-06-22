@@ -219,6 +219,12 @@
   <data name="pko" xml:space="preserve">
     <value>PKO</value>
   </data>
+  <data name="revolut_csv" xml:space="preserve">
+    <value>Revolut CSV</value>
+  </data>
+  <data name="revolut" xml:space="preserve">
+    <value>Revolut</value>
+  </data>
   <data name="transaction" xml:space="preserve">
     <value>Операція</value>
   </data>

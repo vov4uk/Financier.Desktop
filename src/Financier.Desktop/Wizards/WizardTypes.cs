@@ -17,6 +17,8 @@ namespace Financier.Desktop.Wizards
         [Description("pdf")]
         Pireus,
         [Description("pdf")]
-        Pko
+        Pko,
+        [Description("csv")]
+        Revolut
     }
 }

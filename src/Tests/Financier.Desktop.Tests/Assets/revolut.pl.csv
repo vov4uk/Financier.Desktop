@@ -1,0 +1,5 @@
+Rodzaj,Produkt,Data rozpoczęcia,Data zrealizowania,Opis,Kwota,Opłata,Waluta,State,Saldo
+Zasilenie,Bieżące,2026-04-24 13:46:07,2026-04-24 13:46:09,Zasilenie {xPay} za pomocą {card},50.00,0.00,PLN,ZAKOŃCZONO,50.00
+Płatność kartą,Bieżące,2026-04-28 01:24:07,2026-04-30 15:47:59,MPK,-3.20,0.00,PLN,ZAKOŃCZONO,46.80
+Wymiana,Bieżące,2026-05-08 11:13:59,2026-05-08 11:13:59,Transfer to Revolut Digital Assets Europe Ltd,-3.64,0.00,PLN,ZAKOŃCZONO,33.56
+Płatność kartą,Bieżące,2026-06-17 01:40:47,,Urbancard,-3.20,0.00,PLN,OCZEKUJE,
