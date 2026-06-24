@@ -9,11 +9,21 @@
     <Grid>
         <DataGrid Margin="5"
                   ItemsSource="{Binding Path=Entities}"
+                  SelectedItem="{Binding SelectedValue}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   FontSize="14"
                   IsReadOnly="True">
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick"
+                              Command="{Binding EditCommand}"
+                              CommandParameter="{Binding SelectedValue}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Resources>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </DataGrid.Resources>
             <DataGrid.Columns>
+                <DataGridTemplateColumn Header="{loc:Translate Key=active}" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
                 <DataGridTextColumn Header="{loc:Translate Key=title}" Binding="{Binding Path=Title}"/>
                 <DataGridTextColumn Header="{loc:Translate Key=name}" Binding="{Binding Path=Name}"/>
                 <DataGridTextColumn Header="{loc:Translate Key=symbol}" Binding="{Binding Path=Symbol}"/>

@@ -651,6 +651,9 @@
   <data name="default" xml:space="preserve">
     <value>За замовчуванням</value>
   </data>
+  <data name="update_exchange_rate" xml:space="preserve">
+    <value>Включити в оновлення курсу валют</value>
+  </data>
   <data name="usd" xml:space="preserve">
     <value>USD</value>
   </data>
@@ -824,5 +827,41 @@
   </data>
   <data name="language_ukrainian" xml:space="preserve">
     <value>Українська</value>
+  </data>
+  <data name="currency_details" xml:space="preserve">
+    <value>Відомості про валюту</value>
+  </data>
+  <data name="currency_name" xml:space="preserve">
+    <value>Назва</value>
+  </data>
+  <data name="currency_code" xml:space="preserve">
+    <value>Код</value>
+  </data>
+  <data name="currency_code_hint" xml:space="preserve">
+    <value>Код ISO 4217</value>
+  </data>
+  <data name="decimals" xml:space="preserve">
+    <value>Десяткові дроби</value>
+  </data>
+  <data name="decimal_separator" xml:space="preserve">
+    <value>Десятковий роздільник</value>
+  </data>
+  <data name="group_separator" xml:space="preserve">
+    <value>Роздільник груп</value>
+  </data>
+  <data name="currency_symbol_format" xml:space="preserve">
+    <value>Формат символів</value>
+  </data>
+  <data name="select_currency_template" xml:space="preserve">
+    <value>Виберіть шаблон валюти</value>
+  </data>
+  <data name="new_currency" xml:space="preserve">
+    <value>Нова валюта..</value>
+  </data>
+  <data name="symbol_format" xml:space="preserve">
+    <value>Формат символів</value>
+  </data>
+  <data name="number_format" xml:space="preserve">
+    <value>Числовий формат</value>
   </data>
 </root>

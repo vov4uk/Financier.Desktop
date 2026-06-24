@@ -53,6 +53,7 @@ namespace Financier.Desktop.ViewModel
         private readonly IBackupWriter backupWriter;
         private BlotterVM blotterVm;
         private BindableBase currentPage;
+        private CurrenciesVM currenciesVm;
         private IFinancierDatabase db;
         private readonly IEntityReader entityReader;
         private LocationsVM locationsVm;
@@ -89,6 +90,12 @@ namespace Financier.Desktop.ViewModel
             private set => SetProperty(ref blotterVm, value);
         }
 
+        public CurrenciesVM Currencies
+        {
+            get => currenciesVm;
+            private set => SetProperty(ref currenciesVm, value);
+        }
+
         public BindableBase CurrentPage
         {
             get => currentPage;
@@ -96,6 +103,7 @@ namespace Financier.Desktop.ViewModel
             {
                 SetProperty(ref currentPage, value, nameof(CurrentPage));
                 Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
+                RaisePropertyChanged(nameof(IsCurrencyPageSelected));
                 RaisePropertyChanged(nameof(IsTransactionPageSelected));
                 RaisePropertyChanged(nameof(IsLocationPageSelected));
                 RaisePropertyChanged(nameof(IsProjectPageSelected));
@@ -104,6 +112,8 @@ namespace Financier.Desktop.ViewModel
                 RaisePropertyChanged(nameof(IsExchangeRatesPageSelected));
             }
         }
+
+        public bool IsCurrencyPageSelected => currentPage is CurrenciesVM;
 
         public bool IsLocationPageSelected => currentPage is LocationsVM;
 
@@ -257,6 +267,7 @@ namespace Financier.Desktop.ViewModel
         {
             _pages?.Clear();
             Blotter = null;
+            Currencies = null;
             Locations = null;
             Payees = null;
             Projects = null;
@@ -266,12 +277,14 @@ namespace Financier.Desktop.ViewModel
         private void CreatePages()
         {
             Blotter = new BlotterVM(db, dialogWrapper);
+            Currencies = new CurrenciesVM(db, dialogWrapper);
             Locations = new LocationsVM(db, dialogWrapper);
             Payees = new PayeesVM(db, dialogWrapper);
             Projects = new ProjectsVM(db, dialogWrapper);
             Rules = new RulesVM(db, dialogWrapper);
 
             _pages.TryAdd(typeof(BlotterModel), Blotter);
+            _pages.TryAdd(typeof(CurrencyModel), Currencies);
             _pages.TryAdd(typeof(LocationModel), Locations);
             _pages.TryAdd(typeof(PayeeModel), Payees);
             _pages.TryAdd(typeof(ProjectModel), Projects);
@@ -285,7 +298,7 @@ namespace Financier.Desktop.ViewModel
                 case nameof(AccountModel):
                     return GetOrCreatePage<AccountModel, AccountsVM>();
                 case nameof(CurrencyModel):
-                    return GetOrCreatePage<CurrencyModel, CurrenciesVM>();
+                    return Currencies ??= GetOrCreatePage<CurrencyModel, CurrenciesVM>();
                 case nameof(ProjectModel):
                     return Projects ??= GetOrCreatePage<ProjectModel, ProjectsVM>();
                 case nameof(LocationModel):

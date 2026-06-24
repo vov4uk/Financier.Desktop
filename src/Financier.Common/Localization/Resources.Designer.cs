@@ -565,11 +565,74 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code.
+        /// </summary>
+        public static string currency_code {
+            get {
+                return ResourceManager.GetString("currency_code", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ISO 4217 code.
+        /// </summary>
+        public static string currency_code_hint {
+            get {
+                return ResourceManager.GetString("currency_code_hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency details.
+        /// </summary>
+        public static string currency_details {
+            get {
+                return ResourceManager.GetString("currency_details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency name.
+        /// </summary>
+        public static string currency_name {
+            get {
+                return ResourceManager.GetString("currency_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Symbol format.
+        /// </summary>
+        public static string currency_symbol_format {
+            get {
+                return ResourceManager.GetString("currency_symbol_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
         public static string date {
             get {
                 return ResourceManager.GetString("date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decimal separator.
+        /// </summary>
+        public static string decimal_separator {
+            get {
+                return ResourceManager.GetString("decimal_separator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decimals.
+        /// </summary>
+        public static string decimals {
+            get {
+                return ResourceManager.GetString("decimals", resourceCulture);
             }
         }
         
@@ -831,6 +894,15 @@ namespace Financier.Common.Localization {
         public static string grid {
             get {
                 return ResourceManager.GetString("grid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group separator.
+        /// </summary>
+        public static string group_separator {
+            get {
+                return ResourceManager.GetString("group_separator", resourceCulture);
             }
         }
         
@@ -1132,6 +1204,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New currency...
+        /// </summary>
+        public static string new_currency {
+            get {
+                return ResourceManager.GetString("new_currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Rule.
         /// </summary>
         public static string new_rule {
@@ -1164,6 +1245,15 @@ namespace Financier.Common.Localization {
         public static string note {
             get {
                 return ResourceManager.GetString("note", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number format.
+        /// </summary>
+        public static string number_format {
+            get {
+                return ResourceManager.GetString("number_format", resourceCulture);
             }
         }
         
@@ -1717,6 +1807,24 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Revolut.
+        /// </summary>
+        public static string revolut {
+            get {
+                return ResourceManager.GetString("revolut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revolut CSV.
+        /// </summary>
+        public static string revolut_csv {
+            get {
+                return ResourceManager.GetString("revolut_csv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rule.
         /// </summary>
         public static string rule {
@@ -1879,6 +1987,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select currency template.
+        /// </summary>
+        public static string select_currency_template {
+            get {
+                return ResourceManager.GetString("select_currency_template", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Selected account {0} with balance {1} {2}.
         /// </summary>
         public static string selected_account_balance_format {
@@ -1938,6 +2055,15 @@ namespace Financier.Common.Localization {
         public static string symbol {
             get {
                 return ResourceManager.GetString("symbol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Symbol format.
+        /// </summary>
+        public static string symbol_format {
+            get {
+                return ResourceManager.GetString("symbol_format", resourceCulture);
             }
         }
         
@@ -2100,6 +2226,15 @@ namespace Financier.Common.Localization {
         public static string update_downloaded {
             get {
                 return ResourceManager.GetString("update_downloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include in exchange rate update.
+        /// </summary>
+        public static string update_exchange_rate {
+            get {
+                return ResourceManager.GetString("update_exchange_rate", resourceCulture);
             }
         }
         

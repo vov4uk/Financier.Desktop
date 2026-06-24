@@ -1,0 +1,147 @@
+<UserControl x:Class="Financier.Desktop.Views.Controls.CurrencyControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
+             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
+             xmlns:entities="clr-namespace:Financier.Common.Entities;assembly=Financier.Common"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:CurrencyControlVM}, IsDesignTimeCreatable=False}"
+             mc:Ignorable="d"
+             d:DesignHeight="400"
+             d:DesignWidth="420">
+    <GroupBox Margin="5"
+              Header="{loc:Translate Key=currency_details}"
+              FontSize="12">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Currency name (Title) -->
+            <GroupBox Grid.Row="0" Header="{loc:Translate Key=currency_name}" Margin="0,0,0,4">
+                <TextBox Text="{Binding Entity.Title, UpdateSourceTrigger=PropertyChanged}" />
+            </GroupBox>
+
+            <!-- Code and Symbol -->
+            <Grid Grid.Row="1" Margin="0,0,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <GroupBox Grid.Column="0" Header="{loc:Translate Key=currency_code}">
+                    <Grid>
+                        <TextBox Text="{Binding Entity.Name, UpdateSourceTrigger=PropertyChanged}" MaxLength="3"
+                                 VerticalAlignment="Center"
+                                 x:Name="NameTextBox"/>
+                        <TextBlock IsHitTestVisible="False"
+                                   VerticalAlignment="Center"
+                                   Text="{loc:Translate Key=currency_code_hint}"
+                                   Foreground="DarkGray">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=NameTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Grid.Column="2" Header="{loc:Translate Key=symbol}">
+                    <TextBox Text="{Binding Entity.Symbol, UpdateSourceTrigger=PropertyChanged}" MaxLength="10" />
+                </GroupBox>
+            </Grid>
+
+            <!-- Decimals, Decimal separator, Group separator -->
+            <Grid Grid.Row="2" Margin="0,0,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <GroupBox Grid.Column="0" Header="{loc:Translate Key=decimals}">
+                    <ComboBox ItemsSource="{Binding Source={loc:EnumBinding {x:Type viewmodel:Decimals}}}"
+                              SelectedItem="{Binding SelectedDecimals, Mode=TwoWay}" />
+                </GroupBox>
+                <GroupBox Grid.Column="2" Header="{loc:Translate Key=decimal_separator}">
+                    <ComboBox ItemsSource="{Binding Source={loc:EnumBinding {x:Type viewmodel:DecimalSeparator}}}"
+                              SelectedItem="{Binding SelectedDecimalSeparator, Mode=TwoWay}" />
+                </GroupBox>
+                <GroupBox Grid.Column="4" Header="{loc:Translate Key=group_separator}">
+                    <ComboBox ItemsSource="{Binding Source={loc:EnumBinding {x:Type viewmodel:GroupSeparator}}}"
+                              SelectedItem="{Binding SelectedGroupSeparator, Mode=TwoWay}" />
+                </GroupBox>
+            </Grid>
+
+            <!-- Symbol format and Number format -->
+            <Grid Grid.Row="3" Margin="0,0,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <GroupBox Grid.Column="0" Header="{loc:Translate Key=symbol_format}">
+                    <ComboBox ItemsSource="{Binding Source={loc:EnumBinding {x:Type entities:SymbolFormat}}}"
+                              SelectedItem="{Binding Entity.SymbolFormat, Mode=TwoWay}" />
+                </GroupBox>
+                <GroupBox Grid.Column="2" Header="{loc:Translate Key=number_format}">
+                    <Grid>
+                        <TextBox Text="{Binding Entity.NumberFormat, UpdateSourceTrigger=PropertyChanged}"
+                                 VerticalAlignment="Center"
+                                 x:Name="SearchTermTextBox"/>
+                        <TextBlock IsHitTestVisible="False"
+                                   VerticalAlignment="Center"
+                                   Text="#,##0.00"
+                                   Foreground="DarkGray">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchTermTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <!-- IsDefault and UpdateExchangeRate -->
+            <StackPanel Grid.Row="4" Margin="4,4,0,8" Orientation="Horizontal">
+                <CheckBox Margin="0,0,16,0"
+                          IsChecked="{Binding Entity.IsDefault}"
+                          Content="{loc:Translate Key=is_default}" />
+                <CheckBox IsChecked="{Binding Entity.UpdateExchangeRate}"
+                          Content="{loc:Translate Key=update_exchange_rate}" />
+            </StackPanel>
+
+            <!-- Save / Cancel -->
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Margin="2"
+                        Command="{Binding SaveCommand}"
+                        Content="{loc:Translate Key=save}" />
+                <Button Grid.Column="1" Margin="2"
+                        Command="{Binding CancelCommand}"
+                        Content="{loc:Translate Key=cancel}" />
+            </Grid>
+        </Grid>
+    </GroupBox>
+</UserControl>

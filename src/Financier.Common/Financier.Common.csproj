@@ -95,4 +95,7 @@
       <_Parameter1>Financier.Desktop.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\currencies.csv" />
+  </ItemGroup>
 </Project>

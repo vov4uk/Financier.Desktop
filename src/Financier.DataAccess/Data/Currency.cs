@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
+using System.Text;
 
 namespace Financier.DataAccess.Data
 {
@@ -37,7 +39,40 @@ namespace Financier.DataAccess.Data
         [Column("group_separator")]
         public string GroupSeparator { get; set; }
 
+        [Column("number_format")]
+        public string NumberFormat;
+
+        [Column("update_exchange_rate")]
+        public bool UpdateExchangeRate;
+
         [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
+
+
+        public static Currency defaultCurrency()
+        {
+            Currency c = new Currency
+            {
+                Id = 2,
+                Name = "USD",
+                Title = "American Dollar",
+                Symbol = "$",
+                Decimals = 2
+            };
+            return c;
+        }
+
+        public static Currency EMPTY = new Currency();
+
+        static Currency() {
+            EMPTY.Id = 0;
+            EMPTY.Name = "";
+            EMPTY.Title = "Default";
+            EMPTY.Symbol = "";
+            EMPTY.SymbolFormat = "RS";
+            EMPTY.Decimals = 2;
+            EMPTY.DecimalSeparator = "'.'";
+            EMPTY.GroupSeparator = "','";
+        }
     }
 }

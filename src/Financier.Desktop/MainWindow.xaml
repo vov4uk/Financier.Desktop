@@ -348,6 +348,21 @@
                                   Label="{loc:Translate Key=delete}"
                                   Command="{Binding Path=Rules.DeleteCommand}" />
                 </RibbonGroup>
+                <RibbonGroup Header="{loc:Translate Key=currencies}"
+                             Selector.IsSelected="{Binding Path=IsCurrencyPageSelected, Mode=OneWay}"
+                             Visibility="{Binding Path=IsCurrencyPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                             DataContext="{Binding}">
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
+                                  Label="{loc:Translate Key=add}"
+                                  Command="{Binding Path=Currencies.AddCommand}" />
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
+                                  Label="{loc:Translate Key=edit}"
+                                  Command="{Binding Path=Currencies.EditCommand}" />
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
+                                  Label="{loc:Translate Key=delete}"
+                                  IsEnabled="False"
+                                  Command="{Binding Path=Currencies.DeleteCommand}" />
+                </RibbonGroup>
                 <RibbonGroup Header="{loc:Translate Key=exchange_rates}"
                              Selector.IsSelected="{Binding Path=IsExchangeRatesPageSelected, Mode=OneWay}"
                              Visibility="{Binding Path=IsExchangeRatesPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"

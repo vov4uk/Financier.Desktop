@@ -135,6 +135,8 @@ public sealed class LocalizationService : INotifyPropertyChanged
     public string transaction => Get();
     public string rule => Get();
     public string location => Get();
+    public string currency => Get();
+    public string currencies => Get();
     // RecipesWizard Page1
     public string recipe_wizard_total_format => Get();
     // MainWindow Messages
