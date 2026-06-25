@@ -297,6 +297,7 @@ ORDER  BY 1 DESC ");
                 case nameof(MCCEnums):         _mccEnums = null; break;
                 case nameof(MCCTitles):        _mccTitles = null; break;
                 case nameof(Currencies):       _currencies = null; break;
+                case nameof(Category):         _category = null; _topCategory = null; break;
                 default:
                     break;
             }

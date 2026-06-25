@@ -11,12 +11,15 @@ using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Views.Controls;
+using NLog;
 
 namespace Financier.Desktop.ViewModel
 {
     [ExcludeFromCodeCoverage]
     public class CurrenciesVM : EntityBaseVM<CurrencyModel>
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public CurrenciesVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
             : base(db, dialogWrapper)
         {
@@ -41,7 +44,44 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        protected override Task OnDelete(CurrencyModel item) => throw new System.NotImplementedException();
+        protected override async Task OnDelete(CurrencyModel item)
+        {
+            int id = item.Id ?? 0;
+            if (id == 0) return;
+
+            using (var uow = db.CreateUnitOfWork())
+            {
+                var accountRepo = uow.GetRepository<Account>();
+                var usedByAccount = await accountRepo.FindByAsync(a => a.CurrencyId == id);
+                if (usedByAccount != null)
+                {
+                    dialogWrapper.ShowMessageBox(LocalizationService.Instance.currency_is_used, LocalizationService.Instance.delete);
+                    return;
+                }
+
+                var txRepo = uow.GetRepository<Transaction>();
+                var usedByTx = await txRepo.FindByAsync(t => t.OriginalCurrencyId == id);
+                if (usedByTx != null)
+                {
+                    dialogWrapper.ShowMessageBox(LocalizationService.Instance.currency_is_used, LocalizationService.Instance.delete);
+                    return;
+                }
+
+                if (!dialogWrapper.ShowMessageBox(LocalizationService.Instance.confirm_delete_currency, LocalizationService.Instance.delete, true))
+                    return;
+
+                var currencyRepo = uow.GetRepository<Currency>();
+                var entity = await currencyRepo.FindByAsync(c => c.Id == id);
+                if (entity != null)
+                {
+                    Logger.Info($"Deleting currency id={id}");
+                    await currencyRepo.DeleteAsync(entity);
+                    await uow.SaveChangesAsync();
+                }
+            }
+
+            await RefreshData();
+        }
 
         protected override Task OnEdit(CurrencyModel item) => OpenCurrencyDialogAsync(item.Id ?? 0);
 
