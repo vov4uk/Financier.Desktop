@@ -747,6 +747,45 @@
   <data name="account_type_other" xml:space="preserve">
     <value>Інше</value>
   </data>
+  <data name="account_details" xml:space="preserve">
+    <value>Деталі рахунку</value>
+  </data>
+  <data name="account_type" xml:space="preserve">
+    <value>Тип рахунку</value>
+  </data>
+  <data name="card_issuer" xml:space="preserve">
+    <value>Емітент картки</value>
+  </data>
+  <data name="electronic_payment_type" xml:space="preserve">
+    <value>Електронний платіж</value>
+  </data>
+  <data name="opening_amount" xml:space="preserve">
+    <value>Початковий залишок</value>
+  </data>
+  <data name="limit_amount" xml:space="preserve">
+    <value>Кредитний ліміт</value>
+  </data>
+  <data name="closing_day" xml:space="preserve">
+    <value>День закриття</value>
+  </data>
+  <data name="payment_day" xml:space="preserve">
+    <value>День платежу</value>
+  </data>
+  <data name="sort_order" xml:space="preserve">
+    <value>Порядок сортування</value>
+  </data>
+  <data name="is_include_into_totals" xml:space="preserve">
+    <value>Враховувати у підсумках</value>
+  </data>
+  <data name="card_number" xml:space="preserve">
+    <value>Номер картки</value>
+  </data>
+  <data name="issuer" xml:space="preserve">
+    <value>Емітент</value>
+  </data>
+  <data name="confirm_delete_account" xml:space="preserve">
+    <value>Позначити цей рахунок як неактивний?</value>
+  </data>
   <data name="liabilities_usd" xml:space="preserve">
     <value>Зобов'язання (дол. США)</value>
   </data>

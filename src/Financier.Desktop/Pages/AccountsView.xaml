@@ -28,6 +28,7 @@
         </ListBox>-->
         <DataGrid Margin="5"
                   ItemsSource="{Binding Path=Entities}"
+                  SelectedItem="{Binding SelectedValue}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   FontSize="18"
@@ -35,6 +36,11 @@
                   VerticalContentAlignment="Center"
                   VerticalAlignment="Center"
                   IsReadOnly="True">
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick"
+                              Command="{Binding EditCommand}"
+                              CommandParameter="{Binding SelectedValue}" />
+            </DataGrid.InputBindings>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{loc:Translate Key=active}" CellTemplate="{StaticResource ResourceKey=IActiveCell}"/>
                 <DataGridTemplateColumn Header=""

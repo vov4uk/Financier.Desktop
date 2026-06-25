@@ -51,6 +51,7 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _refreshExchangeRatesCommand;
         private IAsyncCommand _checkForUpdateCommand;
         private readonly IBackupWriter backupWriter;
+        private AccountsVM accountsVm;
         private BlotterVM blotterVm;
         private CategoriesVM categoriesVm;
         private BindableBase currentPage;
@@ -85,6 +86,12 @@ namespace Financier.Desktop.ViewModel
             CreatePages();
         }
 
+        public AccountsVM Accounts
+        {
+            get => accountsVm;
+            private set => SetProperty(ref accountsVm, value);
+        }
+
         public BlotterVM Blotter
         {
             get => blotterVm;
@@ -110,6 +117,7 @@ namespace Financier.Desktop.ViewModel
             {
                 SetProperty(ref currentPage, value, nameof(CurrentPage));
                 Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
+                RaisePropertyChanged(nameof(IsAccountPageSelected));
                 RaisePropertyChanged(nameof(IsCategoryPageSelected));
                 RaisePropertyChanged(nameof(IsCurrencyPageSelected));
                 RaisePropertyChanged(nameof(IsTransactionPageSelected));
@@ -120,6 +128,8 @@ namespace Financier.Desktop.ViewModel
                 RaisePropertyChanged(nameof(IsExchangeRatesPageSelected));
             }
         }
+
+        public bool IsAccountPageSelected => currentPage is AccountsVM;
 
         public bool IsCategoryPageSelected => currentPage is CategoriesVM;
 
@@ -276,6 +286,7 @@ namespace Financier.Desktop.ViewModel
         private void ClearPages()
         {
             _pages?.Clear();
+            Accounts = null;
             Blotter = null;
             Categories = null;
             Currencies = null;
@@ -287,6 +298,7 @@ namespace Financier.Desktop.ViewModel
 
         private void CreatePages()
         {
+            Accounts = new AccountsVM(db, dialogWrapper);
             Blotter = new BlotterVM(db, dialogWrapper);
             Categories = new CategoriesVM(db, dialogWrapper);
             Currencies = new CurrenciesVM(db, dialogWrapper);
@@ -295,6 +307,7 @@ namespace Financier.Desktop.ViewModel
             Projects = new ProjectsVM(db, dialogWrapper);
             Rules = new RulesVM(db, dialogWrapper);
 
+            _pages.TryAdd(typeof(AccountModel), Accounts);
             _pages.TryAdd(typeof(BlotterModel), Blotter);
             _pages.TryAdd(typeof(CategoryTreeModel), Categories);
             _pages.TryAdd(typeof(CurrencyModel), Currencies);
@@ -309,7 +322,7 @@ namespace Financier.Desktop.ViewModel
             switch (type.Name)
             {
                 case nameof(AccountModel):
-                    return GetOrCreatePage<AccountModel, AccountsVM>();
+                    return Accounts ??= GetOrCreatePage<AccountModel, AccountsVM>();
                 case nameof(CurrencyModel):
                     return Currencies ??= GetOrCreatePage<CurrencyModel, CurrenciesVM>();
                 case nameof(ProjectModel):

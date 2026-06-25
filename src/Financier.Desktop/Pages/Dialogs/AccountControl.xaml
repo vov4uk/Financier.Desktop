@@ -1,0 +1,202 @@
+<UserControl x:Class="Financier.Desktop.Views.Controls.AccountControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
+             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:AccountControlVM}, IsDesignTimeCreatable=False}"
+             mc:Ignorable="d"
+             d:DesignHeight="560"
+             d:DesignWidth="540">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <GroupBox Margin="5"
+              Header="{loc:Translate Key=account_details}"
+              FontSize="12">
+        <GroupBox.Resources>
+            <Style TargetType="{x:Type xctk:IconButton}">
+                <Setter Property="Height" Value="24" />
+                <Setter Property="Width" Value="24" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </GroupBox.Resources>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="24" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Account Type -->
+                <GroupBox Grid.Row="0" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=account_type}"
+                          Margin="0,0,0,4">
+                    <ComboBox ItemsSource="{Binding AccountTypes}"
+                              SelectedItem="{Binding SelectedAccountType, Mode=TwoWay}"
+                              DisplayMemberPath="Display" />
+                </GroupBox>
+
+                <!-- Title -->
+                <GroupBox Grid.Row="1" Grid.Column="0"
+                          Header="{loc:Translate Key=title}"
+                          Margin="0,0,2,4">
+                    <TextBox Text="{Binding Entity.Title, UpdateSourceTrigger=PropertyChanged}" />
+                </GroupBox>
+                <xctk:IconButton Grid.Row="1" Grid.Column="1"
+                                 VerticalAlignment="Bottom"
+                                 Margin="0,0,0,4"
+                                 Command="{Binding ClearTitleCommand}">
+                    <xctk:IconButton.Icon>
+                        <Image Source="{StaticResource IconXmark}" Height="16" Width="16" />
+                    </xctk:IconButton.Icon>
+                </xctk:IconButton>
+
+                <!-- Currency -->
+                <GroupBox Grid.Row="2" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=currency}"
+                          Margin="0,0,0,4">
+                    <ComboBox ItemsSource="{Binding Currencies}"
+                              SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}"
+                              DisplayMemberPath="Name" />
+                </GroupBox>
+
+                <!-- Card Issuer (card types only) -->
+                <GroupBox Grid.Row="3" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=card_issuer}"
+                          Margin="0,0,0,4"
+                          Visibility="{Binding ShowCardIssuer, Converter={StaticResource BoolToVis}}">
+                    <ComboBox ItemsSource="{Binding CardIssuers}"
+                              SelectedItem="{Binding SelectedCardIssuer, Mode=TwoWay}"
+                              DisplayMemberPath="Display" />
+                </GroupBox>
+
+                <!-- Electronic Payment Type (electronic only) -->
+                <GroupBox Grid.Row="4" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=electronic_payment_type}"
+                          Margin="0,0,0,4"
+                          Visibility="{Binding ShowElectronicType, Converter={StaticResource BoolToVis}}">
+                    <ComboBox ItemsSource="{Binding ElectronicTypes}"
+                              SelectedItem="{Binding SelectedElectronicType, Mode=TwoWay}"
+                              DisplayMemberPath="Display" />
+                </GroupBox>
+
+                <!-- Issuer Name (card + electronic) -->
+                <GroupBox Grid.Row="5" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=issuer}"
+                          Margin="0,0,0,4"
+                          Visibility="{Binding ShowIssuer, Converter={StaticResource BoolToVis}}">
+                    <TextBox Text="{Binding Entity.Issuer, UpdateSourceTrigger=PropertyChanged}" />
+                </GroupBox>
+
+                <!-- Card Number (card types only) -->
+                <GroupBox Grid.Row="6" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=card_number}"
+                          Margin="0,0,0,4"
+                          Visibility="{Binding ShowNumber, Converter={StaticResource BoolToVis}}">
+                    <TextBox Text="{Binding Entity.Number, UpdateSourceTrigger=PropertyChanged}" />
+                </GroupBox>
+
+                <!-- Limit Amount (credit card only) -->
+                <GroupBox Grid.Row="7" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=limit_amount}"
+                          Margin="0,0,0,4"
+                          Visibility="{Binding ShowCreditCardFields, Converter={StaticResource BoolToVis}}">
+                    <TextBox Text="{Binding Entity.LimitAmount, UpdateSourceTrigger=PropertyChanged}" />
+                </GroupBox>
+
+                <!-- Closing Day (credit card only) -->
+                <GroupBox Grid.Row="8" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=closing_day}"
+                          Margin="0,0,0,4"
+                          Visibility="{Binding ShowCreditCardFields, Converter={StaticResource BoolToVis}}">
+                    <TextBox Text="{Binding Entity.ClosingDay, UpdateSourceTrigger=PropertyChanged}" />
+                </GroupBox>
+
+                <!-- Payment Day (credit card only) -->
+                <GroupBox Grid.Row="9" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=payment_day}"
+                          Margin="0,0,0,4"
+                          Visibility="{Binding ShowCreditCardFields, Converter={StaticResource BoolToVis}}">
+                    <TextBox Text="{Binding Entity.PaymentDay, UpdateSourceTrigger=PropertyChanged}" />
+                </GroupBox>
+
+                <!-- Opening Amount (new accounts only) -->
+                <GroupBox Grid.Row="10" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=opening_amount}"
+                          Margin="0,0,0,4"
+                          Visibility="{Binding IsNew, Converter={StaticResource BoolToVis}}">
+                    <TextBox Text="{Binding Entity.OpeningAmount, UpdateSourceTrigger=PropertyChanged}" />
+                </GroupBox>
+
+                <!-- Note -->
+                <GroupBox Grid.Row="11" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=note}"
+                          Margin="0,0,0,4">
+                    <TextBox Text="{Binding Entity.Note, UpdateSourceTrigger=PropertyChanged}"
+                             MinLines="2"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True" />
+                </GroupBox>
+
+                <!-- Sort Order -->
+                <GroupBox Grid.Row="12" Grid.ColumnSpan="2"
+                          Header="{loc:Translate Key=sort_order}"
+                          Margin="0,0,0,4">
+                    <TextBox Text="{Binding Entity.SortOrder, UpdateSourceTrigger=PropertyChanged}" />
+                </GroupBox>
+
+                <!-- Checkboxes -->
+                <StackPanel Grid.Row="13" Grid.ColumnSpan="2"
+                            Orientation="Horizontal"
+                            Margin="4,4,0,8">
+                    <CheckBox Margin="0,0,16,0"
+                              IsChecked="{Binding Entity.IsActive}"
+                              Content="{loc:Translate Key=is_active}" />
+                    <CheckBox IsChecked="{Binding Entity.IsIncludeIntoTotals}"
+                              Content="{loc:Translate Key=is_include_into_totals}" />
+                </StackPanel>
+
+                <!-- Save / Cancel -->
+                <Grid Grid.Row="14" Grid.ColumnSpan="2" Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Margin="2"
+                            Command="{Binding SaveCommand}"
+                            Content="{loc:Translate Key=save}" />
+                    <Button Grid.Column="1" Margin="2"
+                            Command="{Binding CancelCommand}"
+                            Content="{loc:Translate Key=cancel}" />
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </GroupBox>
+</UserControl>
