@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using Financier.Common.Entities;
-using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.Desktop.Data;
 using Prism.Commands;
@@ -9,9 +9,9 @@ namespace Financier.Desktop.ViewModel.Dialog
 {
     public class AccountControlVM : DialogBaseVM
     {
-        private AccountTypeItem selectedAccountType;
-        private AccountTypeItem selectedCardIssuer;
-        private AccountTypeItem selectedElectronicType;
+        private AccountType selectedAccountType;
+        private CardIssuer selectedCardIssuer;
+        private ElectronicType selectedElectronicType;
         private CurrencyModel selectedCurrency;
         private DelegateCommand _clearTitleCommand;
 
@@ -19,50 +19,6 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             Entity = entity;
             IsNew = isNew;
-
-            AccountTypes = new List<AccountTypeItem>
-            {
-                new("CASH",        LocalizationService.Instance["account_type_cash"]),
-                new("BANK",        LocalizationService.Instance["account_type_bank"]),
-                new("CREDIT_CARD", LocalizationService.Instance["account_type_credit_card"]),
-                new("DEBIT_CARD",  LocalizationService.Instance["account_type_debit_card"]),
-                new("ASSET",       LocalizationService.Instance["account_type_asset"]),
-                new("LIABILITY",   LocalizationService.Instance["account_type_liability"]),
-                new("ELECTRONIC",  LocalizationService.Instance["account_type_electronic"]),
-                new("OTHER",       LocalizationService.Instance["account_type_other"]),
-            };
-
-            CardIssuers = new List<AccountTypeItem>
-            {
-                new("VISA",          "Visa"),
-                new("ELECTRON",      "Visa Electron"),
-                new("MASTERCARD",    "Mastercard"),
-                new("MAESTRO",       "Maestro"),
-                new("CIRRUS",        "Cirrus"),
-                new("AMEX",          "AMEX"),
-                new("JCB",           "JCB"),
-                new("DINERS",        "Diners Club"),
-                new("DISCOVER",      "Discover"),
-                new("UNIONPAY",      "UnionPay"),
-                new("EPS",           "EPS"),
-                new("NETS",          "NETS"),
-                new("RUPAY",         "RuPay"),
-                new("MIR",           "Mir"),
-                new("DEFAULT",       "Default"),
-            };
-
-            ElectronicTypes = new List<AccountTypeItem>
-            {
-                new("PAYPAL",        "PayPal"),
-                new("BITCOIN",       "Bitcoin"),
-                new("AMAZON",        "Amazon"),
-                new("EBAY",          "Ebay"),
-                new("GOOGLE_WALLET", "Google Wallet"),
-                new("WEB_MONEY",     "Web Money"),
-                new("YANDEX_MONEY",  "Yandex Money"),
-                new("ALIPAY",        "AliPay"),
-            };
-
             Currencies = DbManual.Currencies;
 
             InitSelections();
@@ -74,8 +30,6 @@ namespace Financier.Desktop.ViewModel.Dialog
             };
         }
 
-        public record AccountTypeItem(string Value, string Display);
-
         public DelegateCommand ClearTitleCommand =>
             _clearTitleCommand ??= new DelegateCommand(() => { Entity.Title = default!; SaveCommand.RaiseCanExecuteChanged(); });
 
@@ -83,22 +37,15 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         public bool IsNew { get; }
 
-        public List<AccountTypeItem> AccountTypes { get; }
-
-        public List<AccountTypeItem> CardIssuers { get; }
-
-        public List<AccountTypeItem> ElectronicTypes { get; }
-
         public List<CurrencyModel> Currencies { get; }
 
-        public AccountTypeItem SelectedAccountType
+        public AccountType SelectedAccountType
         {
             get => selectedAccountType;
             set
             {
                 selectedAccountType = value;
-                if (value != null)
-                    Entity.Type = value.Value;
+                Entity.Type = value.ToString();
                 RaisePropertyChanged(nameof(SelectedAccountType));
                 RaisePropertyChanged(nameof(ShowCardIssuer));
                 RaisePropertyChanged(nameof(ShowElectronicType));
@@ -108,26 +55,24 @@ namespace Financier.Desktop.ViewModel.Dialog
             }
         }
 
-        public AccountTypeItem SelectedCardIssuer
+        public CardIssuer SelectedCardIssuer
         {
             get => selectedCardIssuer;
             set
             {
                 selectedCardIssuer = value;
-                if (value != null)
-                    Entity.CardIssuer = value.Value;
+                Entity.CardIssuer = value.ToString();
                 RaisePropertyChanged(nameof(SelectedCardIssuer));
             }
         }
 
-        public AccountTypeItem SelectedElectronicType
+        public ElectronicType SelectedElectronicType
         {
             get => selectedElectronicType;
             set
             {
                 selectedElectronicType = value;
-                if (value != null)
-                    Entity.CardIssuer = value.Value;
+                Entity.CardIssuer = value.ToString();
                 RaisePropertyChanged(nameof(SelectedElectronicType));
             }
         }
@@ -146,19 +91,19 @@ namespace Financier.Desktop.ViewModel.Dialog
         }
 
         public bool ShowCardIssuer =>
-            Entity.Type == "DEBIT_CARD" || Entity.Type == "CREDIT_CARD";
+            selectedAccountType is AccountType.DEBIT_CARD or AccountType.CREDIT_CARD;
 
         public bool ShowElectronicType =>
-            Entity.Type == "ELECTRONIC";
+            selectedAccountType == AccountType.ELECTRONIC;
 
         public bool ShowIssuer =>
-            Entity.Type is "DEBIT_CARD" or "CREDIT_CARD" or "ELECTRONIC";
+            selectedAccountType is AccountType.DEBIT_CARD or AccountType.CREDIT_CARD or AccountType.ELECTRONIC;
 
         public bool ShowNumber =>
-            Entity.Type == "DEBIT_CARD" || Entity.Type == "CREDIT_CARD";
+            selectedAccountType is AccountType.DEBIT_CARD or AccountType.CREDIT_CARD;
 
         public bool ShowCreditCardFields =>
-            Entity.Type == "CREDIT_CARD";
+            selectedAccountType == AccountType.CREDIT_CARD;
 
         public override object OnRequestSave() => Entity;
 
@@ -167,18 +112,16 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         private void InitSelections()
         {
-            selectedAccountType = AccountTypes.Find(x => x.Value == Entity.Type)
-                                  ?? AccountTypes[0];
-            Entity.Type = selectedAccountType.Value;
+            if (!Enum.TryParse<AccountType>(Entity.Type, out var accountType))
+                accountType = AccountType.CASH;
+            selectedAccountType = accountType;
+            Entity.Type = selectedAccountType.ToString();
 
             if (!string.IsNullOrEmpty(Entity.CardIssuer))
             {
-                selectedCardIssuer = CardIssuers.Find(x => x.Value == Entity.CardIssuer);
-                selectedElectronicType = ElectronicTypes.Find(x => x.Value == Entity.CardIssuer);
+                Enum.TryParse<CardIssuer>(Entity.CardIssuer, out selectedCardIssuer);
+                Enum.TryParse<ElectronicType>(Entity.CardIssuer, out selectedElectronicType);
             }
-
-            selectedCardIssuer ??= CardIssuers[0];
-            selectedElectronicType ??= ElectronicTypes[0];
 
             if (Entity.CurrencyId > 0)
                 selectedCurrency = Currencies.Find(x => x.Id == Entity.CurrencyId);

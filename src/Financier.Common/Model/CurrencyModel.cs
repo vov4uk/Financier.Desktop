@@ -90,11 +90,11 @@ namespace Financier.Common.Model
 
             // Decimal separator
             if (!string.IsNullOrEmpty(c.DecimalSeparator))
-                nfi.NumberDecimalSeparator = c.DecimalSeparator;
+                nfi.NumberDecimalSeparator = c.DecimalSeparator.Trim('\'');
 
             // Group (thousands) separator
             if (!string.IsNullOrEmpty(c.GroupSeparator))
-                nfi.NumberGroupSeparator = c.GroupSeparator;
+                nfi.NumberGroupSeparator = c.GroupSeparator.Trim('\'');
             else
                 nfi.NumberGroupSeparator = string.Empty;
 
