@@ -18,7 +18,7 @@
    </a>
 </p>
 
-MVP (minimum viable product) application, with enough functions to work with Financisto .backup on Windows.
+A full-featured desktop companion for [Financisto](https://github.com/dsolonenko/financisto) — open, edit, and manage your `.backup` files on Windows without touching your phone.
 <br/>More info on [Github pages](https://vov4uk.github.io/Financier.Desktop)
 <br/>
 <p align="center">
@@ -32,22 +32,39 @@ MVP (minimum viable product) application, with enough functions to work with Fin
 
 ## Supported features
 
-- Open/save Financisto .backup files
-- View transactions list
-- Transactions search and filtering
-- Edit transactions/transfers
-- Duplicate transactions/transfers
-- Edit entities (projects, locations, payees...)
-- Import CSV report from Monobank
-- Import PDF/XLSX report from A-Bank
-- Import PDF report from PUMB
-- Import PDF report from Pireus
-- Import CSV report from PKO Bank
-- Import CSV report from PrivatBank
-- Parse receipt text to SPLIT transaction
-- Save .backup as SQLite database (.db file)
-- Import rules – auto-assign category/payee/project for bank transactions based on configurable rules
-- Reporting (kudos to [@2ruslan](https://github.com/2ruslan))
+### Core
+- Open/save Financisto `.backup` files
+- Save `.backup` as SQLite database (`.db` file)
+- Check for updates
+
+### Transactions
+- View, search, and filter transactions list
+- Add/edit/duplicate transactions and transfers
+- Split transactions (parse receipt text)
+
+### Entities
+- **Accounts** (Cash, Bank, Credit/Debit Card, Asset, Liability, Electronic, Other)
+- **Categories** (hierarchical tree)
+- **Currencies** (with template picker)
+- **Locations**
+- **Payees**
+- **Projects**
+- **Tags**
+- Manage **Exchange Rates** (manual entry + auto-download)
+- **Import rules** – auto-assign category/payee/project for bank transactions
+
+### Bank imports
+- CSV from Monobank
+- CSV from Revolut
+- CSV from PrivatBank
+- CSV from PKO Bank
+- PDF/XLSX from A-Bank
+- PDF from PUMB
+- PDF from Pireus
+- PDF from Raiffeisen
+
+### Reporting
+- Charts and summaries (kudos to [@2ruslan](https://github.com/2ruslan))
 
 ![Alt text](Financier.Desktop.gif?raw=true "UI example")
 
