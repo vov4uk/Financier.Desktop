@@ -257,16 +257,30 @@ namespace Financier.DataAccess
                  .ToArray());
 
             await using var reader = await command.ExecuteReaderAsync();
+
+            var columnOrdinals = Enumerable.Range(0, reader.FieldCount)
+                .ToDictionary(i => reader.GetName(i), i => i);
+
+            var ordinals = new int[mappings.Length];
+            for (int i = 0; i < mappings.Length; i++)
+            {
+                if (!columnOrdinals.TryGetValue(mappings[i].ColumnName, out var ordinal))
+                {
+                    throw new InvalidCastException(string.Format("Class [{0}] have attribute of field [{1}] which not exist in reader", typeof(T), mappings[i].ColumnName));
+                }
+                ordinals[i] = ordinal;
+            }
+
             var lst = new List<T>();
             while (await reader.ReadAsync())
             {
                 var newObject = new T();
-                foreach (var (property, columnName) in mappings)
+                for (int i = 0; i < mappings.Length; i++)
                 {
-                    var obj = reader.GetValue(reader.GetOrdinal(columnName));
+                    var obj = reader.GetValue(ordinals[i]);
                     if (obj != DBNull.Value)
                     {
-                        property.SetValue(newObject, Unbox(obj, property.PropertyType));
+                        mappings[i].Property.SetValue(newObject, Unbox(obj, mappings[i].Property.PropertyType));
                     }
                 }
                 lst.Add(newObject);

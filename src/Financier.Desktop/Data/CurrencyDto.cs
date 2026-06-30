@@ -47,61 +47,61 @@ namespace Financier.Desktop.Data
         public string Title
         {
             get => title;
-            set { title = value; RaisePropertyChanged(nameof(Title)); }
+            set { SetProperty(ref title, value, nameof(Title)); }
         }
 
         public string Name
         {
             get => name;
-            set { name = value; RaisePropertyChanged(nameof(Name)); }
+            set { SetProperty(ref name, value, nameof(Name)); }
         }
 
         public string Symbol
         {
             get => symbol;
-            set { symbol = value; RaisePropertyChanged(nameof(Symbol)); }
+            set { SetProperty(ref symbol, value, nameof(Symbol)); }
         }
 
         public bool IsDefault
         {
             get => isDefault;
-            set { isDefault = value; RaisePropertyChanged(nameof(IsDefault)); }
+            set { SetProperty(ref isDefault, value, nameof(IsDefault)); }
         }
 
         public bool UpdateExchangeRate
         {
             get => updateExchangeRate;
-            set { updateExchangeRate = value; RaisePropertyChanged(nameof(UpdateExchangeRate)); }
+            set { SetProperty(ref updateExchangeRate, value, nameof(UpdateExchangeRate)); }
         }
 
         public int Decimals
         {
             get => decimals;
-            set { decimals = value; RaisePropertyChanged(nameof(Decimals)); }
+            set { SetProperty(ref decimals, value, nameof(Decimals)); }
         }
 
         public string DecimalSeparator
         {
             get => decimalSeparator;
-            set { decimalSeparator = value; RaisePropertyChanged(nameof(DecimalSeparator)); }
+            set { SetProperty(ref decimalSeparator, value, nameof(DecimalSeparator)); }
         }
 
         public string GroupSeparator
         {
             get => groupSeparator;
-            set { groupSeparator = value; RaisePropertyChanged(nameof(GroupSeparator)); }
+            set { SetProperty(ref groupSeparator, value, nameof(GroupSeparator)); }
         }
 
         public SymbolFormat SymbolFormat
         {
             get => symbolFormat;
-            set { symbolFormat = value; RaisePropertyChanged(nameof(SymbolFormat)); }
+            set { SetProperty(ref symbolFormat, value, nameof(SymbolFormat)); }
         }
 
         public string NumberFormat
         {
             get => numberFormat;
-            set { numberFormat = value; RaisePropertyChanged(nameof(NumberFormat)); }
+            set { SetProperty(ref numberFormat, value, nameof(NumberFormat)); }
         }
     }
 }

@@ -115,13 +115,7 @@ namespace Financier.Desktop.Data
         public int ToAccountId
         {
             get => toAccountId;
-            set
-            {
-                if (SetProperty(ref toAccountId, value))
-                {
-                    RaisePropertyChanged(nameof(ToAccountId));
-                }
-            }
+            set { SetProperty(ref toAccountId, value, nameof(ToAccountId)); }
         }
 
         public CurrencyModel ToAccountCurrency

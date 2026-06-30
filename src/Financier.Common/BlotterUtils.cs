@@ -91,7 +91,7 @@ namespace Financier.Common.Utils
                 currency = new CurrencyModel(Currency.EMPTY);
             }
 
-            string s = (amount / HUNDRED).ToString(currency.getFormat());
+            string s = (amount / HUNDRED).ToString("N2", currency.getFormat());
 
             s.TrimEnd(".");
 

@@ -184,13 +184,7 @@ namespace Financier.Desktop.Data
         public int? LocationId
         {
             get => locationId;
-            set
-            {
-                if (SetProperty(ref locationId, value))
-                {
-                    RaisePropertyChanged(nameof(LocationId));
-                }
-            }
+            set { SetProperty(ref locationId, value, nameof(LocationId)); }
         }
 
         public CurrencyModel OriginalCurrency
@@ -210,13 +204,7 @@ namespace Financier.Desktop.Data
         public int? OriginalCurrencyId
         {
             get => originalCurrencyId;
-            set
-            {
-                if (SetProperty(ref originalCurrencyId, value))
-                {
-                    RaisePropertyChanged(nameof(OriginalCurrencyId));
-                }
-            }
+            set { SetProperty(ref originalCurrencyId, value, nameof(OriginalCurrencyId)); }
         }
 
         public long? OriginalFromAmount
@@ -248,25 +236,13 @@ namespace Financier.Desktop.Data
         public int? PayeeId
         {
             get => payeeId;
-            set
-            {
-                if (SetProperty(ref payeeId, value))
-                {
-                    RaisePropertyChanged(nameof(PayeeId));
-                }
-            }
+            set { SetProperty(ref payeeId, value, nameof(PayeeId)); }
         }
 
         public int? ProjectId
         {
             get => projectId;
-            set
-            {
-                if (SetProperty(ref projectId, value))
-                {
-                    RaisePropertyChanged(nameof(ProjectId));
-                }
-            }
+            set { SetProperty(ref projectId, value, nameof(ProjectId)); }
         }
 
         public string RateString
@@ -306,13 +282,7 @@ namespace Financier.Desktop.Data
         public long UnsplitAmount
         {
             get => unSplitAmount;
-            private set
-            {
-                if (SetProperty(ref unSplitAmount, value))
-                {
-                    RaisePropertyChanged(nameof(UnsplitAmount));
-                }
-            }
+            private set { SetProperty(ref unSplitAmount, value, nameof(UnsplitAmount)); }
         }
 
         public void RecalculateUnSplitAmount()

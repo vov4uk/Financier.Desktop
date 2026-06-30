@@ -28,31 +28,19 @@ namespace Financier.Desktop.Data
         public string Title
         {
             get => title;
-            set
-            {
-                title = value;
-                RaisePropertyChanged(nameof(Title));
-            }
+            set { SetProperty(ref title, value, nameof(Title)); }
         }
 
         public bool IsIncome
         {
             get => isIncome;
-            set
-            {
-                isIncome = value;
-                RaisePropertyChanged(nameof(IsIncome));
-            }
+            set { SetProperty(ref isIncome, value, nameof(IsIncome)); }
         }
 
         public int ParentId
         {
             get => parentId;
-            set
-            {
-                parentId = value;
-                RaisePropertyChanged(nameof(ParentId));
-            }
+            set { SetProperty(ref parentId, value, nameof(ParentId)); }
         }
     }
 }

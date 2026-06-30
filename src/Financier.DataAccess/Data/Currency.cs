@@ -1,7 +1,5 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using System.Text;
 
 namespace Financier.DataAccess.Data
 {
@@ -40,10 +38,10 @@ namespace Financier.DataAccess.Data
         public string GroupSeparator { get; set; }
 
         [Column("number_format")]
-        public string NumberFormat;
+        public string NumberFormat { get; set; }
 
         [Column("update_exchange_rate")]
-        public bool UpdateExchangeRate;
+        public bool UpdateExchangeRate { get; set; }
 
         [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }

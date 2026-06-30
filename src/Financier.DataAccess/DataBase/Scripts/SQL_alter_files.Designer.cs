@@ -19,7 +19,7 @@ namespace Financier.DataAccess.DataBase.Scripts {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class SQL_alter_files {
@@ -862,6 +862,75 @@ namespace Financier.DataAccess.DataBase.Scripts {
         internal static string _20240221_0135_alter_location_drop_name_is_payee {
             get {
                 return ResourceManager.GetString("_20240221_0135_alter_location_drop_name_is_payee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CREATE TABLE IF NOT EXISTS sms_template_t (
+        ///    _id           INTEGER   PRIMARY KEY AUTOINCREMENT,
+        ///    title         TEXT      NOT NULL,
+        ///    template      TEXT      NOT NULL,
+        ///    category_id   INTEGER   NOT NULL,
+        ///    account_id    INTEGER,
+        ///    payee_id      INTEGER   NOT NULL
+        ///                            DEFAULT 0,
+        ///    project_id    INTEGER   NOT NULL
+        ///                            DEFAULT 0,
+        ///    updated_on    TIMESTAMP DEFAULT 0,
+        ///    remote_key    TEXT,
+        ///    is_income     BOOLEAN   NOT NULL
+        ///        [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string _20241228_0500_alter_sms_template_add_payee_project {
+            get {
+                return ResourceManager.GetString("_20241228_0500_alter_sms_template_add_payee_project", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE account ADD COLUMN icon TEXT NOT NULL DEFAULT &apos;&apos;;
+        ///ALTER TABLE account ADD COLUMN accent_color TEXT NOT NULL DEFAULT &apos;&apos;;
+        ///
+        ///CREATE TABLE IF NOT EXISTS account_separator (
+        ///    _id             INTEGER     PRIMARY KEY AUTOINCREMENT,
+        ///    title           TEXT        NOT NULL DEFAULT &apos;&apos;,
+        ///    sort_order      INTEGER     NOT NULL DEFAULT 0,
+        ///    accent_color    TEXT        NOT NULL DEFAULT &apos;&apos;
+        ///);.
+        /// </summary>
+        internal static string _20250709_1950_account_icon_color_separator {
+            get {
+                return ResourceManager.GetString("_20250709_1950_account_icon_color_separator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE currency ADD number_format TEXT.
+        /// </summary>
+        internal static string _20250802_0155_add_currency_number_format {
+            get {
+                return ResourceManager.GetString("_20250802_0155_add_currency_number_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CREATE TABLE IF NOT EXISTS sms_template_t (
+        ///    _id           INTEGER   PRIMARY KEY AUTOINCREMENT,
+        ///    title         TEXT      NOT NULL,
+        ///    description   TEXT      NOT NULL
+        ///                            DEFAULT &apos;&apos;,
+        ///    template      TEXT      NOT NULL,
+        ///    category_id   INTEGER   NOT NULL,
+        ///    account_id    INTEGER,
+        ///    payee_id      INTEGER   NOT NULL
+        ///                            DEFAULT 0,
+        ///    project_id    INTEGER   NOT NULL
+        ///                            DEFAULT 0,
+        ///    updated_on    TIMESTAMP DEF [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string _20260613_0251_alter_sms_template_add_description {
+            get {
+                return ResourceManager.GetString("_20260613_0251_alter_sms_template_add_description", resourceCulture);
             }
         }
     }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -99,6 +99,10 @@
     <EmbeddedResource Include="DataBase\Scripts\view\083[v_account].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\081[v_currency_exchange_rate].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\080[v_transaction_attributes].sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20241228_0500_alter_sms_template_add_payee_project.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20250802_0155_add_currency_number_format.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20260613_0251_alter_sms_template_add_description.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20250709_1950_account_icon_color_separator.sql" />
   </ItemGroup>
 
   <ItemGroup>

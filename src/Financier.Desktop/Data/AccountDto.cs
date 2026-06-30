@@ -45,85 +45,85 @@ namespace Financier.Desktop.Data
         public string Title
         {
             get => title;
-            set { title = value; RaisePropertyChanged(nameof(Title)); }
+            set { SetProperty(ref title, value, nameof(Title)); }
         }
 
         public bool IsActive
         {
             get => isActive;
-            set { isActive = value; RaisePropertyChanged(nameof(IsActive)); }
+            set { SetProperty(ref isActive, value, nameof(IsActive)); }
         }
 
         public string Type
         {
             get => type;
-            set { type = value; RaisePropertyChanged(nameof(Type)); }
+            set { SetProperty(ref type, value, nameof(Type)); }
         }
 
         public int CurrencyId
         {
             get => currencyId;
-            set { currencyId = value; RaisePropertyChanged(nameof(CurrencyId)); }
+            set { SetProperty(ref currencyId, value, nameof(CurrencyId)); }
         }
 
         public string CardIssuer
         {
             get => cardIssuer;
-            set { cardIssuer = value; RaisePropertyChanged(nameof(CardIssuer)); }
+            set { SetProperty(ref cardIssuer, value, nameof(CardIssuer)); }
         }
 
         public string Issuer
         {
             get => issuer;
-            set { issuer = value; RaisePropertyChanged(nameof(Issuer)); }
+            set { SetProperty(ref issuer, value, nameof(Issuer)); }
         }
 
         public string Number
         {
             get => number;
-            set { number = value; RaisePropertyChanged(nameof(Number)); }
+            set { SetProperty(ref number, value, nameof(Number)); }
         }
 
         public long LimitAmount
         {
             get => limitAmount;
-            set { limitAmount = value; RaisePropertyChanged(nameof(LimitAmount)); }
+            set { SetProperty(ref limitAmount, value, nameof(LimitAmount)); }
         }
 
         public int SortOrder
         {
             get => sortOrder;
-            set { sortOrder = value; RaisePropertyChanged(nameof(SortOrder)); }
+            set { SetProperty(ref sortOrder, value, nameof(SortOrder)); }
         }
 
         public bool IsIncludeIntoTotals
         {
             get => isIncludeIntoTotals;
-            set { isIncludeIntoTotals = value; RaisePropertyChanged(nameof(IsIncludeIntoTotals)); }
+            set { SetProperty(ref isIncludeIntoTotals, value, nameof(IsIncludeIntoTotals)); }
         }
 
         public string Note
         {
             get => note;
-            set { note = value; RaisePropertyChanged(nameof(Note)); }
+            set { SetProperty(ref note, value, nameof(Note)); }
         }
 
         public int ClosingDay
         {
             get => closingDay;
-            set { closingDay = value; RaisePropertyChanged(nameof(ClosingDay)); }
+            set { SetProperty(ref closingDay, value, nameof(ClosingDay)); }
         }
 
         public int PaymentDay
         {
             get => paymentDay;
-            set { paymentDay = value; RaisePropertyChanged(nameof(PaymentDay)); }
+            set { SetProperty(ref paymentDay, value, nameof(PaymentDay)); }
         }
 
         public long OpeningAmount
         {
             get => openingAmount;
-            set { openingAmount = value; RaisePropertyChanged(nameof(OpeningAmount)); }
+            set { SetProperty(ref openingAmount, value, nameof(OpeningAmount)); }
         }
     }
 }

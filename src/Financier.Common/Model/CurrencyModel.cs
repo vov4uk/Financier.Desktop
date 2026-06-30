@@ -34,10 +34,10 @@ namespace Financier.Common.Model
         public string SymbolFormat { get; set; }
 
         [Column("number_format")]
-        public string NumberFormat;
+        public string NumberFormat { get; set; }
 
         [Column("update_exchange_rate")]
-        public bool UpdateExchangeRate;
+        public bool UpdateExchangeRate { get; set; }
 
         [Column("decimals")]
         public int Decimals { get; set; }
@@ -78,7 +78,6 @@ namespace Financier.Common.Model
             }
             return f;
         }
-
 
         public static NumberFormatInfo CreateCurrencyFormat(CurrencyModel c)
         {
