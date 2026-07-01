@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,6 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="_20241228_0500_alter_sms_template_add_payee_project" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20241228_0500_alter_sms_template_add_payee_project.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="_20250709_1950_account_icon_color_separator" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20250709_1950_account_icon_color_separator.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="_20250802_0155_add_currency_number_format" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20250802_0155_add_currency_number_format.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="_20260613_0251_alter_sms_template_add_description" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20260613_0251_alter_sms_template_add_description.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="_20090723_0035_initial_data" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>alter\20090723_0035_initial_data.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>

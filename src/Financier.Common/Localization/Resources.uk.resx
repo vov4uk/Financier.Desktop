@@ -375,6 +375,27 @@
   <data name="location_details" xml:space="preserve">
     <value>Деталі місцезнаходження</value>
   </data>
+  <data name="category_details" xml:space="preserve">
+    <value>Деталі категорії</value>
+  </data>
+  <data name="parent_category" xml:space="preserve">
+    <value>Батьківська категорія</value>
+  </data>
+  <data name="position_move_top" xml:space="preserve">
+    <value>Перемістити на початок</value>
+  </data>
+  <data name="position_move_up" xml:space="preserve">
+    <value>Перемістити вгору</value>
+  </data>
+  <data name="position_move_down" xml:space="preserve">
+    <value>Перемістити вниз</value>
+  </data>
+  <data name="position_move_bottom" xml:space="preserve">
+    <value>Перемістити в кінець</value>
+  </data>
+  <data name="sort_by_title" xml:space="preserve">
+    <value>Сортувати за назвою</value>
+  </data>
   <data name="is_active" xml:space="preserve">
     <value>Активне</value>
   </data>
@@ -588,6 +609,12 @@
   <data name="confirm_delete_transaction" xml:space="preserve">
     <value>Ви впевнені, що хочете видалити операцію?</value>
   </data>
+  <data name="confirm_delete_currency" xml:space="preserve">
+    <value>Ви впевнені, що хочете видалити цю валюту?</value>
+  </data>
+  <data name="currency_is_used" xml:space="preserve">
+    <value>Ця валюта використовується рахунками або операціями і не може бути видалена.</value>
+  </data>
   <data name="split_transfers_currency_not_supported" xml:space="preserve">
     <value>Розділені перекази з валютою, яка відрізняється від валюти рахунку, ще не підтримуються</value>
   </data>
@@ -650,6 +677,9 @@
   </data>
   <data name="default" xml:space="preserve">
     <value>За замовчуванням</value>
+  </data>
+  <data name="update_exchange_rate" xml:space="preserve">
+    <value>Включити в оновлення курсу валют</value>
   </data>
   <data name="usd" xml:space="preserve">
     <value>USD</value>
@@ -716,6 +746,45 @@
   </data>
   <data name="account_type_other" xml:space="preserve">
     <value>Інше</value>
+  </data>
+  <data name="account_details" xml:space="preserve">
+    <value>Деталі рахунку</value>
+  </data>
+  <data name="account_type" xml:space="preserve">
+    <value>Тип рахунку</value>
+  </data>
+  <data name="card_issuer" xml:space="preserve">
+    <value>Емітент картки</value>
+  </data>
+  <data name="electronic_payment_type" xml:space="preserve">
+    <value>Електронний платіж</value>
+  </data>
+  <data name="opening_amount" xml:space="preserve">
+    <value>Початковий залишок</value>
+  </data>
+  <data name="limit_amount" xml:space="preserve">
+    <value>Кредитний ліміт</value>
+  </data>
+  <data name="closing_day" xml:space="preserve">
+    <value>День закриття</value>
+  </data>
+  <data name="payment_day" xml:space="preserve">
+    <value>День платежу</value>
+  </data>
+  <data name="sort_order" xml:space="preserve">
+    <value>Порядок сортування</value>
+  </data>
+  <data name="is_include_into_totals" xml:space="preserve">
+    <value>Враховувати у підсумках</value>
+  </data>
+  <data name="card_number" xml:space="preserve">
+    <value>Номер картки</value>
+  </data>
+  <data name="issuer" xml:space="preserve">
+    <value>Емітент</value>
+  </data>
+  <data name="confirm_delete_account" xml:space="preserve">
+    <value>Позначити цей рахунок як неактивний?</value>
   </data>
   <data name="liabilities_usd" xml:space="preserve">
     <value>Зобов'язання (дол. США)</value>
@@ -824,5 +893,41 @@
   </data>
   <data name="language_ukrainian" xml:space="preserve">
     <value>Українська</value>
+  </data>
+  <data name="currency_details" xml:space="preserve">
+    <value>Відомості про валюту</value>
+  </data>
+  <data name="currency_name" xml:space="preserve">
+    <value>Назва</value>
+  </data>
+  <data name="currency_code" xml:space="preserve">
+    <value>Код</value>
+  </data>
+  <data name="currency_code_hint" xml:space="preserve">
+    <value>Код ISO 4217</value>
+  </data>
+  <data name="decimals" xml:space="preserve">
+    <value>Десяткові дроби</value>
+  </data>
+  <data name="decimal_separator" xml:space="preserve">
+    <value>Десятковий роздільник</value>
+  </data>
+  <data name="group_separator" xml:space="preserve">
+    <value>Роздільник груп</value>
+  </data>
+  <data name="currency_symbol_format" xml:space="preserve">
+    <value>Формат символів</value>
+  </data>
+  <data name="select_currency_template" xml:space="preserve">
+    <value>Виберіть шаблон валюти</value>
+  </data>
+  <data name="new_currency" xml:space="preserve">
+    <value>Нова валюта..</value>
+  </data>
+  <data name="symbol_format" xml:space="preserve">
+    <value>Формат символів</value>
+  </data>
+  <data name="number_format" xml:space="preserve">
+    <value>Числовий формат</value>
   </data>
 </root>

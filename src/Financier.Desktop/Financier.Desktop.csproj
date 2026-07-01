@@ -45,6 +45,7 @@
     <Resource Include="Images\AccountType\account_type_card_mastercard.png" />
     <Resource Include="Images\AccountType\account_type_card_mir.png" />
     <Resource Include="Images\AccountType\account_type_card_nets.png" />
+    <Resource Include="Images\AccountType\account_type_card_rupay.png" />
     <Resource Include="Images\AccountType\account_type_card_unionpay.png" />
     <Resource Include="Images\AccountType\account_type_card_visa.png" />
     <Resource Include="Images\AccountType\account_type_card_visa_electron.png" />

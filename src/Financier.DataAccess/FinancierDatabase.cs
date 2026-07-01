@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
@@ -24,6 +25,7 @@ namespace Financier.DataAccess
     public class FinancierDatabase : IFinancierDatabase
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly ConcurrentDictionary<Type, (PropertyInfo Property, string ColumnName)[]> PropertyCache = new();
         private readonly DbConnection _connection;
         private bool isDisposed;
 
@@ -238,43 +240,53 @@ namespace Financier.DataAccess
 
         public async Task<List<T>> ExecuteQuery<T>(string query) where T : class, new()
         {
-            await using (var db = new FinancierDataContext(ContextOptions))
-            using (var command = db.Database.GetDbConnection().CreateCommand())
+            await using var db = new FinancierDataContext(ContextOptions);
+            using var command = db.Database.GetDbConnection().CreateCommand();
+
+            Logger.Info(query);
+            command.CommandText = query;
+            command.CommandType = CommandType.Text;
+
+            await db.Database.OpenConnectionAsync();
+
+            var mappings = PropertyCache.GetOrAdd(typeof(T), static t =>
+                t.GetProperties()
+                 .Select(p => (Property: p, Column: p.GetCustomAttribute<ColumnAttribute>()?.Name))
+                 .Where(x => x.Column != null)
+                 .Select(x => (x.Property, x.Column!))
+                 .ToArray());
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            var columnOrdinals = Enumerable.Range(0, reader.FieldCount)
+                .ToDictionary(i => reader.GetName(i), i => i);
+
+            var ordinals = new int[mappings.Length];
+            for (int i = 0; i < mappings.Length; i++)
             {
-                Logger.Info(query);
-                command.CommandText = query;
-                command.CommandType = CommandType.Text;
-
-                await db.Database.OpenConnectionAsync();
-
-                using (var reader = await command.ExecuteReaderAsync())
+                if (!columnOrdinals.TryGetValue(mappings[i].ColumnName, out var ordinal))
                 {
-                    var lst = new List<T>();
-                    while (await reader.ReadAsync())
-                    {
-                        var newObject = new T();
-                        foreach (PropertyInfo property in newObject.GetType().GetProperties())
-                        {
-                            ColumnAttribute customAttribute = (Attribute.GetCustomAttribute(property, typeof(ColumnAttribute)) as ColumnAttribute)!;
-                            if (customAttribute != null)
-                            {
-                                int ordinal = reader.GetOrdinal(customAttribute.Name!);
-                                object obj = ordinal != -1 ?
-                                    reader.GetValue(ordinal) :
-                                    throw new InvalidCastException(string.Format("Class [{0}] have attribute of field [{1}] which not exist in reader", this.GetType(), customAttribute.Name));
-
-                                if (obj != DBNull.Value)
-                                {
-                                    property.SetValue(newObject, Unbox(obj, property.PropertyType), null);
-                                }
-                            }
-                        }
-                        lst.Add(newObject);
-                    }
-
-                    return lst;
+                    throw new InvalidCastException(string.Format("Class [{0}] have attribute of field [{1}] which not exist in reader", typeof(T), mappings[i].ColumnName));
                 }
+                ordinals[i] = ordinal;
             }
+
+            var lst = new List<T>();
+            while (await reader.ReadAsync())
+            {
+                var newObject = new T();
+                for (int i = 0; i < mappings.Length; i++)
+                {
+                    var obj = reader.GetValue(ordinals[i]);
+                    if (obj != DBNull.Value)
+                    {
+                        mappings[i].Property.SetValue(newObject, Unbox(obj, mappings[i].Property.PropertyType));
+                    }
+                }
+                lst.Add(newObject);
+            }
+
+            return lst;
         }
 
         public async Task SaveAsFile(string dest)
@@ -314,11 +326,7 @@ namespace Financier.DataAccess
         static object Unbox(object x, Type t)
         {
             var underlyingType = Nullable.GetUnderlyingType(t);
-            if (Nullable.GetUnderlyingType(t) != null)
-            {
-                return Convert.ChangeType(x, underlyingType!);
-            }
-            return Convert.ChangeType(x, t);
+            return Convert.ChangeType(x, underlyingType ?? t);
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Financier.Common.Entities
         private static Dictionary<Mcc, int[]> _mccEnums;
         private static Dictionary<string, Mcc> _mccTitles;
         private static Dictionary<int, Mcc> _mccCodes;
+        private static List<List<string>> _allCurrencies;
 
         public static async Task SetupAsync(IFinancierDatabase financierDatabase)
         {
@@ -102,7 +103,8 @@ ORDER  BY LEFT,
 
             if (_currencies == null)
             {
-                var currencies = await financierDatabase.ExecuteQuery<CurrencyModel>("select * from currency");
+                var currencies = await financierDatabase.ExecuteQuery<CurrencyModel>(
+                    "SELECT * FROM currency");
 
                 _currencies = new List<CurrencyModel>(currencies);
                 _currencies.Insert(0, new CurrencyModel()
@@ -222,6 +224,53 @@ ORDER  BY 1 DESC ");
             }
         }
 
+        public static List<List<string>> AllCurrencies
+        {
+            get
+            {
+                if (_allCurrencies == null)
+                {
+                    var asm = typeof(DbManual).Assembly;
+                    using var stream = asm.GetManifestResourceStream("Financier.Common.Assets.currencies.csv");
+                    if (stream != null)
+                    {
+                        using var reader = new StreamReader(stream);
+                        var lines = new List<List<string>>();
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
+                                continue;
+                            var fields = ParseCsvLine(line);
+                            if (fields.Count == 6 || fields.Count == 7)
+                                lines.Add(fields);
+                        }
+                        _allCurrencies = lines;
+                    }
+                    else
+                    {
+                        _allCurrencies = new List<List<string>>();
+                    }
+                }
+                return _allCurrencies;
+            }
+        }
+
+        private static List<string> ParseCsvLine(string line)
+        {
+            var fields = new List<string>();
+            var current = new System.Text.StringBuilder();
+            bool inQuotes = false;
+            foreach (char c in line)
+            {
+                if (c == '"') { inQuotes = !inQuotes; }
+                else if (c == ',' && !inQuotes) { fields.Add(current.ToString()); current.Clear(); }
+                else { current.Append(c); }
+            }
+            fields.Add(current.ToString());
+            return fields;
+        }
+
         public static void ResetAllDatabaseManuals()
         {
             _accounts = null;
@@ -246,6 +295,7 @@ ORDER  BY 1 DESC ");
                 case nameof(MCCEnums):         _mccEnums = null; break;
                 case nameof(MCCTitles):        _mccTitles = null; break;
                 case nameof(Currencies):       _currencies = null; break;
+                case nameof(Category):         _category = null; _topCategory = null; break;
                 default:
                     break;
             }
@@ -351,5 +401,6 @@ ORDER  BY 1 DESC ");
                 }
             }
         }
+
     }
 }

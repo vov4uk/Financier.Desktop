@@ -1,0 +1,43 @@
+<UserControl x:Class="Financier.Desktop.Views.Controls.AddCurrencyControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
+             xmlns:viewmodel="clr-namespace:Financier.Desktop.ViewModel.Dialog"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:AddCurrencyControlVM}, IsDesignTimeCreatable=False}"
+             mc:Ignorable="d"
+             d:DesignHeight="420"
+             d:DesignWidth="320">
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ListBox Grid.Row="0"
+                 ItemsSource="{Binding Items}"
+                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                 DisplayMemberPath="DisplayName"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 FontSize="13">
+            <ListBox.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick"
+                              Command="{Binding SaveCommand}" />
+            </ListBox.InputBindings>
+        </ListBox>
+
+        <Grid Grid.Row="1" Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Margin="2"
+                    Command="{Binding SaveCommand}"
+                    Content="{loc:Translate Key=save}" />
+            <Button Grid.Column="1" Margin="2"
+                    Command="{Binding CancelCommand}"
+                    Content="{loc:Translate Key=cancel}" />
+        </Grid>
+    </Grid>
+</UserControl>

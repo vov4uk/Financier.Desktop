@@ -31,6 +31,7 @@ namespace Financier.Desktop.Helpers.BankHelper
 
                 using (PdfDocument document = PdfDocument.Open(filePath, new ParsingOptions() { ClipPaths = true }))
                 {
+                    StringBuilder stringBuilder = new StringBuilder();
                     for (int i = 0; i < document.NumberOfPages; i++)
                     {
                         PageArea page = ObjectExtractor.Extract(document, i + 1);
@@ -45,8 +46,7 @@ namespace Financier.Desktop.Helpers.BankHelper
 
                         Table table = pageTables.OrderBy(x => x.Cells.Count).Last();
 
-
-                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.Clear();
                         foreach (IReadOnlyList<Cell> row in table.Rows)
                         {
 

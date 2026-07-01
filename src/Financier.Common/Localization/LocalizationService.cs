@@ -135,6 +135,8 @@ public sealed class LocalizationService : INotifyPropertyChanged
     public string transaction => Get();
     public string rule => Get();
     public string location => Get();
+    public string currency => Get();
+    public string currencies => Get();
     // RecipesWizard Page1
     public string recipe_wizard_total_format => Get();
     // MainWindow Messages
@@ -158,6 +160,8 @@ public sealed class LocalizationService : INotifyPropertyChanged
 
     // Delete Confirmation Messages
     public string confirm_delete_transaction => Get();
+    public string confirm_delete_currency => Get();
+    public string currency_is_used => Get();
 
     // Dialog Messages
     public string split_transfers_currency_not_supported => Get();
@@ -173,4 +177,19 @@ public sealed class LocalizationService : INotifyPropertyChanged
     public string please_select_categories => Get();
     public string please_select_account => Get();
     public string please_select_transaction_title => Get();
+
+    // Account dialog
+    public string account_details => Get();
+    public string account_type => Get();
+    public string card_issuer => Get();
+    public string electronic_payment_type => Get();
+    public string opening_amount => Get();
+    public string limit_amount => Get();
+    public string closing_day => Get();
+    public string payment_day => Get();
+    public string sort_order => Get();
+    public string is_include_into_totals => Get();
+    public string card_number => Get();
+    public string issuer => Get();
+    public string confirm_delete_account => Get();
 }

@@ -37,7 +37,30 @@ namespace Financier.DataAccess.Data
         [Column("group_separator")]
         public string GroupSeparator { get; set; }
 
+        [Column("number_format")]
+        public string NumberFormat { get; set; }
+
+        [Column("update_exchange_rate")]
+        public bool UpdateExchangeRate { get; set; }
+
         [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
+
+        public static Currency EMPTY;
+
+        static Currency()
+        {
+            EMPTY = new Currency
+            {
+                Id = 0,
+                Name = "",
+                Title = "Default",
+                Symbol = "",
+                SymbolFormat = "RS",
+                Decimals = 2,
+                DecimalSeparator = "'.'",
+                GroupSeparator = "','"
+            };
+        }
     }
 }

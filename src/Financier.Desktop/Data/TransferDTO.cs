@@ -2,7 +2,6 @@
 using Financier.Common;
 using Financier.Common.Entities;
 using Financier.Common.Model;
-using Financier.Common.Utils;
 using Financier.Converters;
 using Financier.DataAccess.Data;
 
@@ -65,10 +64,6 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public override long RealFromAmount => -1 * Math.Abs(FromAmount);
-        public override bool IsAmountNegative => true;
-        public override string SubTransactionTitle => $"{FromAccount?.Title}{BlotterUtils.TRANSFER_DELIMITER}{ToAccount?.Title}";
-
         public long FromAmount
         {
             get => fromAmount;
@@ -82,8 +77,8 @@ namespace Financier.Desktop.Data
             }
         }
 
+        public override bool IsAmountNegative => true;
         public bool IsToAmountVisible => fromAccount != null && toAccount != null && fromAccount.CurrencyId != toAccount.CurrencyId;
-
         public string RateString
         {
             get
@@ -97,6 +92,8 @@ namespace Financier.Desktop.Data
             }
         }
 
+        public override long RealFromAmount => -1 * Math.Abs(FromAmount);
+        public override string SubTransactionTitle => $"{FromAccount?.Title}{BlotterUtils.TRANSFER_DELIMITER}{ToAccount?.Title}";
         public AccountFilterModel ToAccount
         {
             get => toAccount;
@@ -112,23 +109,16 @@ namespace Financier.Desktop.Data
             }
         }
 
-        public int ToAccountId
-        {
-            get => toAccountId;
-            set
-            {
-                if (SetProperty(ref toAccountId, value))
-                {
-                    RaisePropertyChanged(nameof(ToAccountId));
-                }
-            }
-        }
-
         public CurrencyModel ToAccountCurrency
         {
             get => DbManual.Currencies?.Find(x => x.Id == (ToAccount != null ? ToAccount.CurrencyId : 0))!;
         }
 
+        public int ToAccountId
+        {
+            get => toAccountId;
+            set { SetProperty(ref toAccountId, value, nameof(ToAccountId)); }
+        }
         public long ToAmount
         {
             get => toAmount;

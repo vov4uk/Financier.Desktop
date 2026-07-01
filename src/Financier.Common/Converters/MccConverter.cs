@@ -10,9 +10,9 @@ namespace Financier.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int code = (int)value;
-            if (DbManual.MCCCodes.ContainsKey(code))
+            if (DbManual.MCCCodes.TryGetValue(code, out var mccValue))
             {
-                  return DbManual.MCCCodes[code];
+                return mccValue;
             }
             return value;
         }

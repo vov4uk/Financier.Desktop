@@ -1,5 +1,4 @@
-﻿using Financier.Common.Utils;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Common.Model
 {

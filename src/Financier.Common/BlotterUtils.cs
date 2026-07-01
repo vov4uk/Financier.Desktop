@@ -1,21 +1,40 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Text;
+using Financier.Common.Entities;
 using Financier.Common.Localization;
 using Financier.Common.Model;
+using Financier.DataAccess.Data;
 
-namespace Financier.Common.Utils
+namespace Financier.Common
 {
     [ExcludeFromCodeCoverage]
     public static class BlotterUtils
     {
         public const string TRANSFER_DELIMITER = " \u00BB ";
         internal const decimal HUNDRED = 100m;
+        public static string GetAccountDescription(string issuer, string number, string type)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (!string.IsNullOrEmpty(issuer))
+            {
+                sb.Append(issuer);
+            }
+            if (!string.IsNullOrEmpty(number))
+            {
+                sb.Append(" #").Append(number);
+            }
+            if (sb.Length == 0)
+            {
+                return LocalizationService.Instance[$"account_type_{type}".ToLowerInvariant()];
+            }
+            return sb.ToString();
+        }
+
         public static string GetTransferAmountText(CurrencyModel fromCurrency, long fromAmount, CurrencyModel toCurrency, long toAmount)
         {
             var sb = new StringBuilder();
-            if (SameCurrency(fromCurrency, toCurrency))
+            if (fromCurrency.Id == toCurrency.Id)
             {
                 AmountToString(sb, fromCurrency, fromAmount);
             }
@@ -40,25 +59,6 @@ namespace Financier.Common.Utils
             AmountToString(sb, toCurrency, toBalance ?? 0, false);
             return sb.ToString();
         }
-
-        public static string GetAccountDescription(string issuer, string number, string type)
-        {
-            StringBuilder sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(issuer))
-            {
-                sb.Append(issuer);
-            }
-            if (!string.IsNullOrEmpty(number))
-            {
-                sb.Append(" #").Append(number);
-            }
-            if (sb.Length == 0)
-            {
-                return LocalizationService.Instance[$"account_type_{type}".ToLowerInvariant()];
-            }
-            return sb.ToString();
-        }
-
         internal static string SetAmountText(CurrencyModel originalCurrency, long originalAmount, CurrencyModel currency, long amount, bool addPlus)
         {
             StringBuilder sb = new StringBuilder();
@@ -87,28 +87,25 @@ namespace Financier.Common.Utils
             }
             if (currency == null)
             {
-                currency = new CurrencyModel
-                {
-                    Id = 0,
-                    Name = "",
-                    Symbol = ""
-                };
+                currency = new CurrencyModel(Currency.EMPTY);
             }
-            string s = (amount / HUNDRED).ToString("N2", CultureInfo.InvariantCulture);
-            if (s.EndsWith('.'))
-            {
-                s = s.Substring(0, s.Length - 1);
-            }
+
+            string s = (amount / HUNDRED).ToString("N2", currency.getFormat()).TrimEnd('.');
+
             sb.Append(s);
             if (!string.IsNullOrEmpty(currency.Symbol))
             {
-                sb.Append(' ').Append(currency.Symbol);
+                if (Enum.TryParse<SymbolFormat>(currency.SymbolFormat, out var symbolFormat))
+                {
+                    symbolFormat.AppendSymbol(sb, currency.Symbol);
+                }
+                else
+                {
+                    sb.Append(' ').Append(currency.Symbol);
+                }
             }
+
             return sb;
-        }
-        private static bool SameCurrency(CurrencyModel fromCurrency, CurrencyModel toCurrency)
-        {
-            return fromCurrency.Id == toCurrency.Id;
         }
     }
 }

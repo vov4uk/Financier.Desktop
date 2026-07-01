@@ -117,7 +117,7 @@ namespace Financier.Desktop.Services
         private static List<KeyValuePair<CurrencyModel, CurrencyModel>> GetRatesPairs()
         {
             var result = new List<KeyValuePair<CurrencyModel, CurrencyModel>>();
-            var currencies = DbManual.Currencies.Where(c => c.Id > 0).ToList();
+            var currencies = DbManual.Currencies.Where(c => c.Id > 0 && c.UpdateExchangeRate).ToList();
 
             for (var i = 0; i < currencies.Count; i++)
             {

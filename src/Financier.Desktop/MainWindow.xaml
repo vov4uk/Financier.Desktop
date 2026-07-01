@@ -288,6 +288,35 @@
                                   Command="{Binding Path=Blotter.InfoCommand}" />-->
                 </RibbonGroup>
 
+                <RibbonGroup Header="{loc:Translate Key=account}"
+                             Visibility="{Binding Path=IsAccountPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                             DataContext="{Binding}">
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
+                                  Label="{loc:Translate Key=add}"
+                                  Command="{Binding Path=Accounts.AddCommand}" />
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
+                                  Label="{loc:Translate Key=edit}"
+                                  Command="{Binding Path=Accounts.EditCommand}" />
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
+                                  Label="{loc:Translate Key=delete}"
+                                  Command="{Binding Path=Accounts.DeleteCommand}" />
+                </RibbonGroup>
+
+                <RibbonGroup Header="{loc:Translate Key=categories}"
+                             Visibility="{Binding Path=IsCategoryPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                             DataContext="{Binding}">
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
+                                  Label="{loc:Translate Key=add}"
+                                  Command="{Binding Path=Categories.AddCommand}" />
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
+                                  Label="{loc:Translate Key=edit}"
+                                  Command="{Binding Path=Categories.EditCommand}" />
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
+                                  Label="{loc:Translate Key=delete}"
+                                  IsEnabled="False"
+                                  Command="{Binding Path=Categories.DeleteCommand}" />
+                </RibbonGroup>
+
                 <RibbonGroup Header="{loc:Translate Key=locations}"
                              Visibility="{Binding Path=IsLocationPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
                              DataContext="{Binding}">
@@ -347,6 +376,20 @@
                     <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
                                   Label="{loc:Translate Key=delete}"
                                   Command="{Binding Path=Rules.DeleteCommand}" />
+                </RibbonGroup>
+                <RibbonGroup Header="{loc:Translate Key=currencies}"
+                             Selector.IsSelected="{Binding Path=IsCurrencyPageSelected, Mode=OneWay}"
+                             Visibility="{Binding Path=IsCurrencyPageSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                             DataContext="{Binding}">
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPlus}"
+                                  Label="{loc:Translate Key=add}"
+                                  Command="{Binding Path=Currencies.AddCommand}" />
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconPencil}"
+                                  Label="{loc:Translate Key=edit}"
+                                  Command="{Binding Path=Currencies.EditCommand}" />
+                    <RibbonButton LargeImageSource="{StaticResource ResourceKey=IconTrash}"
+                                  Label="{loc:Translate Key=delete}"
+                                  Command="{Binding Path=Currencies.DeleteCommand}" />
                 </RibbonGroup>
                 <RibbonGroup Header="{loc:Translate Key=exchange_rates}"
                              Selector.IsSelected="{Binding Path=IsExchangeRatesPageSelected, Mode=OneWay}"

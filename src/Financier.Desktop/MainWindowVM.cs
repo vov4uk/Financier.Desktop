@@ -51,8 +51,11 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _refreshExchangeRatesCommand;
         private IAsyncCommand _checkForUpdateCommand;
         private readonly IBackupWriter backupWriter;
+        private AccountsVM accountsVm;
         private BlotterVM blotterVm;
+        private CategoriesVM categoriesVm;
         private BindableBase currentPage;
+        private CurrenciesVM currenciesVm;
         private IFinancierDatabase db;
         private readonly IEntityReader entityReader;
         private LocationsVM locationsVm;
@@ -83,10 +86,28 @@ namespace Financier.Desktop.ViewModel
             CreatePages();
         }
 
+        public AccountsVM Accounts
+        {
+            get => accountsVm;
+            private set => SetProperty(ref accountsVm, value);
+        }
+
         public BlotterVM Blotter
         {
             get => blotterVm;
             private set => SetProperty(ref blotterVm, value);
+        }
+
+        public CategoriesVM Categories
+        {
+            get => categoriesVm;
+            private set => SetProperty(ref categoriesVm, value);
+        }
+
+        public CurrenciesVM Currencies
+        {
+            get => currenciesVm;
+            private set => SetProperty(ref currenciesVm, value);
         }
 
         public BindableBase CurrentPage
@@ -96,6 +117,9 @@ namespace Financier.Desktop.ViewModel
             {
                 SetProperty(ref currentPage, value, nameof(CurrentPage));
                 Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
+                RaisePropertyChanged(nameof(IsAccountPageSelected));
+                RaisePropertyChanged(nameof(IsCategoryPageSelected));
+                RaisePropertyChanged(nameof(IsCurrencyPageSelected));
                 RaisePropertyChanged(nameof(IsTransactionPageSelected));
                 RaisePropertyChanged(nameof(IsLocationPageSelected));
                 RaisePropertyChanged(nameof(IsProjectPageSelected));
@@ -104,6 +128,12 @@ namespace Financier.Desktop.ViewModel
                 RaisePropertyChanged(nameof(IsExchangeRatesPageSelected));
             }
         }
+
+        public bool IsAccountPageSelected => currentPage is AccountsVM;
+
+        public bool IsCategoryPageSelected => currentPage is CategoriesVM;
+
+        public bool IsCurrencyPageSelected => currentPage is CurrenciesVM;
 
         public bool IsLocationPageSelected => currentPage is LocationsVM;
 
@@ -256,7 +286,10 @@ namespace Financier.Desktop.ViewModel
         private void ClearPages()
         {
             _pages?.Clear();
+            Accounts = null;
             Blotter = null;
+            Categories = null;
+            Currencies = null;
             Locations = null;
             Payees = null;
             Projects = null;
@@ -265,13 +298,19 @@ namespace Financier.Desktop.ViewModel
 
         private void CreatePages()
         {
+            Accounts = new AccountsVM(db, dialogWrapper);
             Blotter = new BlotterVM(db, dialogWrapper);
+            Categories = new CategoriesVM(db, dialogWrapper);
+            Currencies = new CurrenciesVM(db, dialogWrapper);
             Locations = new LocationsVM(db, dialogWrapper);
             Payees = new PayeesVM(db, dialogWrapper);
             Projects = new ProjectsVM(db, dialogWrapper);
             Rules = new RulesVM(db, dialogWrapper);
 
+            _pages.TryAdd(typeof(AccountModel), Accounts);
             _pages.TryAdd(typeof(BlotterModel), Blotter);
+            _pages.TryAdd(typeof(CategoryTreeModel), Categories);
+            _pages.TryAdd(typeof(CurrencyModel), Currencies);
             _pages.TryAdd(typeof(LocationModel), Locations);
             _pages.TryAdd(typeof(PayeeModel), Payees);
             _pages.TryAdd(typeof(ProjectModel), Projects);
@@ -283,9 +322,9 @@ namespace Financier.Desktop.ViewModel
             switch (type.Name)
             {
                 case nameof(AccountModel):
-                    return GetOrCreatePage<AccountModel, AccountsVM>();
+                    return Accounts ??= GetOrCreatePage<AccountModel, AccountsVM>();
                 case nameof(CurrencyModel):
-                    return GetOrCreatePage<CurrencyModel, CurrenciesVM>();
+                    return Currencies ??= GetOrCreatePage<CurrencyModel, CurrenciesVM>();
                 case nameof(ProjectModel):
                     return Projects ??= GetOrCreatePage<ProjectModel, ProjectsVM>();
                 case nameof(LocationModel):
@@ -295,19 +334,19 @@ namespace Financier.Desktop.ViewModel
                 case nameof(BlotterModel):
                     return Blotter ??= GetOrCreatePage<BlotterModel, BlotterVM>();
                 case nameof(CategoryTreeModel):
-                    return GetOrCreatePage<CategoryTreeModel, CategoriesVM>();
+                    return Categories ??= GetOrCreatePage<CategoryTreeModel, CategoriesVM>();
                 case nameof(ExchangeRateModel):
                     return GetOrCreatePage<ExchangeRateModel, ExchangeRatesVM>();
                 case nameof(RuleModel):
                     return Rules ??= GetOrCreatePage<RuleModel, RulesVM>();
                 case nameof(ReportsControlVM):
+                {
+                    if (!_pages.ContainsKey(type))
                     {
-                        if (!_pages.ContainsKey(type))
-                        {
-                            _pages.TryAdd(type, new ReportsControlVM(db));
-                        }
-                        return _pages[type];
+                        _pages.TryAdd(type, new ReportsControlVM(db));
                     }
+                    return _pages[type];
+                }
 
                 default: throw new NotSupportedException($"{type.FullName} not supported");
             }
@@ -419,11 +458,12 @@ namespace Financier.Desktop.ViewModel
 
         private async Task RefreshCurrentPage()
         {
-            var page = CurrentPage as IDataRefresh;
-            if (page != null)
+            if (CurrentPage is not IDataRefresh page)
             {
-                await page.RefreshDataCommand.ExecuteAsync();
+                return;
             }
+
+            await page.RefreshDataCommand.ExecuteAsync();
         }
 
         private async Task SaveBackup_Click()
@@ -444,15 +484,7 @@ namespace Financier.Desktop.ViewModel
         private async Task SaveBackupAsDb()
         {
             string fileName = Path.ChangeExtension(BackupWriter.GenerateFileName(), "db");
-            string defaultPath;
-            if (!string.IsNullOrEmpty(OpenBackupPath))
-            {
-                defaultPath = Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty)!, fileName);
-            }
-            else
-            {
-                defaultPath = fileName;
-            }
+            string defaultPath = !string.IsNullOrEmpty(OpenBackupPath) ? Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty)!, fileName) : fileName;
 
             var backupPath = dialogWrapper.SaveFileDialog("db", defaultPath);
             if (!string.IsNullOrEmpty(backupPath))
@@ -466,15 +498,12 @@ namespace Financier.Desktop.ViewModel
 
         private async Task Settings_Click()
         {
-            SettingsDto settings = SettingsService.Current.Settings.Clone() as SettingsDto ?? new SettingsDto();
+            SettingsDto settings = SettingsService.Current.Settings.Clone() is SettingsDto clone ? clone : new SettingsDto();
 
             DialogBaseVM vm = new SettingsVM(settings);
-            var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) as SettingsDto;
-
-            if (updated != null)
+            if (dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) is SettingsDto updated)
             {
                 Language before = SettingsService.Current.Settings.General.Language;
-
                 SettingsService.Current.Settings = updated;
                 SettingsService.Current.Save();
 
@@ -554,7 +583,7 @@ namespace Financier.Desktop.ViewModel
         {
             try
             {
-                if(updateService == null)
+                if (updateService == null)
                     return;
 
                 var updateVersion = await updateService.CheckForUpdatesAsync();
@@ -582,7 +611,7 @@ namespace Financier.Desktop.ViewModel
                     await Task.Delay(3000);
                     updateService.FinalizeUpdate(true);
                     await Task.Delay(3000);
-                    Environment.Exit(0);
+                    System.Windows.Application.Current.Shutdown();
                 }
             }
             catch (Exception ex)

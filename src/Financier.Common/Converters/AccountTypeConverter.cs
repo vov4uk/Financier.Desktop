@@ -18,9 +18,9 @@ namespace Financier.Converters
             string card_issuer = null;
 
             if (values.Length > 0)
-                type = (values[0] as string)?.ToLowerInvariant();
+                type = values[0]?.ToString()?.ToLowerInvariant();
             if (values.Length > 1)
-                card_issuer = (values[1] as string)?.ToLowerInvariant();
+                card_issuer = values[1]?.ToString()?.ToLowerInvariant();
 
 #pragma warning disable CS8604 // Possible null reference argument.
             return new BitmapImage(new Uri(GetImageUri(type, card_issuer)));

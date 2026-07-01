@@ -1,17 +1,52 @@
-﻿<UserControl x:Class="Financier.Desktop.Views.CategoriesView"
+<UserControl x:Class="Financier.Desktop.Views.CategoriesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
+             xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="450">
+    <UserControl.Resources>
+        <ContextMenu x:Key="ItemContextMenu">
+            <MenuItem Header="{loc:Translate Key=position_move_top}"
+                      Command="{Binding PlacementTarget.Tag.MoveTopCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+            <MenuItem Header="{loc:Translate Key=position_move_up}"
+                      Command="{Binding PlacementTarget.Tag.MoveUpCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+            <MenuItem Header="{loc:Translate Key=position_move_down}"
+                      Command="{Binding PlacementTarget.Tag.MoveDownCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+            <MenuItem Header="{loc:Translate Key=position_move_bottom}"
+                      Command="{Binding PlacementTarget.Tag.MoveBottomCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+            <Separator />
+            <MenuItem Header="{loc:Translate Key=sort_by_title}"
+                      Command="{Binding PlacementTarget.Tag.SortByTitleCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+        </ContextMenu>
+    </UserControl.Resources>
     <Grid>
-        <TreeView ItemsSource="{Binding Path=Entities}">
+        <TreeView x:Name="CategoriesTree"
+                  Margin="5"
+                  FontSize="14"
+                  ItemsSource="{Binding Path=Entities}"
+                  SelectedItemChanged="TreeView_SelectedItemChanged"
+                  PreviewMouseRightButtonDown="CategoriesTree_PreviewMouseRightButtonDown">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="Tag" Value="{Binding DataContext, ElementName=CategoriesTree}" />
+                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Path=SubCategoties}">
-                    <emoji:EmojiedTextBlock FontSize="14" Text="{Binding Title}" />
+                    <emoji:EmojiedTextBlock Text="{Binding Title}">
+                        <emoji:EmojiedTextBlock.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick"
+                                          Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                                          CommandParameter="{Binding}" />
+                        </emoji:EmojiedTextBlock.InputBindings>
+                    </emoji:EmojiedTextBlock>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

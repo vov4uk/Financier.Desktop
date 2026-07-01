@@ -1,5 +1,5 @@
-﻿using Financier.Common.Model;
-using Financier.Common.Utils;
+﻿using Financier.Common;
+using Financier.Common.Model;
 using Xunit;
 
 namespace Financier.Converters.Tests

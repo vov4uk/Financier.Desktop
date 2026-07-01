@@ -20,24 +20,16 @@ namespace Financier.Desktop.Data
             this.IsActive = isActive;
         }
 
-        public string Title
-        {
-            get => title;
-            set
-            {
-                title = value;
-                RaisePropertyChanged(nameof(Title));
-            }
-        }
-
         public bool IsActive
         {
             get => isActive;
-            set
-            {
-                isActive = value;
-                RaisePropertyChanged(nameof(IsActive));
-            }
+            set { SetProperty(ref isActive, value, nameof(IsActive)); }
+        }
+
+        public string Title
+        {
+            get => title;
+            set { SetProperty(ref title, value, nameof(Title)); }
         }
     }
 }
