@@ -1,24 +1,24 @@
-﻿namespace Financier.Desktop.ViewModel
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-    using Financier.Common;
-    using Financier.Common.Entities;
-    using Financier.Common.Localization;
-    using Financier.Common.Model;
-    using Financier.Converters;
-    using Financier.DataAccess.Abstractions;
-    using Financier.DataAccess.Data;
-    using Financier.DataAccess.Utils;
-    using Financier.DataAccess.View;
-    using Financier.Desktop.Data;
-    using Financier.Desktop.Helpers;
-    using Financier.Desktop.ViewModel.Dialog;
-    using Financier.Desktop.Views;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Financier.Common;
+using Financier.Common.Entities;
+using Financier.Common.Localization;
+using Financier.Common.Model;
+using Financier.Converters;
+using Financier.DataAccess.Abstractions;
+using Financier.DataAccess.Data;
+using Financier.DataAccess.Utils;
+using Financier.DataAccess.View;
+using Financier.Desktop.Data;
+using Financier.Desktop.Helpers;
+using Financier.Desktop.ViewModel.Dialog;
+using Financier.Desktop.Views;
 
+namespace Financier.Desktop.ViewModel
+{
     public class BlotterVM : EntityBaseVM<BlotterModel>
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -299,7 +299,6 @@
             resultTransactions.Add(transaction);
             if (resultVm.SubTransactions?.Any() == true)
             {
-                // TODO : Add Unit Test for code below
                 foreach (var subTransactionDto in resultVm.SubTransactions.OfType<TransactionDto>())
                 {
                     Transaction subTransaction = await GetSubTransaction(transaction, resultVm, subTransactionDto);
@@ -428,6 +427,7 @@
                     CategoryId = x.CategoryId,
                     CategoryTitle = x.CategoryTitle,
                     LocationId = x.LocationId,
+                    Project = x.ProjectId > 0 ? DbManual.ProjectIds.GetValueOrDefault(x.ProjectId.Value) : default,
                     Location = x.Location,
                     Payee = x.Payee,
                     Note = x.Note,
@@ -444,13 +444,13 @@
                         Name = x.FromAccountCurrency.Name,
                         Symbol = x.FromAccountCurrency.Symbol,
                     },
-                    ToAccountCurrency = x.ToAccountCurrency == null ? default! : new CurrencyModel
+                    ToAccountCurrency = x.ToAccountCurrency == null ? default : new CurrencyModel
                     {
                         Id = x.ToAccountCurrency.Id,
                         Name = x.ToAccountCurrency.Name,
                         Symbol = x.ToAccountCurrency.Symbol,
                     },
-                    OriginalCurrency = x.OriginalCurrency == null ? default! : new CurrencyModel
+                    OriginalCurrency = x.OriginalCurrency == null ? default : new CurrencyModel
                     {
                         Id = x.OriginalCurrency.Id,
                         Name = x.OriginalCurrency.Name,

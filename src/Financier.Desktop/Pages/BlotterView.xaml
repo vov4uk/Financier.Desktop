@@ -7,6 +7,7 @@
              xmlns:emoji="http://schemas.inkore.net/lib/ui/wpf/emojis"
              xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
+             xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
              mc:Ignorable="d"
              d:DesignHeight="480"
              d:DesignWidth="1000">
@@ -15,6 +16,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Assets/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converters:NullToVisibilityConverter x:Key="ToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -113,10 +115,22 @@
                 <DataGridTemplateColumn Header="">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <emoji:EmojiedTextBlock Text="{Binding Path=TransactionTitle}" x:Name="Cell"/>
+                            <StackPanel Orientation="Horizontal">
+                                <emoji:EmojiedTextBlock Text="{Binding Path=TransactionTitle}" x:Name="Cell"/>
+                                <TextBlock x:Name="Separator"
+                                           Text=" | "
+                                           Visibility="{Binding Project, Converter={StaticResource ToVisibilityConverter}}"
+                                           />
+                                <emoji:EmojiedTextBlock x:Name="prj" Text="{Binding Project.Title}" Foreground="DarkGreen" />
+                            </StackPanel>
                             <DataTemplate.Triggers>
                                 <DataTrigger Binding="{Binding Path=HasNoCategory}" Value="True">
                                     <Setter TargetName="Cell" Property="Background" Value="Pink" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Project.IsActive}" Value="False">
+                                    <DataTrigger.Setters>
+                                        <Setter TargetName="prj" Property="Foreground" Value="DarkRed"/>
+                                    </DataTrigger.Setters>
                                 </DataTrigger>
                             </DataTemplate.Triggers>
                         </DataTemplate>
