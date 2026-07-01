@@ -1,4 +1,5 @@
-﻿using Financier.DataAccess.Data;
+﻿using Financier.Common.Utils;
+using Financier.DataAccess.Data;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Common.Model

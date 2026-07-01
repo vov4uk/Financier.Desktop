@@ -8,7 +8,7 @@ using CsvHelper.Configuration;
 using Financier.Common.Localization;
 using Financier.Desktop.Helpers.BankHelper.Model;
 using Financier.Desktop.Wizards;
-using static Financier.Common.DoubleUtils;
+using static Financier.Common.Utils.DoubleUtils;
 
 namespace Financier.Desktop.Helpers.BankHelper
 {

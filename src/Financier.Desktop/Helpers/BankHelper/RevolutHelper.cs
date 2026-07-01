@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
-using Financier.Common;
 using Financier.Common.Localization;
+using Financier.Common.Utils;
 using Financier.Desktop.Helpers.BankHelper.Model;
 using Financier.Desktop.Wizards;
 

@@ -6,7 +6,7 @@ using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.DataAccess.Data;
 
-namespace Financier.Common
+namespace Financier.Common.Utils
 {
     [ExcludeFromCodeCoverage]
     public static class BlotterUtils

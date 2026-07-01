@@ -5,13 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Financier.Common;
 using Financier.Common.Localization;
+using Financier.Common.Utils;
 using Financier.Desktop.Wizards;
 using Tabula;
 using Tabula.Extractors;
 using UglyToad.PdfPig;
-using static Financier.Common.DoubleUtils;
+using static Financier.Common.Utils.DoubleUtils;
 
 namespace Financier.Desktop.Helpers.BankHelper
 {

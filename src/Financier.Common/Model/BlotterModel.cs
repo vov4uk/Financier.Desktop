@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Financier.Common.Utils;
 
 namespace Financier.Common.Model
 {
@@ -82,11 +83,11 @@ namespace Financier.Common.Model
                 {
                     return "Transfer";
                 }
-                else if (CategoryId == -1)
+                if (CategoryId == -1)
                 {
                     return "Share";
                 }
-                else if (FromAmount > 0)
+                if (FromAmount > 0)
                 {
                     return "Income";
                 }
