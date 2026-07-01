@@ -5,10 +5,9 @@ namespace Financier.Desktop.Data
 {
     public class CategoryDto : BindableBase
     {
-        private string title;
         private bool isIncome;
         private int parentId;
-
+        private string title;
         public CategoryDto() { }
 
         public CategoryDto(Category category, int parentId)
@@ -22,25 +21,25 @@ namespace Financier.Desktop.Data
         }
 
         public int Id { get; set; }
-        public int Left { get; set; }
-        public int Right { get; set; }
-
-        public string Title
-        {
-            get => title;
-            set { SetProperty(ref title, value, nameof(Title)); }
-        }
-
         public bool IsIncome
         {
             get => isIncome;
             set { SetProperty(ref isIncome, value, nameof(IsIncome)); }
         }
 
+        public int Left { get; set; }
         public int ParentId
         {
             get => parentId;
             set { SetProperty(ref parentId, value, nameof(ParentId)); }
+        }
+
+        public int Right { get; set; }
+
+        public string Title
+        {
+            get => title;
+            set { SetProperty(ref title, value, nameof(Title)); }
         }
     }
 }

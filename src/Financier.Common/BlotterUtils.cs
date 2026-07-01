@@ -6,13 +6,31 @@ using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.DataAccess.Data;
 
-namespace Financier.Common.Utils
+namespace Financier.Common
 {
     [ExcludeFromCodeCoverage]
     public static class BlotterUtils
     {
         public const string TRANSFER_DELIMITER = " \u00BB ";
         internal const decimal HUNDRED = 100m;
+        public static string GetAccountDescription(string issuer, string number, string type)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (!string.IsNullOrEmpty(issuer))
+            {
+                sb.Append(issuer);
+            }
+            if (!string.IsNullOrEmpty(number))
+            {
+                sb.Append(" #").Append(number);
+            }
+            if (sb.Length == 0)
+            {
+                return LocalizationService.Instance[$"account_type_{type}".ToLowerInvariant()];
+            }
+            return sb.ToString();
+        }
+
         public static string GetTransferAmountText(CurrencyModel fromCurrency, long fromAmount, CurrencyModel toCurrency, long toAmount)
         {
             var sb = new StringBuilder();
@@ -41,25 +59,6 @@ namespace Financier.Common.Utils
             AmountToString(sb, toCurrency, toBalance ?? 0, false);
             return sb.ToString();
         }
-
-        public static string GetAccountDescription(string issuer, string number, string type)
-        {
-            StringBuilder sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(issuer))
-            {
-                sb.Append(issuer);
-            }
-            if (!string.IsNullOrEmpty(number))
-            {
-                sb.Append(" #").Append(number);
-            }
-            if (sb.Length == 0)
-            {
-                return LocalizationService.Instance[$"account_type_{type}".ToLowerInvariant()];
-            }
-            return sb.ToString();
-        }
-
         internal static string SetAmountText(CurrencyModel originalCurrency, long originalAmount, CurrencyModel currency, long amount, bool addPlus)
         {
             StringBuilder sb = new StringBuilder();

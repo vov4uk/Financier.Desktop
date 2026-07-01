@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Text;
 using Financier.Converters;
 
@@ -39,6 +40,8 @@ namespace Financier.Common.Entities
                 case SymbolFormat.L:
                     sb.Insert(GetInsertIndex(sb), symbol);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
         }
 

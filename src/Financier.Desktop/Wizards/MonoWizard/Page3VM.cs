@@ -258,9 +258,9 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private async Task OpenRulesDialogAsync(string description, int mccCode)
         {
             Mcc mcc = Mcc.none;
-            if (DbManual.MCCCodes.ContainsKey(mccCode))
+            if (DbManual.MCCCodes.TryGetValue(mccCode, out var mccValue))
             {
-                mcc = DbManual.MCCCodes[mccCode];
+                mcc = mccValue;
             }
 
             RuleDto rule = new RuleDto()

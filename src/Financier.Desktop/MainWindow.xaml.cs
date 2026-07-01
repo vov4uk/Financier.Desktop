@@ -35,7 +35,7 @@ namespace Financier.Desktop
             ViewModel = new MainWindowVM(new DialogHelper(), new FinancierDatabaseFactory(), new EntityReader(), new BackupWriter(), notificator, new BankHelperFactory(), new UpdateService());
 
             DataContext = ViewModel;
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var version = typeof(MainWindow).Assembly.GetName().Version;
             Title = $"Financier Desktop v.{version}";
             Logger.Info("App started");
         }

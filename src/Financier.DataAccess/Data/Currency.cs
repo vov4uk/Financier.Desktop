@@ -46,31 +46,21 @@ namespace Financier.DataAccess.Data
         [Column(Backup.UpdatedOnColumn)]
         public long UpdatedOn { get; set; }
 
+        public static Currency EMPTY;
 
-        public static Currency defaultCurrency()
+        static Currency()
         {
-            Currency c = new Currency
+            EMPTY = new Currency
             {
-                Id = 2,
-                Name = "USD",
-                Title = "American Dollar",
-                Symbol = "$",
-                Decimals = 2
+                Id = 0,
+                Name = "",
+                Title = "Default",
+                Symbol = "",
+                SymbolFormat = "RS",
+                Decimals = 2,
+                DecimalSeparator = "'.'",
+                GroupSeparator = "','"
             };
-            return c;
-        }
-
-        public static Currency EMPTY = new Currency();
-
-        static Currency() {
-            EMPTY.Id = 0;
-            EMPTY.Name = "";
-            EMPTY.Title = "Default";
-            EMPTY.Symbol = "";
-            EMPTY.SymbolFormat = "RS";
-            EMPTY.Decimals = 2;
-            EMPTY.DecimalSeparator = "'.'";
-            EMPTY.GroupSeparator = "','";
         }
     }
 }

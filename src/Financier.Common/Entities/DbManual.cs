@@ -6,10 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Financier.Common.Attribute;
-using Financier.Common.Localization;
 using Financier.Common.Model;
 using Financier.DataAccess.Abstractions;
-using Financier.DataAccess.Data;
 using Newtonsoft.Json;
 
 namespace Financier.Common.Entities
@@ -232,7 +230,7 @@ ORDER  BY 1 DESC ");
             {
                 if (_allCurrencies == null)
                 {
-                    var asm = Assembly.GetExecutingAssembly();
+                    var asm = typeof(DbManual).Assembly;
                     using var stream = asm.GetManifestResourceStream("Financier.Common.Assets.currencies.csv");
                     if (stream != null)
                     {

@@ -340,13 +340,13 @@ namespace Financier.Desktop.ViewModel
                 case nameof(RuleModel):
                     return Rules ??= GetOrCreatePage<RuleModel, RulesVM>();
                 case nameof(ReportsControlVM):
+                {
+                    if (!_pages.ContainsKey(type))
                     {
-                        if (!_pages.ContainsKey(type))
-                        {
-                            _pages.TryAdd(type, new ReportsControlVM(db));
-                        }
-                        return _pages[type];
+                        _pages.TryAdd(type, new ReportsControlVM(db));
                     }
+                    return _pages[type];
+                }
 
                 default: throw new NotSupportedException($"{type.FullName} not supported");
             }
@@ -458,11 +458,12 @@ namespace Financier.Desktop.ViewModel
 
         private async Task RefreshCurrentPage()
         {
-            var page = CurrentPage as IDataRefresh;
-            if (page != null)
+            if (CurrentPage is not IDataRefresh page)
             {
-                await page.RefreshDataCommand.ExecuteAsync();
+                return;
             }
+
+            await page.RefreshDataCommand.ExecuteAsync();
         }
 
         private async Task SaveBackup_Click()
@@ -483,15 +484,7 @@ namespace Financier.Desktop.ViewModel
         private async Task SaveBackupAsDb()
         {
             string fileName = Path.ChangeExtension(BackupWriter.GenerateFileName(), "db");
-            string defaultPath;
-            if (!string.IsNullOrEmpty(OpenBackupPath))
-            {
-                defaultPath = Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty)!, fileName);
-            }
-            else
-            {
-                defaultPath = fileName;
-            }
+            string defaultPath = !string.IsNullOrEmpty(OpenBackupPath) ? Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty)!, fileName) : fileName;
 
             var backupPath = dialogWrapper.SaveFileDialog("db", defaultPath);
             if (!string.IsNullOrEmpty(backupPath))
@@ -505,15 +498,12 @@ namespace Financier.Desktop.ViewModel
 
         private async Task Settings_Click()
         {
-            SettingsDto settings = SettingsService.Current.Settings.Clone() as SettingsDto ?? new SettingsDto();
+            SettingsDto settings = SettingsService.Current.Settings.Clone() is SettingsDto clone ? clone : new SettingsDto();
 
             DialogBaseVM vm = new SettingsVM(settings);
-            var updated = dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) as SettingsDto;
-
-            if (updated != null)
+            if (dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) is SettingsDto updated)
             {
                 Language before = SettingsService.Current.Settings.General.Language;
-
                 SettingsService.Current.Settings = updated;
                 SettingsService.Current.Save();
 
@@ -593,7 +583,7 @@ namespace Financier.Desktop.ViewModel
         {
             try
             {
-                if(updateService == null)
+                if (updateService == null)
                     return;
 
                 var updateVersion = await updateService.CheckForUpdatesAsync();
@@ -621,7 +611,7 @@ namespace Financier.Desktop.ViewModel
                     await Task.Delay(3000);
                     updateService.FinalizeUpdate(true);
                     await Task.Delay(3000);
-                    Environment.Exit(0);
+                    System.Windows.Application.Current.Shutdown();
                 }
             }
             catch (Exception ex)
