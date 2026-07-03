@@ -1,9 +1,11 @@
-﻿using CsvHelper.Configuration.Attributes;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
-using System;
 
 namespace Financier.Desktop.Helpers.BankHelper.Model
 {
+    [ExcludeFromCodeCoverage]
     public class PrivatRow
     {
         [Index(0)]

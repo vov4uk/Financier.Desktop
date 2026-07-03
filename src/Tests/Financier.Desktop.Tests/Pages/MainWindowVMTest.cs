@@ -11,9 +11,12 @@
     using Financier.DataAccess.Abstractions;
     using Financier.DataAccess.Data;
     using Financier.DataAccess.View;
+    using Financier.Common.Localization;
     using Financier.Desktop.Data;
     using Financier.Desktop.Helpers;
     using Financier.Desktop.Helpers.BankHelper;
+    using Financier.Desktop.Pages.Dialogs;
+    using Financier.Desktop.Services;
     using Financier.Desktop.ViewModel;
     using Financier.Desktop.ViewModel.Dialog;
     using Financier.Desktop.Views;
@@ -640,6 +643,182 @@
 
             this.dbMock.VerifyAll();
             this.dialogMock.VerifyAll();
+        }
+
+        [Fact]
+        public async Task SettingsCommand_DialogReturnsNull_SettingsNotChanged()
+        {
+            var originalSettings = new SettingsDto();
+            SettingsService.Current.Settings = originalSettings;
+
+            this.dialogMock.Setup(x => x.ShowDialog<SettingsControl>(
+                It.IsAny<DialogBaseVM>(), 300, 400, It.IsAny<string>()))
+                .Returns(null);
+
+            var vm = this.GetFinancierVM();
+            await vm.SettingsCommand.ExecuteAsync();
+
+            Assert.Same(originalSettings, SettingsService.Current.Settings);
+            this.dialogMock.VerifyAll();
+        }
+
+        [Fact]
+        public async Task SettingsCommand_DialogReturnsSameLanguage_SettingsUpdated_DbManualNotRefreshed()
+        {
+            SettingsService.Current.Settings = new SettingsDto
+            {
+                General = new SettingsGeneralDto { Language = Language.English }
+            };
+
+            var updatedSettings = new SettingsDto
+            {
+                General = new SettingsGeneralDto { Language = Language.English }
+            };
+
+            this.dialogMock.Setup(x => x.ShowDialog<SettingsControl>(
+                It.IsAny<DialogBaseVM>(), 300, 400, It.IsAny<string>()))
+                .Returns(updatedSettings);
+
+            var vm = this.GetFinancierVM();
+            await vm.SettingsCommand.ExecuteAsync();
+
+            Assert.Same(updatedSettings, SettingsService.Current.Settings);
+            this.dbMock.Verify(x => x.ExecuteQuery<CurrencyModel>(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task SettingsCommand_DialogReturnsDifferentLanguage_DbManualRefreshed()
+        {
+            SettingsService.Current.Settings = new SettingsDto
+            {
+                General = new SettingsGeneralDto { Language = Language.English }
+            };
+
+            var updatedSettings = new SettingsDto
+            {
+                General = new SettingsGeneralDto { Language = Language.Ukrainian }
+            };
+
+            this.dialogMock.Setup(x => x.ShowDialog<SettingsControl>(
+                It.IsAny<DialogBaseVM>(), 300, 400, It.IsAny<string>()))
+                .Returns(updatedSettings);
+
+            await this.SetupDbManual();
+
+            var vm = this.GetFinancierVM();
+            try
+            {
+                await vm.SettingsCommand.ExecuteAsync();
+
+                Assert.Same(updatedSettings, SettingsService.Current.Settings);
+                this.dbMock.Verify(x => x.ExecuteQuery<CurrencyModel>(It.IsAny<string>()), Times.Exactly(2));
+            }
+            finally
+            {
+                LocalizationService.Instance.ApplyLanguage(Language.English);
+            }
+        }
+
+        [Fact]
+        public async Task RefreshExchangeRatesCommand_ProviderNone_ShowsWarning()
+        {
+            SettingsService.Current.Settings = new SettingsDto
+            {
+                ExchangeRates = new SettingsExchangeRates { Provider = ExchangeRatesProviders.None }
+            };
+
+            var vm = this.GetFinancierVM();
+            await vm.RefreshExchangeRatesCommand.ExecuteAsync();
+
+            this.toastNotifierMock.Verify(x => x.ShowWarning(It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task CheckForUpdateCommand_NullUpdateService_ReturnsGracefully()
+        {
+            var vm = this.GetFinancierVM(); // updateService is null
+
+            await vm.CheckForUpdateCommand.ExecuteAsync();
+
+            this.toastNotifierMock.Verify(x => x.ShowMessage(It.IsAny<string>()), Times.Never);
+            this.toastNotifierMock.Verify(x => x.ShowWarning(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task OpenBackupCommand_DialogReturnsEmpty_NoBackupOpened()
+        {
+            this.dialogMock.Setup(x => x.OpenFileDialog("backup")).Returns(string.Empty);
+
+            var vm = this.GetFinancierVM();
+            await vm.OpenBackupCommand.ExecuteAsync();
+
+            this.entityReaderMock.Verify(x => x.ParseBackupFileAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task SaveBackupCommand_DialogReturnsEmpty_NoBackupSaved()
+        {
+            this.dialogMock.Setup(x => x.SaveFileDialog("backup", It.IsAny<string>())).Returns(string.Empty);
+
+            var vm = this.GetFinancierVM();
+            await vm.SaveBackupCommand.ExecuteAsync();
+
+            this.backupWriterMock.Verify(
+                x => x.GenerateBackupAsync(It.IsAny<List<Entity>>(), It.IsAny<string>(), It.IsAny<BackupVersion>(), It.IsAny<Dictionary<string, List<string>>>()),
+                Times.Never);
+        }
+
+        [Fact]
+        public async Task MenuNavigateCommand_AccountModel_IsAccountPageSelected()
+        {
+            await this.SetupDbManual();
+
+            var accountRepoMock = new Mock<IBaseRepository<Account>>();
+            accountRepoMock.Setup(x => x.FindManyAndProjectAsync(
+                It.IsAny<Expression<Func<Account, bool>>>(),
+                It.IsAny<Expression<Func<Account, AccountModel>>>(),
+                It.IsAny<Expression<Func<Account, object>>[]>()))
+                .ReturnsAsync(new List<AccountModel>());
+
+            this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
+            this.uowMock.Setup(x => x.GetRepository<Account>()).Returns(accountRepoMock.Object);
+            this.uowMock.Setup(x => x.Dispose());
+
+            var vm = this.GetFinancierVM();
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(AccountModel));
+
+            Assert.True(vm.IsAccountPageSelected);
+        }
+
+        [Fact]
+        public async Task MenuNavigateCommand_CurrencyModel_IsCurrencyPageSelected()
+        {
+            await this.SetupDbManual();
+
+            var vm = this.GetFinancierVM();
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(CurrencyModel));
+
+            Assert.True(vm.IsCurrencyPageSelected);
+        }
+
+        [Fact]
+        public async Task MenuNavigateCommand_CategoryTreeModel_IsCategoryPageSelected()
+        {
+            await this.SetupDbManual();
+
+            var vm = this.GetFinancierVM();
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(CategoryTreeModel));
+
+            Assert.True(vm.IsCategoryPageSelected);
+        }
+
+        [Fact]
+        public async Task MenuNavigateCommand_RuleModel_IsRulesPageSelected()
+        {
+            var vm = this.GetFinancierVM();
+            await vm.MenuNavigateCommand.ExecuteAsync(typeof(RuleModel));
+
+            Assert.True(vm.IsRulesPageSelected);
         }
 
         private MainWindowVM GetFinancierVM() => new MainWindowVM(this.dialogMock.Object, this.dbFactoryMock.Object, this.entityReaderMock.Object, this.backupWriterMock.Object, this.toastNotifierMock.Object, this.bankMock.Object, null);
