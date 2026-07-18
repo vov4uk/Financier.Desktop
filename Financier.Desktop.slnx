@@ -17,6 +17,7 @@
     <Project Path="src/Tests/Financier.Converter.Test/Financier.Common.Test.csproj" />
     <Project Path="src/Tests/Financier.DataAccess.Tests/Financier.DataAccess.Tests.csproj" />
     <Project Path="src/Tests/Financier.Desktop.Tests/Financier.Desktop.Tests.csproj" />
+    <Project Path="src/Tests/Financier.Reports.Tests/Financier.Reports.Tests.csproj" Id="884b7a25-f809-42b3-b999-16b2fe93f895" />
     <Project Path="src/Tests/Financier.Tests.Common/Financier.Tests.Common.csproj" />
   </Folder>
   <Project Path="src/Financier.Adapter/Financier.Adapter.csproj" />

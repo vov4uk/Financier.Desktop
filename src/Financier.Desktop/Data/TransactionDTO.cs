@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Financier.Common.Model;
 using Financier.Common.Entities;
-using Financier.Common;
+using Financier.Common.Utils;
 
 namespace Financier.Desktop.Data
 {

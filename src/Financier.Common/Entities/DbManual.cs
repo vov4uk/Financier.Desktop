@@ -30,11 +30,11 @@ namespace Financier.Common.Entities
         private static Dictionary<Mcc, int[]> _mccEnums;
         private static Dictionary<string, Mcc> _mccTitles;
         private static Dictionary<int, Mcc> _mccCodes;
+        private static Dictionary<int, ProjectModel> _projectIds;
         private static List<List<string>> _allCurrencies;
 
         public static async Task SetupAsync(IFinancierDatabase financierDatabase)
         {
-
             if (financierDatabase == null)
             {
                 return;
@@ -137,6 +137,9 @@ WHERE  title IS NOT NULL
 ORDER  BY is_active DESC, title ASC");
                 _project = [.. projects];
                 _project.Insert(0, new ProjectModel());
+
+                _projectIds = _project.Where(p => p.Id.HasValue).ToDictionary(p => p.Id.Value, p => p);
+
             }
 
             if (_yearMonths == null)
@@ -175,6 +178,8 @@ ORDER  BY 1 DESC ");
         public static List<PayeeModel> Payee => _payee ?? new ();
 
         public static List<ProjectModel> Project => _project ?? new();
+
+        public static Dictionary<int, ProjectModel> ProjectIds => _projectIds ?? new();
 
         public static List<YearMonths> YearMonths => _yearMonths ?? new();
 

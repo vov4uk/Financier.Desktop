@@ -1,12 +1,11 @@
-﻿using Financier.Converters;
+﻿using System;
+using System.Globalization;
+using Financier.Converters;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers.BankHelper.Model;
 using Financier.Desktop.Wizards;
-using System;
-using System.Globalization;
-using static Financier.Desktop.Helpers.BankHelper.BankPdfHelperBase;
-using static Financier.Common.DoubleUtils;
+using static Financier.Common.Utils.DoubleUtils;
 
 namespace Financier.Desktop.Helpers
 {

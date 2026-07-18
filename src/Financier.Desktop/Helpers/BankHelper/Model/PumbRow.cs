@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
 
 namespace Financier.Desktop.Helpers.BankHelper.Model
 {
+    [ExcludeFromCodeCoverage]
     public class PumbRow
     {
         [Index(0)]

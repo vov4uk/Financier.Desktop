@@ -1,9 +1,8 @@
-﻿using Financier.Common.Localization;
+﻿using System.Diagnostics;
+using System.Windows;
+using Financier.Common.Localization;
 using Financier.Desktop.ViewModel.Dialog;
 using Financier.Desktop.Wizards;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Forms;
 using Application = System.Windows.Application;
 
 namespace Financier.Desktop.Helpers
@@ -99,11 +98,10 @@ namespace Financier.Desktop.Helpers
                 var result = System.Windows.MessageBox.Show(text, caption, MessageBoxButton.YesNo);
                 return result == MessageBoxResult.Yes;
             }
-            else
-            {
-                System.Windows.MessageBox.Show(text, caption);
-                return true;
-            }
+
+            MessageBox.Show(text, caption);
+            return true;
+
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Financier.Common
+namespace Financier.Common.Utils
 {
     public static class DoubleUtils
     {

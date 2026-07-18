@@ -1,68 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Financier.Common.Utils;
 
 namespace Financier.Common.Model
 {
     [ExcludeFromCodeCoverage]
     public class BlotterModel : BaseModel
     {
-        public int Id { get; set; }
-
-        public int FromAccountId { get; set; }
-        public string FromAccountTitle { get; set; }
-
-        public int? ToAccountId { get; set; }
-        public string ToAccountTitle { get; set; }
-
-        public int FromAccountCurrencyId { get; set; }
-
-        public int? ToAccountCurrencyId { get; set; }
-
-        public int? CategoryId { get; set; }
-        public string CategoryTitle { get; set; }
-
-        public int? LocationId { get; set; }
-        public string Location { get; set; }
-
-        public string Payee { get; set; }
-
-        public string Note { get; set; }
-
-        public long FromAmount { get; set; }
-        public long ToAmount { get; set; }
-
-        public long Datetime { get; set; }
-
-        public int? OriginalCurrencyId { get; set; }
-
-        public long OriginalFromAmount { get; set; }
-
-        public int? FromAccountBalance { get; set; }
-        public int? ToAccountBalance { get; set; }
-
-        public CurrencyModel FromAccountCurrency { get; set; }
-        public CurrencyModel ToAccountCurrency { get; set; }
-        public CurrencyModel OriginalCurrency { get; set; }
-
-        public string Type
-        {
-            get
-            {
-                if (ToAccountId > 0 && CategoryId == 0 && FromAccountId > 0)
-                {
-                    return "Transfer";
-                }
-                else if (CategoryId == -1)
-                {
-                    return "Share";
-                }
-                else if (FromAmount > 0)
-                {
-                    return "Income";
-                }
-                return "Expense";
-            }
-        }
-
         public string AccountTitle
         {
             get
@@ -74,8 +17,6 @@ namespace Financier.Common.Model
                 return FromAccountTitle;
             }
         }
-
-        public string TransactionTitle => TransactionTitleUtils.GenerateTransactionTitle(Payee, Note, LocationId > 0 ? Location : string.Empty, CategoryId, CategoryTitle, ToAccountId);
 
         public string AmountTitle
         {
@@ -107,5 +48,52 @@ namespace Financier.Common.Model
         }
 
         public bool HasNoCategory => Type != "Transfer" && CategoryId == 0;
+
+        public int? CategoryId { get; set; }
+        public string CategoryTitle { get; set; }
+        public long Datetime { get; set; }
+        public int? FromAccountBalance { get; set; }
+        public CurrencyModel FromAccountCurrency { get; set; }
+        public int FromAccountCurrencyId { get; set; }
+        public int FromAccountId { get; set; }
+        public string FromAccountTitle { get; set; }
+        public long FromAmount { get; set; }
+        public int Id { get; set; }
+        public string Location { get; set; }
+        public int? LocationId { get; set; }
+        public int? ProjectId { get; set; }
+        public ProjectModel Project { get; set; }
+        public string Note { get; set; }
+        public CurrencyModel OriginalCurrency { get; set; }
+        public int? OriginalCurrencyId { get; set; }
+        public long OriginalFromAmount { get; set; }
+        public string Payee { get; set; }
+        public int? ToAccountBalance { get; set; }
+        public CurrencyModel ToAccountCurrency { get; set; }
+        public int? ToAccountCurrencyId { get; set; }
+        public int? ToAccountId { get; set; }
+        public string ToAccountTitle { get; set; }
+        public long ToAmount { get; set; }
+        public string TransactionTitle => TransactionTitleUtils.GenerateTransactionTitle(Payee, Note, LocationId > 0 ? Location : string.Empty, CategoryId, CategoryTitle, ToAccountId);
+
+        public string Type
+        {
+            get
+            {
+                if (ToAccountId > 0 && CategoryId == 0 && FromAccountId > 0)
+                {
+                    return "Transfer";
+                }
+                if (CategoryId == -1)
+                {
+                    return "Share";
+                }
+                if (FromAmount > 0)
+                {
+                    return "Income";
+                }
+                return "Expense";
+            }
+        }
     }
 }

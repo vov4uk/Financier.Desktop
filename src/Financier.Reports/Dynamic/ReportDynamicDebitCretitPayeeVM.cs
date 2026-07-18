@@ -1,4 +1,5 @@
 ﻿using Financier.Common.Attribute;
+using Financier.Common.Localization;
 using Financier.DataAccess.Abstractions;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -6,7 +7,6 @@ using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 
 namespace Financier.Reports
 {
@@ -56,7 +56,7 @@ order by
 
             if (hasCategory == 0)
             {
-                MessageBox.Show("Please select category!");
+                DialogService.ShowMessage(LocalizationService.Instance.please_select_categories);
                 return string.Empty;
             }
             string str = string.Empty;

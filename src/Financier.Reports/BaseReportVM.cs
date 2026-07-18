@@ -28,6 +28,8 @@ namespace Financier.Reports
 
         private SafePlotModel plotModel;
 
+        public IDialogService DialogService { get; set; } = MessageBoxDialogService.Instance;
+
         public string Header { get; set; }
 
         public SafePlotModel PlotModel 

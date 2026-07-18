@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Financier.Common.Entities;
 using Financier.Common.Model;
@@ -14,8 +15,15 @@ namespace Financier.Desktop.Services
     public class ExchangeRatesService
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        public ExchangeRatesService()
+        private readonly HttpClient _httpClient;
+        private readonly Func<IEnumerable<CurrencyModel>> _currenciesProvider;
+
+        public ExchangeRatesService() : this(new HttpClient(), null) { }
+
+        public ExchangeRatesService(HttpClient httpClient, Func<IEnumerable<CurrencyModel>> currenciesProvider = null)
         {
+            _httpClient = httpClient;
+            _currenciesProvider = currenciesProvider ?? (() => DbManual.Currencies);
         }
 
         public async Task<List<CurrencyExchangeRate>> LoadFreeCurrencyRates()
@@ -30,8 +38,7 @@ namespace Financier.Desktop.Services
                 var url = buildFreeCurrencyUrl(fromCurrency.Name, toCurrency.Name);
                 try
                 {
-                    using var client = new System.Net.Http.HttpClient();
-                    var response = await client.GetAsync(url);
+                    var response = await _httpClient.GetAsync(url);
                     if (response.IsSuccessStatusCode)
                     {
                         var content = await response.Content.ReadAsStringAsync();
@@ -71,8 +78,7 @@ namespace Financier.Desktop.Services
 
                 string url = $"https://openexchangerates.org/api/latest.json?app_id={apiKey}";
 
-                using var client = new System.Net.Http.HttpClient();
-                var response = await client.GetAsync(url);
+                var response = await _httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -114,10 +120,10 @@ namespace Financier.Desktop.Services
             return result;
         }
 
-        private static List<KeyValuePair<CurrencyModel, CurrencyModel>> GetRatesPairs()
+        private List<KeyValuePair<CurrencyModel, CurrencyModel>> GetRatesPairs()
         {
             var result = new List<KeyValuePair<CurrencyModel, CurrencyModel>>();
-            var currencies = DbManual.Currencies.Where(c => c.Id > 0 && c.UpdateExchangeRate).ToList();
+            var currencies = _currenciesProvider().Where(c => c.Id > 0 && c.UpdateExchangeRate).ToList();
 
             for (var i = 0; i < currencies.Count; i++)
             {
@@ -142,8 +148,7 @@ namespace Financier.Desktop.Services
                 string monoUrl = "api.monobank.ua/bank/currency";
                 var currencies = GetRatesPairs();
 
-                using var client = new System.Net.Http.HttpClient();
-                var response = await client.GetAsync($"https://{monoUrl}");
+                var response = await _httpClient.GetAsync($"https://{monoUrl}");
                 if (!response.IsSuccessStatusCode)
                 {
                     Logger.Warn($"Monobank API returned {response.StatusCode}");

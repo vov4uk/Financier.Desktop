@@ -4,12 +4,11 @@
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <DebugType>full</DebugType>
-    <AssemblyName>Financier.Converters.Tests</AssemblyName>
-    <RootNamespace>Financier.Converters.Tests</RootNamespace>
+    <AssemblyName>Financier.Reports.Tests</AssemblyName>
+    <RootNamespace>Financier.Reports.Tests</RootNamespace>
     <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
     <IsTestProject>true</IsTestProject>
     <OutputType>Library</OutputType>
-    <AnalysisLevel>latest-minimum</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,22 +16,29 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture" />
+    <PackageReference Include="AutoFixture.AutoMoq" />
     <PackageReference Include="AutoFixture.Xunit3" />
-    <PackageReference Include="coverlet.collector">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="StyleCop.Analyzers" Condition="'$(Configuration)'=='Debug'">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Financier.Reports\Financier.Reports.csproj" />
-    <ProjectReference Include="..\..\Financier.Common\Financier.Common.csproj" />
+    <ProjectReference Include="..\Financier.Tests.Common\Financier.Tests.Common.csproj" />
   </ItemGroup>
 
 </Project>

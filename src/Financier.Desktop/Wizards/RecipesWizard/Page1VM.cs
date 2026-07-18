@@ -1,5 +1,5 @@
-﻿using Financier.Common;
-using Financier.Common.Entities;
+﻿using Financier.Common.Entities;
+using Financier.Common.Utils;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Wizards.RecipesWizard.View;
 using Prism.Commands;

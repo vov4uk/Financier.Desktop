@@ -22,10 +22,7 @@ namespace Financier.Converters
             if (values.Length > 1)
                 card_issuer = values[1]?.ToString()?.ToLowerInvariant();
 
-#pragma warning disable CS8604 // Possible null reference argument.
-            return new BitmapImage(new Uri(GetImageUri(type, card_issuer)));
-#pragma warning restore CS8604 // Possible null reference argument.
-
+            return new BitmapImage(GetImageUrl(type, card_issuer));
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -33,17 +30,17 @@ namespace Financier.Converters
             throw new NotImplementedException();
         }
 
-        private static string GetImageUri(string type, string card_issuer)
+        private static Uri GetImageUrl(string type, string card_issuer)
         {
             if (!string.IsNullOrEmpty(type) && type.Contains("card") && !string.IsNullOrEmpty(card_issuer))
             {
-                return $"pack://application:,,,/Images/AccountType/account_type_card_{card_issuer}.png";
+                return new Uri($"pack://application:,,,/Images/AccountType/account_type_card_{card_issuer}.png");
             }
-            else if (!string.IsNullOrEmpty(type) && KnownTypes.Contains(type))
+            if (!string.IsNullOrEmpty(type) && KnownTypes.Contains(type))
             {
-                return $"pack://application:,,,/Images/AccountType/account_type_{type}.png";
+                return new Uri($"pack://application:,,,/Images/AccountType/account_type_{type}.png");
             }
-            return "pack://application:,,,/Images/AccountType/account_type_other.png";
+            return new Uri("pack://application:,,,/Images/AccountType/account_type_other.png");
         }
     }
 }

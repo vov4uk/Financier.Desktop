@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace Financier.Common
+namespace Financier.Common.Utils
 {
     [ExcludeFromCodeCoverage]
     public static class TransactionTitleUtils
@@ -12,10 +12,8 @@ namespace Financier.Common
             {
                 return GenerateTransactionTitleForSplit(payee, note, location);
             }
-            else
-            {
-                return GenerateTransactionTitleForRegular(categoryId, payee, note, location, category, toAccount);
-            }
+
+            return GenerateTransactionTitleForRegular(categoryId, payee, note, location, category, toAccount);
         }
 
         private static void Append(StringBuilder sb, string s)
