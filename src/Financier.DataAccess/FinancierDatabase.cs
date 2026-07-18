@@ -294,12 +294,9 @@ namespace Financier.DataAccess
             await using (var db = new FinancierDataContext(ContextOptions))
             using (var command = db.Database.GetDbConnection().CreateCommand())
             {
-                command.CommandText = "VACUUM main INTO @path";
+                var escapedDest = dest.Replace("'", "''");
+                command.CommandText = $"VACUUM main INTO '{escapedDest}'";
                 command.CommandType = CommandType.Text;
-                var param = command.CreateParameter();
-                param.ParameterName = "@path";
-                param.Value = dest;
-                command.Parameters.Add(param);
                 Logger.Info("VACUUM main INTO @path (path={0})", dest);
 
                 await db.Database.OpenConnectionAsync();
