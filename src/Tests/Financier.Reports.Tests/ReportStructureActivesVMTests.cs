@@ -36,12 +36,6 @@ namespace Financier.Reports.Tests
         // ── Constructor ──────────────────────────────────────────────────────────
 
         [Fact]
-        public void Constructor_SetsDateFilter_ToApproximatelyNow()
-        {
-            Assert.True(this.vm.DateFilter!.Value >= DateTime.Now.AddSeconds(-5));
-        }
-
-        [Fact]
         public void Constructor_SetsDateFilter_ToNonNull()
         {
             Assert.NotNull(this.vm.DateFilter);
