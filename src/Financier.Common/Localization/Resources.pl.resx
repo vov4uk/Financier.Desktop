@@ -504,6 +504,12 @@
   <data name="clear_notes_tooltip" xml:space="preserve">
     <value>Wyczyść notatkę dla wszystkich transakcji</value>
   </data>
+  <data name="transfer" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="transfer_tooltip" xml:space="preserve">
+    <value>Otwórz okno transferu dla zaznaczonego wiersza (dostępne, gdy waluta konta z/do różni się od waluty importowanego konta)</value>
+  </data>
   <data name="mcc" xml:space="preserve">
     <value>MCC</value>
   </data>

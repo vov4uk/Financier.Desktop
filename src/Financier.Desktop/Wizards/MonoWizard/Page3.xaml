@@ -20,6 +20,8 @@
             <converters:AmountConverter x:Key="AmountConverter"/>
             <converters:UnixTimeConverter x:Key="DatetimeConverter" />
             <converters:MccConverter x:Key="MccConverter" />
+            <converters:DifferentCurrencyConverter x:Key="DifferentCurrencyConverter" />
+            <converters:OnlyOneSelectedConverter x:Key="OnlyOneSelectedConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -32,6 +34,7 @@
               Height="24">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -70,6 +73,35 @@
                     <TextBlock Text="{loc:Translate Key=clear_notes}" />
                 </Viewbox>
             </Button>
+            <Button Grid.Column="4"
+                    Margin="2"
+                    Width="65"
+                    HorizontalAlignment="Stretch"
+                    ToolTip="{loc:Translate Key=transfer_tooltip}"
+                    Command="{Binding Path=TransferCommand}"
+                    CommandParameter="{Binding SelectedItem, ElementName=MainGrid, UpdateSourceTrigger=PropertyChanged}">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Value="True">
+                                <DataTrigger.Binding>
+                                    <MultiBinding Converter="{StaticResource DifferentCurrencyConverter}">
+                                        <Binding Path="SelectedItem.FromAccountId" ElementName="MainGrid" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="SelectedItem.ToAccountId" ElementName="MainGrid" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="SelectedItem.CategoryId" ElementName="MainGrid" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding Path="MonoAccount"/>
+                                    </MultiBinding>
+                                </DataTrigger.Binding>
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+                    <TextBlock Text="{loc:Translate Key=transfer}" />
+                </Viewbox>
+            </Button>
         </Grid>
         <DataGrid Grid.Row="2"
                   ItemsSource="{Binding Path=FinancierTransactions}"
@@ -92,9 +124,43 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{loc:Translate Key=date}"
-                                    Binding="{Binding Path=DateTime, Converter= {StaticResource DatetimeConverter}}"
-                                    IsReadOnly="True"/>
+                <DataGridTemplateColumn Header="{loc:Translate Key=date}"
+                                        IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Name="DateText"
+                                       Text="{Binding Path=DateTime, Converter={StaticResource DatetimeConverter}}"/>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Value="False">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource OnlyOneSelectedConverter}">
+                                            <Binding Path="FromAccountId" UpdateSourceTrigger="PropertyChanged"/>
+                                            <Binding Path="ToAccountId" UpdateSourceTrigger="PropertyChanged"/>
+                                            <Binding Path="CategoryId" UpdateSourceTrigger="PropertyChanged"/>
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <DataTrigger.Setters>
+                                        <Setter TargetName="DateText" Property="Background" Value="Pink"/>
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource DifferentCurrencyConverter}">
+                                            <Binding Path="FromAccountId" UpdateSourceTrigger="PropertyChanged"/>
+                                            <Binding Path="ToAccountId" UpdateSourceTrigger="PropertyChanged"/>
+                                            <Binding Path="CategoryId" UpdateSourceTrigger="PropertyChanged"/>
+                                            <Binding Path="DataContext.MonoAccount"
+                                                     RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGrid}}"/>
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <DataTrigger.Setters>
+                                        <Setter TargetName="DateText" Property="Background" Value="Orange"/>
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="{loc:Translate Key=mcc}"
                                     Binding="{Binding Path=MCC, Converter= {StaticResource MccConverter}}"
                                     IsReadOnly="True"/>

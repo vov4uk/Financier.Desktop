@@ -11,6 +11,7 @@ namespace Financier.Desktop.Wizards
         private int projectId;
         private int payeeId;
         private int toAccountId;
+        private int fromAccountId;
         private bool isAmountNegative;
 
         public int CategoryId
@@ -25,7 +26,15 @@ namespace Financier.Desktop.Wizards
 
         public long DateTime { get; set; }
 
-        public int FromAccountId { get; set; }
+        public int FromAccountId
+        {
+            get => fromAccountId;
+            set
+            {
+                fromAccountId = value;
+                RaisePropertyChanged(nameof(FromAccountId));
+            }
+        }
 
         public long FromAmount { get; set; }
 

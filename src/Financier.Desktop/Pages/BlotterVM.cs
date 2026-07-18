@@ -427,7 +427,7 @@ namespace Financier.Desktop.ViewModel
                     CategoryId = x.CategoryId,
                     CategoryTitle = x.CategoryTitle,
                     LocationId = x.LocationId,
-                    ProjectId = x.ProjectId,
+                    Project = x.ProjectId > 0 ? DbManual.ProjectIds.GetValueOrDefault(x.ProjectId.Value) : default,
                     Location = x.Location,
                     Payee = x.Payee,
                     Note = x.Note,
@@ -463,11 +463,6 @@ namespace Financier.Desktop.ViewModel
 
             if (items != null)
             {
-                foreach (var item in items)
-                {
-                    if (item.ProjectId > 0)
-                        item.Project = DbManual.ProjectIds.GetValueOrDefault(item.ProjectId.Value);
-                }
                 Entities = new System.Collections.ObjectModel.ObservableCollection<BlotterModel>(items.OrderByDescending(x => x.Datetime));
             }
         }
