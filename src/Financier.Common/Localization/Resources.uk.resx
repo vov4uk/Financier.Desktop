@@ -504,6 +504,12 @@
   <data name="clear_notes_tooltip" xml:space="preserve">
     <value>Очистити примітку для всіх операцій</value>
   </data>
+  <data name="transfer" xml:space="preserve">
+    <value>Переказ</value>
+  </data>
+  <data name="transfer_tooltip" xml:space="preserve">
+    <value>Відкрити діалог переказу для вибраного рядка (доступно, якщо валюта рахунку з/на відрізняється від валюти імпортованого рахунку)</value>
+  </data>
   <data name="mcc" xml:space="preserve">
     <value>MCC</value>
   </data>

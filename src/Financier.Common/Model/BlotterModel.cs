@@ -61,7 +61,6 @@ namespace Financier.Common.Model
         public int Id { get; set; }
         public string Location { get; set; }
         public int? LocationId { get; set; }
-        public int? ProjectId { get; set; }
         public ProjectModel Project { get; set; }
         public string Note { get; set; }
         public CurrencyModel OriginalCurrency { get; set; }

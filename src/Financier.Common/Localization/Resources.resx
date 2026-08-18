@@ -504,6 +504,12 @@
   <data name="clear_notes_tooltip" xml:space="preserve">
     <value>Clear note for all transactions</value>
   </data>
+  <data name="transfer" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="transfer_tooltip" xml:space="preserve">
+    <value>Open transfer dialog for the selected row (enabled when From/To account currency differs from the imported account)</value>
+  </data>
   <data name="mcc" xml:space="preserve">
     <value>MCC</value>
   </data>

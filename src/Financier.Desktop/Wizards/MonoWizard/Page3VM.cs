@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 using Financier.Common.Entities;
 using Financier.Common.Localization;
 using Financier.Common.Model;
+using Financier.Converters;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Pages.Dialogs;
+using Financier.Desktop.ViewModel.Dialog;
+using Financier.Desktop.Views;
 using Prism.Commands;
 
 namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
@@ -20,6 +23,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
         private DelegateCommand _clearAllNotesCommand;
         private DelegateCommand<FinancierTransactionDto> _deleteCommand;
         private AsyncDelegateCommand<FinancierTransactionDto> _addRuleCommand;
+        private AsyncDelegateCommand<FinancierTransactionDto> _transferCommand;
         List<AccountFilterModel> accounts;
         private AccountFilterModel _monoAccount;
         private ObservableCollection<FinancierTransactionDto> financierTransactions;
@@ -47,6 +51,14 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
             get
             {
                 return _addRuleCommand ??= new AsyncDelegateCommand<FinancierTransactionDto>(tr => OpenRulesDialogAsync(tr?.Note, tr?.MCC ?? 0));
+            }
+        }
+
+        public AsyncDelegateCommand<FinancierTransactionDto> TransferCommand
+        {
+            get
+            {
+                return _transferCommand ??= new AsyncDelegateCommand<FinancierTransactionDto>(OpenTransferDialogAsync);
             }
         }
 
@@ -253,6 +265,73 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     accountId = acc.Id.Value;
                 }
             }
+        }
+
+        private AccountFilterModel GetOtherAccount(FinancierTransactionDto tr, out bool transferToMono)
+        {
+            transferToMono = false;
+            if (tr == null)
+            {
+                return null;
+            }
+
+            if (tr.FromAccountId > 0) // Transfer To Mono
+            {
+                transferToMono = true;
+                return Accounts.FirstOrDefault(a => a.Id == tr.FromAccountId);
+            }
+
+            if (tr.ToAccountId > 0) // Transfer From Mono
+            {
+                return Accounts.FirstOrDefault(a => a.Id == tr.ToAccountId);
+            }
+
+            return null;
+        }
+
+        private Task OpenTransferDialogAsync(FinancierTransactionDto tr)
+        {
+            var otherAccount = GetOtherAccount(tr, out var transferToMono);
+            if (otherAccount == null || MonoAccount == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            var fromAccount = transferToMono ? otherAccount : MonoAccount;
+            var toAccount = transferToMono ? MonoAccount : otherAccount;
+            var monoAmount = Math.Abs(tr.FromAmount);
+
+            var transferDto = new TransferDto
+            {
+                FromAccountId = fromAccount.Id ?? 0,
+                FromAccount = fromAccount,
+                ToAccountId = toAccount.Id ?? 0,
+                ToAccount = toAccount,
+                Note = tr.Note,
+                Date = UnixTimeConverter.Convert(tr.DateTime).Date,
+                Time = UnixTimeConverter.Convert(tr.DateTime)
+            };
+
+            if (transferToMono)
+            {
+                transferDto.ToAmount = monoAmount;
+            }
+            else
+            {
+                transferDto.FromAmount = monoAmount;
+            }
+
+            TransferControlVM dialogVm = new TransferControlVM(transferDto);
+            var result = _dialogWrapper.ShowDialog<TransferControl>(dialogVm, 385, 340, LocalizationService.Instance.transfer);
+
+            if (result is TransferDto output)
+            {
+                tr.OriginalCurrencyId = otherAccount.CurrencyId;
+                tr.OriginalFromAmount = transferToMono ? Math.Abs(output.FromAmount) : Math.Abs(output.ToAmount);
+                tr.Note = output.Note;
+            }
+
+            return Task.CompletedTask;
         }
 
         private async Task OpenRulesDialogAsync(string description, int mccCode)
