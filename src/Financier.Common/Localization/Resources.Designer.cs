@@ -88,6 +88,24 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account Details.
+        /// </summary>
+        public static string account_details {
+            get {
+                return ResourceManager.GetString("account_details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account Type.
+        /// </summary>
+        public static string account_type {
+            get {
+                return ResourceManager.GetString("account_type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Asset.
         /// </summary>
         public static string account_type_asset {
@@ -421,6 +439,24 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Card Issuer.
+        /// </summary>
+        public static string card_issuer {
+            get {
+                return ResourceManager.GetString("card_issuer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card Number.
+        /// </summary>
+        public static string card_number {
+            get {
+                return ResourceManager.GetString("card_number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cashback.
         /// </summary>
         public static string cashback {
@@ -444,6 +480,15 @@ namespace Financier.Common.Localization {
         public static string category {
             get {
                 return ResourceManager.GetString("category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category details.
+        /// </summary>
+        public static string category_details {
+            get {
+                return ResourceManager.GetString("category_details", resourceCulture);
             }
         }
         
@@ -493,6 +538,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Closing Day.
+        /// </summary>
+        public static string closing_day {
+            get {
+                return ResourceManager.GetString("closing_day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commission.
         /// </summary>
         public static string commission {
@@ -516,6 +570,24 @@ namespace Financier.Common.Localization {
         public static string conditions {
             get {
                 return ResourceManager.GetString("conditions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark this account as inactive?.
+        /// </summary>
+        public static string confirm_delete_account {
+            get {
+                return ResourceManager.GetString("confirm_delete_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this currency?.
+        /// </summary>
+        public static string confirm_delete_currency {
+            get {
+                return ResourceManager.GetString("confirm_delete_currency", resourceCulture);
             }
         }
         
@@ -588,6 +660,15 @@ namespace Financier.Common.Localization {
         public static string currency_details {
             get {
                 return ResourceManager.GetString("currency_details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This currency is used by accounts or transactions and cannot be deleted..
+        /// </summary>
+        public static string currency_is_used {
+            get {
+                return ResourceManager.GetString("currency_is_used", resourceCulture);
             }
         }
         
@@ -741,6 +822,15 @@ namespace Financier.Common.Localization {
         public static string edit {
             get {
                 return ResourceManager.GetString("edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Electronic Payment.
+        /// </summary>
+        public static string electronic_payment_type {
+            get {
+                return ResourceManager.GetString("electronic_payment_type", resourceCulture);
             }
         }
         
@@ -1015,6 +1105,24 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include in Totals.
+        /// </summary>
+        public static string is_include_into_totals {
+            get {
+                return ResourceManager.GetString("is_include_into_totals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Issuer.
+        /// </summary>
+        public static string issuer {
+            get {
+                return ResourceManager.GetString("issuer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string language {
@@ -1101,6 +1209,15 @@ namespace Financier.Common.Localization {
         public static string liabilities_usd {
             get {
                 return ResourceManager.GetString("liabilities_usd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit Amount.
+        /// </summary>
+        public static string limit_amount {
+            get {
+                return ResourceManager.GetString("limit_amount", resourceCulture);
             }
         }
         
@@ -1276,6 +1393,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Opening Amount.
+        /// </summary>
+        public static string opening_amount {
+            get {
+                return ResourceManager.GetString("opening_amount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation amount.
         /// </summary>
         public static string operation_amount {
@@ -1312,6 +1438,15 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parent category.
+        /// </summary>
+        public static string parent_category {
+            get {
+                return ResourceManager.GetString("parent_category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Paste.
         /// </summary>
         public static string paste {
@@ -1344,6 +1479,15 @@ namespace Financier.Common.Localization {
         public static string payees {
             get {
                 return ResourceManager.GetString("payees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Day.
+        /// </summary>
+        public static string payment_day {
+            get {
+                return ResourceManager.GetString("payment_day", resourceCulture);
             }
         }
         
@@ -1551,6 +1695,42 @@ namespace Financier.Common.Localization {
         public static string please_select_transaction_title {
             get {
                 return ResourceManager.GetString("please_select_transaction_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move to the bottom.
+        /// </summary>
+        public static string position_move_bottom {
+            get {
+                return ResourceManager.GetString("position_move_bottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move down.
+        /// </summary>
+        public static string position_move_down {
+            get {
+                return ResourceManager.GetString("position_move_down", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move to the top.
+        /// </summary>
+        public static string position_move_top {
+            get {
+                return ResourceManager.GetString("position_move_top", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move up.
+        /// </summary>
+        public static string position_move_up {
+            get {
+                return ResourceManager.GetString("position_move_up", resourceCulture);
             }
         }
         
@@ -2028,6 +2208,24 @@ namespace Financier.Common.Localization {
         public static string settings_corrupted {
             get {
                 return ResourceManager.GetString("settings_corrupted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort by title.
+        /// </summary>
+        public static string sort_by_title {
+            get {
+                return ResourceManager.GetString("sort_by_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort Order.
+        /// </summary>
+        public static string sort_order {
+            get {
+                return ResourceManager.GetString("sort_order", resourceCulture);
             }
         }
         
