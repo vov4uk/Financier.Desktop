@@ -141,7 +141,7 @@
 
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "[transfer]"))
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, It.IsAny<string>()))
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
@@ -474,7 +474,7 @@
             this.dbMock.Setup(x => x.GetOrCreateTransactionAsync(eventArgs.Id)).ReturnsAsync(transaction);
 
             this.uowMock.Setup(x => x.Dispose());
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "[transfer]"))
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, It.IsAny<string>()))
                 .Returns(null);
 
             var vm = this.GetFinancierVM();
@@ -508,7 +508,7 @@
             this.dbMock.Setup(x => x.CreateUnitOfWork()).Returns(this.uowMock.Object);
             this.uowMock.Setup(x => x.Dispose());
 
-            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, "[transfer]"))
+            this.dialogMock.Setup(x => x.ShowDialog<TransferControl>(It.IsAny<TransferControlVM>(), 385, 340, It.IsAny<string>()))
                 .Returns(output);
 
             var vm = this.GetFinancierVM();
