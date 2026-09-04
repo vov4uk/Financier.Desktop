@@ -79,7 +79,7 @@ namespace Financier.Desktop.Wizards
                 {
                     Logger.Error("Why is the current page null?");
                 }
-                return Pages.IndexOf(CurrentPage!);
+                return Pages.IndexOf(CurrentPage);
             }
         }
 

@@ -35,11 +35,10 @@ namespace Financier.Reports.Tests
             this.vm.DialogService = this.dialogMock.Object;
             this.vm.StartYearMonths = new YearMonths();
             this.vm.EndYearMonths = new YearMonths();
+
             // Ensure a Category is selected so GetSql() does not reach the dialog path
             this.vm.Category = new CategoryModel { Id = 1 };
         }
-
-        // ── GetSql ───────────────────────────────────────────────────────────────
 
         [Fact]
         public void GetPlotModel_FirstAxisIsLinearAxis()
@@ -106,7 +105,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(-300.0, lineSeries.Points[2].Y);
         }
 
-        // ── GetPlotModel ─────────────────────────────────────────────────────────
         [Fact]
         public void GetPlotModel_SecondAxisIsDateTimeAxis()
         {
@@ -138,8 +136,8 @@ namespace Financier.Reports.Tests
         public void GetSql_NeitherPayeeNorCategory_ReturnsEmpty()
         {
             var testVm = CreateTestableVM();
-            // Leave both Payee.Id and Category.Id as null
 
+            // Leave both Payee.Id and Category.Id as null
             var sql = testVm.TestGetSql();
 
             Assert.Empty(sql);
@@ -214,8 +212,6 @@ namespace Financier.Reports.Tests
             Assert.NotEmpty(sql);
         }
 
-        // ── RefreshDataCommand ───────────────────────────────────────────────────
-
         [Fact]
         public async Task RefreshDataCommand_EmptyData_EntitiesIsEmpty()
         {
@@ -256,8 +252,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(2, this.vm.Entities.Count);
         }
 
-        // ── Helper methods ───────────────────────────────────────────────────────
-
         private TestableVM CreateTestableVM()
         {
             var testVm = new TestableVM(this.dbMock.Object);
@@ -266,8 +260,6 @@ namespace Financier.Reports.Tests
             testVm.EndYearMonths = new YearMonths();
             return testVm;
         }
-
-        // ── Helper types ─────────────────────────────────────────────────────────
 
         private sealed class TestableVM : ReportDynamicDebitCretitPayeeVM
         {

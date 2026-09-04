@@ -14,9 +14,9 @@ namespace Financier.Desktop.Helpers
         public static void MapTransfer(TransferDto dto, Transaction tr)
         {
             tr.FromAccountId = dto.FromAccountId;
-            tr.FromAccount = null!;
+            tr.FromAccount = null;
             tr.ToAccountId = dto.ToAccountId;
-            tr.ToAccount = null!;
+            tr.ToAccount = null;
             tr.Note = dto.Note;
             tr.FromAmount = Math.Abs(dto.FromAmount) * -1;
             tr.ToAmount = Math.Abs(dto.IsToAmountVisible ? dto.ToAmount : dto.FromAmount);
@@ -35,7 +35,7 @@ namespace Financier.Desktop.Helpers
             }
 
             tr.CategoryId = 0;
-            tr.Category = default!;
+            tr.Category = default;
         }
 
         public static void MapTransaction(TransactionDto dto, Transaction tr)
@@ -56,12 +56,12 @@ namespace Financier.Desktop.Helpers
             }
 
             tr.CategoryId = dto.CategoryId ?? 0;
-            tr.Category = default!;
-            tr.Location = default!;
-            tr.Project = default!;
-            tr.OriginalCurrency = default!;
-            tr.FromAccount = default!;
-            tr.ToAccount = default!;
+            tr.Category = default;
+            tr.Location = default;
+            tr.Project = default;
+            tr.OriginalCurrency = default;
+            tr.FromAccount = default;
+            tr.ToAccount = default;
             tr.PayeeId = dto.PayeeId ?? 0;
             tr.LocationId = dto.LocationId ?? 0;
             tr.ProjectId = dto.CategoryId == -1 ? 0 : (dto.ProjectId ?? 0); // parent transaction don't have Project
@@ -83,7 +83,7 @@ namespace Financier.Desktop.Helpers
                 Cashback = GetDouble(item.Cashback),
                 Commission = GetDouble(item.Commision),
                 ExchangeRate = GetDouble(item.ExchangeRate),
-                OperationCurrency = DoubleNotEqual(operationAmount, cardCurrencyAmount) ? operationCurrency! : null!,
+                OperationCurrency = DoubleNotEqual(operationAmount, cardCurrencyAmount) ? operationCurrency : null,
                 OperationAmount = operationAmount,
                 CardCurrencyAmount = cardCurrencyAmount,
                 MCC = item.MCC,
@@ -105,7 +105,7 @@ namespace Financier.Desktop.Helpers
             return new BankTransaction
             {
                 Balance = GetDouble(item.Balance),
-                OperationCurrency = DoubleNotEqual(Math.Abs(operationAmount), Math.Abs(cardCurrencyAmount)) ? operationCurrency! : null!,
+                OperationCurrency = DoubleNotEqual(Math.Abs(operationAmount), Math.Abs(cardCurrencyAmount)) ? operationCurrency : null,
                 OperationAmount = operationAmount,
                 CardCurrencyAmount = cardCurrencyAmount,
                 Description = $"{item.Category} : {item.Details}",

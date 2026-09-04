@@ -552,9 +552,6 @@
   <data name="add_new_transaction" xml:space="preserve">
     <value>Dodaj nową transakcję</value>
   </data>
-  <data name="backup_done" xml:space="preserve">
-    <value>Kopia zapasowa wykonana.</value>
-  </data>
   <data name="import_result" xml:space="preserve">
     <value>Zaimportowano {0} transakcji.</value>
   </data>

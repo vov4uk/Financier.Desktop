@@ -385,15 +385,6 @@ namespace Financier.Common.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Backup done..
-        /// </summary>
-        public static string backup_done {
-            get {
-                return ResourceManager.GetString("backup_done", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Balance.
         /// </summary>
         public static string balance {

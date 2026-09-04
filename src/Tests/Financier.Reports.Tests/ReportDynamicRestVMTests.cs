@@ -33,8 +33,6 @@ namespace Financier.Reports.Tests
             this.vm.EndYearMonths = new YearMonths();
         }
 
-        // ── GetSql ───────────────────────────────────────────────────────────────
-
         [Fact]
         public void GetPlotModel_FirstAxisIsDateTimeAxis()
         {
@@ -119,7 +117,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(300.0, lineSeries.Points[2].Y);
         }
 
-        // ── GetPlotModel ─────────────────────────────────────────────────────────
         [Fact]
         public void GetPlotModel_SecondAxisIsLinearAxis()
         {
@@ -177,8 +174,6 @@ namespace Financier.Reports.Tests
             Assert.NotEmpty(sql);
         }
 
-        // ── RefreshDataCommand ───────────────────────────────────────────────────
-
         [Fact]
         public async Task RefreshDataCommand_EmptyData_EntitiesIsEmpty()
         {
@@ -219,8 +214,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(2, this.vm.Entities.Count);
         }
 
-        // ── Helper methods ───────────────────────────────────────────────────────
-
         private TestableVM CreateTestableVM()
         {
             var testVm = new TestableVM(this.dbMock.Object);
@@ -228,8 +221,6 @@ namespace Financier.Reports.Tests
             testVm.EndYearMonths = new YearMonths();
             return testVm;
         }
-
-        // ── Helper types ─────────────────────────────────────────────────────────
 
         private sealed class TestableVM : ReportDynamicRestVM
         {

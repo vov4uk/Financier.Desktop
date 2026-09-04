@@ -20,12 +20,12 @@ namespace Financier.Reports
             //we have to force detach previous view and then attach new one
             if (plotView != null && PlotView != null && !Equals(plotView, PlotView))
             {
-                BaseAttachMethod.Invoke(this, new object[] { null! });
+                BaseAttachMethod.Invoke(this, new object[] { null });
                 BaseAttachMethod.Invoke(this, new object[] { plotView });
             }
             else
             {
-                BaseAttachMethod.Invoke(this, new object[] { plotView! });
+                BaseAttachMethod.Invoke(this, new object[] { plotView });
             }
         }
     }

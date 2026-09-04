@@ -31,8 +31,6 @@ namespace Financier.Reports.Tests
             this.vm = new ReportStructureSaldoVM(this.dbMock.Object);
         }
 
-        // ── Constructor ──────────────────────────────────────────────────────────
-
         [Fact]
         public void Constructor_SetsDefaultIsUsdCurrencySelected_ToTrue()
         {
@@ -44,7 +42,6 @@ namespace Financier.Reports.Tests
         {
             Assert.Equal(ReportStructureSaldoRange.Last6Months, this.vm.Range);
         }
-        // ── Range property ───────────────────────────────────────────────────────
 
         [Fact]
         public void GetBarChartModel_IsUsdCurrencySelected_UsesUsdBalance_ForAssets()
@@ -136,7 +133,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(3, model.Series.Count);
         }
 
-        // ── GetBarChartModel ─────────────────────────────────────────────────────
         [Fact]
         public void GetBarChartModel_ReturnsModelWithTwoAxes()
         {
@@ -183,7 +179,6 @@ namespace Financier.Reports.Tests
             Assert.True(raised);
         }
 
-        // ── IsUsdCurrencySelected property ───────────────────────────────────────
         [Fact]
         public void IsUsdCurrencySelected_SetSameValue_DoesNotRaisePropertyChanged()
         {
@@ -234,8 +229,6 @@ namespace Financier.Reports.Tests
 
             Assert.False(raised);
         }
-
-        // ── Date range query counts ──────────────────────────────────────────────
 
         [Fact]
         public async Task RefreshDataCommand_AccountExcludedFromTotals_NotIncludedInBalance()
@@ -376,7 +369,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(130, this.vm.Entities[0].AssetsUSDBalance);
         }
 
-        // ── RefreshData aggregation ──────────────────────────────────────────────
         [Fact]
         public async Task RefreshDataCommand_WithData_EntityCountMatchesDateRange()
         {
@@ -410,7 +402,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(-800, this.vm.Entities[0].LiabilitiesDefaultCurrencyBalance);
             Assert.Equal(-300, this.vm.Entities[0].LiabilitiesUSDBalance);
         }
-        // ── Helper types ─────────────────────────────────────────────────────────
 
         private sealed class TestableVM(IFinancierDatabase db) : ReportStructureSaldoVM(db)
         {

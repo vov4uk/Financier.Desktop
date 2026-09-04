@@ -19,10 +19,9 @@ namespace Financier.Desktop.Services
                     new ZipPackageExtractor()
                 );
 
-        private Version? _updateVersion;
         private bool _isUpdatePrepared;
         private bool _isUpdaterLaunched;
-
+        private Version? _updateVersion;
         public async Task<Version?> CheckForUpdatesAsync()
         {
             if (_updateManager is null)
@@ -33,25 +32,7 @@ namespace Financier.Desktop.Services
         }
 #nullable disable
 
-        public async Task PrepareUpdateAsync(Version version)
-        {
-            if (_updateManager is null)
-                return;
-
-            try
-            {
-                await _updateManager.PrepareUpdateAsync(_updateVersion = version);
-                _isUpdatePrepared = true;
-            }
-            catch (UpdaterAlreadyLaunchedException)
-            {
-                // Ignore race conditions
-            }
-            catch (LockFileNotAcquiredException)
-            {
-                // Ignore race conditions
-            }
-        }
+        public void Dispose() => _updateManager?.Dispose();
 
         public void FinalizeUpdate(bool needRestart)
         {
@@ -76,6 +57,24 @@ namespace Financier.Desktop.Services
             }
         }
 
-        public void Dispose() => _updateManager?.Dispose();
+        public async Task PrepareUpdateAsync(Version version)
+        {
+            if (_updateManager is null)
+                return;
+
+            try
+            {
+                await _updateManager.PrepareUpdateAsync(_updateVersion = version);
+                _isUpdatePrepared = true;
+            }
+            catch (UpdaterAlreadyLaunchedException)
+            {
+                // Ignore race conditions
+            }
+            catch (LockFileNotAcquiredException)
+            {
+                // Ignore race conditions
+            }
+        }
     }
 }

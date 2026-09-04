@@ -86,7 +86,7 @@ namespace Financier.Desktop.Helpers.BankHelper
 
                     // Pattern to match: date (DD.MM.YYYY) followed by space and ID (4 letters + 11 digits)
                     var operationDatePattern = @"([0-9]{2}\.[0-9]{2}\.[0-9]{4}) ([0-9]{4}[A-Z]{2}[0-9]{11})";
-                    var rowStart = Regex.Matches(pageText, operationDatePattern);
+                    var rowStart = Regex.Matches(pageText, operationDatePattern, RegexOptions.None, TimeSpan.FromSeconds(5));
 
                     for (int i = 0; i < rowStart.Count; i++)
                     {
@@ -102,11 +102,11 @@ namespace Financier.Desktop.Helpers.BankHelper
                             var transactionBlock = pageText.Substring(blockStart + match.Length, blockEnd - blockStart - match.Length).TrimEnd('|');
 
                             // Remove spaces between numbers (e.g., "3 200,00" -> "3200,00")
-                            transactionBlock = Regex.Replace(transactionBlock, @"(?<=[0-9])\s+(?=[0-9])", "").Trim();
+                            transactionBlock = Regex.Replace(transactionBlock, @"(?<=[0-9])\s+(?=[0-9])", "", RegexOptions.None, TimeSpan.FromSeconds(5)).Trim();
 
                             var decimalPattern = @"-?\d+(?:,\d+)";
 
-                            var decimalMatches = Regex.Matches(transactionBlock, decimalPattern);
+                            var decimalMatches = Regex.Matches(transactionBlock, decimalPattern, RegexOptions.None, TimeSpan.FromSeconds(5));
                             if (decimalMatches.Count < 2)
                             {
                                 Logger.Warn("PKO row block has fewer than 2 decimal values, skipping. Block: {0}", transactionBlock);
@@ -119,13 +119,13 @@ namespace Financier.Desktop.Helpers.BankHelper
 
                             var transactionDescriprion = transactionBlock.Substring(saldo.Index + saldo.Length).Trim('|').Trim();
 
-                            var dataWaluty = Regex.Match(transactionDescriprion, @"([0-9]{2}\.[0-9]{2}\.[0-9]{4})");
+                            var dataWaluty = Regex.Match(transactionDescriprion, @"([0-9]{2}\.[0-9]{2}\.[0-9]{4})", RegexOptions.None, TimeSpan.FromSeconds(5));
                             if (dataWaluty.Success)
                             {
                                 transactionDescriprion = transactionDescriprion.Substring(dataWaluty.Length);
                             }
 
-                            var dataWalutyGodzina = Regex.Match(transactionDescriprion, @"Godz\.([0-9]{2}:[0-9]{2}:[0-9]{2})");
+                            var dataWalutyGodzina = Regex.Match(transactionDescriprion, @"Godz\.([0-9]{2}:[0-9]{2}:[0-9]{2})", RegexOptions.None, TimeSpan.FromSeconds(5));
                             string dataWalutyGodzinaStr = "00:00:00";
                             if (dataWalutyGodzina.Success)
                             {
@@ -137,17 +137,17 @@ namespace Financier.Desktop.Helpers.BankHelper
                             DateTime.TryParseExact(dateStr, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var transactionDate);
                             DateTime.TryParseExact($"{dataWaluty.Value} {dataWalutyGodzinaStr}", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var currencyDate);
 
-                            var kwotaOryg = Regex.Match(transactionDescriprion, @"(Kwota oryg\.:) (-?\d+(?:,\d+)) ([A-Z]{3})");
+                            var kwotaOryg = Regex.Match(transactionDescriprion, @"(Kwota oryg\.:) (-?\d+(?:,\d+)) ([A-Z]{3})", RegexOptions.None, TimeSpan.FromSeconds(5));
                             if (kwotaOryg.Success)
                             {
                                 transactionDescriprion = transactionDescriprion.Replace(kwotaOryg.Value, "");
                             }
 
                             transactionDescriprion = transactionDescriprion.Replace("|", "").Trim();
-                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"(Nr ref:|Nrref:)( |)([0-9]{17})", string.Empty).Trim();
-                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"Tel\.:[0-9]{11}", string.Empty).Trim();
-                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"Karta:[0-9]{6}\*\*\*\*\*\*[0-9]{4}", string.Empty).Trim();
-                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"([0-9]{26})", " ").Trim();
+                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"(Nr ref:|Nrref:)( |)([0-9]{17})", string.Empty, RegexOptions.None, TimeSpan.FromSeconds(5)).Trim();
+                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"Tel\.:[0-9]{11}", string.Empty, RegexOptions.None, TimeSpan.FromSeconds(5)).Trim();
+                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"Karta:[0-9]{6}\*\*\*\*\*\*[0-9]{4}", string.Empty, RegexOptions.None, TimeSpan.FromSeconds(5)).Trim();
+                            transactionDescriprion = Regex.Replace(transactionDescriprion, @"([0-9]{26})", " ", RegexOptions.None, TimeSpan.FromSeconds(5)).Trim();
                             transactionDescriprion = transactionDescriprion.Replace("Lokalizacja:", string.Empty).Trim();
 
                             var transaction = new PkoTransaction

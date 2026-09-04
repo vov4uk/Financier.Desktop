@@ -8,21 +8,24 @@ namespace Financier.Desktop.Tests.Pages.Dialog
 
     public class SettingsVMTest
     {
-        // ── helpers ──────────────────────────────────────────────────────────
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void Constructor_NullOrEmptyAppId_RemainsUnchanged(string appId)
+        {
+            var entity = CreateEntity(appId: appId);
+            var vm = new SettingsVM(entity);
+            Assert.Equal(appId, vm.Entity.ExchangeRates.OpenExchangeRatesProviderAppId);
+        }
 
-        private static SettingsDto CreateEntity(
-            ExchangeRatesProviders provider = ExchangeRatesProviders.None,
-            string appId = "") =>
-            new SettingsDto
-            {
-                ExchangeRates = new SettingsExchangeRates
-                {
-                    Provider = provider,
-                    OpenExchangeRatesProviderAppId = appId
-                }
-            };
-
-        // ── Constructor ──────────────────────────────────────────────────────
+        [Fact]
+        public void Constructor_PlainTextAppId_IsRetainedAsIs()
+        {
+            // TryDecrypt falls back to returning the input when it is not a valid DPAPI blob
+            var entity = CreateEntity(appId: "plain-text-key");
+            var vm = new SettingsVM(entity);
+            Assert.Equal("plain-text-key", vm.Entity.ExchangeRates.OpenExchangeRatesProviderAppId);
+        }
 
         [Fact]
         public void Constructor_SetsEntityProperty()
@@ -44,34 +47,6 @@ namespace Financier.Desktop.Tests.Pages.Dialog
             Assert.Equal(provider, vm.SelectedProvider);
         }
 
-        [Fact]
-        public void Constructor_PlainTextAppId_IsRetainedAsIs()
-        {
-            // TryDecrypt falls back to returning the input when it is not a valid DPAPI blob
-            var entity = CreateEntity(appId: "plain-text-key");
-            var vm = new SettingsVM(entity);
-            Assert.Equal("plain-text-key", vm.Entity.ExchangeRates.OpenExchangeRatesProviderAppId);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void Constructor_NullOrEmptyAppId_RemainsUnchanged(string appId)
-        {
-            var entity = CreateEntity(appId: appId);
-            var vm = new SettingsVM(entity);
-            Assert.Equal(appId, vm.Entity.ExchangeRates.OpenExchangeRatesProviderAppId);
-        }
-
-        // ── IsOpenExchangeRatesProviderSelected ──────────────────────────────
-
-        [Fact]
-        public void IsOpenExchangeRatesProviderSelected_WhenOpenExchangeRates_ReturnsTrue()
-        {
-            var vm = new SettingsVM(CreateEntity(provider: ExchangeRatesProviders.OpenExchangeRates));
-            Assert.True(vm.IsOpenExchangeRatesProviderSelected);
-        }
-
         [Theory]
         [InlineData(ExchangeRatesProviders.None)]
         [InlineData(ExchangeRatesProviders.Monobank)]
@@ -82,34 +57,12 @@ namespace Financier.Desktop.Tests.Pages.Dialog
             Assert.False(vm.IsOpenExchangeRatesProviderSelected);
         }
 
-        // ── SelectedProvider setter ──────────────────────────────────────────
-
         [Fact]
-        public void SelectedProvider_WhenChanged_RaisesPropertyChangedForSelfAndIsOpenExchangeRatesProviderSelected()
+        public void IsOpenExchangeRatesProviderSelected_WhenOpenExchangeRates_ReturnsTrue()
         {
-            var vm = new SettingsVM(CreateEntity(provider: ExchangeRatesProviders.None));
-            var raised = new List<string>();
-            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
-
-            vm.SelectedProvider = ExchangeRatesProviders.OpenExchangeRates;
-
-            Assert.Contains(nameof(vm.SelectedProvider), raised);
-            Assert.Contains(nameof(vm.IsOpenExchangeRatesProviderSelected), raised);
+            var vm = new SettingsVM(CreateEntity(provider: ExchangeRatesProviders.OpenExchangeRates));
+            Assert.True(vm.IsOpenExchangeRatesProviderSelected);
         }
-
-        [Fact]
-        public void SelectedProvider_WhenSetToSameValue_DoesNotRaisePropertyChanged()
-        {
-            var vm = new SettingsVM(CreateEntity(provider: ExchangeRatesProviders.Monobank));
-            var raised = new List<string>();
-            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
-
-            vm.SelectedProvider = ExchangeRatesProviders.Monobank;
-
-            Assert.Empty(raised);
-        }
-
-        // ── OnRequestSave ────────────────────────────────────────────────────
 
         [Fact]
         public void OnRequestSave_ReturnsEntity()
@@ -176,5 +129,42 @@ namespace Financier.Desktop.Tests.Pages.Dialog
             Assert.NotEqual(plainText, entity.ExchangeRates.OpenExchangeRatesProviderAppId);
             Assert.NotEmpty(entity.ExchangeRates.OpenExchangeRatesProviderAppId);
         }
+
+        [Fact]
+        public void SelectedProvider_WhenChanged_RaisesPropertyChangedForSelfAndIsOpenExchangeRatesProviderSelected()
+        {
+            var vm = new SettingsVM(CreateEntity(provider: ExchangeRatesProviders.None));
+            var raised = new List<string>();
+            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+
+            vm.SelectedProvider = ExchangeRatesProviders.OpenExchangeRates;
+
+            Assert.Contains(nameof(vm.SelectedProvider), raised);
+            Assert.Contains(nameof(vm.IsOpenExchangeRatesProviderSelected), raised);
+        }
+
+        [Fact]
+        public void SelectedProvider_WhenSetToSameValue_DoesNotRaisePropertyChanged()
+        {
+            var vm = new SettingsVM(CreateEntity(provider: ExchangeRatesProviders.Monobank));
+            var raised = new List<string>();
+            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+
+            vm.SelectedProvider = ExchangeRatesProviders.Monobank;
+
+            Assert.Empty(raised);
+        }
+
+        private static SettingsDto CreateEntity(
+            ExchangeRatesProviders provider = ExchangeRatesProviders.None,
+            string appId = "") =>
+            new SettingsDto
+            {
+                ExchangeRates = new SettingsExchangeRates
+                {
+                    Provider = provider,
+                    OpenExchangeRatesProviderAppId = appId,
+                },
+            };
     }
 }

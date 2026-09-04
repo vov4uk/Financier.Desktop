@@ -123,7 +123,7 @@ namespace Financier.Reports
 
         public void OpenReport(string reportType)
         {
-            BindableBase existingReport = ReportsVM.FirstOrDefault(p => p.GetType().ToString() == reportType)!;
+            BindableBase existingReport = ReportsVM.FirstOrDefault(p => p.GetType().ToString() == reportType);
             if (existingReport != null)
             {
                 SelectedReport = existingReport;
@@ -133,14 +133,14 @@ namespace Financier.Reports
                 Type type = Type.GetType(reportType, false, true)!;
                 if (type != null)
                 {
-                    ConstructorInfo constructor = type.GetConstructors().FirstOrDefault()!;
+                    ConstructorInfo constructor = type.GetConstructors().FirstOrDefault();
                     if (constructor != null)
                     {
                         BindableBase newReport = (BindableBase)constructor.Invoke(new[] { financierDatabase });
-                        HeaderAttribute customAttribute = (HeaderAttribute)Attribute.GetCustomAttribute(type, typeof(HeaderAttribute))!;
+                        HeaderAttribute customAttribute = (HeaderAttribute)Attribute.GetCustomAttribute(type, typeof(HeaderAttribute));
                         string header = LocalizationService.Instance[customAttribute.Header];
 
-                        newReport.GetType().GetProperty("Header")!.SetValue(newReport, header, null);
+                        newReport.GetType().GetProperty("Header").SetValue(newReport, header, null);
                         ReportsVM.Add(newReport);
                         SelectedReport = newReport;
                     }

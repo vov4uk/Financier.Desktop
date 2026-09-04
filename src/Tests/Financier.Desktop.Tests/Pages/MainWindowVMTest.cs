@@ -667,12 +667,12 @@
         {
             SettingsService.Current.Settings = new SettingsDto
             {
-                General = new SettingsGeneralDto { Language = Language.English }
+                General = new SettingsGeneralDto { Language = Language.English },
             };
 
             var updatedSettings = new SettingsDto
             {
-                General = new SettingsGeneralDto { Language = Language.English }
+                General = new SettingsGeneralDto { Language = Language.English },
             };
 
             this.dialogMock.Setup(x => x.ShowDialog<SettingsControl>(
@@ -691,12 +691,12 @@
         {
             SettingsService.Current.Settings = new SettingsDto
             {
-                General = new SettingsGeneralDto { Language = Language.English }
+                General = new SettingsGeneralDto { Language = Language.English },
             };
 
             var updatedSettings = new SettingsDto
             {
-                General = new SettingsGeneralDto { Language = Language.Ukrainian }
+                General = new SettingsGeneralDto { Language = Language.Ukrainian },
             };
 
             this.dialogMock.Setup(x => x.ShowDialog<SettingsControl>(
@@ -724,7 +724,7 @@
         {
             SettingsService.Current.Settings = new SettingsDto
             {
-                ExchangeRates = new SettingsExchangeRates { Provider = ExchangeRatesProviders.None }
+                ExchangeRates = new SettingsExchangeRates { Provider = ExchangeRatesProviders.None },
             };
 
             var vm = this.GetFinancierVM();

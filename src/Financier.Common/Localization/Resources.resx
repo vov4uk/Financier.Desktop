@@ -552,9 +552,6 @@
   <data name="add_new_transaction" xml:space="preserve">
     <value>Add new transaction</value>
   </data>
-  <data name="backup_done" xml:space="preserve">
-    <value>Backup done.</value>
-  </data>
   <data name="import_result" xml:space="preserve">
     <value>Imported {0} transactions.</value>
   </data>

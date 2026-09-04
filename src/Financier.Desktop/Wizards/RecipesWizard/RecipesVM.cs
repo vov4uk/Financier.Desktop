@@ -63,7 +63,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                     .Select(TransformMonoTransaction)
                     .ToList();
             }
-            return null!;
+            return null;
         }
 
         private TransactionDto TransformMonoTransaction(FinancierTransactionDto x)
@@ -79,7 +79,7 @@ namespace Financier.Desktop.Wizards.RecipesWizard.ViewModel
                 LocationId = x.LocationId,
                 ProjectId = x.ProjectId,
                 CategoryId = x.CategoryId,
-                Category = default!,
+                Category = default,
             };
 
             return result;

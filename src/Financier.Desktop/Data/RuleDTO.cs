@@ -35,7 +35,7 @@ namespace Financier.Desktop.Data
 
         public CategoryModel Category
         {
-            get => category ??= DbManual.Category?.Find(x => x.Id == CategoryId)!;
+            get => category ??= DbManual.Category?.Find(x => x.Id == CategoryId);
             set
             {
                 if (SetProperty(ref category, value))

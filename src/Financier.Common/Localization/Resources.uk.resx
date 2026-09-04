@@ -552,9 +552,6 @@
   <data name="add_new_transaction" xml:space="preserve">
     <value>Додати нову операцію</value>
   </data>
-  <data name="backup_done" xml:space="preserve">
-    <value>Резервну копію збережено.</value>
-  </data>
   <data name="import_result" xml:space="preserve">
     <value>Імпортовано {0} операцій.</value>
   </data>
