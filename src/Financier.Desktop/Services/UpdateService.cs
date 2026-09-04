@@ -7,7 +7,7 @@ using Onova.Services;
 
 namespace Financier.Desktop.Services
 {
-    public class UpdateService() : IDisposable
+    public sealed class UpdateService() : IDisposable
     {
 #nullable enable
         private readonly IUpdateManager? _updateManager = new UpdateManager(
@@ -32,7 +32,11 @@ namespace Financier.Desktop.Services
         }
 #nullable disable
 
-        public void Dispose() => _updateManager?.Dispose();
+        public void Dispose()
+        {
+            _updateManager?.Dispose();
+            GC.SuppressFinalize(this);
+        }
 
         public void FinalizeUpdate(bool needRestart)
         {
@@ -64,7 +68,8 @@ namespace Financier.Desktop.Services
 
             try
             {
-                await _updateManager.PrepareUpdateAsync(_updateVersion = version);
+                _updateVersion = version;
+                await _updateManager.PrepareUpdateAsync(_updateVersion);
                 _isUpdatePrepared = true;
             }
             catch (UpdaterAlreadyLaunchedException)

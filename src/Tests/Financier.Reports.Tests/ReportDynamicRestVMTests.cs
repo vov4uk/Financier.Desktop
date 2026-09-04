@@ -135,7 +135,7 @@ namespace Financier.Reports.Tests
             {
                 new TestModel(year: 2024, month: 1, day: 15, total: 1000.0),
                 new TestModel(year: 2024, month: 2, day: 10, total: 1200.0),
-                new TestModel(year: 2024, month: 3, day: 5,  total:  900.0),
+                new TestModel(year: 2024, month: 3, day: 5,  total: 900.0),
             };
 
             var model = testVm.TestGetPlotModel(items);
@@ -224,7 +224,8 @@ namespace Financier.Reports.Tests
 
         private sealed class TestableVM : ReportDynamicRestVM
         {
-            public TestableVM(IFinancierDatabase db) : base(db)
+            public TestableVM(IFinancierDatabase db)
+                : base(db)
             {
             }
 

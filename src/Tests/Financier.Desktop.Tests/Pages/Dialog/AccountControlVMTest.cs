@@ -9,8 +9,6 @@ namespace Financier.Desktop.Tests.Pages.Dialog
 
     public class AccountControlVMTest
     {
-        // ── helpers ──────────────────────────────────────────────────────────
-
         [Fact]
         public void ClearTitleCommand_Execute_DisablesSaveCommand()
         {
@@ -357,12 +355,6 @@ namespace Financier.Desktop.Tests.Pages.Dialog
             Assert.Equal(expected, vm.ShowCreditCardFields);
         }
 
-        // ── ClearTitleCommand ────────────────────────────────────────────────
-        // ── SelectedAccountType setter ────────────────────────────────────────
-        // ── SelectedCardIssuer setter ─────────────────────────────────────────
-        // ── SelectedElectronicType setter ─────────────────────────────────────
-        // ── SelectedCurrency setter ───────────────────────────────────────────
-        // ── Show* computed properties ─────────────────────────────────────────
         [Theory]
         [InlineData(AccountType.ELECTRONIC, true)]
         [InlineData(AccountType.CASH, false)]

@@ -249,7 +249,8 @@ namespace Financier.Reports.Tests
 
         private sealed class TestableVM : ReportByPeriodMonthCrcVM
         {
-            public TestableVM(IFinancierDatabase db) : base(db)
+            public TestableVM(IFinancierDatabase db)
+                : base(db)
             {
             }
 

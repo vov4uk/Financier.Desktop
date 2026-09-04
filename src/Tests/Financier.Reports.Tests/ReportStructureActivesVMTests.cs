@@ -199,7 +199,8 @@ namespace Financier.Reports.Tests
 
         private sealed class TestableVM : ReportStructureActivesVM
         {
-            public TestableVM(IFinancierDatabase db) : base(db)
+            public TestableVM(IFinancierDatabase db)
+                : base(db)
             {
             }
 

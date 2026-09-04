@@ -71,8 +71,8 @@ namespace Financier.Reports.Tests
             var items = new List<ByCategoryReportModel>
             {
                 new TestModel("Food",     isExpense: 1, parentId: 1, total: 100.0),
-                new TestModel("Food",     isExpense: 1, parentId: 1, total:  50.0),
-                new TestModel("Transport",isExpense: 1, parentId: 2, total:  80.0),
+                new TestModel("Food",     isExpense: 1, parentId: 1, total: 50.0),
+                new TestModel("Transport", isExpense: 1, parentId: 2, total: 80.0),
             };
 
             testVm.TestGetPlotModel(items);
@@ -278,7 +278,8 @@ namespace Financier.Reports.Tests
 
         private sealed class TestableVM : ByCategoryReportVM
         {
-            public TestableVM(IFinancierDatabase db) : base(db)
+            public TestableVM(IFinancierDatabase db)
+                : base(db)
             {
             }
 

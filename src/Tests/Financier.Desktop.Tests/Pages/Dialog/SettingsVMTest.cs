@@ -109,7 +109,7 @@ namespace Financier.Desktop.Tests.Pages.Dialog
         [Fact]
         public void OnRequestSave_WithOpenExchangeRatesProviderAndEmptyAppId_LeavesAppIdEmpty()
         {
-            var entity = CreateEntity(provider: ExchangeRatesProviders.OpenExchangeRates, appId: "");
+            var entity = CreateEntity(provider: ExchangeRatesProviders.OpenExchangeRates, appId: string.Empty);
             var vm = new SettingsVM(entity);
 
             vm.OnRequestSave();

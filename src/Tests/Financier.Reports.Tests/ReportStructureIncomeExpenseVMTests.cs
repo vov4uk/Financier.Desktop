@@ -382,7 +382,8 @@ namespace Financier.Reports.Tests
 
         private sealed class TestableVM : ReportStructureIncomeExpenseVM
         {
-            public TestableVM(IFinancierDatabase db) : base(db)
+            public TestableVM(IFinancierDatabase db)
+                : base(db)
             {
             }
 

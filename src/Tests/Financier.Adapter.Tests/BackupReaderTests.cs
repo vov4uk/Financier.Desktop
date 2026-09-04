@@ -16,7 +16,9 @@ namespace Financier.Adapter.Tests
 
             int count = 0;
             await foreach (var _ in backupReader.GetLinesAsync())
+            {
                 count++;
+            }
 
             Assert.Equal(343, count);
             Assert.Equal(211, backupReader.BackupVersion.DatabaseVersion);

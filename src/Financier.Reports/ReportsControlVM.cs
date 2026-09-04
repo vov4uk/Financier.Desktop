@@ -130,7 +130,7 @@ namespace Financier.Reports
             }
             else
             {
-                Type type = Type.GetType(reportType, false, true)!;
+                Type type = Type.GetType(reportType, false, true);
                 if (type != null)
                 {
                     ConstructorInfo constructor = type.GetConstructors().FirstOrDefault();
