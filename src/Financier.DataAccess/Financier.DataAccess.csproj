@@ -109,10 +109,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="NLog" />
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
-    <PackageReference Include="SQLitePCLRaw.core" />
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" />
-    <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" />
   </ItemGroup>
 
   <ItemGroup>
