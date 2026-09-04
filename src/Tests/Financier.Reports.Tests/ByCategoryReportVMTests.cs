@@ -32,8 +32,6 @@ namespace Financier.Reports.Tests
             this.vm = new ByCategoryReportVM(this.dbMock.Object);
         }
 
-        // ── PieChartModel property ───────────────────────────────────────────────
-
         [Fact]
         public void GetPlotModel_ExpenseItems_AddedToSecondSeries()
         {
@@ -73,8 +71,8 @@ namespace Financier.Reports.Tests
             var items = new List<ByCategoryReportModel>
             {
                 new TestModel("Food",     isExpense: 1, parentId: 1, total: 100.0),
-                new TestModel("Food",     isExpense: 1, parentId: 1, total:  50.0),
-                new TestModel("Transport",isExpense: 1, parentId: 2, total:  80.0),
+                new TestModel("Food",     isExpense: 1, parentId: 1, total: 50.0),
+                new TestModel("Transport", isExpense: 1, parentId: 2, total: 80.0),
             };
 
             testVm.TestGetPlotModel(items);
@@ -94,7 +92,6 @@ namespace Financier.Reports.Tests
             Assert.IsType<PieSeries>(testVm.PieChartModel.Series[0]);
         }
 
-        // ── Pie chart (PieChartModel) ────────────────────────────────────────────
         [Fact]
         public void GetPlotModel_PieChart_SliceValueIsAbsoluteGroupTotal()
         {
@@ -102,7 +99,7 @@ namespace Financier.Reports.Tests
             var items = new List<ByCategoryReportModel>
             {
                 new TestModel("Food", isExpense: 1, parentId: 1, total: -100.0),
-                new TestModel("Food", isExpense: 1, parentId: 1, total:  -50.0),
+                new TestModel("Food", isExpense: 1, parentId: 1, total: -50.0),
             };
 
             testVm.TestGetPlotModel(items);
@@ -153,7 +150,6 @@ namespace Financier.Reports.Tests
             Assert.NotNull(testVm.PieChartModel);
         }
 
-        // ── GetPlotModel / bar chart ─────────────────────────────────────────────
         [Fact]
         public void GetPlotModel_UsesAbsoluteValueForBarItems()
         {
@@ -202,7 +198,6 @@ namespace Financier.Reports.Tests
             Assert.Contains("BETWEEN", sql);
         }
 
-        // ── GetSql ───────────────────────────────────────────────────────────────
         [Fact]
         public void GetSql_WithTopCategory_ContainsLeftRightFilter()
         {
@@ -232,8 +227,6 @@ namespace Financier.Reports.Tests
 
             Assert.True(raised);
         }
-
-        // ── RefreshDataCommand ───────────────────────────────────────────────────
 
         [Fact]
         public async Task RefreshDataCommand_EmptyData_EntitiesIsEmpty()
@@ -283,11 +276,10 @@ namespace Financier.Reports.Tests
             Assert.Equal(2, this.vm.Entities.Count);
         }
 
-        // ── Helper types ─────────────────────────────────────────────────────────
-
         private sealed class TestableVM : ByCategoryReportVM
         {
-            public TestableVM(IFinancierDatabase db) : base(db)
+            public TestableVM(IFinancierDatabase db)
+                : base(db)
             {
             }
 

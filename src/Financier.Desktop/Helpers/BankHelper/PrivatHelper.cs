@@ -29,7 +29,7 @@ namespace Financier.Desktop.Helpers.BankHelper
                 {
                     HasHeaderRecord = true,
                     IgnoreBlankLines = true,
-                    ShouldSkipRecord = args => args.Row.Parser.Record!.All(string.IsNullOrWhiteSpace),
+                    ShouldSkipRecord = args => args.Row.Parser.Record.All(string.IsNullOrWhiteSpace),
                     Delimiter = ","
                 }))
                 {

@@ -79,7 +79,7 @@ namespace Financier.Desktop.ViewModel
 
         public AccountFilterModel Account
         {
-            get => _account ??= DbManual.Account.Find(p => !p.Id.HasValue)!;
+            get => _account ??= DbManual.Account.Find(p => !p.Id.HasValue);
             set
             {
                 _account = value;
@@ -89,7 +89,7 @@ namespace Financier.Desktop.ViewModel
 
         public CategoryModel Category
         {
-            get => _category ??= DbManual.Category.Find(p => !p.Id.HasValue)!;
+            get => _category ??= DbManual.Category.Find(p => !p.Id.HasValue);
             set
             {
                 _category = value;
@@ -99,7 +99,7 @@ namespace Financier.Desktop.ViewModel
 
         public PayeeModel Payee
         {
-            get => _payee ??= DbManual.Payee.Find(p => !p.Id.HasValue)!;
+            get => _payee ??= DbManual.Payee.Find(p => !p.Id.HasValue);
             set
             {
                 _payee = value;
@@ -109,7 +109,7 @@ namespace Financier.Desktop.ViewModel
 
         public ProjectModel Project
         {
-            get => _project ??= DbManual.Project.Find(p => !p.Id.HasValue)!;
+            get => _project ??= DbManual.Project.Find(p => !p.Id.HasValue);
             set
             {
                 _project = value;
@@ -119,7 +119,7 @@ namespace Financier.Desktop.ViewModel
 
         public LocationModel Location
         {
-            get => _location ??= DbManual.Location.Find(p => !p.Id.HasValue)!;
+            get => _location ??= DbManual.Location.Find(p => !p.Id.HasValue);
             set
             {
                 _location = value;
@@ -376,7 +376,7 @@ namespace Financier.Desktop.ViewModel
             subTransaction.Parent = transaction;
             subTransaction.FromAccountId = transaction.FromAccountId;
             subTransaction.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
-            subTransaction.Category = default!;
+            subTransaction.Category = default;
             return subTransaction;
         }
 

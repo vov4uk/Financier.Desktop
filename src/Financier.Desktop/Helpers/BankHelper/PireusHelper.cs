@@ -48,7 +48,7 @@ namespace Financier.Desktop.Helpers.BankHelper
                     Balance = GetDouble(item.Balance),
 
                     Commission = GetDouble(item.Commision),
-                    OperationCurrency = DoubleNotEqual(operationAmount, cardCurrencyAmount) ? operationCurrency! : null!,
+                    OperationCurrency = DoubleNotEqual(operationAmount, cardCurrencyAmount) ? operationCurrency : null,
                     OperationAmount = operationAmount,
                     CardCurrencyAmount = cardCurrencyAmount,
                     Description = item.Details.Replace("(", Space).Replace(")", Space),

@@ -11,50 +11,19 @@ namespace Financier.Desktop.Tests.Pages.Dialog
 
     public class RuleControlVMTest
     {
-        // ── helpers ──────────────────────────────────────────────────────────
-
-        private static RuleDto MccRule(
-            Mcc mcc,
-            int? payeeId = 1,
-            int? locationId = null,
-            int? categoryId = null,
-            int? projectId = null) =>
-            new RuleDto
-            {
-                Condition = RuleConditionType.MCC,
-                MCCCategory = mcc,
-                PayeeId = payeeId,
-                LocationId = locationId,
-                CategoryId = categoryId,
-                ProjectId = projectId,
-            };
-
-        private static RuleDto DescriptionRule(
-            string description,
-            RuleConditionType condition = RuleConditionType.DescriptionContains,
-            int? payeeId = 1,
-            int? locationId = null,
-            int? categoryId = null,
-            int? projectId = null) =>
-            new RuleDto
-            {
-                Condition = condition,
-                MCCCategory = Mcc.none,
-                Description = description,
-                PayeeId = payeeId,
-                LocationId = locationId,
-                CategoryId = categoryId,
-                ProjectId = projectId,
-            };
-
-        // ── Constructor ──────────────────────────────────────────────────────
+        [Fact]
+        public void Constructor_MccTitles_IsAlphabeticallyOrdered()
+        {
+            var vm = new RuleControlVM(DescriptionRule("Test"));
+            Assert.Equal(vm.MccTitles.OrderBy(x => x).ToList(), vm.MccTitles);
+        }
 
         [Fact]
-        public void Constructor_SetsEntityProperty()
+        public void Constructor_MccTitles_IsPopulatedFromDbManual()
         {
-            var entity = DescriptionRule("Test");
-            var vm = new RuleControlVM(entity);
-            Assert.Same(entity, vm.Entity);
+            var vm = new RuleControlVM(DescriptionRule("Test"));
+            Assert.NotEmpty(vm.MccTitles);
+            Assert.Equal(DbManual.MCCTitles.Count, vm.MccTitles.Count);
         }
 
         [Fact]
@@ -74,21 +43,25 @@ namespace Financier.Desktop.Tests.Pages.Dialog
         }
 
         [Fact]
-        public void Constructor_MccTitles_IsPopulatedFromDbManual()
+        public void Constructor_SetsEntityProperty()
         {
-            var vm = new RuleControlVM(DescriptionRule("Test"));
-            Assert.NotEmpty(vm.MccTitles);
-            Assert.Equal(DbManual.MCCTitles.Count, vm.MccTitles.Count);
+            var entity = DescriptionRule("Test");
+            var vm = new RuleControlVM(entity);
+            Assert.Same(entity, vm.Entity);
         }
 
         [Fact]
-        public void Constructor_MccTitles_IsAlphabeticallyOrdered()
+        public void EntityPropertyChanged_TriggersCanExecuteChanged()
         {
-            var vm = new RuleControlVM(DescriptionRule("Test"));
-            Assert.Equal(vm.MccTitles.OrderBy(x => x).ToList(), vm.MccTitles);
-        }
+            var entity = DescriptionRule("Test", payeeId: 1);
+            var vm = new RuleControlVM(entity);
+            bool canExecuteChangedRaised = false;
+            vm.SaveCommand.CanExecuteChanged += (_, _) => canExecuteChangedRaised = true;
 
-        // ── IsMCCSelected ────────────────────────────────────────────────────
+            entity.PayeeId = 99;
+
+            Assert.True(canExecuteChangedRaised);
+        }
 
         [Theory]
         [InlineData(RuleConditionType.MCC, true)]
@@ -101,90 +74,80 @@ namespace Financier.Desktop.Tests.Pages.Dialog
             Assert.Equal(expected, vm.IsMCCSelected);
         }
 
-        // ── SelectedConditionType setter ─────────────────────────────────────
-
         [Fact]
-        public void SelectedConditionType_WhenChanged_RaisesPropertyChangedForSelfAndIsMCCSelected()
+        public void OnRequestSave_MCC_SetsCondition_ClearsDescription_SetsMCCCategory()
         {
-            var entity = DescriptionRule("Test"); // starts as DescriptionContains
+            var entity = MccRule(Mcc.accessories, payeeId: 1);
+            entity.Description = "some prior description";
             var vm = new RuleControlVM(entity);
-            var raised = new List<string>();
-            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
 
-            vm.SelectedConditionType = RuleConditionType.MCC;
+            vm.OnRequestSave();
 
-            Assert.Contains(nameof(vm.SelectedConditionType), raised);
-            Assert.Contains(nameof(vm.IsMCCSelected), raised);
+            Assert.Equal(RuleConditionType.MCC, entity.Condition);
+            Assert.Null(entity.Description);
+            Assert.Equal(Mcc.accessories, entity.MCCCategory);
+        }
+
+        // ── OnRequestSave ────────────────────────────────────────────────────
+        [Fact]
+        public void OnRequestSave_NonMCC_SetsCondition_SetsMCCCategoryToNone()
+        {
+            var entity = DescriptionRule("Google", payeeId: 1);
+            entity.MCCCategory = Mcc.accessories; // previously had an MCC set
+            var vm = new RuleControlVM(entity);
+
+            vm.OnRequestSave();
+
+            Assert.Equal(RuleConditionType.DescriptionContains, entity.Condition);
+            Assert.Equal(Mcc.none, entity.MCCCategory);
         }
 
         [Fact]
-        public void SelectedConditionType_WhenSetToSameValue_DoesNotRaisePropertyChanged()
+        public void OnRequestSave_ReturnsEntity()
         {
-            var entity = DescriptionRule("Test"); // Condition = DescriptionContains
+            var entity = MccRule(Mcc.accessories, payeeId: 1);
             var vm = new RuleControlVM(entity);
-            var raised = new List<string>();
-            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
 
-            vm.SelectedConditionType = RuleConditionType.DescriptionContains; // same value
+            var result = vm.OnRequestSave();
 
-            Assert.Empty(raised);
-        }
-
-        // ── SelectedMccTitle setter ──────────────────────────────────────────
-
-        [Fact]
-        public void SelectedMccTitle_WhenChanged_RaisesPropertyChanged()
-        {
-            var entity = MccRule(Mcc.none);
-            var vm = new RuleControlVM(entity);
-            var raised = new List<string>();
-            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
-
-            vm.SelectedMccTitle = Mcc.accessories.GetEnumLocalizedMccDescription();
-
-            Assert.Contains(nameof(vm.SelectedMccTitle), raised);
+            Assert.Same(entity, result);
         }
 
         [Fact]
-        public void SelectedMccTitle_WhenSetToSameValue_DoesNotRaisePropertyChanged()
+        public void SaveCommand_CanExecute_Description_EmptyDescription_ReturnsFalse()
         {
-            var entity = MccRule(Mcc.accessories);
-            var vm = new RuleControlVM(entity);
-            var raised = new List<string>();
-            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
-
-            vm.SelectedMccTitle = Mcc.accessories.GetEnumLocalizedMccDescription(); // same as ctor
-
-            Assert.Empty(raised);
+            var vm = new RuleControlVM(DescriptionRule(string.Empty, payeeId: 1));
+            Assert.False(vm.SaveCommand.CanExecute());
         }
 
-        // ── CanSaveCommandExecute – MCC condition ────────────────────────────
+        [Fact]
+        public void SaveCommand_CanExecute_Description_NullDescription_ReturnsFalse()
+        {
+            var vm = new RuleControlVM(DescriptionRule(null, payeeId: 1));
+            Assert.False(vm.SaveCommand.CanExecute());
+        }
 
         [Fact]
-        public void SaveCommand_CanExecute_MCC_ValidTitle_WithPayeeId_ReturnsTrue()
+        public void SaveCommand_CanExecute_Description_WithDescription_NoAccountIds_ReturnsFalse()
         {
-            var vm = new RuleControlVM(MccRule(Mcc.accessories, payeeId: 1));
+            var vm = new RuleControlVM(
+                DescriptionRule("Google", payeeId: null, locationId: null, categoryId: null, projectId: null));
+            Assert.False(vm.SaveCommand.CanExecute());
+        }
+
+        [Fact]
+        public void SaveCommand_CanExecute_DescriptionContains_WithDescription_WithPayeeId_ReturnsTrue()
+        {
+            var vm = new RuleControlVM(DescriptionRule("Google", payeeId: 1));
             Assert.True(vm.SaveCommand.CanExecute());
         }
 
+        // ── CanSaveCommandExecute – non-MCC conditions ───────────────────────
         [Fact]
-        public void SaveCommand_CanExecute_MCC_ValidTitle_WithLocationId_ReturnsTrue()
+        public void SaveCommand_CanExecute_DescriptionMatches_WithDescription_WithLocationId_ReturnsTrue()
         {
-            var vm = new RuleControlVM(MccRule(Mcc.accessories, payeeId: null, locationId: 1));
-            Assert.True(vm.SaveCommand.CanExecute());
-        }
-
-        [Fact]
-        public void SaveCommand_CanExecute_MCC_ValidTitle_WithCategoryId_ReturnsTrue()
-        {
-            var vm = new RuleControlVM(MccRule(Mcc.accessories, payeeId: null, categoryId: 1));
-            Assert.True(vm.SaveCommand.CanExecute());
-        }
-
-        [Fact]
-        public void SaveCommand_CanExecute_MCC_ValidTitle_WithProjectId_ReturnsTrue()
-        {
-            var vm = new RuleControlVM(MccRule(Mcc.accessories, payeeId: null, projectId: 1));
+            var vm = new RuleControlVM(
+                DescriptionRule("Google", condition: RuleConditionType.DescriptionMatches, payeeId: null, locationId: 1));
             Assert.True(vm.SaveCommand.CanExecute());
         }
 
@@ -219,98 +182,124 @@ namespace Financier.Desktop.Tests.Pages.Dialog
             Assert.False(vm.SaveCommand.CanExecute());
         }
 
-        // ── CanSaveCommandExecute – non-MCC conditions ───────────────────────
-
         [Fact]
-        public void SaveCommand_CanExecute_DescriptionContains_WithDescription_WithPayeeId_ReturnsTrue()
+        public void SaveCommand_CanExecute_MCC_ValidTitle_WithCategoryId_ReturnsTrue()
         {
-            var vm = new RuleControlVM(DescriptionRule("Google", payeeId: 1));
+            var vm = new RuleControlVM(MccRule(Mcc.accessories, payeeId: null, categoryId: 1));
             Assert.True(vm.SaveCommand.CanExecute());
         }
 
         [Fact]
-        public void SaveCommand_CanExecute_DescriptionMatches_WithDescription_WithLocationId_ReturnsTrue()
+        public void SaveCommand_CanExecute_MCC_ValidTitle_WithLocationId_ReturnsTrue()
         {
-            var vm = new RuleControlVM(
-                DescriptionRule("Google", condition: RuleConditionType.DescriptionMatches, payeeId: null, locationId: 1));
+            var vm = new RuleControlVM(MccRule(Mcc.accessories, payeeId: null, locationId: 1));
             Assert.True(vm.SaveCommand.CanExecute());
         }
 
         [Fact]
-        public void SaveCommand_CanExecute_Description_NullDescription_ReturnsFalse()
+        public void SaveCommand_CanExecute_MCC_ValidTitle_WithPayeeId_ReturnsTrue()
         {
-            var vm = new RuleControlVM(DescriptionRule(null, payeeId: 1));
-            Assert.False(vm.SaveCommand.CanExecute());
+            var vm = new RuleControlVM(MccRule(Mcc.accessories, payeeId: 1));
+            Assert.True(vm.SaveCommand.CanExecute());
+        }
+
+        // ── CanSaveCommandExecute – MCC condition ────────────────────────────
+        [Fact]
+        public void SaveCommand_CanExecute_MCC_ValidTitle_WithProjectId_ReturnsTrue()
+        {
+            var vm = new RuleControlVM(MccRule(Mcc.accessories, payeeId: null, projectId: 1));
+            Assert.True(vm.SaveCommand.CanExecute());
         }
 
         [Fact]
-        public void SaveCommand_CanExecute_Description_EmptyDescription_ReturnsFalse()
+        public void SelectedConditionType_WhenChanged_RaisesPropertyChangedForSelfAndIsMCCSelected()
         {
-            var vm = new RuleControlVM(DescriptionRule(string.Empty, payeeId: 1));
-            Assert.False(vm.SaveCommand.CanExecute());
-        }
-
-        [Fact]
-        public void SaveCommand_CanExecute_Description_WithDescription_NoAccountIds_ReturnsFalse()
-        {
-            var vm = new RuleControlVM(
-                DescriptionRule("Google", payeeId: null, locationId: null, categoryId: null, projectId: null));
-            Assert.False(vm.SaveCommand.CanExecute());
-        }
-
-        // ── OnRequestSave ────────────────────────────────────────────────────
-
-        [Fact]
-        public void OnRequestSave_MCC_SetsCondition_ClearsDescription_SetsMCCCategory()
-        {
-            var entity = MccRule(Mcc.accessories, payeeId: 1);
-            entity.Description = "some prior description";
+            var entity = DescriptionRule("Test"); // starts as DescriptionContains
             var vm = new RuleControlVM(entity);
+            var raised = new List<string>();
+            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
 
-            vm.OnRequestSave();
+            vm.SelectedConditionType = RuleConditionType.MCC;
 
-            Assert.Equal(RuleConditionType.MCC, entity.Condition);
-            Assert.Null(entity.Description);
-            Assert.Equal(Mcc.accessories, entity.MCCCategory);
+            Assert.Contains(nameof(vm.SelectedConditionType), raised);
+            Assert.Contains(nameof(vm.IsMCCSelected), raised);
+        }
+
+        // ── Constructor ──────────────────────────────────────────────────────
+        // ── IsMCCSelected ────────────────────────────────────────────────────
+        // ── SelectedConditionType setter ─────────────────────────────────────
+        [Fact]
+        public void SelectedConditionType_WhenSetToSameValue_DoesNotRaisePropertyChanged()
+        {
+            var entity = DescriptionRule("Test"); // Condition = DescriptionContains
+            var vm = new RuleControlVM(entity);
+            var raised = new List<string>();
+            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+
+            vm.SelectedConditionType = RuleConditionType.DescriptionContains; // same value
+
+            Assert.Empty(raised);
         }
 
         [Fact]
-        public void OnRequestSave_NonMCC_SetsCondition_SetsMCCCategoryToNone()
+        public void SelectedMccTitle_WhenChanged_RaisesPropertyChanged()
         {
-            var entity = DescriptionRule("Google", payeeId: 1);
-            entity.MCCCategory = Mcc.accessories; // previously had an MCC set
+            var entity = MccRule(Mcc.none);
             var vm = new RuleControlVM(entity);
+            var raised = new List<string>();
+            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
 
-            vm.OnRequestSave();
+            vm.SelectedMccTitle = Mcc.accessories.GetEnumLocalizedMccDescription();
 
-            Assert.Equal(RuleConditionType.DescriptionContains, entity.Condition);
-            Assert.Equal(Mcc.none, entity.MCCCategory);
+            Assert.Contains(nameof(vm.SelectedMccTitle), raised);
         }
 
+        // ── SelectedMccTitle setter ──────────────────────────────────────────
         [Fact]
-        public void OnRequestSave_ReturnsEntity()
+        public void SelectedMccTitle_WhenSetToSameValue_DoesNotRaisePropertyChanged()
         {
-            var entity = MccRule(Mcc.accessories, payeeId: 1);
+            var entity = MccRule(Mcc.accessories);
             var vm = new RuleControlVM(entity);
+            var raised = new List<string>();
+            vm.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
 
-            var result = vm.OnRequestSave();
+            vm.SelectedMccTitle = Mcc.accessories.GetEnumLocalizedMccDescription(); // same as ctor
 
-            Assert.Same(entity, result);
+            Assert.Empty(raised);
         }
 
-        // ── Entity PropertyChanged propagation ───────────────────────────────
+        private static RuleDto DescriptionRule(
+            string description,
+            RuleConditionType condition = RuleConditionType.DescriptionContains,
+            int? payeeId = 1,
+            int? locationId = null,
+            int? categoryId = null,
+            int? projectId = null) =>
+            new RuleDto
+            {
+                Condition = condition,
+                MCCCategory = Mcc.none,
+                Description = description,
+                PayeeId = payeeId,
+                LocationId = locationId,
+                CategoryId = categoryId,
+                ProjectId = projectId,
+            };
 
-        [Fact]
-        public void EntityPropertyChanged_TriggersCanExecuteChanged()
-        {
-            var entity = DescriptionRule("Test", payeeId: 1);
-            var vm = new RuleControlVM(entity);
-            bool canExecuteChangedRaised = false;
-            vm.SaveCommand.CanExecuteChanged += (_, _) => canExecuteChangedRaised = true;
-
-            entity.PayeeId = 99;
-
-            Assert.True(canExecuteChangedRaised);
-        }
+        private static RuleDto MccRule(
+            Mcc mcc,
+            int? payeeId = 1,
+            int? locationId = null,
+            int? categoryId = null,
+            int? projectId = null) =>
+            new RuleDto
+            {
+                Condition = RuleConditionType.MCC,
+                MCCCategory = mcc,
+                PayeeId = payeeId,
+                LocationId = locationId,
+                CategoryId = categoryId,
+                ProjectId = projectId,
+            };
     }
 }

@@ -361,7 +361,7 @@ namespace Financier.Desktop.ViewModel
             {
                 var viewModel = Activator.CreateInstance(typeof(VMType), db, dialogWrapper) as VMType;
 
-                _pages.TryAdd(type, viewModel!);
+                _pages.TryAdd(type, viewModel);
             }
 
             return (VMType)_pages[type];
@@ -395,10 +395,11 @@ namespace Financier.Desktop.ViewModel
                 var sourceData = importHelper.ParseReport(fileName);
 
                 Dictionary<int, BlotterModel> lastTransactions = new();
+                var blotterEntitiesById = Blotter.Entities.ToDictionary(x => x.Id);
                 foreach (var acc in DbManual.Account.Where(x => x.Id.HasValue))
                 {
-                    var last = Blotter.Entities.FirstOrDefault(x => x.Id == acc.LastTransactionId);
-                    lastTransactions.Add(acc.Id!.Value, last!);
+                    blotterEntitiesById.TryGetValue(acc.LastTransactionId, out var last);
+                    lastTransactions.Add(acc.Id.Value, last);
                 }
 
                 var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions, dialogWrapper);
@@ -413,11 +414,12 @@ namespace Financier.Desktop.ViewModel
                     var transactionRepo = blotter.GetRepository<Transaction>();
                     List<Transaction> accTransactions = await transactionRepo.FindManyAsync(predicate: x => times.Contains(x.DateTime));
 
+                    var accTransactionKeys = accTransactions
+                        .Select(x => (x.FromAccountId, x.DateTime, x.FromAmount))
+                        .ToHashSet();
+
                     List<Transaction> monoToImport = outputTransactions.Where(item =>
-                    !accTransactions.Any(x =>
-                    x.FromAccountId == item.FromAccountId &&
-                    x.DateTime == item.DateTime &&
-                    x.FromAmount == item.FromAmount)).ToList();
+                    !accTransactionKeys.Contains((item.FromAccountId, item.DateTime, item.FromAmount))).ToList();
 
                     var duplicatesCount = outputTransactions.Count - monoToImport.Count;
 
@@ -476,7 +478,7 @@ namespace Financier.Desktop.ViewModel
             {
                 await SaveBackup(backupPath);
 
-                dialogWrapper.ShowMessageBox(string.Format(LocalizationService.Instance.saved_message, backupPath), LocalizationService.Instance.backup_done);
+                notifier.ShowMessage(string.Format(LocalizationService.Instance.saved_message, backupPath));
                 Logger.Info($"Backup done. Saved {backupPath}");
             }
         }
@@ -484,14 +486,14 @@ namespace Financier.Desktop.ViewModel
         private async Task SaveBackupAsDb()
         {
             string fileName = Path.ChangeExtension(BackupWriter.GenerateFileName(), "db");
-            string defaultPath = !string.IsNullOrEmpty(OpenBackupPath) ? Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty)!, fileName) : fileName;
+            string defaultPath = !string.IsNullOrEmpty(OpenBackupPath) ? Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty), fileName) : fileName;
 
             var backupPath = dialogWrapper.SaveFileDialog("db", defaultPath);
             if (!string.IsNullOrEmpty(backupPath))
             {
                 await db.SaveAsFile(backupPath);
 
-                dialogWrapper.ShowMessageBox(string.Format(LocalizationService.Instance.saved_message, backupPath), LocalizationService.Instance.backup_done);
+                notifier.ShowMessage(string.Format(LocalizationService.Instance.saved_message, backupPath));
                 Logger.Info($"Backup done. Saved {backupPath}");
             }
         }
@@ -552,7 +554,7 @@ namespace Financier.Desktop.ViewModel
                     }
                     catch (DbUpdateException ex)
                     {
-                        string msg = ex?.InnerException?.Message!;
+                        string msg = ex?.InnerException?.Message;
                         if (!string.IsNullOrEmpty(msg) && msg.Contains("UNIQUE constraint failed", StringComparison.OrdinalIgnoreCase))
                         {
                             notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_exist);

@@ -7,7 +7,7 @@ using Onova.Services;
 
 namespace Financier.Desktop.Services
 {
-    public class UpdateService() : IDisposable
+    public sealed class UpdateService() : IDisposable
     {
 #nullable enable
         private readonly IUpdateManager? _updateManager = new UpdateManager(
@@ -19,10 +19,9 @@ namespace Financier.Desktop.Services
                     new ZipPackageExtractor()
                 );
 
-        private Version? _updateVersion;
         private bool _isUpdatePrepared;
         private bool _isUpdaterLaunched;
-
+        private Version? _updateVersion;
         public async Task<Version?> CheckForUpdatesAsync()
         {
             if (_updateManager is null)
@@ -33,24 +32,10 @@ namespace Financier.Desktop.Services
         }
 #nullable disable
 
-        public async Task PrepareUpdateAsync(Version version)
+        public void Dispose()
         {
-            if (_updateManager is null)
-                return;
-
-            try
-            {
-                await _updateManager.PrepareUpdateAsync(_updateVersion = version);
-                _isUpdatePrepared = true;
-            }
-            catch (UpdaterAlreadyLaunchedException)
-            {
-                // Ignore race conditions
-            }
-            catch (LockFileNotAcquiredException)
-            {
-                // Ignore race conditions
-            }
+            _updateManager?.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         public void FinalizeUpdate(bool needRestart)
@@ -76,6 +61,25 @@ namespace Financier.Desktop.Services
             }
         }
 
-        public void Dispose() => _updateManager?.Dispose();
+        public async Task PrepareUpdateAsync(Version version)
+        {
+            if (_updateManager is null)
+                return;
+
+            try
+            {
+                _updateVersion = version;
+                await _updateManager.PrepareUpdateAsync(_updateVersion);
+                _isUpdatePrepared = true;
+            }
+            catch (UpdaterAlreadyLaunchedException)
+            {
+                // Ignore race conditions
+            }
+            catch (LockFileNotAcquiredException)
+            {
+                // Ignore race conditions
+            }
+        }
     }
 }

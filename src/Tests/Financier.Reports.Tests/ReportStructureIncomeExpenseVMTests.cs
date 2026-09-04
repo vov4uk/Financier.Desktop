@@ -34,15 +34,11 @@ namespace Financier.Reports.Tests
             this.vm.EndYearMonths = new YearMonths();
         }
 
-        // ── Constructor ──────────────────────────────────────────────────────────
-
         [Fact]
         public void Constructor_SetsDefaultIsIncome_ToFalse()
         {
             Assert.False(this.vm.IsIncome);
         }
-
-        // ── IsIncome property ────────────────────────────────────────────────────
 
         [Fact]
         public void GetBarChartModel_HasOneLegend()
@@ -142,7 +138,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(2, model.Axes.Count);
         }
 
-        // ── GetBarChartModel ─────────────────────────────────────────────────────
         [Fact]
         public void GetBarChartModel_UsesAbsoluteValueForBarItems()
         {
@@ -206,7 +201,6 @@ namespace Financier.Reports.Tests
             Assert.IsType<PieSeries>(model.Series[0]);
         }
 
-        // ── GetPlotModel / pie chart ─────────────────────────────────────────────
         [Fact]
         public void GetPlotModel_SetsBarChartModel()
         {
@@ -256,7 +250,6 @@ namespace Financier.Reports.Tests
             Assert.Contains("> 0", sql);
         }
 
-        // ── GetSql ───────────────────────────────────────────────────────────────
         [Fact]
         public void GetSql_WithNoFilters_DoesNotContainAndClause()
         {
@@ -300,8 +293,6 @@ namespace Financier.Reports.Tests
 
             Assert.True(raised);
         }
-
-        // ── RefreshDataCommand ───────────────────────────────────────────────────
 
         [Fact]
         public async Task RefreshDataCommand_EmptyData_EntitiesIsEmpty()
@@ -381,8 +372,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(2, this.vm.Entities.Count);
         }
 
-        // ── Helper methods ───────────────────────────────────────────────────────
-
         private TestableVM CreateTestableVM()
         {
             var testVm = new TestableVM(this.dbMock.Object);
@@ -391,11 +380,10 @@ namespace Financier.Reports.Tests
             return testVm;
         }
 
-        // ── Helper types ─────────────────────────────────────────────────────────
-
         private sealed class TestableVM : ReportStructureIncomeExpenseVM
         {
-            public TestableVM(IFinancierDatabase db) : base(db)
+            public TestableVM(IFinancierDatabase db)
+                : base(db)
             {
             }
 
