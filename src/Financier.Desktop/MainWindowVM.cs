@@ -213,6 +213,7 @@ namespace Financier.Desktop.ViewModel
                 ClearPages();
                 Stopwatch stopwatch = Stopwatch.StartNew();
                 var (entities, backupVersion, columnsOrder) = await entityReader.ParseBackupFileAsync(backupPath);
+                entities = entities as IReadOnlyCollection<Entity> ?? entities.ToList();
                 _backupVersion = backupVersion;
                 _entityColumnsOrder = columnsOrder;
 
@@ -233,11 +234,12 @@ namespace Financier.Desktop.ViewModel
                 await DbManual.LoadRulesAsync();
 
                 stopwatch.Stop();
-                Logger.Info($"Backup loaded in {stopwatch.ElapsedMilliseconds} ms. Backup version : {_backupVersion}. Entities count : {entities?.Count()}");
+                int entitiesCount = entities?.Count() ?? 0;
+                Logger.Info($"Backup loaded in {stopwatch.ElapsedMilliseconds} ms. Backup version : {_backupVersion}. Entities count : {entitiesCount}");
 
                 await NavigateToType(typeof(BlotterModel));
 
-                notifier?.ShowMessage(string.Format(LocalizationService.Instance.entities_loaded, entities?.Count()));
+                notifier?.ShowMessage(string.Format(LocalizationService.Instance.entities_loaded, entitiesCount));
 
                 if (SettingsService.Current.Settings?.ExchangeRates.UpdateOnStart == true)
                 {
@@ -279,8 +281,9 @@ namespace Financier.Desktop.ViewModel
         private void AddKeylessEntities<T>(IEnumerable<T> entities)
         where T : Entity
         {
-            Logger.Info($"Imported {typeof(T).Name} {entities.Count()}");
-            keyLessEntities.AddRange(entities);
+            List<T> materialized = entities as List<T> ?? entities.ToList();
+            Logger.Info($"Imported {typeof(T).Name} {materialized.Count}");
+            keyLessEntities.AddRange(materialized);
         }
 
         private void ClearPages()
@@ -340,13 +343,7 @@ namespace Financier.Desktop.ViewModel
                 case nameof(RuleModel):
                     return Rules ??= GetOrCreatePage<RuleModel, RulesVM>();
                 case nameof(ReportsControlVM):
-                {
-                    if (!_pages.ContainsKey(type))
-                    {
-                        _pages.TryAdd(type, new ReportsControlVM(db));
-                    }
-                    return _pages[type];
-                }
+                    return _pages.GetOrAdd(type, _ => new ReportsControlVM(db));
 
                 default: throw new NotSupportedException($"{type.FullName} not supported");
             }
@@ -357,14 +354,7 @@ namespace Financier.Desktop.ViewModel
             where TEntity : BaseModel, new()
         {
             var type = typeof(TEntity);
-            if (!_pages.ContainsKey(type))
-            {
-                var viewModel = Activator.CreateInstance(typeof(VMType), db, dialogWrapper) as VMType;
-
-                _pages.TryAdd(type, viewModel);
-            }
-
-            return (VMType)_pages[type];
+            return (VMType)_pages.GetOrAdd(type, _ => Activator.CreateInstance(typeof(VMType), db, dialogWrapper) as VMType);
         }
 
         private async Task NavigateToType(Type type)

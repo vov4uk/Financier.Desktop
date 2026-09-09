@@ -26,8 +26,8 @@ namespace Financier.Adapter
             List<Entity> entities = new List<Entity>();
 
             var entityTypes = _entityTypes.Value;
-            Entity entity = null!;
-            EntityInfo entityInfo = null!;
+            Entity entity = null;
+            EntityInfo entityInfo = null;
             string prevField = string.Empty;
             string entityType = string.Empty;
 
@@ -38,7 +38,7 @@ namespace Financier.Adapter
                 {
                     prevField = string.Empty;
                     entityType = line.Value!;
-                    if (!string.IsNullOrEmpty(line.Value) && entityTypes.TryGetValue(line.Value, out entityInfo!))
+                    if (!string.IsNullOrEmpty(line.Value) && entityTypes.TryGetValue(line.Value, out entityInfo))
                     {
                         entity = entityInfo.Factory();
                     }
@@ -57,7 +57,7 @@ namespace Financier.Adapter
                 }
                 else if (entity != null && line.Value != null)
                 {
-                    if (entityInfo.Properties.TryGetValue(line.Key!, out var property))
+                    if (entityInfo.Properties.TryGetValue(line.Key, out var property))
                     {
                         property.SetValue(entity, line.Value);
                     }
@@ -65,9 +65,9 @@ namespace Financier.Adapter
                     var order = EntityColumnsOrder[entityType];
                     if (columnsSeen[entityType].Add(line.Key!))
                     {
-                        order.Insert(order.IndexOf(prevField) + 1, line.Key!);
+                        order.Insert(order.IndexOf(prevField) + 1, line.Key);
                     }
-                    prevField = line.Key!;
+                    prevField = line.Key;
                 }
             }
 
@@ -116,7 +116,7 @@ namespace Financier.Adapter
 
         private static Func<Entity> BuildFactory(Type type)
         {
-            var ctor = type.GetConstructor(Type.EmptyTypes)!;
+            var ctor = type.GetConstructor(Type.EmptyTypes);
             var newExpr = Expression.New(ctor);
             var cast = Expression.Convert(newExpr, typeof(Entity));
             return Expression.Lambda<Func<Entity>>(cast).Compile();

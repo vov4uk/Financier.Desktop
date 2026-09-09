@@ -548,6 +548,7 @@
 
             Assert.Contains("To", changedProperties);
         }
+
         private List<Account> Accounts()
         {
             return JsonDeserializer.Deserialize<Account>(
@@ -648,6 +649,7 @@
 "{\"_id\":2,\"name\":\"USD\",\"title\":\"United States dollar\",\"symbol\":\"$\",\"is_default\":0,\"decimals\":2,\"decimal_separator\":\"'.'\",\"group_separator\":\"' '\",\"symbol_format\":\"RS\",\"updated_on\":0,\"remote_key\":null,\"sort_order\":0,\"is_active\":1}," +
 "]");
         }
+
         private TransactionDto EditSplitTransactionDto()
         {
             var transaction = JsonConvert.DeserializeObject<TransactionDto>(

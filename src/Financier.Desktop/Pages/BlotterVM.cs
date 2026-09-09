@@ -438,28 +438,10 @@ namespace Financier.Desktop.ViewModel
                     OriginalFromAmount = x.OriginalFromAmount,
                     FromAccountBalance = x.FromAccountBalance,
                     ToAccountBalance = x.ToAccountBalance,
-                    FromAccountCurrency = new CurrencyModel
-                    {
-                        Id = x.FromAccountCurrency.Id,
-                        Name = x.FromAccountCurrency.Name,
-                        Symbol = x.FromAccountCurrency.Symbol,
-                    },
-                    ToAccountCurrency = x.ToAccountCurrency == null ? default : new CurrencyModel
-                    {
-                        Id = x.ToAccountCurrency.Id,
-                        Name = x.ToAccountCurrency.Name,
-                        Symbol = x.ToAccountCurrency.Symbol,
-                    },
-                    OriginalCurrency = x.OriginalCurrency == null ? default : new CurrencyModel
-                    {
-                        Id = x.OriginalCurrency.Id,
-                        Name = x.OriginalCurrency.Name,
-                        Symbol = x.OriginalCurrency.Symbol,
-                    }
-                },
-                x => x.FromAccountCurrency,
-                x => x.ToAccountCurrency,
-                x => x.OriginalCurrency);
+                    FromAccountCurrency = DbManual.CurrencyIds.GetValueOrDefault(x.FromAccountCurrencyId),
+                    ToAccountCurrency = x.ToAccountCurrency == null ? default : DbManual.CurrencyIds.GetValueOrDefault(x.ToAccountCurrencyId.Value),
+                    OriginalCurrency = x.OriginalCurrency == null ? default : DbManual.CurrencyIds.GetValueOrDefault(x.OriginalCurrencyId.Value)
+                });
 
             if (items != null)
             {
