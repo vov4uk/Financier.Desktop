@@ -132,9 +132,10 @@ namespace Financier.Desktop.ViewModel
 
         private static (List<CategoryTreeModel> siblings, int pos) FindSiblingsInSubTree(List<CategoryTreeModel> nodes, CategoryTreeModel target)
         {
-            foreach (var node in nodes)
+            foreach (var (node, pos) in from node in nodes
+                                        let pos = node.SubCategoties?.IndexOf(target) ?? -1
+                                        select (node, pos))
             {
-                var pos = node.SubCategoties?.IndexOf(target) ?? -1;
                 if (pos >= 0) return (node.SubCategoties, pos);
                 if (node.SubCategoties?.Count > 0)
                 {
@@ -142,6 +143,7 @@ namespace Financier.Desktop.ViewModel
                     if (result.siblings != null) return result;
                 }
             }
+
             return (null, -1);
         }
 

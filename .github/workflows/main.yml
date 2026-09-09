@@ -56,7 +56,6 @@ jobs:
         run: >
           dotnet test
           -p:EnableWindowsTargeting=true
-          -p:TestingPlatformDotnetTestSupport=true
           --configuration Release
           --no-build
           --verbosity normal
