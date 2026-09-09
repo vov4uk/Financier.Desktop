@@ -3,5 +3,6 @@
     <Version>2026.09.01.1</Version>
     <Company>vov4uk</Company>
     <Copyright>Copyright (C) vov4uk</Copyright>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
   </PropertyGroup>
 </Project>
