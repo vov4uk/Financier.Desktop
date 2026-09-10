@@ -32,6 +32,7 @@
         <Expander Margin="5"
                   Grid.Row="0"
                   Grid.Column="1"
+                  Grid.RowSpan="2"
                   IsExpanded="True"
                   Background="Transparent"
                   ExpandDirection="Left">
@@ -192,7 +193,7 @@
         </DataGrid>
         <Border Grid.Row="1"
                 Grid.Column="0"
-                Grid.ColumnSpan="2"
+                Grid.ColumnSpan="1"
                 Margin="5,0,5,5"
                 Padding="6,3"
                 Background="#FFF0F0F0"
