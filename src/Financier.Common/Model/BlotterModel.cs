@@ -35,6 +35,14 @@ namespace Financier.Common.Model
             }
         }
 
+        public string AmountClipboardText
+        {
+            get
+            {
+                return BlotterUtils.SetAmountText(FromAccountCurrency, FromAmount, true);
+            }
+        }
+
         public string BalanceTitle
         {
             get

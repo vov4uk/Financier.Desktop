@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using Financier.Common;
 using Financier.Common.Entities;
 using Financier.Common.Localization;
 using Financier.Common.Model;
+using Financier.Common.Utils;
 using Financier.Converters;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
@@ -27,6 +29,8 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _duplicateCommand;
         private IAsyncCommand _clearFiltersCommand;
         private IAsyncCommand _infoCommand;
+        private Prism.Commands.DelegateCommand<IList<DataGridCellInfo>> _selectionChangedCommand;
+        private string _selectionSummary;
         private DateTime? _from;
         private DateTime? _to;
         private PeriodType _periodType;
@@ -136,6 +140,37 @@ namespace Financier.Desktop.ViewModel
         public IAsyncCommand ClearFiltersCommand => _clearFiltersCommand ??= new AsyncCommand(ClearFilters);
 
         public IAsyncCommand InfoCommand => _infoCommand ??= new AsyncCommand(() => Task.CompletedTask, () => false);
+
+        public string SelectionSummary
+        {
+            get => _selectionSummary;
+            private set => SetProperty(ref _selectionSummary, value);
+        }
+
+        public Prism.Commands.DelegateCommand<IList<DataGridCellInfo>> SelectionChangedCommand =>
+            _selectionChangedCommand ??= new Prism.Commands.DelegateCommand<IList<DataGridCellInfo>>(OnSelectionChanged);
+
+        private void OnSelectionChanged(IList<DataGridCellInfo> selectedCells)
+        {
+            var selectedItems = (selectedCells ?? Array.Empty<DataGridCellInfo>())
+                .Select(c => c.Item)
+                .OfType<BlotterModel>()
+                .Distinct()
+                .ToList();
+
+            if (selectedItems.Count < 2)
+            {
+                SelectionSummary = string.Empty;
+                return;
+            }
+
+            var totalsByCurrency = selectedItems
+                .Where(item => item.ToAccountId == null || item.ToAccountId == 0)
+                .GroupBy(item => item.FromAccountCurrency)
+                .Select(g => BlotterUtils.SetAmountText(g.Key, g.Sum(i => i.FromAmount), true));
+
+            SelectionSummary = string.Join("   ", totalsByCurrency);
+        }
 
         private async Task ClearFilters()
         {

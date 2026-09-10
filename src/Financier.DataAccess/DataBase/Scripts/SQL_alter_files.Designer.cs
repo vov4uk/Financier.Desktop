@@ -66,7 +66,8 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///INSERT INTO project (_id, title) VALUES (0, &apos;&lt;NO_PROJECT&gt;&apos;);
         ///
         ///INSERT INTO locations(_id, name, datetime, provider, accuracy, latitude, longitude, is_payee, resolved_address) 
-        ///VALUES (0, &apos;&lt;CURRENT_LOCATION&gt;&apos;, 0, &quot;?&quot;, &quot;?&quot;, 0, 0, 0, &quot;?&quot;);.
+        ///VALUES (0, &apos;&lt;CURRENT_LOCATION&gt;&apos;, 0, &apos;?&apos;, &apos;?&apos;, 0, 0, 0, &apos;?&apos;);
+        ///.
         /// </summary>
         internal static string _20090723_0035_initial_data {
             get {
@@ -931,6 +932,70 @@ namespace Financier.DataAccess.DataBase.Scripts {
         internal static string _20260613_0251_alter_sms_template_add_description {
             get {
                 return ResourceManager.GetString("_20260613_0251_alter_sms_template_add_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE currency ADD trading_currency_id LONG NOT NULL DEFAULT 0.
+        /// </summary>
+        internal static string _20260628_0122_add_currency_trading_currency {
+            get {
+                return ResourceManager.GetString("_20260628_0122_add_currency_trading_currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE transactions ADD parent_account_id INTEGER NOT NULL DEFAULT 0.
+        /// </summary>
+        internal static string _20260711_0458_add_transaction_parent_account_id {
+            get {
+                return ResourceManager.GetString("_20260711_0458_add_transaction_parent_account_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DROP INDEX IF EXISTS transaction_pid_idx;
+        ///
+        ///CREATE INDEX IF NOT EXISTS transaction_pid_idx ON transactions (parent_id, _id);.
+        /// </summary>
+        internal static string _20260712_0855_recreate_transactions_parent_id_idx {
+            get {
+                return ResourceManager.GetString("_20260712_0855_recreate_transactions_parent_id_idx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE account ADD COLUMN is_include_into_reports boolean not null default 1;
+        ///.
+        /// </summary>
+        internal static string _20260719_0330_add_is_include_into_reports_to_account {
+            get {
+                return ResourceManager.GetString("_20260719_0330_add_is_include_into_reports_to_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE payee ADD COLUMN aliases TEXT;
+        ///ALTER TABLE locations ADD COLUMN aliases TEXT;
+        ///
+        ///CREATE TABLE IF NOT EXISTS payee_aliases (
+        ///    _id INTEGER NOT NULL,
+        ///    alias TEXT NOT NULL
+        ///);
+        ///
+        ///CREATE TABLE IF NOT EXISTS locations_aliases (
+        ///    _id INTEGER NOT NULL,
+        ///    alias TEXT NOT NULL
+        ///);
+        ///
+        ///CREATE INDEX IF NOT EXISTS payee_aliases_id_idx ON payee_aliases (_id);
+        ///CREATE INDEX IF NOT EXISTS payee_aliases_alias_idx ON payee_aliases (alias);
+        ///
+        ///CREATE INDEX IF NOT EXISTS locations_aliases_id_idx ON lo [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string _20260905_0241_add_payee_locations_alias {
+            get {
+                return ResourceManager.GetString("_20260905_0241_add_payee_locations_alias", resourceCulture);
             }
         }
     }

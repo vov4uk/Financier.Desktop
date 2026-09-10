@@ -8,8 +8,8 @@ select
        t.to_account_currency_id as to_account_currency_id,
        t.to_amount as to_amount,
        t.is_transfer as is_transfer,
-       t.original_currency_id as original_currency_id,
-       t.original_from_amount as original_from_amount,
+	   t.original_currency_id as original_currency_id,
+	   t.original_from_amount as original_from_amount,
        t.from_account_id as from_account_id,
        t.to_account_id as to_account_id,
        t.category_id as category_id,
@@ -18,7 +18,10 @@ select
        t.project_id as project_id,
        t.location_id as location_id,
        t.payee_id as payee_id,
+       t.parent_id as parent_id,
        t.status as status
 from v_blotter_for_account_with_splits t
-where t.category_id != -1 and from_account_is_include_into_totals=1;
+where t.category_id != -1 and from_account_is_include_into_totals=1
+  and from_account_is_include_into_reports=1
+  and (t.is_transfer != -1 or ifnull(to_account_is_include_into_reports,1)=1);
 

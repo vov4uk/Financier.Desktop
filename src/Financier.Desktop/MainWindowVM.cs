@@ -386,11 +386,11 @@ namespace Financier.Desktop.ViewModel
 
                 Dictionary<int, BlotterModel> lastTransactions = new();
                 var blotterEntitiesById = Blotter.Entities.ToDictionary(x => x.Id);
-                foreach (var acc in DbManual.Account.Where(x => x.Id.HasValue))
-                {
-                    blotterEntitiesById.TryGetValue(acc.LastTransactionId, out var last);
-                    lastTransactions.Add(acc.Id.Value, last);
-                }
+                //foreach (var acc in DbManual.Account.Where(x => x.Id.HasValue))
+                //{
+                //    blotterEntitiesById.TryGetValue(acc.LastTransactionId, out var last);
+                //    lastTransactions.Add(acc.Id.Value, last);
+                //}
 
                 var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions, dialogWrapper);
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -166,10 +166,16 @@
   <data name="_081_v_currency_exchange_rate_" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>view\081[v_currency_exchange_rate].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="_083_v_account_" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>view\083[v_account].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
-  </data>
   <data name="_084_v_report_transactions_" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>view\084[v_report_transactions].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_090_v_exchange_rate_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>view\090[v_exchange_rate].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_091_v_account_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>view\091[v_account].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_092_v_account_with_separator_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>view\092[v_account_with_separator].sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
 </root>
