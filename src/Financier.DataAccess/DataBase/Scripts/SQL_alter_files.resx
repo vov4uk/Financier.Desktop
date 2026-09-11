@@ -119,16 +119,16 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="_20241228_0500_alter_sms_template_add_payee_project" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20241228_0500_alter_sms_template_add_payee_project.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>alter\20241228_0500_alter_sms_template_add_payee_project.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20250709_1950_account_icon_color_separator" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20250709_1950_account_icon_color_separator.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>alter\20250709_1950_account_icon_color_separator.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20250802_0155_add_currency_number_format" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20250802_0155_add_currency_number_format.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>alter\20250802_0155_add_currency_number_format.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20260613_0251_alter_sms_template_add_description" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>alter\20260613_0251_alter_sms_template_add_description.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>alter\20260613_0251_alter_sms_template_add_description.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="_20090723_0035_initial_data" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>alter\20090723_0035_initial_data.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
@@ -342,5 +342,20 @@
   </data>
   <data name="_20240221_0135_alter_location_drop_name_is_payee" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>alter\20240221_0135_alter_location_drop_name_is_payee.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_20260628_0122_add_currency_trading_currency" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20260628_0122_add_currency_trading_currency.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_20260711_0458_add_transaction_parent_account_id" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20260711_0458_add_transaction_parent_account_id.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_20260712_0855_recreate_transactions_parent_id_idx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20260712_0855_recreate_transactions_parent_id_idx.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_20260719_0330_add_is_include_into_reports_to_account" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20260719_0330_add_is_include_into_reports_to_account.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="_20260905_0241_add_payee_locations_alias" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20260905_0241_add_payee_locations_alias.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
 </root>

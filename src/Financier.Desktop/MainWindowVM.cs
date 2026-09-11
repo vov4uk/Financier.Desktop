@@ -213,6 +213,7 @@ namespace Financier.Desktop.ViewModel
                 ClearPages();
                 Stopwatch stopwatch = Stopwatch.StartNew();
                 var (entities, backupVersion, columnsOrder) = await entityReader.ParseBackupFileAsync(backupPath);
+                entities = entities as IReadOnlyCollection<Entity> ?? entities.ToList();
                 _backupVersion = backupVersion;
                 _entityColumnsOrder = columnsOrder;
 
@@ -233,11 +234,12 @@ namespace Financier.Desktop.ViewModel
                 await DbManual.LoadRulesAsync();
 
                 stopwatch.Stop();
-                Logger.Info($"Backup loaded in {stopwatch.ElapsedMilliseconds} ms. Backup version : {_backupVersion}. Entities count : {entities?.Count()}");
+                int entitiesCount = entities?.Count() ?? 0;
+                Logger.Info($"Backup loaded in {stopwatch.ElapsedMilliseconds} ms. Backup version : {_backupVersion}. Entities count : {entitiesCount}");
 
                 await NavigateToType(typeof(BlotterModel));
 
-                notifier?.ShowMessage(string.Format(LocalizationService.Instance.entities_loaded, entities?.Count()));
+                notifier?.ShowMessage(string.Format(LocalizationService.Instance.entities_loaded, entitiesCount));
 
                 if (SettingsService.Current.Settings?.ExchangeRates.UpdateOnStart == true)
                 {
@@ -279,8 +281,9 @@ namespace Financier.Desktop.ViewModel
         private void AddKeylessEntities<T>(IEnumerable<T> entities)
         where T : Entity
         {
-            Logger.Info($"Imported {typeof(T).Name} {entities.Count()}");
-            keyLessEntities.AddRange(entities);
+            List<T> materialized = entities as List<T> ?? entities.ToList();
+            Logger.Info($"Imported {typeof(T).Name} {materialized.Count}");
+            keyLessEntities.AddRange(materialized);
         }
 
         private void ClearPages()
@@ -340,13 +343,7 @@ namespace Financier.Desktop.ViewModel
                 case nameof(RuleModel):
                     return Rules ??= GetOrCreatePage<RuleModel, RulesVM>();
                 case nameof(ReportsControlVM):
-                {
-                    if (!_pages.ContainsKey(type))
-                    {
-                        _pages.TryAdd(type, new ReportsControlVM(db));
-                    }
-                    return _pages[type];
-                }
+                    return _pages.GetOrAdd(type, _ => new ReportsControlVM(db));
 
                 default: throw new NotSupportedException($"{type.FullName} not supported");
             }
@@ -357,14 +354,7 @@ namespace Financier.Desktop.ViewModel
             where TEntity : BaseModel, new()
         {
             var type = typeof(TEntity);
-            if (!_pages.ContainsKey(type))
-            {
-                var viewModel = Activator.CreateInstance(typeof(VMType), db, dialogWrapper) as VMType;
-
-                _pages.TryAdd(type, viewModel!);
-            }
-
-            return (VMType)_pages[type];
+            return (VMType)_pages.GetOrAdd(type, _ => Activator.CreateInstance(typeof(VMType), db, dialogWrapper) as VMType);
         }
 
         private async Task NavigateToType(Type type)
@@ -395,10 +385,11 @@ namespace Financier.Desktop.ViewModel
                 var sourceData = importHelper.ParseReport(fileName);
 
                 Dictionary<int, BlotterModel> lastTransactions = new();
+                var blotterEntitiesById = Blotter.Entities.ToDictionary(x => x.Id);
                 foreach (var acc in DbManual.Account.Where(x => x.Id.HasValue))
                 {
-                    var last = Blotter.Entities.FirstOrDefault(x => x.Id == acc.LastTransactionId);
-                    lastTransactions.Add(acc.Id!.Value, last!);
+                    blotterEntitiesById.TryGetValue(acc.LastTransactionId, out var last);
+                    lastTransactions.Add(acc.Id.Value, last);
                 }
 
                 var vm = new MonoWizardVM(importHelper.BankTitle, sourceData, lastTransactions, dialogWrapper);
@@ -413,11 +404,12 @@ namespace Financier.Desktop.ViewModel
                     var transactionRepo = blotter.GetRepository<Transaction>();
                     List<Transaction> accTransactions = await transactionRepo.FindManyAsync(predicate: x => times.Contains(x.DateTime));
 
+                    var accTransactionKeys = accTransactions
+                        .Select(x => (x.FromAccountId, x.DateTime, x.FromAmount))
+                        .ToHashSet();
+
                     List<Transaction> monoToImport = outputTransactions.Where(item =>
-                    !accTransactions.Any(x =>
-                    x.FromAccountId == item.FromAccountId &&
-                    x.DateTime == item.DateTime &&
-                    x.FromAmount == item.FromAmount)).ToList();
+                    !accTransactionKeys.Contains((item.FromAccountId, item.DateTime, item.FromAmount))).ToList();
 
                     var duplicatesCount = outputTransactions.Count - monoToImport.Count;
 
@@ -476,7 +468,7 @@ namespace Financier.Desktop.ViewModel
             {
                 await SaveBackup(backupPath);
 
-                dialogWrapper.ShowMessageBox(string.Format(LocalizationService.Instance.saved_message, backupPath), LocalizationService.Instance.backup_done);
+                notifier.ShowMessage(string.Format(LocalizationService.Instance.saved_message, backupPath));
                 Logger.Info($"Backup done. Saved {backupPath}");
             }
         }
@@ -484,14 +476,14 @@ namespace Financier.Desktop.ViewModel
         private async Task SaveBackupAsDb()
         {
             string fileName = Path.ChangeExtension(BackupWriter.GenerateFileName(), "db");
-            string defaultPath = !string.IsNullOrEmpty(OpenBackupPath) ? Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty)!, fileName) : fileName;
+            string defaultPath = !string.IsNullOrEmpty(OpenBackupPath) ? Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty), fileName) : fileName;
 
             var backupPath = dialogWrapper.SaveFileDialog("db", defaultPath);
             if (!string.IsNullOrEmpty(backupPath))
             {
                 await db.SaveAsFile(backupPath);
 
-                dialogWrapper.ShowMessageBox(string.Format(LocalizationService.Instance.saved_message, backupPath), LocalizationService.Instance.backup_done);
+                notifier.ShowMessage(string.Format(LocalizationService.Instance.saved_message, backupPath));
                 Logger.Info($"Backup done. Saved {backupPath}");
             }
         }
@@ -552,7 +544,7 @@ namespace Financier.Desktop.ViewModel
                     }
                     catch (DbUpdateException ex)
                     {
-                        string msg = ex?.InnerException?.Message!;
+                        string msg = ex?.InnerException?.Message;
                         if (!string.IsNullOrEmpty(msg) && msg.Contains("UNIQUE constraint failed", StringComparison.OrdinalIgnoreCase))
                         {
                             notifier?.ShowWarning(LocalizationService.Instance.exchange_rates_exist);

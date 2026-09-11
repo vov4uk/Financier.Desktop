@@ -140,7 +140,7 @@ public sealed class LocalizationService : INotifyPropertyChanged
     // RecipesWizard Page1
     public string recipe_wizard_total_format => Get();
     // MainWindow Messages
-    public string backup_done => Get();
+
     public string import_result => Get();
     public string import_result_with_duplicates => Get();
     public string saved_message => Get();

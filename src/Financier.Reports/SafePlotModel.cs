@@ -7,11 +7,11 @@ namespace Financier.Reports
 {
     public class SafePlotModel : PlotModel, IPlotModel
     {
-        private static readonly Type BaseType = typeof(SafePlotModel).BaseType!;
+        private static readonly Type BaseType = typeof(SafePlotModel).BaseType;
         private static readonly MethodInfo BaseAttachMethod = BaseType
             .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
             .Where(methodInfo => methodInfo.IsFinal && methodInfo.IsPrivate)
-            .FirstOrDefault(methodInfo => methodInfo.Name.EndsWith(nameof(IPlotModel.AttachPlotView)))!;
+            .FirstOrDefault(methodInfo => methodInfo.Name.EndsWith(nameof(IPlotModel.AttachPlotView)));
 
         void IPlotModel.AttachPlotView(IPlotView plotView)
         {
@@ -20,12 +20,12 @@ namespace Financier.Reports
             //we have to force detach previous view and then attach new one
             if (plotView != null && PlotView != null && !Equals(plotView, PlotView))
             {
-                BaseAttachMethod.Invoke(this, new object[] { null! });
+                BaseAttachMethod.Invoke(this, new object[] { null });
                 BaseAttachMethod.Invoke(this, new object[] { plotView });
             }
             else
             {
-                BaseAttachMethod.Invoke(this, new object[] { plotView! });
+                BaseAttachMethod.Invoke(this, new object[] { plotView });
             }
         }
     }

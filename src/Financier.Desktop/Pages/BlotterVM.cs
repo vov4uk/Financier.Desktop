@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using Financier.Common;
 using Financier.Common.Entities;
 using Financier.Common.Localization;
 using Financier.Common.Model;
+using Financier.Common.Utils;
 using Financier.Converters;
 using Financier.DataAccess.Abstractions;
 using Financier.DataAccess.Data;
@@ -27,6 +29,8 @@ namespace Financier.Desktop.ViewModel
         private IAsyncCommand _duplicateCommand;
         private IAsyncCommand _clearFiltersCommand;
         private IAsyncCommand _infoCommand;
+        private Prism.Commands.DelegateCommand<IList<DataGridCellInfo>> _selectionChangedCommand;
+        private string _selectionSummary;
         private DateTime? _from;
         private DateTime? _to;
         private PeriodType _periodType;
@@ -79,7 +83,7 @@ namespace Financier.Desktop.ViewModel
 
         public AccountFilterModel Account
         {
-            get => _account ??= DbManual.Account.Find(p => !p.Id.HasValue)!;
+            get => _account ??= DbManual.Account.Find(p => !p.Id.HasValue);
             set
             {
                 _account = value;
@@ -89,7 +93,7 @@ namespace Financier.Desktop.ViewModel
 
         public CategoryModel Category
         {
-            get => _category ??= DbManual.Category.Find(p => !p.Id.HasValue)!;
+            get => _category ??= DbManual.Category.Find(p => !p.Id.HasValue);
             set
             {
                 _category = value;
@@ -99,7 +103,7 @@ namespace Financier.Desktop.ViewModel
 
         public PayeeModel Payee
         {
-            get => _payee ??= DbManual.Payee.Find(p => !p.Id.HasValue)!;
+            get => _payee ??= DbManual.Payee.Find(p => !p.Id.HasValue);
             set
             {
                 _payee = value;
@@ -109,7 +113,7 @@ namespace Financier.Desktop.ViewModel
 
         public ProjectModel Project
         {
-            get => _project ??= DbManual.Project.Find(p => !p.Id.HasValue)!;
+            get => _project ??= DbManual.Project.Find(p => !p.Id.HasValue);
             set
             {
                 _project = value;
@@ -119,7 +123,7 @@ namespace Financier.Desktop.ViewModel
 
         public LocationModel Location
         {
-            get => _location ??= DbManual.Location.Find(p => !p.Id.HasValue)!;
+            get => _location ??= DbManual.Location.Find(p => !p.Id.HasValue);
             set
             {
                 _location = value;
@@ -136,6 +140,37 @@ namespace Financier.Desktop.ViewModel
         public IAsyncCommand ClearFiltersCommand => _clearFiltersCommand ??= new AsyncCommand(ClearFilters);
 
         public IAsyncCommand InfoCommand => _infoCommand ??= new AsyncCommand(() => Task.CompletedTask, () => false);
+
+        public string SelectionSummary
+        {
+            get => _selectionSummary;
+            private set => SetProperty(ref _selectionSummary, value);
+        }
+
+        public Prism.Commands.DelegateCommand<IList<DataGridCellInfo>> SelectionChangedCommand =>
+            _selectionChangedCommand ??= new Prism.Commands.DelegateCommand<IList<DataGridCellInfo>>(OnSelectionChanged);
+
+        private void OnSelectionChanged(IList<DataGridCellInfo> selectedCells)
+        {
+            var selectedItems = (selectedCells ?? Array.Empty<DataGridCellInfo>())
+                .Select(c => c.Item)
+                .OfType<BlotterModel>()
+                .Distinct()
+                .ToList();
+
+            if (selectedItems.Count < 2)
+            {
+                SelectionSummary = string.Empty;
+                return;
+            }
+
+            var totalsByCurrency = selectedItems
+                .Where(item => item.ToAccountId == null || item.ToAccountId == 0)
+                .GroupBy(item => item.FromAccountCurrency)
+                .Select(g => BlotterUtils.SetAmountText(g.Key, g.Sum(i => i.FromAmount), true));
+
+            SelectionSummary = string.Join("   ", totalsByCurrency);
+        }
 
         private async Task ClearFilters()
         {
@@ -376,7 +411,7 @@ namespace Financier.Desktop.ViewModel
             subTransaction.Parent = transaction;
             subTransaction.FromAccountId = transaction.FromAccountId;
             subTransaction.OriginalCurrencyId = transaction.OriginalCurrencyId ?? transaction.FromAccount.CurrencyId;
-            subTransaction.Category = default!;
+            subTransaction.Category = default;
             return subTransaction;
         }
 
@@ -438,28 +473,10 @@ namespace Financier.Desktop.ViewModel
                     OriginalFromAmount = x.OriginalFromAmount,
                     FromAccountBalance = x.FromAccountBalance,
                     ToAccountBalance = x.ToAccountBalance,
-                    FromAccountCurrency = new CurrencyModel
-                    {
-                        Id = x.FromAccountCurrency.Id,
-                        Name = x.FromAccountCurrency.Name,
-                        Symbol = x.FromAccountCurrency.Symbol,
-                    },
-                    ToAccountCurrency = x.ToAccountCurrency == null ? default : new CurrencyModel
-                    {
-                        Id = x.ToAccountCurrency.Id,
-                        Name = x.ToAccountCurrency.Name,
-                        Symbol = x.ToAccountCurrency.Symbol,
-                    },
-                    OriginalCurrency = x.OriginalCurrency == null ? default : new CurrencyModel
-                    {
-                        Id = x.OriginalCurrency.Id,
-                        Name = x.OriginalCurrency.Name,
-                        Symbol = x.OriginalCurrency.Symbol,
-                    }
-                },
-                x => x.FromAccountCurrency,
-                x => x.ToAccountCurrency,
-                x => x.OriginalCurrency);
+                    FromAccountCurrency = DbManual.CurrencyIds.GetValueOrDefault(x.FromAccountCurrencyId),
+                    ToAccountCurrency = x.ToAccountCurrency == null ? default : DbManual.CurrencyIds.GetValueOrDefault(x.ToAccountCurrencyId.Value),
+                    OriginalCurrency = x.OriginalCurrency == null ? default : DbManual.CurrencyIds.GetValueOrDefault(x.OriginalCurrencyId.Value)
+                });
 
             if (items != null)
             {

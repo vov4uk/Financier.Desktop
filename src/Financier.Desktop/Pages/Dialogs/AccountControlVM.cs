@@ -31,7 +31,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         }
 
         public DelegateCommand ClearTitleCommand =>
-            _clearTitleCommand ??= new DelegateCommand(() => { Entity.Title = default!; SaveCommand.RaiseCanExecuteChanged(); });
+            _clearTitleCommand ??= new DelegateCommand(() => { Entity.Title = default; SaveCommand.RaiseCanExecuteChanged(); });
 
         public AccountDto Entity { get; }
 

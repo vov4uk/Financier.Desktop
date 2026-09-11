@@ -33,14 +33,11 @@ namespace Financier.Reports.Tests
             this.vm.EndYearMonths = new YearMonths();
         }
 
-        // ── Constructor ──────────────────────────────────────────────────────────
-
         [Fact]
         public void Constructor_SetsDateFilter_ToNonNull()
         {
             Assert.NotNull(this.vm.DateFilter);
         }
-        // ── GetSql ───────────────────────────────────────────────────────────────
 
         [Fact]
         public void GetPlotModel_EmptyList_ReturnsEmptyPieSeries()
@@ -113,7 +110,6 @@ namespace Financier.Reports.Tests
             Assert.IsType<PieSeries>(model.Series[0]);
         }
 
-        // ── GetPlotModel ─────────────────────────────────────────────────────────
         [Fact]
         public void GetPlotModel_SmallSlices_GroupedIntoOthers()
         {
@@ -152,8 +148,6 @@ namespace Financier.Reports.Tests
 
             Assert.NotEmpty(sql);
         }
-
-        // ── RefreshDataCommand ───────────────────────────────────────────────────
 
         [Fact]
         public async Task RefreshDataCommand_EmptyData_EntitiesIsEmpty()
@@ -195,8 +189,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(2, this.vm.Entities.Count);
         }
 
-        // ── Helper methods ───────────────────────────────────────────────────────
-
         private TestableVM CreateTestableVM()
         {
             var testVm = new TestableVM(this.dbMock.Object);
@@ -205,11 +197,10 @@ namespace Financier.Reports.Tests
             return testVm;
         }
 
-        // ── Helper types ─────────────────────────────────────────────────────────
-
         private sealed class TestableVM : ReportStructureActivesVM
         {
-            public TestableVM(IFinancierDatabase db) : base(db)
+            public TestableVM(IFinancierDatabase db)
+                : base(db)
             {
             }
 

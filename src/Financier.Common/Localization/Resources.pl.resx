@@ -144,6 +144,9 @@
   <data name="main" xml:space="preserve">
     <value>Główna</value>
   </data>
+  <data name="menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
   <data name="entities" xml:space="preserve">
     <value>Jednostki</value>
   </data>
@@ -180,9 +183,6 @@
   <data name="import" xml:space="preserve">
     <value>Import</value>
   </data>
-  <data name="monobank_csv" xml:space="preserve">
-    <value>Monobank CSV</value>
-  </data>
   <data name="monobank" xml:space="preserve">
     <value>Monobank</value>
   </data>
@@ -195,32 +195,17 @@
   <data name="xlsx" xml:space="preserve">
     <value>XLSX</value>
   </data>
-  <data name="pumb_pdf" xml:space="preserve">
-    <value>PUMB PDF</value>
-  </data>
   <data name="pumb" xml:space="preserve">
     <value>PUMB</value>
-  </data>
-  <data name="pireus_pdf" xml:space="preserve">
-    <value>Pireus PDF</value>
   </data>
   <data name="pireus" xml:space="preserve">
     <value>Pireus</value>
   </data>
-  <data name="privat_xlsx" xml:space="preserve">
-    <value>Privat XLSX</value>
-  </data>
   <data name="privat" xml:space="preserve">
     <value>Privat</value>
   </data>
-  <data name="pko_pdf" xml:space="preserve">
-    <value>PKO PDF</value>
-  </data>
   <data name="pko" xml:space="preserve">
     <value>PKO</value>
-  </data>
-  <data name="revolut_csv" xml:space="preserve">
-    <value>Revolut CSV</value>
   </data>
   <data name="revolut" xml:space="preserve">
     <value>Revolut</value>
@@ -317,6 +302,9 @@
   </data>
   <data name="note" xml:space="preserve">
     <value>Notatka</value>
+  </data>
+  <data name="name" xml:space="preserve">
+    <value>Tytuł</value>
   </data>
   <data name="save" xml:space="preserve">
     <value>Zapisz</value>
@@ -563,9 +551,6 @@
   </data>
   <data name="add_new_transaction" xml:space="preserve">
     <value>Dodaj nową transakcję</value>
-  </data>
-  <data name="backup_done" xml:space="preserve">
-    <value>Kopia zapasowa wykonana.</value>
   </data>
   <data name="import_result" xml:space="preserve">
     <value>Zaimportowano {0} transakcji.</value>

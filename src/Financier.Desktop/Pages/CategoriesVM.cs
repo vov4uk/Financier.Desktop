@@ -35,19 +35,35 @@ namespace Financier.Desktop.ViewModel
         }
 
         public IAsyncCommand MoveBottomCommand => _moveBottomCommand ??= new AsyncCommand(
-            () => MoveAsync((siblings, pos) => { if (pos >= siblings.Count - 1) return; var n = siblings[pos]; siblings.RemoveAt(pos); siblings.Add(n); }),
+            () => MoveAsync((siblings, pos) =>
+            {
+                if (pos >= siblings.Count - 1) return;
+                var n = siblings[pos]; siblings.RemoveAt(pos); siblings.Add(n);
+            }),
             () => IsAtPosition(SelectedValue, atStart: true));
 
         public IAsyncCommand MoveDownCommand => _moveDownCommand ??= new AsyncCommand(
-            () => MoveAsync((siblings, pos) => { if (pos >= siblings.Count - 1) return; (siblings[pos], siblings[pos + 1]) = (siblings[pos + 1], siblings[pos]); }),
+            () => MoveAsync((siblings, pos) =>
+            {
+                if (pos >= siblings.Count - 1) return;
+                (siblings[pos], siblings[pos + 1]) = (siblings[pos + 1], siblings[pos]);
+            }),
             () => IsAtPosition(SelectedValue, atStart: true));
 
         public IAsyncCommand MoveTopCommand => _moveTopCommand ??= new AsyncCommand(
-            () => MoveAsync((siblings, pos) => { if (pos <= 0) return; var n = siblings[pos]; siblings.RemoveAt(pos); siblings.Insert(0, n); }),
+            () => MoveAsync((siblings, pos) =>
+            {
+                if (pos <= 0) return;
+                var n = siblings[pos]; siblings.RemoveAt(pos); siblings.Insert(0, n);
+            }),
             () => IsAtPosition(SelectedValue, atStart: false));
 
         public IAsyncCommand MoveUpCommand => _moveUpCommand ??= new AsyncCommand(
-            () => MoveAsync((siblings, pos) => { if (pos <= 0) return; (siblings[pos], siblings[pos - 1]) = (siblings[pos - 1], siblings[pos]); }),
+            () => MoveAsync((siblings, pos) =>
+            {
+                if (pos <= 0) return;
+                (siblings[pos], siblings[pos - 1]) = (siblings[pos - 1], siblings[pos]);
+            }),
             () => IsAtPosition(SelectedValue, atStart: false));
 
         public IAsyncCommand SortByTitleCommand => _sortByTitleCommand ??= new AsyncCommand(
@@ -116,9 +132,10 @@ namespace Financier.Desktop.ViewModel
 
         private static (List<CategoryTreeModel> siblings, int pos) FindSiblingsInSubTree(List<CategoryTreeModel> nodes, CategoryTreeModel target)
         {
-            foreach (var node in nodes)
+            foreach (var (node, pos) in from node in nodes
+                                        let pos = node.SubCategoties?.IndexOf(target) ?? -1
+                                        select (node, pos))
             {
-                var pos = node.SubCategoties?.IndexOf(target) ?? -1;
                 if (pos >= 0) return (node.SubCategoties, pos);
                 if (node.SubCategoties?.Count > 0)
                 {
@@ -126,6 +143,7 @@ namespace Financier.Desktop.ViewModel
                     if (result.siblings != null) return result;
                 }
             }
+
             return (null, -1);
         }
 

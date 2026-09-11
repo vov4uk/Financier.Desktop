@@ -5,7 +5,7 @@ namespace Financier.Desktop.Helpers
 {
     public interface IDialogWrapper
     {
-        object ShowDialog<T>(DialogBaseVM context, double height, double width, string title = null!)
+        object ShowDialog<T>(DialogBaseVM context, double height, double width, string title = null)
             where T : System.Windows.Controls.UserControl, new();
 
         string OpenFileDialog(string fileExtention);

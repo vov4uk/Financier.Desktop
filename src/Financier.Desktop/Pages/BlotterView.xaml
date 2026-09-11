@@ -8,6 +8,7 @@
              xmlns:loc="clr-namespace:Financier.Common.Localization;assembly=Financier.Common"
              xmlns:filters="clr-namespace:Financier.Common.Filters;assembly=Financier.Common"
              xmlns:converters="clr-namespace:Financier.Converters;assembly=Financier.Common"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              d:DesignHeight="480"
              d:DesignWidth="1000">
@@ -20,12 +21,18 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Expander Margin="5"
+                  Grid.Row="0"
                   Grid.Column="1"
+                  Grid.RowSpan="2"
                   IsExpanded="True"
                   Background="Transparent"
                   ExpandDirection="Left">
@@ -68,17 +75,28 @@
 
             </StackPanel>
         </Expander>
-        <DataGrid Grid.Column="0"
+        <DataGrid Grid.Row="0"
+                  Grid.Column="0"
                   Margin="5"
+                  x:Name="TransactionsGrid"
                   IsSynchronizedWithCurrentItem="True"
                   ItemsSource="{Binding Path=Entities}"
                   AutoGenerateColumns="False"
-                  SelectedItem="{Binding SelectedValue}"
+                  SelectedItem="{Binding SelectedValue, UpdateSourceTrigger=Default}"
                   ScrollViewer.CanContentScroll="True"
                   IsReadOnly="True"
                   CanUserAddRows="false"
                   dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                  SelectionUnit="FullRow"
+                  SelectionMode="Extended"
+                  ClipboardCopyMode="ExcludeHeader"
                   FontSize="14">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectedCellsChanged">
+                    <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}"
+                                           CommandParameter="{Binding SelectedCells, ElementName=TransactionsGrid}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <DataGrid.InputBindings>
                 <MouseBinding
                     MouseAction="LeftDoubleClick"
@@ -89,6 +107,7 @@
                 <DataGridTextColumn Binding="{Binding Path=Id}"
                                     dgx:DataGridFilterColumn.IsFilterVisible="False" />
                 <DataGridTemplateColumn Header=""
+                                        ClipboardContentBinding="{Binding Path=Type}"
                                         dgx:DataGridFilterColumn.IsFilterVisible="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -112,7 +131,8 @@
                                     Binding="{Binding Path=Datetime, Converter= {StaticResource DatetimeConverter}}" />
                 <DataGridTextColumn Header=""
                                     Binding="{Binding Path=AccountTitle}" />
-                <DataGridTemplateColumn Header="">
+                <DataGridTemplateColumn Header=""
+                                        ClipboardContentBinding="{Binding Path=TransactionTitle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -137,7 +157,8 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="{loc:Translate Key=amount}"
-                                        dgx:DataGridFilterColumn.IsFilterVisible="False">
+                                        dgx:DataGridFilterColumn.IsFilterVisible="False"
+                                        ClipboardContentBinding="{Binding Path=AmountClipboardText}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Name="MyText" Text="{Binding Path=AmountTitle}"
@@ -170,5 +191,18 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Border Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="1"
+                Margin="5,0,5,5"
+                Padding="6,3"
+                Background="#FFF0F0F0"
+                BorderBrush="#FFCCCCCC"
+                BorderThickness="1">
+            <TextBlock Text="{Binding SelectionSummary}"
+                       FontSize="14"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Right" />
+        </Border>
     </Grid>
 </UserControl>

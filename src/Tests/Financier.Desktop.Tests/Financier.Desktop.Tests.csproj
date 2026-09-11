@@ -20,6 +20,7 @@
         <PackageReference Include="AutoFixture.AutoMoq" />
         <PackageReference Include="AutoFixture.Xunit3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Microsoft.Testing.Platform.MSBuild" />
         <PackageReference Include="Moq" />
         <PackageReference Include="StyleCop.Analyzers" Condition="'$(Configuration)'=='Debug'">
             <PrivateAssets>all</PrivateAssets>

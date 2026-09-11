@@ -33,8 +33,6 @@ namespace Financier.Reports.Tests
             this.vm.EndYearMonths = new YearMonths();
         }
 
-        // ── GetSql ───────────────────────────────────────────────────────────────
-
         [Fact]
         public void GetPlotModel_FirstAxisIsDateTimeAxis()
         {
@@ -119,7 +117,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(300.0, lineSeries.Points[2].Y);
         }
 
-        // ── GetPlotModel ─────────────────────────────────────────────────────────
         [Fact]
         public void GetPlotModel_SecondAxisIsLinearAxis()
         {
@@ -138,7 +135,7 @@ namespace Financier.Reports.Tests
             {
                 new TestModel(year: 2024, month: 1, day: 15, total: 1000.0),
                 new TestModel(year: 2024, month: 2, day: 10, total: 1200.0),
-                new TestModel(year: 2024, month: 3, day: 5,  total:  900.0),
+                new TestModel(year: 2024, month: 3, day: 5,  total: 900.0),
             };
 
             var model = testVm.TestGetPlotModel(items);
@@ -176,8 +173,6 @@ namespace Financier.Reports.Tests
 
             Assert.NotEmpty(sql);
         }
-
-        // ── RefreshDataCommand ───────────────────────────────────────────────────
 
         [Fact]
         public async Task RefreshDataCommand_EmptyData_EntitiesIsEmpty()
@@ -219,8 +214,6 @@ namespace Financier.Reports.Tests
             Assert.Equal(2, this.vm.Entities.Count);
         }
 
-        // ── Helper methods ───────────────────────────────────────────────────────
-
         private TestableVM CreateTestableVM()
         {
             var testVm = new TestableVM(this.dbMock.Object);
@@ -229,11 +222,10 @@ namespace Financier.Reports.Tests
             return testVm;
         }
 
-        // ── Helper types ─────────────────────────────────────────────────────────
-
         private sealed class TestableVM : ReportDynamicRestVM
         {
-            public TestableVM(IFinancierDatabase db) : base(db)
+            public TestableVM(IFinancierDatabase db)
+                : base(db)
             {
             }
 

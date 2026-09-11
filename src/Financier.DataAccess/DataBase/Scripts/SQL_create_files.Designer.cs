@@ -19,7 +19,7 @@ namespace Financier.DataAccess.DataBase.Scripts {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class SQL_create_files {
@@ -97,8 +97,6 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///	attribute_id integer not null,
         ///	value text
         ///);
-        ///
-        ///cre [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string attributes {
             get {
@@ -209,8 +207,6 @@ namespace Financier.DataAccess.DataBase.Scripts {
         ///	latitude double,
         ///	longitude double
         ///);
-        ///	
-        ///create index if not exists transaction_from_act_idx O [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string transaction {
             get {

@@ -17,13 +17,13 @@ namespace Financier.Desktop.ViewModel.Dialog
         public TransferControlVM(TransferDto transfer)
         {
             Transfer = transfer;
-            Transfer.PropertyChanged += TransferPropertyChanged!;
+            Transfer.PropertyChanged += TransferPropertyChanged;
             transfer.RecalculateRate();
         }
 
         public TransferDto Transfer { get; }
 
-        public DelegateCommand ClearNotesCommand => _clearNotesCommand ??= new DelegateCommand(() => { Transfer.Note = default!; });
+        public DelegateCommand ClearNotesCommand => _clearNotesCommand ??= new DelegateCommand(() => { Transfer.Note = default; });
 
         public override object OnRequestSave() => Transfer;
 

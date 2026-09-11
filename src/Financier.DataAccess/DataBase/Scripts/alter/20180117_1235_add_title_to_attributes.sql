@@ -1,9 +1,9 @@
 create table if not exists attributes_t (
-	_id integer primary key autoincrement,
-	type integer not null default 1,
-	title text,
-	list_values text,
-	default_value text
+    _id integer primary key autoincrement,
+    type integer not null default 1,
+    title text,
+    list_values text,
+    default_value text
 );
 
 INSERT INTO attributes_t (_id, type, title, list_values, default_value)

@@ -7,11 +7,11 @@
     using System.Threading.Tasks;
     using Financier.Adapter;
     using Financier.Common.Entities;
+    using Financier.Common.Localization;
     using Financier.Common.Model;
     using Financier.DataAccess.Abstractions;
     using Financier.DataAccess.Data;
     using Financier.DataAccess.View;
-    using Financier.Common.Localization;
     using Financier.Desktop.Data;
     using Financier.Desktop.Helpers;
     using Financier.Desktop.Helpers.BankHelper;
@@ -637,12 +637,12 @@
             var vm = this.GetFinancierVM();
             this.dbMock.Setup(x => x.SaveAsFile(backupPath)).Returns(Task.CompletedTask).Verifiable();
             this.dialogMock.Setup(x => x.SaveFileDialog(It.IsAny<string>(), It.IsAny<string>())).Returns(backupPath).Verifiable();
-            this.dialogMock.Setup(x => x.ShowMessageBox($"Saved {backupPath}", "Backup done.", false)).Returns(true).Verifiable();
 
             await vm.SaveBackupAsDbCommand.ExecuteAsync();
 
             this.dbMock.VerifyAll();
             this.dialogMock.VerifyAll();
+            this.toastNotifierMock.Verify(x => x.ShowMessage(It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
@@ -667,12 +667,12 @@
         {
             SettingsService.Current.Settings = new SettingsDto
             {
-                General = new SettingsGeneralDto { Language = Language.English }
+                General = new SettingsGeneralDto { Language = Language.English },
             };
 
             var updatedSettings = new SettingsDto
             {
-                General = new SettingsGeneralDto { Language = Language.English }
+                General = new SettingsGeneralDto { Language = Language.English },
             };
 
             this.dialogMock.Setup(x => x.ShowDialog<SettingsControl>(
@@ -691,12 +691,12 @@
         {
             SettingsService.Current.Settings = new SettingsDto
             {
-                General = new SettingsGeneralDto { Language = Language.English }
+                General = new SettingsGeneralDto { Language = Language.English },
             };
 
             var updatedSettings = new SettingsDto
             {
-                General = new SettingsGeneralDto { Language = Language.Ukrainian }
+                General = new SettingsGeneralDto { Language = Language.Ukrainian },
             };
 
             this.dialogMock.Setup(x => x.ShowDialog<SettingsControl>(
@@ -724,7 +724,7 @@
         {
             SettingsService.Current.Settings = new SettingsDto
             {
-                ExchangeRates = new SettingsExchangeRates { Provider = ExchangeRatesProviders.None }
+                ExchangeRates = new SettingsExchangeRates { Provider = ExchangeRatesProviders.None },
             };
 
             var vm = this.GetFinancierVM();

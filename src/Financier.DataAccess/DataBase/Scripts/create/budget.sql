@@ -1,4 +1,4 @@
-create table if not exists budget ( 
+create table if not exists budget (
     _id integer primary key autoincrement,
     title text,
     category_id long not null,

@@ -71,8 +71,16 @@
     <EmbeddedResource Include="DataBase\Scripts\alter\20171230_1852_alter_electronic_account_type.sql" />
     <EmbeddedResource Include="DataBase\Scripts\alter\20180117_1235_add_title_to_attributes.sql" />
     <EmbeddedResource Include="DataBase\Scripts\alter\20180301_0101_added_order_column_to_smstemplates.sql" />
-    <EmbeddedResource Include="DataBase\Scripts\alter\20180301_0202_add_sort_order_to_all_entities.sql" />
-    <EmbeddedResource Include="DataBase\Scripts\alter\20220901_1220_add_lastaccounttransactionid.sql" />    
+    <EmbeddedResource Include="DataBase\Scripts\alter\20180301_0202_add_sort_order_to_all_entities.sql" />    
+    <EmbeddedResource Include="DataBase\Scripts\alter\20241228_0500_alter_sms_template_add_payee_project.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20250802_0155_add_currency_number_format.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20260613_0251_alter_sms_template_add_description.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20250709_1950_account_icon_color_separator.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20260628_0122_add_currency_trading_currency.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20260711_0458_add_transaction_parent_account_id.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20260712_0855_recreate_transactions_parent_id_idx.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20260719_0330_add_is_include_into_reports_to_account.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\alter\20260905_0241_add_payee_locations_alias.sql" />
     <EmbeddedResource Include="DataBase\Scripts\create\account.sql" />
     <EmbeddedResource Include="DataBase\Scripts\create\attributes.sql" />
     <EmbeddedResource Include="DataBase\Scripts\create\budget.sql" />
@@ -95,24 +103,18 @@
     <EmbeddedResource Include="DataBase\Scripts\view\062[v_report_location].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\063[v_report_project].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\064[v_report_payee].sql" />
-    <EmbeddedResource Include="DataBase\Scripts\view\084[v_report_transactions].sql" />
-    <EmbeddedResource Include="DataBase\Scripts\view\083[v_account].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\081[v_currency_exchange_rate].sql" />
     <EmbeddedResource Include="DataBase\Scripts\view\080[v_transaction_attributes].sql" />
-    <EmbeddedResource Include="DataBase\Scripts\alter\20241228_0500_alter_sms_template_add_payee_project.sql" />
-    <EmbeddedResource Include="DataBase\Scripts\alter\20250802_0155_add_currency_number_format.sql" />
-    <EmbeddedResource Include="DataBase\Scripts\alter\20260613_0251_alter_sms_template_add_description.sql" />
-    <EmbeddedResource Include="DataBase\Scripts\alter\20250709_1950_account_icon_color_separator.sql" />
+    <EmbeddedResource Include="DataBase\Scripts\view\084[v_report_transactions].sql" />
+    <EmbeddedResource Include="DataBase\Scripts\view\090[v_exchange_rate].sql" />
+    <EmbeddedResource Include="DataBase\Scripts\view\091[v_account].sql" />
+    <EmbeddedResource Include="DataBase\Scripts\view\092[v_account_with_separator].sql" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="NLog" />
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
-    <PackageReference Include="SQLitePCLRaw.core" />
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" />
-    <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" />
   </ItemGroup>
 
   <ItemGroup>

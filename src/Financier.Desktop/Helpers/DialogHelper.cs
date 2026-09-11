@@ -11,10 +11,10 @@ namespace Financier.Desktop.Helpers
     public class DialogHelper : IDialogWrapper
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        public object ShowDialog<T>(DialogBaseVM context, double height, double width, string title = null!)
+        public object ShowDialog<T>(DialogBaseVM context, double height, double width, string title = null)
             where T : System.Windows.Controls.UserControl, new()
         {
-            object result = null!;
+            object result = null;
             var dialog = new Window
             {
                 Content = new T() { DataContext = context },
@@ -34,18 +34,18 @@ namespace Financier.Desktop.Helpers
             };
             context.RequestSave += (sender, _) =>
             {
-                result = sender!;
+                result = sender;
                 dialog.Close();
                 Logger.Info($"{typeof(T).Name} dialog save clicked");
             };
             dialog.ShowDialog();
-            return result!;
+            return result;
         }
 
         public object ShowWizard(WizardBaseVM context)
         {
             bool save = false;
-            object result = null!;
+            object result = null;
             WizardWindow dialog = new WizardWindow()
             {
                 Language = System.Windows.Markup.XmlLanguage.GetLanguage(LocalizationService.Instance.CurrentCulture.IetfLanguageTag)
@@ -55,12 +55,12 @@ namespace Financier.Desktop.Helpers
             {
                 dialog.Close();
                 save = args;
-                result = sender!;
+                result = sender;
             };
             dialog.DataContext = context;
             dialog.ShowDialog();
 
-            return save ? result! : null!;
+            return save ? result : null;
         }
 
         public string OpenFileDialog(string fileExtention)
@@ -95,7 +95,7 @@ namespace Financier.Desktop.Helpers
         {
             if (yesNoButtons)
             {
-                var result = System.Windows.MessageBox.Show(text, caption, MessageBoxButton.YesNo);
+                var result = MessageBox.Show(text, caption, MessageBoxButton.YesNo);
                 return result == MessageBoxResult.Yes;
             }
 

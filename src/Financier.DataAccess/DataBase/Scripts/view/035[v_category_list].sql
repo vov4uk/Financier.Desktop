@@ -1,5 +1,5 @@
 CREATE VIEW v_category_list AS
-SELECT 
+SELECT
     B._id AS parent_id,
     B.title AS parent_title,
     B.left AS parent_left,

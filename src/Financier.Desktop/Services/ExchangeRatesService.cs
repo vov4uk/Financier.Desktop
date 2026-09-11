@@ -385,13 +385,13 @@ namespace Financier.Desktop.Services
         public static (long UpdatedOn, float Rate) ParseExchangeRateJson(string json)
         {
             var obj = JObject.Parse(json);
-            var updated = long.Parse(obj["updated"]!.Value<string>()!);
+            var updated = long.Parse(obj["updated"].Value<string>());
 
             // Find the currency key (any key that's not "updated")
             var currencyProperty = obj.Properties()
                 .FirstOrDefault(p => p.Name != "updated");
 
-            return (updated, currencyProperty!.Value.Value<float>());
+            return (updated, currencyProperty.Value.Value<float>());
         }
 
         private sealed class OpenExchangeCurrencyRates

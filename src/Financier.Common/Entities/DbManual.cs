@@ -31,6 +31,7 @@ namespace Financier.Common.Entities
         private static Dictionary<string, Mcc> _mccTitles;
         private static Dictionary<int, Mcc> _mccCodes;
         private static Dictionary<int, ProjectModel> _projectIds;
+        private static Dictionary<int, CurrencyModel> _currencyIds;
         private static List<List<string>> _allCurrencies;
 
         public static async Task SetupAsync(IFinancierDatabase financierDatabase)
@@ -111,6 +112,8 @@ ORDER  BY LEFT,
                 {
                     Name = Localization.LocalizationService.Instance.all_currencies
                 });
+
+                _currencyIds = _currencies.Where(c => c.Id.HasValue).ToDictionary(c => c.Id.Value, c => c);
             }
 
             if (_payee == null)
@@ -180,6 +183,8 @@ ORDER  BY 1 DESC ");
         public static List<ProjectModel> Project => _project ?? new();
 
         public static Dictionary<int, ProjectModel> ProjectIds => _projectIds ?? new();
+
+        public static Dictionary<int, CurrencyModel> CurrencyIds => _currencyIds ?? new();
 
         public static List<YearMonths> YearMonths => _yearMonths ?? new();
 
@@ -282,6 +287,7 @@ ORDER  BY 1 DESC ");
             _category = null;
             _topCategory = null;
             _currencies = null;
+            _currencyIds = null;
             _payee = null;
             _project = null;
             _yearMonths = null;
@@ -299,7 +305,7 @@ ORDER  BY 1 DESC ");
                 case nameof(Account):          _accounts = null; break;
                 case nameof(MCCEnums):         _mccEnums = null; break;
                 case nameof(MCCTitles):        _mccTitles = null; break;
-                case nameof(Currencies):       _currencies = null; break;
+                case nameof(Currencies):       _currencies = null; _currencyIds = null; break;
                 case nameof(Category):         _category = null; _topCategory = null; break;
                 default:
                     break;
@@ -359,6 +365,7 @@ ORDER  BY 1 DESC ");
         internal static void SetupTests(List<CurrencyModel> cur)
         {
             _currencies = cur;
+            _currencyIds = cur.Where(c => c.Id.HasValue).ToDictionary(c => c.Id.Value, c => c);
         }
 
         internal static void SetupTests(List<AccountFilterModel> acc)

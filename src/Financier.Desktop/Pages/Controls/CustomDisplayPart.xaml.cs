@@ -50,7 +50,7 @@ namespace Financier.Desktop.Pages.Controls
 #nullable enable
         public event PropertyChangedEventHandler? PropertyChanged;
 #nullable disable
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             var handler = PropertyChanged;
             if (handler != null)

@@ -32,15 +32,13 @@ namespace Financier.Desktop.Views
             while (obj != null)
             {
                 if (obj is T t) return t;
-                if (obj is FrameworkContentElement)
+                if (obj is FrameworkContentElement element)
                 {
-                    obj = ((FrameworkContentElement)obj).Parent;
-                    continue;
+                    obj = element.Parent;
                 }
                 else if (obj is Visual || obj is Visual3D)
                 {
                     obj = VisualTreeHelper.GetParent(obj);
-                    continue;
                 }
                 else {
                     return null;

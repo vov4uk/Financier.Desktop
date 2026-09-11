@@ -40,14 +40,14 @@ namespace Financier.Desktop.ViewModel
 
         private async Task OnRuleDelete(int id)
         {
-            DbManual.Rules.Remove(DbManual.Rules.FirstOrDefault(r => r.Id == id)!);
+            DbManual.Rules.Remove(DbManual.Rules.FirstOrDefault(r => r.Id == id));
             await RefreshData();
         }
 
         private async Task OpenRulesDialogAsync(int id)
         {
 
-            RuleDto rule = null!;
+            RuleDto rule = null;
 
             if (id != 0)
             {
@@ -99,7 +99,7 @@ namespace Financier.Desktop.ViewModel
                 else
                 {
                     var existingRule = DbManual.Rules.FirstOrDefault(r => r.Id == id);
-                    DbManual.Rules?.Remove(existingRule!);
+                    DbManual.Rules?.Remove(existingRule);
                     newId = id;
                 }
                 DbManual.Rules?.Add(new RuleModel

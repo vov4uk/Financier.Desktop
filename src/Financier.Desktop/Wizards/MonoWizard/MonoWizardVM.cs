@@ -77,7 +77,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                     .Select(TransformMonoTransaction)
                     .ToList();
             }
-            return null!;
+            return null;
         }
 
         private Transaction TransformMonoTransaction(FinancierTransactionDto x)
@@ -93,7 +93,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 ProjectId = x.ProjectId,
                 PayeeId = x.PayeeId,
                 CategoryId = 0,
-                Category = default!,
+                Category = default,
                 DateTime = x.DateTime,
                 ToAmount = 0
             };
@@ -116,7 +116,7 @@ namespace Financier.Desktop.Wizards.MonoWizard.ViewModel
                 result.FromAccountId = x.MonoAccountId ?? 0;
                 result.CategoryId = x.CategoryId;
                 result.ToAccountId = 0;
-                result.ToAccount = default!;
+                result.ToAccount = default;
                 result.ToAmount = 0;
             }
 

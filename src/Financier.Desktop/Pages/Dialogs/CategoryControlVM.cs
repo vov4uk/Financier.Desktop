@@ -14,9 +14,15 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             Entity = entity;
             AvailableParents = availableParents;
-            _selectedParent = entity.ParentId > 0
-                ? availableParents.Find(x => x.Id == entity.ParentId)
-                : availableParents.Count > 0 ? availableParents[0] : null;
+
+            if (entity.ParentId > 0)
+            {
+                _selectedParent = availableParents.Find(x => x.Id == entity.ParentId);
+            }
+            else
+            {
+                _selectedParent = availableParents.Count > 0 ? availableParents[0] : null;
+            }
         }
 
         public CategoryDto Entity { get; }
@@ -40,7 +46,7 @@ namespace Financier.Desktop.ViewModel.Dialog
 
         public bool IsTypeEnabled => Entity.ParentId <= 0;
 
-        public DelegateCommand ClearTitleCommand => _clearTitleCommand ??= new DelegateCommand(() => Entity.Title = default!);
+        public DelegateCommand ClearTitleCommand => _clearTitleCommand ??= new DelegateCommand(() => Entity.Title = default);
 
         public override object OnRequestSave() => Entity;
     }
