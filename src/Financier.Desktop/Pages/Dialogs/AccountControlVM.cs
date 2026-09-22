@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Financier.Common.Entities;
 using Financier.Common.Model;
 using Financier.Desktop.Data;
@@ -19,7 +20,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         {
             Entity = entity;
             IsNew = isNew;
-            Currencies = DbManual.Currencies;
+            Currencies = DbManual.Currencies.Where(x => x.Id > 0).ToList();
 
             InitSelections();
 

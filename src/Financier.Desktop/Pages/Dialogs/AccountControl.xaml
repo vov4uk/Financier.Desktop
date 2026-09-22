@@ -58,6 +58,7 @@
                 <!-- Account Type -->
                 <GroupBox Grid.Row="0" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=account_type}"
+                          BorderThickness="0"
                           Margin="0,0,0,4">
                     <ComboBox ItemsSource="{Binding Source={loc:EnumBinding {x:Type ent:AccountType}}}"
                               SelectedItem="{Binding SelectedAccountType, Mode=TwoWay}" />
@@ -65,6 +66,7 @@
 
                 <!-- Title -->
                 <GroupBox Grid.Row="1" Grid.Column="0"
+                          BorderThickness="0"
                           Header="{loc:Translate Key=title}"
                           Margin="0,0,2,4">
                     <TextBox Text="{Binding Entity.Title, UpdateSourceTrigger=PropertyChanged}" />
@@ -80,6 +82,7 @@
 
                 <!-- Currency -->
                 <GroupBox Grid.Row="2" Grid.ColumnSpan="2"
+                          BorderThickness="0"
                           Header="{loc:Translate Key=currency}"
                           Margin="0,0,0,4">
                     <ComboBox ItemsSource="{Binding Currencies}"
@@ -89,6 +92,7 @@
 
                 <!-- Card Issuer (card types only) -->
                 <GroupBox Grid.Row="3" Grid.ColumnSpan="2"
+                          BorderThickness="0"
                           Header="{loc:Translate Key=card_issuer}"
                           Margin="0,0,0,4"
                           Visibility="{Binding ShowCardIssuer, Converter={StaticResource BoolToVis}}">
@@ -116,6 +120,7 @@
                 <GroupBox Grid.Row="4" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=electronic_payment_type}"
                           Margin="0,0,0,4"
+                          BorderThickness="0"
                           Visibility="{Binding ShowElectronicType, Converter={StaticResource BoolToVis}}">
                     <ComboBox ItemsSource="{Binding Source={loc:EnumBinding {x:Type ent:ElectronicType}}}"
                               SelectedItem="{Binding SelectedElectronicType, Mode=TwoWay}">
@@ -141,6 +146,7 @@
                 <GroupBox Grid.Row="5" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=issuer}"
                           Margin="0,0,0,4"
+                          BorderThickness="0"
                           Visibility="{Binding ShowIssuer, Converter={StaticResource BoolToVis}}">
                     <TextBox Text="{Binding Entity.Issuer, UpdateSourceTrigger=PropertyChanged}" />
                 </GroupBox>
@@ -149,6 +155,7 @@
                 <GroupBox Grid.Row="6" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=card_number}"
                           Margin="0,0,0,4"
+                          BorderThickness="0"
                           Visibility="{Binding ShowNumber, Converter={StaticResource BoolToVis}}">
                     <TextBox Text="{Binding Entity.Number, UpdateSourceTrigger=PropertyChanged}" />
                 </GroupBox>
@@ -157,6 +164,7 @@
                 <GroupBox Grid.Row="7" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=limit_amount}"
                           Margin="0,0,0,4"
+                          BorderThickness="0"
                           Visibility="{Binding ShowCreditCardFields, Converter={StaticResource BoolToVis}}">
                     <TextBox Text="{Binding Entity.LimitAmount, UpdateSourceTrigger=PropertyChanged}" />
                 </GroupBox>
@@ -165,6 +173,7 @@
                 <GroupBox Grid.Row="8" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=closing_day}"
                           Margin="0,0,0,4"
+                          BorderThickness="0"
                           Visibility="{Binding ShowCreditCardFields, Converter={StaticResource BoolToVis}}">
                     <TextBox Text="{Binding Entity.ClosingDay, UpdateSourceTrigger=PropertyChanged}" />
                 </GroupBox>
@@ -173,6 +182,7 @@
                 <GroupBox Grid.Row="9" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=payment_day}"
                           Margin="0,0,0,4"
+                          BorderThickness="0"
                           Visibility="{Binding ShowCreditCardFields, Converter={StaticResource BoolToVis}}">
                     <TextBox Text="{Binding Entity.PaymentDay, UpdateSourceTrigger=PropertyChanged}" />
                 </GroupBox>
@@ -181,6 +191,7 @@
                 <GroupBox Grid.Row="10" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=opening_amount}"
                           Margin="0,0,0,4"
+                          BorderThickness="0"
                           Visibility="{Binding IsNew, Converter={StaticResource BoolToVis}}">
                     <TextBox Text="{Binding Entity.OpeningAmount, UpdateSourceTrigger=PropertyChanged}" />
                 </GroupBox>
@@ -188,6 +199,7 @@
                 <!-- Note -->
                 <GroupBox Grid.Row="11" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=note}"
+                          BorderThickness="0"
                           Margin="0,0,0,4">
                     <TextBox Text="{Binding Entity.Note, UpdateSourceTrigger=PropertyChanged}"
                              MinLines="2"
@@ -198,6 +210,7 @@
                 <!-- Sort Order -->
                 <GroupBox Grid.Row="12" Grid.ColumnSpan="2"
                           Header="{loc:Translate Key=sort_order}"
+                          BorderThickness="0"
                           Margin="0,0,0,4">
                     <TextBox Text="{Binding Entity.SortOrder, UpdateSourceTrigger=PropertyChanged}" />
                 </GroupBox>
