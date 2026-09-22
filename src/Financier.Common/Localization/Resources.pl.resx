@@ -171,6 +171,9 @@
   <data name="exchange_rates" xml:space="preserve">
     <value>Kursy wymiany</value>
   </data>
+  <data name="tags" xml:space="preserve">
+    <value>Tagi</value>
+  </data>
   <data name="blotter" xml:space="preserve">
     <value>Operacje</value>
   </data>

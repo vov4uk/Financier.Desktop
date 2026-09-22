@@ -65,6 +65,7 @@ namespace Financier.Desktop.ViewModel
         private PayeesVM payeesVm;
         private ProjectsVM projectsVm;
         private RulesVM rulesVm;
+        private TagsVM tagsVm;
 
         public MainWindowVM(IDialogWrapper dialogWrapper,
             IFinancierDatabaseFactory dbFactory,
@@ -84,6 +85,12 @@ namespace Financier.Desktop.ViewModel
             db = dbFactory.CreateDatabase();
 
             CreatePages();
+
+            LocalizationService.Instance.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == "Item[]")
+                    RaisePropertyChanged(nameof(CurrentPageHeader));
+            };
         }
 
         public AccountsVM Accounts
@@ -117,35 +124,36 @@ namespace Financier.Desktop.ViewModel
             {
                 SetProperty(ref currentPage, value, nameof(CurrentPage));
                 Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
-                RaisePropertyChanged(nameof(IsAccountPageSelected));
-                RaisePropertyChanged(nameof(IsCategoryPageSelected));
-                RaisePropertyChanged(nameof(IsCurrencyPageSelected));
                 RaisePropertyChanged(nameof(IsTransactionPageSelected));
-                RaisePropertyChanged(nameof(IsLocationPageSelected));
-                RaisePropertyChanged(nameof(IsProjectPageSelected));
-                RaisePropertyChanged(nameof(IsPayeePageSelected));
-                RaisePropertyChanged(nameof(IsRulesPageSelected));
                 RaisePropertyChanged(nameof(IsExchangeRatesPageSelected));
+                RaisePropertyChanged(nameof(IsCrudPageSelected));
+                RaisePropertyChanged(nameof(CanDeleteCurrentPage));
+                RaisePropertyChanged(nameof(CurrentPageHeader));
             }
         }
 
-        public bool IsAccountPageSelected => currentPage is AccountsVM;
-
-        public bool IsCategoryPageSelected => currentPage is CategoriesVM;
-
-        public bool IsCurrencyPageSelected => currentPage is CurrenciesVM;
-
-        public bool IsLocationPageSelected => currentPage is LocationsVM;
-
-        public bool IsPayeePageSelected => currentPage is PayeesVM;
-
-        public bool IsProjectPageSelected => currentPage is ProjectsVM;
-
         public bool IsTransactionPageSelected => currentPage is BlotterVM;
 
-        public bool IsRulesPageSelected => currentPage is RulesVM;
-
         public bool IsExchangeRatesPageSelected => currentPage is ExchangeRatesVM;
+
+        public bool IsCrudPageSelected =>
+            currentPage is AccountsVM or CategoriesVM or LocationsVM or ProjectsVM or PayeesVM or TagsVM or RulesVM or CurrenciesVM;
+
+        public bool CanDeleteCurrentPage =>
+            currentPage is not (CategoriesVM or LocationsVM or PayeesVM or ProjectsVM or TagsVM);
+
+        public string CurrentPageHeader => currentPage switch
+        {
+            AccountsVM => LocalizationService.Instance["account"],
+            CategoriesVM => LocalizationService.Instance["categories"],
+            LocationsVM => LocalizationService.Instance["locations"],
+            ProjectsVM => LocalizationService.Instance["project"],
+            PayeesVM => LocalizationService.Instance["payee"],
+            TagsVM => LocalizationService.Instance["tags"],
+            RulesVM => LocalizationService.Instance["rule"],
+            CurrenciesVM => LocalizationService.Instance["currencies"],
+            _ => null,
+        };
 
         public string OpenBackupPath
         {
@@ -174,6 +182,12 @@ namespace Financier.Desktop.ViewModel
         {
             get => projectsVm;
             private set => SetProperty(ref projectsVm, value);
+        }
+
+        public TagsVM Tags
+        {
+            get => tagsVm;
+            private set => SetProperty(ref tagsVm, value);
         }
 
         public RulesVM Rules
@@ -298,6 +312,7 @@ namespace Financier.Desktop.ViewModel
             Payees = null;
             Projects = null;
             Rules = null;
+            Tags = null;
         }
 
         private void CreatePages()
@@ -310,6 +325,7 @@ namespace Financier.Desktop.ViewModel
             Payees = new PayeesVM(db, dialogWrapper);
             Projects = new ProjectsVM(db, dialogWrapper);
             Rules = new RulesVM(db, dialogWrapper);
+            Tags = new TagsVM(db, dialogWrapper);
 
             _pages.TryAdd(typeof(AccountModel), Accounts);
             _pages.TryAdd(typeof(BlotterModel), Blotter);
@@ -319,6 +335,7 @@ namespace Financier.Desktop.ViewModel
             _pages.TryAdd(typeof(PayeeModel), Payees);
             _pages.TryAdd(typeof(ProjectModel), Projects);
             _pages.TryAdd(typeof(RuleModel), Rules);
+            _pages.TryAdd(typeof(TagModel), Tags);
         }
 
         private BindableBase GetOrCreatePage(Type type)
@@ -343,6 +360,8 @@ namespace Financier.Desktop.ViewModel
                     return GetOrCreatePage<ExchangeRateModel, ExchangeRatesVM>();
                 case nameof(RuleModel):
                     return Rules ??= GetOrCreatePage<RuleModel, RulesVM>();
+                case nameof(TagModel):
+                    return Tags ??= GetOrCreatePage<TagModel, TagsVM>();
                 case nameof(ReportsControlVM):
                     return _pages.GetOrAdd(type, _ => new ReportsControlVM(db));
 

@@ -52,6 +52,7 @@
         private Mock<IBaseRepository<Payee>> payeeMock;
         private Mock<IBaseRepository<Project>> projMock;
         private Mock<IBaseRepository<SmsTemplate>> smsMock;
+        private Mock<IBaseRepository<Tag>> tagMock;
         private Mock<IBaseRepository<TransactionAttribute>> trAMock;
         private Mock<IBaseRepository<Transaction>> trMock;
 
@@ -234,11 +235,11 @@
             await vm.MenuNavigateCommand.ExecuteAsync(typeof(BlotterModel));
             Assert.True(vm.IsTransactionPageSelected);
             await vm.MenuNavigateCommand.ExecuteAsync(typeof(LocationModel));
-            Assert.True(vm.IsLocationPageSelected);
+            Assert.True(vm.CurrentPage is LocationsVM);
             await vm.MenuNavigateCommand.ExecuteAsync(typeof(ProjectModel));
-            Assert.True(vm.IsProjectPageSelected);
+            Assert.True(vm.CurrentPage is ProjectsVM);
             await vm.MenuNavigateCommand.ExecuteAsync(typeof(PayeeModel));
-            Assert.True(vm.IsPayeePageSelected);
+            Assert.True(vm.CurrentPage is PayeesVM);
             await vm.MenuNavigateCommand.ExecuteAsync(typeof(ExchangeRateModel));
             Assert.True(vm.CurrentPage is ExchangeRatesVM);
         }
@@ -600,6 +601,7 @@
             this.locMock = new ();
             this.payeeMock = new ();
             this.projMock = new ();
+            this.tagMock = new ();
             this.trMock = new ();
             this.adMock = new ();
             this.caMock = new ();
@@ -616,6 +618,7 @@
             this.SetupRepo(this.locMock);
             this.SetupRepo(this.payeeMock);
             this.SetupRepo(this.projMock);
+            this.SetupRepo(this.tagMock);
             this.SetupRepo(this.adMock);
             this.SetupRepo(this.caMock);
             this.SetupRepo(this.cccdMock);
@@ -769,7 +772,7 @@
         }
 
         [Fact]
-        public async Task MenuNavigateCommand_AccountModel_IsAccountPageSelected()
+        public async Task MenuNavigateCommand_AccountModel_SetsCurrentPage()
         {
             await this.SetupDbManual();
 
@@ -787,38 +790,38 @@
             var vm = this.GetFinancierVM();
             await vm.MenuNavigateCommand.ExecuteAsync(typeof(AccountModel));
 
-            Assert.True(vm.IsAccountPageSelected);
+            Assert.True(vm.CurrentPage is AccountsVM);
         }
 
         [Fact]
-        public async Task MenuNavigateCommand_CurrencyModel_IsCurrencyPageSelected()
+        public async Task MenuNavigateCommand_CurrencyModel_SetsCurrentPage()
         {
             await this.SetupDbManual();
 
             var vm = this.GetFinancierVM();
             await vm.MenuNavigateCommand.ExecuteAsync(typeof(CurrencyModel));
 
-            Assert.True(vm.IsCurrencyPageSelected);
+            Assert.True(vm.CurrentPage is CurrenciesVM);
         }
 
         [Fact]
-        public async Task MenuNavigateCommand_CategoryTreeModel_IsCategoryPageSelected()
+        public async Task MenuNavigateCommand_CategoryTreeModel_SetsCurrentPage()
         {
             await this.SetupDbManual();
 
             var vm = this.GetFinancierVM();
             await vm.MenuNavigateCommand.ExecuteAsync(typeof(CategoryTreeModel));
 
-            Assert.True(vm.IsCategoryPageSelected);
+            Assert.True(vm.CurrentPage is CategoriesVM);
         }
 
         [Fact]
-        public async Task MenuNavigateCommand_RuleModel_IsRulesPageSelected()
+        public async Task MenuNavigateCommand_RuleModel_SetsCurrentPage()
         {
             var vm = this.GetFinancierVM();
             await vm.MenuNavigateCommand.ExecuteAsync(typeof(RuleModel));
 
-            Assert.True(vm.IsRulesPageSelected);
+            Assert.True(vm.CurrentPage is RulesVM);
         }
 
         private MainWindowVM GetFinancierVM() => new MainWindowVM(this.dialogMock.Object, this.dbFactoryMock.Object, this.entityReaderMock.Object, this.backupWriterMock.Object, this.toastNotifierMock.Object, this.bankMock.Object, null);
@@ -830,6 +833,7 @@
             this.dbMock.Setup(x => x.ExecuteQuery<CurrencyModel>(It.IsAny<string>())).ReturnsAsync(new List<CurrencyModel>() { new CurrencyModel() });
             this.dbMock.Setup(x => x.ExecuteQuery<PayeeModel>(It.IsAny<string>())).ReturnsAsync(new List<PayeeModel>() { new PayeeModel() });
             this.dbMock.Setup(x => x.ExecuteQuery<ProjectModel>(It.IsAny<string>())).ReturnsAsync(new List<ProjectModel>() { new ProjectModel() });
+            this.dbMock.Setup(x => x.ExecuteQuery<TagModel>(It.IsAny<string>())).ReturnsAsync(new List<TagModel>() { new TagModel() });
             this.dbMock.Setup(x => x.ExecuteQuery<YearMonths>(It.IsAny<string>())).ReturnsAsync(new List<YearMonths>() { new YearMonths() });
             this.dbMock.Setup(x => x.ExecuteQuery<Years>(It.IsAny<string>())).ReturnsAsync(new List<Years>() { new Years() });
             this.dbMock.Setup(x => x.ExecuteQuery<LocationModel>(It.IsAny<string>())).ReturnsAsync(new List<LocationModel>() { new LocationModel() });

@@ -171,6 +171,9 @@
   <data name="exchange_rates" xml:space="preserve">
     <value>Обмінні курси</value>
   </data>
+  <data name="tags" xml:space="preserve">
+    <value>Теги</value>
+  </data>
   <data name="blotter" xml:space="preserve">
     <value>Журнал</value>
   </data>

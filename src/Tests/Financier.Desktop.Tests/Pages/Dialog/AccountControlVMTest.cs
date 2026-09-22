@@ -55,9 +55,22 @@ namespace Financier.Desktop.Tests.Pages.Dialog
         [Fact]
         public void Constructor_SetsCurrencies_FromDbManual()
         {
-            DbManual.SetupTests(new List<CurrencyModel>());
+            var currency = MakeCurrency(id: 1);
+            DbManual.SetupTests(new List<CurrencyModel> { currency });
+
             var vm = new AccountControlVM(CreateEntity(), isNew: true);
-            Assert.Same(DbManual.Currencies, vm.Currencies);
+
+            Assert.Equal(new[] { currency }, vm.Currencies);
+        }
+
+        [Fact]
+        public void Constructor_SetsCurrencies_ExcludesNonPositiveIds()
+        {
+            DbManual.SetupTests(new List<CurrencyModel> { new CurrencyModel { Id = 0 }, new CurrencyModel { Id = null } });
+
+            var vm = new AccountControlVM(CreateEntity(), isNew: true);
+
+            Assert.Empty(vm.Currencies);
         }
 
         [Fact]
