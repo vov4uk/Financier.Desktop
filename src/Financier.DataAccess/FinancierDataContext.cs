@@ -33,6 +33,7 @@ namespace Financier.DataAccess
         public DbSet<Project> Projects { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Payee> Payees { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<CCardClosingDate> CCardClosingDates { get; set; }
         public DbSet<SmsTemplate> SmsTemplates { get; set; }
         public DbSet<CurrencyExchangeRate> ExchangeRates { get; set; }

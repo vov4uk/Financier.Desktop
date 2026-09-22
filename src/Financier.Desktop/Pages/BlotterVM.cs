@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace Financier.Desktop.ViewModel
         private PayeeModel _payee;
         private ProjectModel _project;
         private LocationModel _location;
+        private ObservableCollection<TagModel> _tags = new ObservableCollection<TagModel>();
 
         public BlotterVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
             : base(db, dialogWrapper)
@@ -131,6 +133,16 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
+        public ObservableCollection<TagModel> SelectedTags
+        {
+            get => _tags;
+            set
+            {
+                _tags = value ?? new ObservableCollection<TagModel>();
+                RaisePropertyChanged(nameof(SelectedTags));
+            }
+        }
+
         public IAsyncCommand AddTemplateCommand => _addTemplateCommand ??= new AsyncCommand(() => Task.CompletedTask, () => false);
 
         public IAsyncCommand AddTransferCommand => _addTransferCommand ??= new AsyncCommand(AddTransfer);
@@ -182,6 +194,7 @@ namespace Financier.Desktop.ViewModel
             Payee = default;
             Project = default;
             Location = default;
+            SelectedTags = new ObservableCollection<TagModel>();
             await RefreshDataCommand.ExecuteAsync();
         }
 
@@ -449,6 +462,19 @@ namespace Financier.Desktop.ViewModel
                 predicate = predicate.And(x => x.LocationId == _location.Id);
             }
 
+            var tagTitles = SelectedTags.Where(t => !string.IsNullOrWhiteSpace(t?.Title)).Select(t => t.Title).ToList();
+            if (tagTitles.Count > 0)
+            {
+                Expression<Func<BlotterTransactions, bool>> tagsPredicate = null;
+                foreach (var title in tagTitles)
+                {
+                    Expression<Func<BlotterTransactions, bool>> hasTag = x => x.Tags != null && x.Tags.Contains(title);
+                    tagsPredicate = tagsPredicate == null ? hasTag : tagsPredicate.Or(hasTag);
+                }
+
+                predicate = predicate.And(tagsPredicate);
+            }
+
             var items = await repo.FindManyAndProjectAsync(
                 predicate: predicate,
                 projection: x => new BlotterModel
@@ -465,6 +491,7 @@ namespace Financier.Desktop.ViewModel
                     Project = x.ProjectId > 0 ? DbManual.ProjectIds.GetValueOrDefault(x.ProjectId.Value) : default,
                     Location = x.Location,
                     Payee = x.Payee,
+                    Tags = x.Tags,
                     Note = x.Note,
                     FromAmount = x.FromAmount,
                     ToAmount = x.ToAmount,

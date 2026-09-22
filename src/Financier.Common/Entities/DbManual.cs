@@ -24,6 +24,7 @@ namespace Financier.Common.Entities
         private static List<CurrencyModel> _currencies;
         private static List<PayeeModel> _payee;
         private static List<ProjectModel> _project;
+        private static List<TagModel> _tag;
         private static List<YearMonths> _yearMonths;
         private static List<Years> _years;
         private static List<RuleModel> _rules = new List<RuleModel>();
@@ -145,6 +146,19 @@ ORDER  BY is_active DESC, title ASC");
 
             }
 
+            if (_tag == null)
+            {
+                var tags = await financierDatabase.ExecuteQuery<TagModel>(@"
+SELECT _id,
+       title,
+       is_active,
+       sort_order
+FROM   tag
+WHERE  title IS NOT NULL
+ORDER  BY is_active DESC, title ASC");
+                _tag = [.. tags];
+            }
+
             if (_yearMonths == null)
             {
                 var yearMonths = await financierDatabase.ExecuteQuery<YearMonths>(@"
@@ -181,6 +195,8 @@ ORDER  BY 1 DESC ");
         public static List<PayeeModel> Payee => _payee ?? new ();
 
         public static List<ProjectModel> Project => _project ?? new();
+
+        public static List<TagModel> Tag => _tag ?? new();
 
         public static Dictionary<int, ProjectModel> ProjectIds => _projectIds ?? new();
 
@@ -290,6 +306,7 @@ ORDER  BY 1 DESC ");
             _currencyIds = null;
             _payee = null;
             _project = null;
+            _tag = null;
             _yearMonths = null;
             _years = null;
             _location = null;

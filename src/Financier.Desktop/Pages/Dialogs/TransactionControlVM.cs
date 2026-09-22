@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Financier.Common.Entities;
 using Financier.Common.Localization;
+using Financier.Common.Model;
 using Financier.Desktop.Data;
 using Financier.Desktop.Helpers;
 using Financier.Desktop.Views;
@@ -17,6 +18,7 @@ namespace Financier.Desktop.ViewModel.Dialog
         private DelegateCommand _addSubTransferCommand;
         private DelegateCommand _clearLocationCommand;
         private DelegateCommand _clearPayeeCommand;
+        private DelegateCommand _clearTagCommand;
         private DelegateCommand<BaseTransactionDto> _deleteSubTransactionCommand;
         private DelegateCommand _openRecipesDialogCommand;
         private DelegateCommand<BaseTransactionDto> _editSubTransaction;
@@ -35,6 +37,8 @@ namespace Financier.Desktop.ViewModel.Dialog
         public DelegateCommand ClearLocationCommand => _clearLocationCommand ??= new DelegateCommand(() => { Transaction.LocationId = default; });
 
         public DelegateCommand ClearPayeeCommand => _clearPayeeCommand ??= new DelegateCommand(() => { Transaction.PayeeId = default; });
+
+        public DelegateCommand ClearTagCommand => _clearTagCommand ??= new DelegateCommand(() => { Transaction.SelectedTags = new List<TagModel>(); });
 
         public DelegateCommand<BaseTransactionDto> DeleteSubTransactionCommand => _deleteSubTransactionCommand ??= new DelegateCommand<BaseTransactionDto>(tr =>
                                                                                             {

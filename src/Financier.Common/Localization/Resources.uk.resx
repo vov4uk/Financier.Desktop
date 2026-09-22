@@ -300,6 +300,9 @@
   <data name="location" xml:space="preserve">
     <value>Місцезнаходження</value>
   </data>
+  <data name="tag" xml:space="preserve">
+    <value>Тег</value>
+  </data>
   <data name="note" xml:space="preserve">
     <value>Примітка</value>
   </data>

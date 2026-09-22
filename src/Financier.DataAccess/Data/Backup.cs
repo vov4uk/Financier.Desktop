@@ -21,6 +21,7 @@
         public const string TRANSACTION_ATTRIBUTE_TABLE = "transaction_attribute";
         public const string LOCATIONS_TABLE = "locations";
         public const string PAYEE_TABLE = "payee";
+        public const string TAG_TABLE = "tag";
         public const string CCARD_CLOSING_DATE_TABLE = "ccard_closing_date";
         public const string EXCHANGE_RATES_TABLE = "currency_exchange_rate";
         public const string DATABASE_VERSION = "DATABASE_VERSION";

@@ -103,6 +103,9 @@ namespace Financier.DataAccess.Data
         [Column("attached_picture")]
         public string AttachedPicture { get; set; }
 
+        [Column("tags")]
+        public string Tags { get; set; }
+
         public virtual Transaction Parent { get; set; }
 
         public virtual Account FromAccount { get; set; }

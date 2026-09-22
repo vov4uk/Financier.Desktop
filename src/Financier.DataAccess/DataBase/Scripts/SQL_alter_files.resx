@@ -358,4 +358,10 @@
   <data name="_20260905_0241_add_payee_locations_alias" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>alter\20260905_0241_add_payee_locations_alias.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
+  <data name="_20260910_1200_add_tags_to_transactions" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20260910_1200_add_tags_to_transactions.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="_20260910_1300_create_tag_table" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>alter\20260910_1300_create_tag_table.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>

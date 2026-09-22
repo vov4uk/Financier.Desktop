@@ -1,18 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Financier.Common.Model
 {
     [ExcludeFromCodeCoverage]
-    public class TagModel : BaseModel, IActive
+    public class TagModel : TagBaseModel
     {
-        [Column("_id")]
-        public int? Id { get; set; }
-
-        [Column("title")]
-        public string Title { get; set; }
-
-        [Column("is_active")]
-        public bool IsActive { get; set; }
+        [Column("sort_order")]
+        public int SortOrder { get; set; }
     }
 }

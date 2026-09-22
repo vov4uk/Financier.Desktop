@@ -20,7 +20,7 @@ namespace Financier.Desktop.Pages
         }
 
         protected async Task OpenTagDialogAsync<T>(int e)
-            where T : Tag, new()
+            where T : TagBase, new()
         {
             T selectedEntity = await db.GetOrCreateAsync<T>(e);
             TagControlVM context = new TagControlVM(new TagDto(selectedEntity));

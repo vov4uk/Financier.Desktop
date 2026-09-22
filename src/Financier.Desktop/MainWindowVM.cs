@@ -266,6 +266,7 @@ namespace Financier.Desktop.ViewModel
                 itemsToBackup.AddRange((await uow.GetAllAsync<Location>()).Where(x => x.Id > 0));
                 itemsToBackup.AddRange(await uow.GetAllAsync<Payee>());
                 itemsToBackup.AddRange((await uow.GetAllAsync<Project>()).Where(x => x.Id > 0));
+                itemsToBackup.AddRange((await uow.GetAllAsync<Tag>()).Where(x => x.Id > 0));
                 itemsToBackup.AddRange(await uow.GetAllAsync<Transaction>());
                 itemsToBackup.AddRange((await uow.GetAllAsync<Account>()).OrderBy(x => x.Id));
                 itemsToBackup.AddRange((await uow.GetAllAsync<AttributeDefinition>()).Where(x => x.Id > 0));

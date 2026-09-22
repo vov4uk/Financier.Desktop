@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using Financier.Converters;
 using Financier.DataAccess.Data;
 using Financier.Desktop.Data;
@@ -66,6 +67,7 @@ namespace Financier.Desktop.Helpers
             tr.LocationId = dto.LocationId ?? 0;
             tr.ProjectId = dto.CategoryId == -1 ? 0 : (dto.ProjectId ?? 0); // parent transaction don't have Project
             tr.Note = dto.Note;
+            tr.Tags = dto.SelectedTags?.Count > 0 ? string.Join("\\n", dto.SelectedTags.Select(t => t.Title)) : null;
             tr.DateTime = UnixTimeConverter.ConvertBack(dto.DateTime);
             tr.LastRecurrence = UnixTimeConverter.ConvertBack(DateTime.Now);
         }

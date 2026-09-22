@@ -5,7 +5,7 @@ namespace Financier.DataAccess.Data
 {
     [DebuggerDisplay("{Title}")]
     [Table(Backup.LOCATIONS_TABLE)]
-    public class Location : Tag
+    public class Location : TagBase
     {
 
         [Column("datetime")]

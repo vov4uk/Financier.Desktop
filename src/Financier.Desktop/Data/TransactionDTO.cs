@@ -26,6 +26,7 @@ namespace Financier.Desktop.Data
         private long parentTransactionSplitAmount;
         private int? payeeId;
         private int? projectId;
+        private IList<TagModel> selectedTags = new List<TagModel>();
         private ObservableCollection<BaseTransactionDto> subTransactions = new ObservableCollection<BaseTransactionDto>();
         private long unSplitAmount;
 
@@ -87,6 +88,9 @@ namespace Financier.Desktop.Data
             isAmountNegative = transaction.FromAmount <= 0;
             date = UnixTimeConverter.Convert(transaction.DateTime).Date;
             time = UnixTimeConverter.Convert(transaction.DateTime);
+
+            var tagTitles = (transaction.Tags ?? string.Empty).Split("\\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            selectedTags = DbManual.Tag.Where(t => tagTitles.Contains(t.Title, StringComparer.OrdinalIgnoreCase)).ToList();
         }
 
         public CategoryModel Category
@@ -260,6 +264,12 @@ namespace Financier.Desktop.Data
         }
 
         public override long RealFromAmount => Math.Abs(IsOriginalFromAmountVisible ? (OriginalFromAmount ?? 0 ): FromAmount) * (IsAmountNegative ? -1 : 1);
+
+        public IList<TagModel> SelectedTags
+        {
+            get => selectedTags;
+            set { SetProperty(ref selectedTags, value, nameof(SelectedTags)); }
+        }
 
         public long SplitAmount => subTransactions?.Sum(x => x.RealFromAmount) ?? 0;
         public ObservableCollection<BaseTransactionDto> SubTransactions

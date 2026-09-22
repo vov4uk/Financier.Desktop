@@ -120,6 +120,9 @@ namespace Financier.DataAccess.View
         [Column("is_transfer")]
         public long IsTransfer { get; set; }
 
+        [Column("tags")]
+        public string Tags { get; set; }
+
         public virtual Currency FromAccountCurrency { get; set; }
         public virtual Currency ToAccountCurrency { get; set; }
         public virtual Currency OriginalCurrency { get; set; }
