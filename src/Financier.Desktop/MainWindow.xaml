@@ -223,7 +223,6 @@
                         CommandParameter="{StaticResource TransactionsViewType}"
                         Label="{loc:Translate Key=blotter}"
                         LargeImageSource="{StaticResource ResourceKey=IconReceipt}" />
-                    <!--<RibbonButton SmallImageSource="pack://application:,,,/Images/actionbar_filter_cancel.png" Label="Clear filter" />-->
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="Reports" Header="{loc:Translate Key=reports}">
