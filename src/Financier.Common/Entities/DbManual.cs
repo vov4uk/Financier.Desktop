@@ -324,6 +324,7 @@ ORDER  BY 1 DESC ");
                 case nameof(Account):          _accounts = null; break;
                 case nameof(MCCEnums):         _mccEnums = null; break;
                 case nameof(MCCTitles):        _mccTitles = null; break;
+                case nameof(Tag):              _tag = null; break;
                 case nameof(Currencies):       _currencies = null; _currencyIds = null; break;
                 case nameof(Category):         _category = null; _topCategory = null; break;
                 default:
