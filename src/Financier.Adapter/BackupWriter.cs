@@ -23,6 +23,7 @@ namespace Financier.Adapter
             typeof(Project),
             typeof(Transaction),
             typeof(Payee),
+            typeof(Tag),
             typeof(CCardClosingDate),
             typeof(SmsTemplate),
             typeof(CurrencyExchangeRate),
