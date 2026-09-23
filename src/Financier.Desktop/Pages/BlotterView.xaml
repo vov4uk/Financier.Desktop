@@ -44,7 +44,7 @@
                     DataContext="{Binding}"
                     Orientation="Vertical"
                     SelectedPeriodType="{Binding PeriodType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <filters:AccountFilter Margin="4" />
+                <filters:AccountsFilter Margin="4" />
                 <filters:CategoryFilter Margin="4" />
                 <filters:ProjectFilter Margin="4" />
                 <filters:PayeeFilter Margin="4" />

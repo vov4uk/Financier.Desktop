@@ -41,6 +41,7 @@ namespace Financier.Desktop.ViewModel
         private ProjectModel _project;
         private LocationModel _location;
         private ObservableCollection<TagModel> _tags = new ObservableCollection<TagModel>();
+        private ObservableCollection<AccountFilterModel> _selectedAccounts = new ObservableCollection<AccountFilterModel>();
 
         public BlotterVM(IFinancierDatabase db, IDialogWrapper dialogWrapper)
             : base(db, dialogWrapper)
@@ -143,6 +144,18 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
+        public ObservableCollection<AccountFilterModel> SelectedAccounts
+        {
+            get => _selectedAccounts;
+            set
+            {
+                _selectedAccounts = value ?? new ObservableCollection<AccountFilterModel>();
+                RaisePropertyChanged(nameof(SelectedAccounts));
+            }
+        }
+
+        private int? FilterAccountId => SelectedAccounts.Count == 1 ? SelectedAccounts[0]?.Id : Account?.Id;
+
         public IAsyncCommand AddTemplateCommand => _addTemplateCommand ??= new AsyncCommand(() => Task.CompletedTask, () => false);
 
         public IAsyncCommand AddTransferCommand => _addTransferCommand ??= new AsyncCommand(AddTransfer);
@@ -195,6 +208,7 @@ namespace Financier.Desktop.ViewModel
             Project = default;
             Location = default;
             SelectedTags = new ObservableCollection<TagModel>();
+            SelectedAccounts = new ObservableCollection<AccountFilterModel>();
             await RefreshDataCommand.ExecuteAsync();
         }
 
@@ -239,9 +253,9 @@ namespace Financier.Desktop.ViewModel
         private async Task AddTransfer()
         {
             Transaction transfer = await db.GetOrCreateTransactionAsync(0);
-            if (Account?.Id != null)
+            if (FilterAccountId != null)
             {
-                transfer.FromAccountId = (int)Account.Id;
+                transfer.FromAccountId = (int)FilterAccountId;
             }
             await OpenTransferDialogAsync(transfer);
         }
@@ -271,9 +285,9 @@ namespace Financier.Desktop.ViewModel
             Transaction transaction = await db.GetOrCreateTransactionAsync(0);
             IEnumerable<Transaction> subTransactions = await db.GetSubTransactionsAsync(0);
 
-            if (Account?.Id != null)
+            if (FilterAccountId != null)
             {
-                transaction.FromAccountId = (int)Account.Id;
+                transaction.FromAccountId = (int)FilterAccountId;
             }
 
             await OpenTransactionDialogAsync(transaction, subTransactions);
@@ -437,7 +451,12 @@ namespace Financier.Desktop.ViewModel
 
             Expression<Func<BlotterTransactions, bool>> predicate = x => x.DateTime >= fromUnix && x.DateTime <= toUnix;
 
-            if (Account?.Id != null)
+            var accountIds = SelectedAccounts.Where(a => a?.Id != null).Select(a => a.Id.Value).ToList();
+            if (accountIds.Count > 0)
+            {
+                predicate = predicate.And(x => accountIds.Contains(x.FromAccountId) || (x.ToAccountId != null && accountIds.Contains(x.ToAccountId.Value)));
+            }
+            else if (Account?.Id != null)
             {
                 predicate = predicate.And(x => x.FromAccountId == _account.Id || x.ToAccountId == _account.Id);
             }

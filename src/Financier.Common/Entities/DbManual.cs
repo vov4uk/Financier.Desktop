@@ -184,6 +184,8 @@ ORDER  BY 1 DESC ");
 
         public static List<AccountFilterModel> Account => _accounts ?? new();
 
+        public static List<AccountFilterModel> SelectableAccounts => _accounts?.Where(a => a.Id.HasValue).ToList() ?? new();
+
         public static List<CategoryModel> Category => _category ?? new();
 
         public static List<CategoryModel> SubCategory => _category?.Where(x => x.Id > 0).ToList() ?? new();
