@@ -15,10 +15,12 @@
     </UserControl.Resources>
     <GroupBox BorderThickness="0" Header="{loc:Translate Key=tag}">
         <xctk:CheckComboBox
+            Width="140"
             Margin="2,0"
             Delimiter=" | "
             DisplayMemberPath="Title"
             ItemsSource="{Binding Source={x:Static fcrd:DbManual.Tag}, Mode=OneWay}"
-            SelectedItemsOverride="{Binding Path=SelectedTags, Mode=TwoWay}" />
+            SelectedItemsOverride="{Binding Path=SelectedTags, Mode=TwoWay}"
+            ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
     </GroupBox>
 </UserControl>
