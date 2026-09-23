@@ -131,6 +131,7 @@ namespace Financier.Desktop.ViewModel
             entity.DecimalSeparator = template[4];
             entity.GroupSeparator = template[5];
             entity.IsActive = true;
+            entity.SymbolFormat = SymbolFormat.RS.ToString();
             entity.IsDefault = !DbManual.Currencies.Any(x => x.Id.HasValue);
 
             await db.InsertOrUpdateAsync(new[] { entity });

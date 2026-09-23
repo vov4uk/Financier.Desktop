@@ -15,6 +15,14 @@ namespace Financier.DataAccess.Utils
                 (left, right) => Expression.AndAlso(left, right));
         }
 
+        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> exprLeft, Expression<Func<T, bool>> exprRight)
+        {
+            return BuildExpression(
+                exprLeft,
+                exprRight,
+                (left, right) => Expression.OrElse(left, right));
+        }
+
         private static Expression<Func<T, bool>> BuildExpression<T>(Expression<Func<T, bool>> exprLeft, Expression<Func<T, bool>> exprRight,
             Func<Expression, Expression, Expression> conditionalExpression)
         {

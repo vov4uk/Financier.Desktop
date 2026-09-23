@@ -171,6 +171,9 @@
   <data name="exchange_rates" xml:space="preserve">
     <value>Exchange Rates</value>
   </data>
+  <data name="tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
   <data name="blotter" xml:space="preserve">
     <value>Blotter</value>
   </data>
@@ -299,6 +302,9 @@
   </data>
   <data name="location" xml:space="preserve">
     <value>Location</value>
+  </data>
+  <data name="tag" xml:space="preserve">
+    <value>Tag</value>
   </data>
   <data name="note" xml:space="preserve">
     <value>Note</value>

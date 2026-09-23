@@ -34,37 +34,38 @@ namespace Financier.Desktop.ViewModel
         private const string Backup = "backup";
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly ConcurrentDictionary<Type, BindableBase> _pages = new ConcurrentDictionary<Type, BindableBase>();
+        private readonly IBackupWriter backupWriter;
         private readonly IBankHelperFactory bankFactory;
         private readonly IFinancierDatabaseFactory dbFactory;
         private readonly IDialogWrapper dialogWrapper;
+        private readonly IEntityReader entityReader;
         private readonly List<Entity> keyLessEntities = new();
         private readonly IToastNotifierWrapper notifier;
         private readonly UpdateService updateService;
         private BackupVersion _backupVersion;
-        private Dictionary<string, List<string>> _entityColumnsOrder;
-        private IAsyncCommand<Type> _menuNavigateCommand;
-        private IAsyncCommand<WizardTypes> _importCommand;
-        private IAsyncCommand _openBackupCommand;
-        private IAsyncCommand _saveBackupCommand;
-        private IAsyncCommand _saveBackupAsDbCommand;
-        private IAsyncCommand _settingsCommand;
-        private IAsyncCommand _refreshExchangeRatesCommand;
         private IAsyncCommand _checkForUpdateCommand;
-        private readonly IBackupWriter backupWriter;
+        private Dictionary<string, List<string>> _entityColumnsOrder;
+        private IAsyncCommand<WizardTypes> _importCommand;
+        private IAsyncCommand<Type> _menuNavigateCommand;
+        private IAsyncCommand _openBackupCommand;
+        private IAsyncCommand _refreshExchangeRatesCommand;
+        private IAsyncCommand _saveBackupAsDbCommand;
+        private IAsyncCommand _saveBackupCommand;
+        private IAsyncCommand _settingsCommand;
         private AccountsVM accountsVm;
         private BlotterVM blotterVm;
         private CategoriesVM categoriesVm;
-        private BindableBase currentPage;
         private CurrenciesVM currenciesVm;
+        private BindableBase currentPage;
         private IFinancierDatabase db;
-        private readonly IEntityReader entityReader;
-        private LocationsVM locationsVm;
-        private string openBackupPath;
         private string defaultBackupDirectory;
         private bool isLoading;
+        private LocationsVM locationsVm;
+        private string openBackupPath;
         private PayeesVM payeesVm;
         private ProjectsVM projectsVm;
         private RulesVM rulesVm;
+        private TagsVM tagsVm;
 
         public MainWindowVM(IDialogWrapper dialogWrapper,
             IFinancierDatabaseFactory dbFactory,
@@ -84,6 +85,12 @@ namespace Financier.Desktop.ViewModel
             db = dbFactory.CreateDatabase();
 
             CreatePages();
+
+            LocalizationService.Instance.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == "Item[]")
+                    RaisePropertyChanged(nameof(CurrentPageHeader));
+            };
         }
 
         public AccountsVM Accounts
@@ -98,11 +105,16 @@ namespace Financier.Desktop.ViewModel
             private set => SetProperty(ref blotterVm, value);
         }
 
+        public bool CanDeleteCurrentPage =>
+            currentPage is not (CategoriesVM or LocationsVM or PayeesVM or ProjectsVM or TagsVM);
+
         public CategoriesVM Categories
         {
             get => categoriesVm;
             private set => SetProperty(ref categoriesVm, value);
         }
+
+        public IAsyncCommand CheckForUpdateCommand => _checkForUpdateCommand ??= new AsyncCommand(CheckForUpdatesAsync);
 
         public CurrenciesVM Currencies
         {
@@ -117,53 +129,60 @@ namespace Financier.Desktop.ViewModel
             {
                 SetProperty(ref currentPage, value, nameof(CurrentPage));
                 Logger.Info($"CurrentPage -> {value?.GetType().FullName}");
-                RaisePropertyChanged(nameof(IsAccountPageSelected));
-                RaisePropertyChanged(nameof(IsCategoryPageSelected));
-                RaisePropertyChanged(nameof(IsCurrencyPageSelected));
                 RaisePropertyChanged(nameof(IsTransactionPageSelected));
-                RaisePropertyChanged(nameof(IsLocationPageSelected));
-                RaisePropertyChanged(nameof(IsProjectPageSelected));
-                RaisePropertyChanged(nameof(IsPayeePageSelected));
-                RaisePropertyChanged(nameof(IsRulesPageSelected));
                 RaisePropertyChanged(nameof(IsExchangeRatesPageSelected));
+                RaisePropertyChanged(nameof(IsCrudPageSelected));
+                RaisePropertyChanged(nameof(CanDeleteCurrentPage));
+                RaisePropertyChanged(nameof(CurrentPageHeader));
             }
         }
 
-        public bool IsAccountPageSelected => currentPage is AccountsVM;
-
-        public bool IsCategoryPageSelected => currentPage is CategoriesVM;
-
-        public bool IsCurrencyPageSelected => currentPage is CurrenciesVM;
-
-        public bool IsLocationPageSelected => currentPage is LocationsVM;
-
-        public bool IsPayeePageSelected => currentPage is PayeesVM;
-
-        public bool IsProjectPageSelected => currentPage is ProjectsVM;
-
-        public bool IsTransactionPageSelected => currentPage is BlotterVM;
-
-        public bool IsRulesPageSelected => currentPage is RulesVM;
-
-        public bool IsExchangeRatesPageSelected => currentPage is ExchangeRatesVM;
-
-        public string OpenBackupPath
+        public string CurrentPageHeader => currentPage switch
         {
-            get => openBackupPath;
-            private set => SetProperty(ref openBackupPath, value);
-        }
+            AccountsVM => LocalizationService.Instance["account"],
+            CategoriesVM => LocalizationService.Instance["categories"],
+            LocationsVM => LocalizationService.Instance["locations"],
+            ProjectsVM => LocalizationService.Instance["project"],
+            PayeesVM => LocalizationService.Instance["payee"],
+            TagsVM => LocalizationService.Instance["tags"],
+            RulesVM => LocalizationService.Instance["rule"],
+            CurrenciesVM => LocalizationService.Instance["currencies"],
+            _ => null,
+        };
+
         public string DefaultBackupDirectory
         {
             get => defaultBackupDirectory;
             internal set => SetProperty(ref defaultBackupDirectory, value);
         }
 
+        public IAsyncCommand<WizardTypes> ImportCommand => _importCommand ??= new AsyncCommand<WizardTypes>(OpenImportWizardAsync);
+        public bool IsCrudPageSelected =>
+            currentPage is AccountsVM or CategoriesVM or LocationsVM or ProjectsVM or PayeesVM or TagsVM or RulesVM or CurrenciesVM;
+
+        public bool IsExchangeRatesPageSelected => currentPage is ExchangeRatesVM;
+        public bool IsLoading
+        {
+            get => isLoading;
+            private set => SetProperty(ref isLoading, value);
+        }
+
+        public bool IsTransactionPageSelected => currentPage is BlotterVM;
         public LocationsVM Locations
         {
             get => locationsVm;
             private set => SetProperty(ref locationsVm, value);
         }
 
+        public IAsyncCommand<Type> MenuNavigateCommand => _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
+
+        public IAsyncCommand OpenBackupCommand => _openBackupCommand ??= new AsyncCommand(OpenBackup_Click);
+
+        public string OpenBackupPath
+        {
+            get => openBackupPath;
+            private set => SetProperty(ref openBackupPath, value);
+        }
         public PayeesVM Payees
         {
             get => payeesVm;
@@ -176,34 +195,25 @@ namespace Financier.Desktop.ViewModel
             private set => SetProperty(ref projectsVm, value);
         }
 
+        public IAsyncCommand RefreshExchangeRatesCommand => _refreshExchangeRatesCommand ??= new AsyncCommand(RefreshExchangeRates_Click);
+
         public RulesVM Rules
         {
             get => rulesVm;
             private set => SetProperty(ref rulesVm, value);
         }
 
-        public bool IsLoading
-        {
-            get => isLoading;
-            private set => SetProperty(ref isLoading, value);
-        }
-
-        public IAsyncCommand<Type> MenuNavigateCommand => _menuNavigateCommand ??= new AsyncCommand<Type>(NavigateToType);
-
-        public IAsyncCommand<WizardTypes> ImportCommand => _importCommand ??= new AsyncCommand<WizardTypes>(OpenImportWizardAsync);
-
-        public IAsyncCommand OpenBackupCommand => _openBackupCommand ??= new AsyncCommand(OpenBackup_Click);
+        public IAsyncCommand SaveBackupAsDbCommand => _saveBackupAsDbCommand ??= new AsyncCommand(SaveBackupAsDb);
 
         public IAsyncCommand SaveBackupCommand => _saveBackupCommand ??= new AsyncCommand(SaveBackup_Click);
 
-        public IAsyncCommand SaveBackupAsDbCommand => _saveBackupAsDbCommand ??= new AsyncCommand(SaveBackupAsDb);
-
         public IAsyncCommand SettingsCommand => _settingsCommand ??= new AsyncCommand(Settings_Click);
 
-        public IAsyncCommand RefreshExchangeRatesCommand => _refreshExchangeRatesCommand ??= new AsyncCommand(RefreshExchangeRates_Click);
-
-        public IAsyncCommand CheckForUpdateCommand => _checkForUpdateCommand ??= new AsyncCommand(CheckForUpdatesAsync);
-
+        public TagsVM Tags
+        {
+            get => tagsVm;
+            private set => SetProperty(ref tagsVm, value);
+        }
         public async Task OpenBackup(string backupPath)
         {
             try
@@ -266,6 +276,7 @@ namespace Financier.Desktop.ViewModel
                 itemsToBackup.AddRange((await uow.GetAllAsync<Location>()).Where(x => x.Id > 0));
                 itemsToBackup.AddRange(await uow.GetAllAsync<Payee>());
                 itemsToBackup.AddRange((await uow.GetAllAsync<Project>()).Where(x => x.Id > 0));
+                itemsToBackup.AddRange((await uow.GetAllAsync<Tag>()).Where(x => x.Id > 0));
                 itemsToBackup.AddRange(await uow.GetAllAsync<Transaction>());
                 itemsToBackup.AddRange((await uow.GetAllAsync<Account>()).OrderBy(x => x.Id));
                 itemsToBackup.AddRange((await uow.GetAllAsync<AttributeDefinition>()).Where(x => x.Id > 0));
@@ -286,6 +297,48 @@ namespace Financier.Desktop.ViewModel
             keyLessEntities.AddRange(materialized);
         }
 
+        private async Task CheckForUpdatesAsync()
+        {
+            try
+            {
+                if (updateService == null)
+                    return;
+
+                var updateVersion = await updateService.CheckForUpdatesAsync();
+                if (updateVersion is null)
+                {
+                    notifier.ShowMessage(LocalizationService.Instance.latest_version);
+                    return;
+                }
+
+                var result = dialogWrapper.ShowMessageBox(
+                   LocalizationService.Instance.update_available_question,
+                   string.Format(LocalizationService.Instance.update_available, updateVersion),
+                   true);
+
+                if (result)
+                {
+
+                    notifier.ShowMessage(string.Format(LocalizationService.Instance.downloading_update,
+                        "Financier.Desktop",
+                        updateVersion));
+
+                    await updateService.PrepareUpdateAsync(updateVersion);
+
+                    notifier.ShowMessage(LocalizationService.Instance.update_downloaded);
+                    await Task.Delay(3000);
+                    updateService.FinalizeUpdate(true);
+                    await Task.Delay(3000);
+                    System.Windows.Application.Current.Shutdown();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, ex.ToString());
+                notifier.ShowWarning(LocalizationService.Instance.update_failed);
+            }
+        }
+
         private void ClearPages()
         {
             _pages?.Clear();
@@ -297,6 +350,7 @@ namespace Financier.Desktop.ViewModel
             Payees = null;
             Projects = null;
             Rules = null;
+            Tags = null;
         }
 
         private void CreatePages()
@@ -309,6 +363,7 @@ namespace Financier.Desktop.ViewModel
             Payees = new PayeesVM(db, dialogWrapper);
             Projects = new ProjectsVM(db, dialogWrapper);
             Rules = new RulesVM(db, dialogWrapper);
+            Tags = new TagsVM(db, dialogWrapper);
 
             _pages.TryAdd(typeof(AccountModel), Accounts);
             _pages.TryAdd(typeof(BlotterModel), Blotter);
@@ -318,6 +373,7 @@ namespace Financier.Desktop.ViewModel
             _pages.TryAdd(typeof(PayeeModel), Payees);
             _pages.TryAdd(typeof(ProjectModel), Projects);
             _pages.TryAdd(typeof(RuleModel), Rules);
+            _pages.TryAdd(typeof(TagModel), Tags);
         }
 
         private BindableBase GetOrCreatePage(Type type)
@@ -342,6 +398,8 @@ namespace Financier.Desktop.ViewModel
                     return GetOrCreatePage<ExchangeRateModel, ExchangeRatesVM>();
                 case nameof(RuleModel):
                     return Rules ??= GetOrCreatePage<RuleModel, RulesVM>();
+                case nameof(TagModel):
+                    return Tags ??= GetOrCreatePage<TagModel, TagsVM>();
                 case nameof(ReportsControlVM):
                     return _pages.GetOrAdd(type, _ => new ReportsControlVM(db));
 
@@ -458,59 +516,6 @@ namespace Financier.Desktop.ViewModel
             await page.RefreshDataCommand.ExecuteAsync();
         }
 
-        private async Task SaveBackup_Click()
-        {
-            string defaultPath = string.IsNullOrEmpty(OpenBackupPath)
-                ? BackupWriter.GenerateFileName()
-                : Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName());
-            var backupPath = dialogWrapper.SaveFileDialog(Backup, defaultPath);
-            if (!string.IsNullOrEmpty(backupPath))
-            {
-                await SaveBackup(backupPath);
-
-                notifier.ShowMessage(string.Format(LocalizationService.Instance.saved_message, backupPath));
-                Logger.Info($"Backup done. Saved {backupPath}");
-            }
-        }
-
-        private async Task SaveBackupAsDb()
-        {
-            string fileName = Path.ChangeExtension(BackupWriter.GenerateFileName(), "db");
-            string defaultPath = !string.IsNullOrEmpty(OpenBackupPath) ? Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty), fileName) : fileName;
-
-            var backupPath = dialogWrapper.SaveFileDialog("db", defaultPath);
-            if (!string.IsNullOrEmpty(backupPath))
-            {
-                await db.SaveAsFile(backupPath);
-
-                notifier.ShowMessage(string.Format(LocalizationService.Instance.saved_message, backupPath));
-                Logger.Info($"Backup done. Saved {backupPath}");
-            }
-        }
-
-        private async Task Settings_Click()
-        {
-            SettingsDto settings = SettingsService.Current.Settings.Clone() is SettingsDto clone ? clone : new SettingsDto();
-
-            DialogBaseVM vm = new SettingsVM(settings);
-            if (dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) is SettingsDto updated)
-            {
-                Language before = SettingsService.Current.Settings.General.Language;
-                SettingsService.Current.Settings = updated;
-                SettingsService.Current.Save();
-
-                if (before != updated.General.Language)
-                {
-                    LocalizationService.Instance.ApplyLanguage(updated.General.Language);
-
-                    DbManual.ResetManuals(nameof(DbManual.MCCEnums));
-                    DbManual.ResetManuals(nameof(DbManual.MCCTitles));
-                    DbManual.ResetManuals(nameof(DbManual.Currencies));
-                    await DbManual.SetupAsync(db);
-                }
-            }
-        }
-
         private async Task RefreshExchangeRates_Click()
         {
             var erSettings = SettingsService.Current.Settings.ExchangeRates;
@@ -571,45 +576,56 @@ namespace Financier.Desktop.ViewModel
             }
         }
 
-        private async Task CheckForUpdatesAsync()
+        private async Task SaveBackup_Click()
         {
-            try
+            string defaultPath = string.IsNullOrEmpty(OpenBackupPath)
+                ? BackupWriter.GenerateFileName()
+                : Path.Combine(Path.GetDirectoryName(OpenBackupPath), BackupWriter.GenerateFileName());
+            var backupPath = dialogWrapper.SaveFileDialog(Backup, defaultPath);
+            if (!string.IsNullOrEmpty(backupPath))
             {
-                if (updateService == null)
-                    return;
+                await SaveBackup(backupPath);
 
-                var updateVersion = await updateService.CheckForUpdatesAsync();
-                if (updateVersion is null)
-                {
-                    notifier.ShowMessage(LocalizationService.Instance.latest_version);
-                    return;
-                }
-
-                var result = dialogWrapper.ShowMessageBox(
-                   LocalizationService.Instance.update_available_question,
-                   string.Format(LocalizationService.Instance.update_available, updateVersion),
-                   true);
-
-                if (result)
-                {
-
-                    notifier.ShowMessage(string.Format(LocalizationService.Instance.downloading_update,
-                        "Financier.Desktop",
-                        updateVersion));
-
-                    await updateService.PrepareUpdateAsync(updateVersion);
-
-                    notifier.ShowMessage(LocalizationService.Instance.update_downloaded);
-                    await Task.Delay(3000);
-                    updateService.FinalizeUpdate(true);
-                    await Task.Delay(3000);
-                    System.Windows.Application.Current.Shutdown();
-                }
+                notifier.ShowMessage(string.Format(LocalizationService.Instance.saved_message, backupPath));
+                Logger.Info($"Backup done. Saved {backupPath}");
             }
-            catch (Exception ex)
+        }
+
+        private async Task SaveBackupAsDb()
+        {
+            string fileName = Path.ChangeExtension(BackupWriter.GenerateFileName(), "db");
+            string defaultPath = !string.IsNullOrEmpty(OpenBackupPath) ? Path.Combine(Path.GetDirectoryName(OpenBackupPath ?? string.Empty), fileName) : fileName;
+
+            var backupPath = dialogWrapper.SaveFileDialog("db", defaultPath);
+            if (!string.IsNullOrEmpty(backupPath))
             {
-                Logger.Error(ex, ex.ToString());
-                notifier.ShowWarning(LocalizationService.Instance.update_failed);
+                await db.SaveAsFile(backupPath);
+
+                notifier.ShowMessage(string.Format(LocalizationService.Instance.saved_message, backupPath));
+                Logger.Info($"Backup done. Saved {backupPath}");
+            }
+        }
+
+        private async Task Settings_Click()
+        {
+            SettingsDto settings = SettingsService.Current.Settings.Clone() is SettingsDto clone ? clone : new SettingsDto();
+
+            DialogBaseVM vm = new SettingsVM(settings);
+            if (dialogWrapper.ShowDialog<SettingsControl>(vm, 300, 400, LocalizationService.Instance.settings) is SettingsDto updated)
+            {
+                Language before = SettingsService.Current.Settings.General.Language;
+                SettingsService.Current.Settings = updated;
+                SettingsService.Current.Save();
+
+                if (before != updated.General.Language)
+                {
+                    LocalizationService.Instance.ApplyLanguage(updated.General.Language);
+
+                    DbManual.ResetManuals(nameof(DbManual.MCCEnums));
+                    DbManual.ResetManuals(nameof(DbManual.MCCTitles));
+                    DbManual.ResetManuals(nameof(DbManual.Currencies));
+                    await DbManual.SetupAsync(db);
+                }
             }
         }
     }

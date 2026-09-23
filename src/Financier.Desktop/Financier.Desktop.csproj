@@ -53,6 +53,15 @@
     <Resource Include="Images\AccountType\account_type_electronic.png" />
     <Resource Include="Images\AccountType\account_type_liability.png" />
     <Resource Include="Images\AccountType\account_type_other.png" />
+    <Resource Include="Images\ElectronicType\electronic_type_alipay.png" />
+    <Resource Include="Images\ElectronicType\electronic_type_amazon.png" />
+    <Resource Include="Images\ElectronicType\electronic_type_bitcoin.png" />
+    <Resource Include="Images\ElectronicType\electronic_type_default.png" />
+    <Resource Include="Images\ElectronicType\electronic_type_ebay.png" />
+    <Resource Include="Images\ElectronicType\electronic_type_google_wallet.png" />
+    <Resource Include="Images\ElectronicType\electronic_type_paypal.png" />
+    <Resource Include="Images\ElectronicType\electronic_type_web_money.png" />
+    <Resource Include="Images\ElectronicType\electronic_type_yandex_money.png" />
     <Resource Include="Images\ic_launcher.png" />
     <Resource Include="Images\bank\monobank.png" />
     <Resource Include="Images\bank\pireus.png" />

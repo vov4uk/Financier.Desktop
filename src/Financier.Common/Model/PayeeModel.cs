@@ -3,7 +3,7 @@
 namespace Financier.Common.Model
 {
     [ExcludeFromCodeCoverage]
-    public class PayeeModel : TagModel
+    public class PayeeModel : TagBaseModel
     {
     }
 }

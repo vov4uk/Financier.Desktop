@@ -251,12 +251,11 @@ namespace Financier.DataAccess.DataBase.Scripts {
         
         /// <summary>
         ///   Looks up a localized string similar to create table if not exists currency_rate (
-        ///	from_currency_id integer not null,
-        ///	to_currency_id integer not null,
-        ///	rate double not null,
-        ///	effective_date long not null
+        ///    from_currency_id integer not null,
+        ///    to_currency_id integer not null,
+        ///    rate double not null,
+        ///    effective_date long not null
         ///);
-        ///	
         ///.
         /// </summary>
         internal static string _20091228_0048_create_currency_rate_table {
@@ -440,10 +439,11 @@ namespace Financier.DataAccess.DataBase.Scripts {
         
         /// <summary>
         ///   Looks up a localized string similar to create table if not exists ccard_closing_date (
-        ///	account_id long not null,
-        ///	period integer not null,
-        ///	closing_day integer not null
-        ///);.
+        ///    account_id long not null,
+        ///    period integer not null,
+        ///    closing_day integer not null
+        ///);
+        ///.
         /// </summary>
         internal static string _20110227_2112_add_ccard_closing_date {
             get {
@@ -552,12 +552,13 @@ namespace Financier.DataAccess.DataBase.Scripts {
         
         /// <summary>
         ///   Looks up a localized string similar to create table if not exists currency_exchange_rate (
-        ///	from_currency_id integer not null,
-        ///	to_currency_id integer not null,
-        ///	rate_date long not null,
-        ///	rate float not null,
-        ///	PRIMARY KEY (from_currency_id, to_currency_id, rate_date)
-        ///);.
+        ///    from_currency_id integer not null,
+        ///    to_currency_id integer not null,
+        ///    rate_date long not null,
+        ///    rate float not null,
+        ///    PRIMARY KEY (from_currency_id, to_currency_id, rate_date)
+        ///);
+        ///.
         /// </summary>
         internal static string _20120117_20581_create_currency_exchange_rate_table {
             get {
@@ -693,14 +694,15 @@ namespace Financier.DataAccess.DataBase.Scripts {
         
         /// <summary>
         ///   Looks up a localized string similar to create table if not exists sms_template (
-        ///	_id integer primary key autoincrement,
-        ///	title text not null,
-        ///	template text not null,
-        ///	category_id integer not null,
-        ///	account_id integer
+        ///    _id integer primary key autoincrement,
+        ///    title text not null,
+        ///    template text not null,
+        ///    category_id integer not null,
+        ///    account_id integer
         ///);
         ///
-        ///create index if not exists smstemplate_num_idx ON sms_template (title);.
+        ///create index if not exists smstemplate_num_idx ON sms_template (title);
+        ///.
         /// </summary>
         internal static string _20171020_0707_add_sms_templates {
             get {
@@ -739,11 +741,11 @@ namespace Financier.DataAccess.DataBase.Scripts {
         
         /// <summary>
         ///   Looks up a localized string similar to create table if not exists attributes_t (
-        ///	_id integer primary key autoincrement,
-        ///	type integer not null default 1,
-        ///	title text,
-        ///	list_values text,
-        ///	default_value text
+        ///    _id integer primary key autoincrement,
+        ///    type integer not null default 1,
+        ///    title text,
+        ///    list_values text,
+        ///    default_value text
         ///);
         ///
         ///INSERT INTO attributes_t (_id, type, title, list_values, default_value)
@@ -996,6 +998,33 @@ namespace Financier.DataAccess.DataBase.Scripts {
         internal static string _20260905_0241_add_payee_locations_alias {
             get {
                 return ResourceManager.GetString("_20260905_0241_add_payee_locations_alias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE transactions ADD COLUMN tags TEXT;.
+        /// </summary>
+        internal static string _20260910_1200_add_tags_to_transactions {
+            get {
+                return ResourceManager.GetString("_20260910_1200_add_tags_to_transactions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CREATE TABLE IF NOT EXISTS tag (
+        ///    _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ///    title TEXT NOT NULL,
+        ///    is_active INTEGER NOT NULL DEFAULT 1,
+        ///    sort_order INTEGER NOT NULL DEFAULT 0,
+        ///    updated_on INTEGER
+        ///);
+        ///
+        ///CREATE UNIQUE INDEX IF NOT EXISTS uidx_tag_title ON tag(title);
+        ///.
+        /// </summary>
+        internal static string _20260910_1300_create_tag_table {
+            get {
+                return ResourceManager.GetString("_20260910_1300_create_tag_table", resourceCulture);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Financier.Common.Utils;
 
 namespace Financier.Common.Model
@@ -75,6 +76,7 @@ namespace Financier.Common.Model
         public int? OriginalCurrencyId { get; set; }
         public long OriginalFromAmount { get; set; }
         public string Payee { get; set; }
+        public string Tags { get; set; }
         public int? ToAccountBalance { get; set; }
         public CurrencyModel ToAccountCurrency { get; set; }
         public int? ToAccountCurrencyId { get; set; }
@@ -82,6 +84,8 @@ namespace Financier.Common.Model
         public string ToAccountTitle { get; set; }
         public long ToAmount { get; set; }
         public string TransactionTitle => TransactionTitleUtils.GenerateTransactionTitle(Payee, Note, LocationId > 0 ? Location : string.Empty, CategoryId, CategoryTitle, ToAccountId);
+
+        public string TagsTitle => string.Join(" | ", (Tags ?? string.Empty).Split("\\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
 
         public string Type
         {

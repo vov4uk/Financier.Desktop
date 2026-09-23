@@ -1,0 +1,38 @@
+<UserControl x:Class="Financier.Common.Filters.AccountsFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fcrd="clr-namespace:Financier.Common.Entities"
+             xmlns:loc="clr-namespace:Financier.Common.Localization"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             MinWidth="140">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <GroupBox Header="{loc:Translate Key=account}"
+              BorderThickness="0">
+        <xctk:CheckComboBox Width="140"
+                             Margin="2 0"
+                             HorizontalAlignment="Left"
+                             ClipToBounds="True"
+                             Delimiter=" | "
+                             DisplayMemberPath="Title"
+                             ItemsSource="{Binding Source={x:Static fcrd:DbManual.SelectableAccounts}, Mode=OneWay}"
+                             SelectedItemsOverride="{Binding Path=SelectedAccounts, Mode=TwoWay}"
+                             ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}">
+            <xctk:CheckComboBox.ItemContainerStyle>
+                <Style TargetType="{x:Type xctk:SelectorItem}">
+                    <Setter Property="Foreground" Value="DarkGreen" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsActive}" Value="False">
+                            <Setter Property="Foreground" Value="DarkRed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </xctk:CheckComboBox.ItemContainerStyle>
+        </xctk:CheckComboBox>
+    </GroupBox>
+</UserControl>

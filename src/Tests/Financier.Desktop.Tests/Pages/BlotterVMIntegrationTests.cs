@@ -1,6 +1,7 @@
 ﻿namespace Financier.Desktop.Tests.Pages
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading.Tasks;
     using Financier.Common.Entities;
@@ -465,6 +466,27 @@
             vm.From = UnixTimeConverter.Convert(1644825372000);
             await vm.RefreshDataCommand.ExecuteAsync();
             Assert.Single(vm.Entities);
+        }
+
+        [Fact]
+        public async Task Filter_MultipleAccountsSelected_ReturnUnionOfAccountsTransactions()
+        {
+            await SetupDb(FilterTransactions());
+
+            var vm = new BlotterVM(db, dialogMock.Object);
+
+            vm.SelectedAccounts = new ObservableCollection<AccountFilterModel>
+            {
+                DbManual.Account.FirstOrDefault(x => x.Id == 1),
+                DbManual.Account.FirstOrDefault(x => x.Id == 3),
+            };
+            await vm.RefreshDataCommand.ExecuteAsync();
+
+            Assert.Equal(6, vm.Entities.Count);
+            Assert.All(vm.Entities, e => Assert.True(e.FromAccountId is 1 or 3 || e.ToAccountId is 1 or 3));
+
+            await vm.ClearFiltersCommand.ExecuteAsync();
+            Assert.Empty(vm.SelectedAccounts);
         }
 
         [Fact]
