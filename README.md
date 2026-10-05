@@ -1,3 +1,6 @@
+> [!WARNING]
+> **Financier Desktop (WPF) is no longer supported.** Development continues in [Financisto Desktop](https://github.com/vov4uk/Financisto.Desktop), a cross-platform Avalonia version that is kept up to date with the Android app. Please use it instead.
+
 <h1 align="center">Financier Desktop</h1>
 <p align="center">
 <a href="https://github.com/vov4uk/Financier.Desktop/releases">
