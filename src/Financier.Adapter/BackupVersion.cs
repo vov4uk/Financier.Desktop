@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Financier.Adapter
+﻿namespace Financier.Adapter
 {
     public class BackupVersion
     {
@@ -8,5 +6,10 @@ namespace Financier.Adapter
         public int VersionCode { get; set; }
         public string Version { get; set; }
         public int DatabaseVersion { get; set; }
+
+        override public string ToString()
+        {
+            return $"{Package} v{Version} (code {VersionCode}, db {DatabaseVersion})";
+        }
     }
 }

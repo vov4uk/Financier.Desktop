@@ -485,6 +485,8 @@
                     <xctk:CheckComboBox
                         Grid.Row="20"
                         Grid.Column="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
                         Delimiter=" | "
                         DisplayMemberPath="Title"
                         ItemsSource="{Binding Source={x:Static fcrd:DbManual.Tag}, Mode=OneWay}"
